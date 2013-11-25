@@ -56,7 +56,7 @@ public class Karren {
 		bot.connect(GlobalVars.hostname);
 		bot.setVerbose(true);
 		bot.joinChannel("#minecraft");
-		bot.sendMessage("nickserv", "identify CRaZyPANTS_Servers");
+		bot.sendMessage("nickserv", "identify " + GlobalVars.nickservPass);
 	}
 	public static void initConfig() throws IOException{
 		Properties cfg = new Properties();
@@ -72,6 +72,7 @@ public class Karren {
 			GlobalVars.sqlpass = cfg.getProperty("sqlpass", "changeme");
 			GlobalVars.sqldb = cfg.getProperty("sqldb", "changeme");
 			GlobalVars.icelink = cfg.getProperty("icelink", "changeme");
+			GlobalVars.nickservPass = cfg.getProperty("nickservPass", "changeme");
 		} else {
 			cfg.setProperty("botname", "Karren-sama");
 			cfg.setProperty("hostname", "0.0.0.0");
@@ -81,6 +82,7 @@ public class Karren {
 			cfg.setProperty("sqlpass", "changeme");
 			cfg.setProperty("sqldb", "changeme");
 			cfg.setProperty("icelink", "changeme");
+			cfg.setProperty("nickservPass", "changeme");
 			cfg.store(new FileOutputStream("bot.prop"), comment);
 		}
 	}
