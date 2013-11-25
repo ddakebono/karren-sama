@@ -71,6 +71,7 @@ public class Karren {
 			GlobalVars.sqluser = cfg.getProperty("sqluser", "changeme");
 			GlobalVars.sqlpass = cfg.getProperty("sqlpass", "changeme");
 			GlobalVars.sqldb = cfg.getProperty("sqldb", "changeme");
+			GlobalVars.icelink = cfg.getProperty("icelink", "changeme");
 		} else {
 			cfg.setProperty("botname", "Karren-sama");
 			cfg.setProperty("hostname", "0.0.0.0");
@@ -79,6 +80,7 @@ public class Karren {
 			cfg.setProperty("sqluser", "changeme");
 			cfg.setProperty("sqlpass", "changeme");
 			cfg.setProperty("sqldb", "changeme");
+			cfg.setProperty("icelink", "changeme");
 			cfg.store(new FileOutputStream("bot.prop"), comment);
 		}
 	}

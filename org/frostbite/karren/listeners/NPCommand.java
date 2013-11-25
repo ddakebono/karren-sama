@@ -74,7 +74,7 @@ public class NPCommand extends ListenerAdapter{
 	public String getNowPlaying(){
 		String nowPlaying = "offair";
 		try {
-			URL np = new URL("http://192.168.1.36/icecast_link.php");
+			URL np = new URL(GlobalVars.icelink);
 			HttpURLConnection npData = (HttpURLConnection) np.openConnection();
 			BufferedReader getData = new BufferedReader(new InputStreamReader(npData.getInputStream()));
 			nowPlaying = getData.readLine();
