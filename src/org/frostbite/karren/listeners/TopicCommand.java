@@ -1,6 +1,7 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Logging;
+import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -10,16 +11,18 @@ public class TopicCommand extends ListenerAdapter{
 		String message = event.getMessage();
 		String cmd = ".topic";
 		PircBotX bot = event.getBot();
+		Channel channel = event.getChannel();
 		if(message.startsWith(cmd)){
 			message = message.replaceFirst(cmd, "").trim();
-			String voices = event.getChannel().getVoices().toString();
-			String ops = event.getChannel().getOps().toString();
-			boolean hasVoice = voices.contains(event.getUser().getNick());
-			boolean isAnOp = ops.contains(event.getUser().getNick());
-			if(hasVoice || isAnOp){
+			if(channel.isOp(event.getUser()) || channel.hasVoice(event.getUser())){
 				if(message != ""){
-					bot.setTopic(event.getChannel(), "CRaZyPANTS Minecraft channel, use .help to get current commands avalable for use. MOTD: " + message);
-					Logging.log("The MOTD has been changed to " + message + " By " + event.getUser().getNick());
+					if(event.getChannel().isOp(bot.getUserBot())){
+						channel.send().setTopic("CRaZyPANTS Minecraft channel, use .help to get current commands avalable for use. MOTD: " + message);
+						Logging.log("The MOTD has been changed to " + message + " By " + event.getUser().getNick());
+					} else {
+						event.getChannel().send().message("I don't seem to have the correct permissions to change the topic...");
+						Logging.log("Error! Couldn't set topic because permissions are missing!");
+					}
 				} else {
 					event.respond("Your message does not contain a new MOTD");
 				}

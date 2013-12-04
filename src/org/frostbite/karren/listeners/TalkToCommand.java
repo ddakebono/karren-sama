@@ -7,7 +7,6 @@ import java.util.Date;
 
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.MySQLConnector;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
@@ -15,13 +14,14 @@ public class TalkToCommand extends ListenerAdapter{
 	public void onMessage(MessageEvent event) throws IOException, SQLException{
 		String[] hiCheck = {"Hi", "Hello", "Hey", "Yo", "Greeting", "Salutations" };
 		String[] byeCheck = {"Bye", "Cya", "Good bye", "Goodbye"};
+		String[] randCheck = {"Pick", "Choose", "Select", "Draw"};
 		boolean goodbye = false;
 		boolean hello = false;
 		boolean isAway = false;
+		boolean random = true;
+		String result;
 		String[] data = new String[1];
 		ArrayList<String> resultData = new ArrayList<String>();
-		PircBotX bot = event.getBot();
-		int awayTime = 0;
 		for(String checkAway : GlobalVars.awayUser){
 			if(event.getUser().getNick().equalsIgnoreCase(checkAway)){
 				isAway = true;
@@ -40,11 +40,16 @@ public class TalkToCommand extends ListenerAdapter{
 				}
 			}
 			if(event.getMessage().toLowerCase().startsWith("clayton")){
-				bot.sendMessage(event.getChannel(),"Clayton");
+				event.getChannel().send().message("Clayton");
+			}
+			for(String check : randCheck){
+				if(event.getMessage().toLowerCase().contains(check) && event.getMessage().toLowerCase().contains("one")){
+					random = true;
+				}
 			}
 		}
 		if(goodbye){
-			bot.sendMessage(event.getChannel(),"Good bye " + event.getUser().getNick() + ".");
+			event.getChannel().send().message("Good bye " + event.getUser().getNick() + ".");
 			data[0] = event.getUser().getNick();
 			MySQLConnector.sqlPush("part", "", data);
 			GlobalVars.awayUser.add(event.getUser().getNick());
@@ -53,11 +58,27 @@ public class TalkToCommand extends ListenerAdapter{
 			data[0] = event.getUser().getNick();
 			resultData.addAll(MySQLConnector.sqlPush("part", "back", data));
 			if(resultData.get(0) != null){
-				bot.sendMessage(event.getChannel(),"Hello " + event.getUser().getNick() + ", you have been away for " + calcAway(resultData.get(0)));
+				event.getChannel().send().message("Hello " + event.getUser().getNick() + ", you have been away for " + calcAway(resultData.get(0)));
 			} else {
-				bot.sendMessage(event.getChannel(), "Hello " + event.getUser().getNick() + ", remember to say good bye when you leave!");
+				event.getChannel().send().message("Hello " + event.getUser().getNick() + ", remember to say good bye when you leave!");
 			}
 			GlobalVars.awayUser.remove(event.getUser().getNick());
+		}
+		if(random){
+			String[] tempArray = event.getMessage().split(":");
+			String msgOut = "";
+			if(tempArray.length > 2){
+				random = false;
+				event.respond("You can only have one colon in the random list, it must seperate your question and your list.");
+			} else if(tempArray.length < 2){
+				random = false;
+				event.respond("You must have a list of objects for me to select from!");
+			}
+			if(random){
+				msgOut = tempArray[1];
+				result = RandCommand.randomList(msgOut);
+				event.respond(result);
+			}
 		}
 		
 	}

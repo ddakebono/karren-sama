@@ -9,7 +9,7 @@ public class VersionCommand extends ListenerAdapter{
 		String message = event.getMessage();
 		String cmd = ".version";
 		if(message.startsWith(cmd)){
-			event.respond(GlobalVars.botname + " is running version " + GlobalVars.versionMarker);
+			event.getChannel().send().message(GlobalVars.botname + " is running version " + GlobalVars.versionMarker);
 		}
 	}
 

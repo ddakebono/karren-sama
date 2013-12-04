@@ -35,7 +35,7 @@ public class NPCommand extends ListenerAdapter{
 			if(message.startsWith("on")||message.startsWith("off")){
 				if(message.startsWith("on") && (hasVoice || isAnOp)){
 					GlobalVars.loop = true;
-					bot.sendMessage(event.getChannel(), "Automagic now playing is now active, periodic updates will occur.");
+					event.getChannel().send().message("Automagic now playing is now active, periodic updates will occur.");
 					Logging.log("Now playing setting changed by " + user.getNick());
 					while(GlobalVars.loop){
 						GlobalVars.npSongNew = getNowPlaying();
@@ -47,7 +47,7 @@ public class NPCommand extends ListenerAdapter{
 							System.out.println("No song change detected!");
 						} else {
 							GlobalVars.npSong = GlobalVars.npSongNew;
-							bot.sendMessage("#minecraft", "Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO.");
+							event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO.");
 						}
 						try {
 							Thread.sleep(10000);
@@ -60,14 +60,14 @@ public class NPCommand extends ListenerAdapter{
 					if(hasVoice || isAnOp){
 						//Killing loop
 						GlobalVars.loop = false;
-						bot.sendMessage(event.getChannel(), "Now playing is now off, use .np to get current song.");
+						event.getChannel().send().message("Now playing is now off, use .np to get current song.");
 					} else {
 						event.respond("Sorry but you do not have permission to do this");
 					}
 				}
 			} else {
 				localNp = getNowPlaying();
-				bot.sendMessage("#minecraft", "Now playing: \"" + localNp + "\" On CRaZyRADIO.");
+				event.getChannel().send().message("Now playing: \"" + localNp + "\" On CRaZyRADIO.");
 			}
 		}
 	}

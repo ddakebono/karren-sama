@@ -19,6 +19,7 @@ public class GlobalVars {
 	public static String sqlpass = "";
 	public static String icelink = "";
 	public static String nickservPass = "";
+	public static String channel = "";
 	//Active storage
 	public static String npSong = "airoff";
 	public static String npSongNew = "offair";

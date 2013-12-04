@@ -12,13 +12,18 @@ public class HueCommand extends ListenerAdapter{
 		String cmd = "Hue";
 		String message = event.getMessage();
 		if(message.toLowerCase().startsWith(cmd.toLowerCase())){
-			bot.sendMessage(event.getChannel(), "Hue");
+			event.getChannel().send().message("Hue");
 			GlobalVars.hueCount++;
 			if(GlobalVars.hueCount >= 3){
-				bot.kick(event.getChannel(), event.getUser(), "Hue hue hue!");
+				if(event.getChannel().isOp(bot.getUserBot())){
+					event.getChannel().send().kick(event.getUser(), "Hue hue hue!");
+					event.getChannel().send().message("Wow, " + event.getUser().getNick() + " just got #rekt.");
+					Logging.log("Karren-sama has kicked " + event.getUser().getNick() + "For Overhue");
+				} else {
+					event.respond("You're lucky this time, I don't have permission to kick you right now...");
+					Logging.log("Couldn't kick " + event.getUser().getNick() + " because permission are missing!");
+				}
 				GlobalVars.hueCount = 0;
-				bot.sendMessage(event.getChannel(), "Wow, " + event.getUser().getNick() + " just got #rekt.");
-				Logging.log("Karren-sama has kicked " + event.getUser().getNick() + "For Overhue");
 			}
 		}
 	}

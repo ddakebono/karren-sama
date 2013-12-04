@@ -15,7 +15,8 @@ public class KillCommand extends ListenerAdapter{
 		if(isAnOp && message.startsWith(cmd)){
 				Logging.log("Bot has been killed by " + event.getUser().getNick());
 				message = message.replaceFirst(cmd, "").trim();
-				bot.quitServer("Kill command fired, bot terminating.");
+				event.getChannel().send().part("Kill command fired, bot terminating.");
+				bot.stopBotReconnect();
 		} else {
 			if(!isAnOp && message.startsWith(cmd))
 				event.respond("I will not be killed by you!");

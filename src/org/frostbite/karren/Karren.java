@@ -20,28 +20,38 @@ import org.frostbite.karren.listeners.TalkToCommand;
 import org.frostbite.karren.listeners.TerminateBot;
 import org.frostbite.karren.listeners.TopicCommand;
 import org.frostbite.karren.listeners.VersionCommand;
+import org.pircbotx.Configuration.*;
+import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 
 public class Karren {
 	public static void main(String[] args) throws Exception{
-		PircBotX bot = new PircBotX();
 		//Initialize and load our config file
 		initConfig();
 		//Adding the listeners for our commands
-		bot.getListenerManager().addListener(new NPCommand());
-		bot.getListenerManager().addListener(new EchoCommand());
-		bot.getListenerManager().addListener(new NewsCommand());
-		bot.getListenerManager().addListener(new RandCommand());
-		bot.getListenerManager().addListener(new KillCommand());
-		bot.getListenerManager().addListener(new TerminateBot());
-		bot.getListenerManager().addListener(new TopicCommand());
-		bot.getListenerManager().addListener(new HueCommand());
-		bot.getListenerManager().addListener(new GayCommand());
-		bot.getListenerManager().addListener(new OriginCommand());
-		bot.getListenerManager().addListener(new HelpCommand());
-		bot.getListenerManager().addListener(new BradCommand());
-		bot.getListenerManager().addListener(new TalkToCommand());
-		bot.getListenerManager().addListener(new VersionCommand());
+		@SuppressWarnings("unchecked")
+		Configuration config = new Configuration.Builder()
+			.setName(GlobalVars.botname)
+			.setLogin("Karren")
+			.setAutoNickChange(true)
+			.addListener(new NPCommand())
+			.addListener(new EchoCommand())
+			.addListener(new NewsCommand())
+			.addListener(new KillCommand())
+			.addListener(new TerminateBot())
+			.addListener(new TopicCommand())
+			.addListener(new HueCommand())
+			.addListener(new GayCommand())
+			.addListener(new OriginCommand())
+			.addListener(new HelpCommand())
+			.addListener(new BradCommand())
+			.addListener(new TalkToCommand())
+			.addListener(new VersionCommand())
+			.setServerHostname(GlobalVars.hostname)
+			.addAutoJoinChannel(GlobalVars.channel)
+			.buildConfiguration();
+		PircBotX bot = new PircBotX(config);
+		
 		//Try and load the JDBC MySQL Driver
 		try{
 			Logging.log(GlobalVars.botname + " version " + GlobalVars.versionMarker + " is now starting!");
@@ -51,12 +61,13 @@ public class Karren {
 		} catch(ClassNotFoundException e) {
 			Logging.log(e.toString());
 		}
-		bot.setName(GlobalVars.botname);
-		bot.setLogin("Karren");
-		bot.connect(GlobalVars.hostname);
-		bot.setVerbose(true);
-		bot.joinChannel("#minecraft");
-		bot.sendMessage("nickserv", "identify " + GlobalVars.nickservPass);
+		try{
+			bot.startBot();
+		} catch (Exception e){
+			e.printStackTrace();
+			Logging.log(e.toString());
+		}
+		bot.sendRaw().rawLine("PRIVMSG nickserv :identify " + GlobalVars.nickservPass);
 	}
 	public static void initConfig() throws IOException{
 		Properties cfg = new Properties();
@@ -73,6 +84,7 @@ public class Karren {
 			GlobalVars.sqldb = cfg.getProperty("sqldb", "changeme");
 			GlobalVars.icelink = cfg.getProperty("icelink", "changeme");
 			GlobalVars.nickservPass = cfg.getProperty("nickservPass", "changeme");
+			GlobalVars.channel = cfg.getProperty("channel", "#changeme");
 		} else {
 			cfg.setProperty("botname", "Karren-sama");
 			cfg.setProperty("hostname", "0.0.0.0");
@@ -83,7 +95,11 @@ public class Karren {
 			cfg.setProperty("sqldb", "changeme");
 			cfg.setProperty("icelink", "changeme");
 			cfg.setProperty("nickservPass", "changeme");
+			cfg.setProperty("channel", "changeme");
 			cfg.store(new FileOutputStream("bot.prop"), comment);
+			System.out.println("Config file generated! Terminating!");
+			Logging.log("Your configuration file has been generated!");
+			System.exit(0);
 		}
 	}
 }
