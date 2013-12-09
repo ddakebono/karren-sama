@@ -17,7 +17,6 @@ import org.frostbite.karren.listeners.NewsCommand;
 import org.frostbite.karren.listeners.OriginCommand;
 import org.frostbite.karren.listeners.RandCommand;
 import org.frostbite.karren.listeners.TalkToCommand;
-import org.frostbite.karren.listeners.TerminateBot;
 import org.frostbite.karren.listeners.TopicCommand;
 import org.frostbite.karren.listeners.VersionCommand;
 import org.pircbotx.Configuration.*;
@@ -33,12 +32,13 @@ public class Karren {
 		Configuration config = new Configuration.Builder()
 			.setName(GlobalVars.botname)
 			.setLogin("Karren")
+			.setRealName("Karren-sama IRC Bot")
 			.setAutoNickChange(true)
+			.setNickservPassword(GlobalVars.nickservPass)
 			.addListener(new NPCommand())
 			.addListener(new EchoCommand())
 			.addListener(new NewsCommand())
 			.addListener(new KillCommand())
-			.addListener(new TerminateBot())
 			.addListener(new TopicCommand())
 			.addListener(new HueCommand())
 			.addListener(new GayCommand())
@@ -67,7 +67,7 @@ public class Karren {
 			e.printStackTrace();
 			Logging.log(e.toString());
 		}
-		bot.sendRaw().rawLine("PRIVMSG nickserv :identify " + GlobalVars.nickservPass);
+		//bot.sendRaw().rawLine("PRIVMSG nickserv :identify " + GlobalVars.nickservPass);
 	}
 	public static void initConfig() throws IOException{
 		Properties cfg = new Properties();

@@ -18,7 +18,7 @@ public class TalkToCommand extends ListenerAdapter{
 		boolean goodbye = false;
 		boolean hello = false;
 		boolean isAway = false;
-		boolean random = true;
+		boolean random = false;
 		String result;
 		String[] data = new String[1];
 		ArrayList<String> resultData = new ArrayList<String>();
@@ -43,7 +43,7 @@ public class TalkToCommand extends ListenerAdapter{
 				event.getChannel().send().message("Clayton");
 			}
 			for(String check : randCheck){
-				if(event.getMessage().toLowerCase().contains(check) && event.getMessage().toLowerCase().contains("one")){
+				if(event.getMessage().toLowerCase().contains(check.toLowerCase()) && event.getMessage().toLowerCase().contains("one")){
 					random = true;
 				}
 			}

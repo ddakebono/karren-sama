@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 public class GlobalVars {
-	public static boolean loop = false;
-	public static String versionMarker = "v0.1";
+	//Config Storage
 	public static String botname = "";
 	public static String hostname = "";
 	public static String sqlhost = "";
@@ -17,14 +16,16 @@ public class GlobalVars {
 	public static String sqluser = "";
 	public static String sqldb = "";
 	public static String sqlpass = "";
+	//Icecast will be changed soon
 	public static String icelink = "";
 	public static String nickservPass = "";
 	public static String channel = "";
+	//Final storage
+	public final static String versionMarker = "v0.1.1";
 	//Active storage
+	public static boolean loop = false;
 	public static String npSong = "airoff";
 	public static String npSongNew = "offair";
 	public static int hueCount = 0;
-	public static String icelogFile = "/srv/ircd/irc-bots/icelog.log";
 	public static ArrayList<String> awayUser = new ArrayList<String>();
-	//Config loader
 }
