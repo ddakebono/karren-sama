@@ -36,7 +36,7 @@ public class NPCommand extends ListenerAdapter{
 				if(message.startsWith("on") && (hasVoice || isAnOp)){
 					GlobalVars.loop = true;
 					event.getChannel().send().message("Automagic now playing is now active, periodic updates will occur.");
-					Logging.log("Now playing setting changed by " + user.getNick());
+					Logging.log("Now playing setting changed by " + user.getNick(), false);
 					while(GlobalVars.loop){
 						GlobalVars.npSongNew = getNowPlaying();
 						if(GlobalVars.npSongNew == "")

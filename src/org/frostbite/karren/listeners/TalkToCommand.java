@@ -47,6 +47,9 @@ public class TalkToCommand extends ListenerAdapter{
 					random = true;
 				}
 			}
+			if(event.getMessage().toLowerCase().contains("wow wow")){
+				event.getChannel().send().message("JUST LIVING IN THE DATABASE WOW WOW WOW WOW!");
+			}
 		}
 		if(goodbye){
 			event.getChannel().send().message("Good bye " + event.getUser().getNick() + ".");

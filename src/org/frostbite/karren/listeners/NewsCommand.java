@@ -27,7 +27,7 @@ public class NewsCommand extends ListenerAdapter{
 					data[0] = user.getNick();
 					data[1] = message;
 					MySQLConnector.sqlPush("news", "add", data);
-					Logging.log("A news update was posted by " + user.getNick());
+					Logging.log("A news update was posted by " + user.getNick(), false);
 				} else {
 					event.respond("You seem to be missing the news post, please supply a post after the command. (ex. .news This is my post!)");
 				}

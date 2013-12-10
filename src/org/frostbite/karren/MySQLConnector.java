@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -44,18 +45,20 @@ public class MySQLConnector {
 	}
 	public static void pushNews(String mod, String[] data) throws IOException{
 		ArrayList<String> dataForSQL = new ArrayList<String>();
-		Date date = new Date();
 		String sqldb = "sitebackend";
-		String curdate = date.toString();
-		String query = "INSERT INTO news (author, post, id, header, date) VALUES ( ? , ? , null, 1, " + curdate + ")";
+		String curdate = getSqlDate();
+		Logging.log(curdate, true);
+		String query = "INSERT INTO news (author, post, id, header, date) VALUES ( ? , ? , null, 1, ?)";
 		//adds author info
 		dataForSQL.add(data[0]);
 		//Adds post
 		dataForSQL.add(data[1]);
+		//Adds timestamp
+		dataForSQL.add(curdate);
 		try{
 			runCommand(query, dataForSQL, false, true, sqldb);
 		} catch(SQLException e) {
-			Logging.log(e.toString());
+			Logging.log(e.toString(), true);
 		}
 	}
 	public static boolean pushSite(String mod, String[] data) throws IOException{
@@ -99,7 +102,7 @@ public class MySQLConnector {
 			}
 		} catch(SQLException e) {
 			e.printStackTrace();
-			Logging.log(e.getMessage());
+			Logging.log(e.getMessage(), true);
 		}
 		if(savedUsers.size() > 0){
 			for(String curUser : savedUsers){
@@ -122,7 +125,7 @@ public class MySQLConnector {
 				}
 			} catch(SQLException e){
 				e.printStackTrace();
-				Logging.log(e.getMessage());
+				Logging.log(e.getMessage(), true);
 			}
 			if(isParted){
 				try{
@@ -132,7 +135,7 @@ public class MySQLConnector {
 					runCommand(query, dataForSQL, false, true, "");
 				} catch(SQLException e){
 					e.printStackTrace();
-					Logging.log(e.getMessage());
+					Logging.log(e.getMessage(), true);
 				}
 				try{
 					query = "SELECT timepart FROM users WHERE user= ?";
@@ -146,7 +149,7 @@ public class MySQLConnector {
 					}
 				} catch(SQLException e){
 					e.printStackTrace();
-					Logging.log(e.getMessage());
+					Logging.log(e.getMessage(), true);
 				}
 			}
 		} else {
@@ -158,7 +161,7 @@ public class MySQLConnector {
 					runCommand(query, dataForSQL, false, true, "");
 				} catch(SQLException e) {
 					e.printStackTrace();
-					Logging.log(e.getMessage());
+					Logging.log(e.getMessage(), true);
 				}
 			} else {
 				try{
@@ -168,7 +171,7 @@ public class MySQLConnector {
 					runCommand(query, dataForSQL, false, true, "");
 				} catch(SQLException e) {
 					e.printStackTrace();
-					Logging.log(e.toString());
+					Logging.log(e.toString(), true);
 				}
 			}
 		}
@@ -195,5 +198,16 @@ public class MySQLConnector {
 		if(!search)
 			pst.execute();
 		return rs;
+	}
+	/*
+	 * Returns a date in the format of YYYY-MM-DD to use with the SQL 
+	 * 
+	 */
+	public static String getSqlDate(){
+		String sqldate = "0000-00-00";
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		sqldate = dateFormat.format(date);
+		return sqldate;
 	}
 }

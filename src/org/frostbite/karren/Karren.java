@@ -16,6 +16,7 @@ import org.frostbite.karren.listeners.NPCommand;
 import org.frostbite.karren.listeners.NewsCommand;
 import org.frostbite.karren.listeners.OriginCommand;
 import org.frostbite.karren.listeners.RandCommand;
+import org.frostbite.karren.listeners.SiteCommand;
 import org.frostbite.karren.listeners.TalkToCommand;
 import org.frostbite.karren.listeners.TopicCommand;
 import org.frostbite.karren.listeners.VersionCommand;
@@ -47,6 +48,7 @@ public class Karren {
 			.addListener(new BradCommand())
 			.addListener(new TalkToCommand())
 			.addListener(new VersionCommand())
+			.addListener(new SiteCommand()) //Doesn't function currently.
 			.setServerHostname(GlobalVars.hostname)
 			.addAutoJoinChannel(GlobalVars.channel)
 			.buildConfiguration();
@@ -54,18 +56,18 @@ public class Karren {
 		
 		//Try and load the JDBC MySQL Driver
 		try{
-			Logging.log(GlobalVars.botname + " version " + GlobalVars.versionMarker + " is now starting!");
-			Logging.log("Trying to load MySQL Driver...");
+			Logging.log(GlobalVars.botname + " version " + GlobalVars.versionMarker + " is now starting!", false);
+			Logging.log("Trying to load MySQL Driver...", false);
 			Class.forName("com.mysql.jdbc.Driver");
-			Logging.log("Loaded driver!");
+			Logging.log("Loaded driver!", false);
 		} catch(ClassNotFoundException e) {
-			Logging.log(e.toString());
+			Logging.log(e.toString(), true);
 		}
 		try{
 			bot.startBot();
 		} catch (Exception e){
 			e.printStackTrace();
-			Logging.log(e.toString());
+			Logging.log(e.toString(), true);
 		}
 		//bot.sendRaw().rawLine("PRIVMSG nickserv :identify " + GlobalVars.nickservPass);
 	}
@@ -98,7 +100,7 @@ public class Karren {
 			cfg.setProperty("channel", "changeme");
 			cfg.store(new FileOutputStream("bot.prop"), comment);
 			System.out.println("Config file generated! Terminating!");
-			Logging.log("Your configuration file has been generated!");
+			Logging.log("Your configuration file has been generated!", false);
 			System.exit(0);
 		}
 	}

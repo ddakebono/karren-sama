@@ -19,10 +19,10 @@ public class TopicCommand extends ListenerAdapter{
 				if(message != ""){
 					if(event.getChannel().isOp(bot.getUserBot())){
 						channel.send().setTopic(Colors.RED + "CRaZyPANTS Minecraft channel" + Colors.BLACK + ", use .help to get current commands avalable for use. MOTD: " + (Colors.GREEN + message));
-						Logging.log("The MOTD has been changed to " + message + " By " + event.getUser().getNick());
+						Logging.log("The MOTD has been changed to " + message + " By " + event.getUser().getNick(), false);
 					} else {
 						event.getChannel().send().message("I don't seem to have the correct permissions to change the topic...");
-						Logging.log("Error! Couldn't set topic because permissions are missing!");
+						Logging.log("Error! Couldn't set topic because permissions are missing!", true);
 					}
 				} else {
 					event.respond("Your message does not contain a new MOTD");

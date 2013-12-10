@@ -18,10 +18,10 @@ public class HueCommand extends ListenerAdapter{
 				if(event.getChannel().isOp(bot.getUserBot())){
 					event.getChannel().send().kick(event.getUser(), "Hue hue hue!");
 					event.getChannel().send().message("Wow, " + event.getUser().getNick() + " just got #rekt.");
-					Logging.log("Karren-sama has kicked " + event.getUser().getNick() + "For Overhue");
+					Logging.log("Karren-sama has kicked " + event.getUser().getNick() + "For Overhue", false);
 				} else {
 					event.respond("You're lucky this time, I don't have permission to kick you right now...");
-					Logging.log("Couldn't kick " + event.getUser().getNick() + " because permission are missing!");
+					Logging.log("Couldn't kick " + event.getUser().getNick() + " because permission are missing!", true);
 				}
 				GlobalVars.hueCount = 0;
 			}
