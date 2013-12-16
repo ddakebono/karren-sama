@@ -2,8 +2,8 @@ package org.frostbite.karren.listeners;
 
 import java.util.ArrayList;
 
-import org.frostbite.karren.Logging;
 import org.frostbite.karren.MySQLConnector;
+import org.frostbite.karren.Logging;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 

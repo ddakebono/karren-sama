@@ -23,7 +23,6 @@ public class NPCommand extends ListenerAdapter{
 	public void onMessage(MessageEvent event) throws Exception{
 		String message = event.getMessage();
 		String cmd = ".np";
-		String localNp;
 		User user = event.getUser();
 		PircBotX bot = event.getBot();
 		String ops = event.getChannel().getOps().toString();
@@ -35,30 +34,12 @@ public class NPCommand extends ListenerAdapter{
 			if(message.startsWith("on")||message.startsWith("off")){
 				if(message.startsWith("on") && (hasVoice || isAnOp)){
 					GlobalVars.loop = true;
+					GlobalVars.npChannel = event.getChannel();
 					event.getChannel().send().message("Automagic now playing is now active, periodic updates will occur.");
 					Logging.log("Now playing setting changed by " + user.getNick(), false);
-					while(GlobalVars.loop){
-						GlobalVars.npSongNew = getNowPlaying();
-						if(GlobalVars.npSongNew == "")
-							GlobalVars.npSongNew = "Song name error!";
-						int npSongInt1 = GlobalVars.npSong.hashCode();
-						int npSongInt2 = GlobalVars.npSongNew.hashCode();
-						if(npSongInt1 == npSongInt2){
-							System.out.println("No song change detected!");
-						} else {
-							GlobalVars.npSong = GlobalVars.npSongNew;
-							event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO.");
-						}
-						try {
-							Thread.sleep(10000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
 				} else {
 					if(hasVoice || isAnOp){
-						//Killing loop
+						//Stopping now playing functions of ListenCast
 						GlobalVars.loop = false;
 						event.getChannel().send().message("Now playing is now off, use .np to get current song.");
 					} else {
@@ -66,26 +47,8 @@ public class NPCommand extends ListenerAdapter{
 					}
 				}
 			} else {
-				localNp = getNowPlaying();
-				event.getChannel().send().message("Now playing: \"" + localNp + "\" On CRaZyRADIO.");
+				event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO.");
 			}
 		}
-	}
-	public String getNowPlaying(){
-		String nowPlaying = "offair";
-		try {
-			URL np = new URL(GlobalVars.icelink);
-			HttpURLConnection npData = (HttpURLConnection) np.openConnection();
-			BufferedReader getData = new BufferedReader(new InputStreamReader(npData.getInputStream()));
-			nowPlaying = getData.readLine();
-		} catch (MalformedURLException e) {
-			System.out.println("Error, page could not be reached!");
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("Connection not established...");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return nowPlaying;
 	}
 }

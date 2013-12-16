@@ -3,8 +3,8 @@ package org.frostbite.karren.listeners;
 import java.io.IOException;
 import java.net.URLEncoder;
 
-import org.frostbite.karren.Logging;
 import org.frostbite.karren.MySQLConnector;
+import org.frostbite.karren.Logging;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import org.frostbite.karren.Logging;
 import org.pircbotx.hooks.events.MessageEvent;
 
 public class MySQLConnector {
@@ -69,13 +70,74 @@ public class MySQLConnector {
 	public static boolean pushRadio(String mod, String[] data) throws IOException{
 		boolean result = false;
 		String statmentBuild = "";
-		
+		ArrayList<String> dataForSQL = new ArrayList<String>();
+		//Updating now playing song
+		if(mod.equalsIgnoreCase("Song")){
+			statmentBuild = "UPDATE radio SET NowPlaying= ?";
+			dataForSQL.add(data[0]);
+			try {
+				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			dataForSQL.clear();
+			//Moving the last played down and adding new song
+			for(int i=GlobalVars.icecastLPNum; i<2; i--){
+				statmentBuild = "UPDATE lastplayed dt1, lastplayed dt2 SET dt1.SongTitle = dt2.SongTitle WHERE dt1.Spot = " + i + " AND dt2.Spot = " + (i-1);
+				try {
+					runCommand(statmentBuild, dataForSQL, false, false, "sitebackend");
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			statmentBuild = "UPDATE radio dt1, lastplayed dt2 SET dt2.SongTitle = dt1.NowPlaying WHERE dt2.Spot = '1'";
+			try {
+				runCommand(statmentBuild, dataForSQL, false, false, "sitebackend");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(mod.equalsIgnoreCase("listen")){
+			statmentBuild = "UPDATE radio SET Listeners = ?";
+			dataForSQL.add(data[0]);
+			try {
+				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(mod.equalsIgnoreCase("dj")){
+			statmentBuild = "UPDATE radio SET CurrentDJ = ?";
+			dataForSQL.add(data[0]);
+			try {
+				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(mod.equalsIgnoreCase("title")){
+			statmentBuild = "UPDATE radio SET StreamName = ?";
+			dataForSQL.add(data[0]);
+			try {
+				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return false;
 	}
 	public static boolean pushStats(String mod) throws SQLException{
 		boolean doesExist = false;
 		boolean result = false;
+		ArrayList<String> dataForSQL = new ArrayList<String>();
 		String stamentBuild = "UPDATE ";
+		
 		return result;
 	}
 	/*
