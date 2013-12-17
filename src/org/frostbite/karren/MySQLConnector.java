@@ -33,7 +33,7 @@ public class MySQLConnector {
 				pushSite(mod, data);
 			} else
 			if(type.equalsIgnoreCase(types[2])){
-				pushRadio(mod, data);
+				result.add(pushRadio(mod, data));
 			} else
 			if(type.equalsIgnoreCase(types[3])){
 				pushStats(mod);
@@ -67,21 +67,23 @@ public class MySQLConnector {
 		String statmentBuild = "";
 		return false;
 	}
-	public static boolean pushRadio(String mod, String[] data) throws IOException{
-		boolean result = false;
+	public static String pushRadio(String mod, String[] data) throws IOException, SQLException{
+		String result = "";
 		String statmentBuild = "";
 		ArrayList<String> dataForSQL = new ArrayList<String>();
 		//Updating now playing song
-		if(mod.equalsIgnoreCase("Song")){
-			statmentBuild = "UPDATE radio SET NowPlaying= ?";
-			dataForSQL.add(data[0]);
+		if(mod.equalsIgnoreCase("GetSong")){
+			statmentBuild = "SELECT NowPlaying FROM radio";
+			ResultSet returned;
 			try {
-				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+				returned = runCommand(statmentBuild, dataForSQL, true, false, "sitebackend");
+				result = String.valueOf(returned.getObject(1));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			dataForSQL.clear();
+		}
+		if(mod.equalsIgnoreCase("Song")){
 			//Moving the last played down and adding new song
 			for(int i=GlobalVars.icecastLPNum; i<2; i--){
 				statmentBuild = "UPDATE lastplayed dt1, lastplayed dt2 SET dt1.SongTitle = dt2.SongTitle WHERE dt1.Spot = " + i + " AND dt2.Spot = " + (i-1);
@@ -130,7 +132,7 @@ public class MySQLConnector {
 				e.printStackTrace();
 			}
 		}
-		return false;
+		return result;
 	}
 	public static boolean pushStats(String mod) throws SQLException{
 		boolean doesExist = false;

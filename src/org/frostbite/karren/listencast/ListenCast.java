@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,32 +44,19 @@ public class ListenCast extends Thread{
 		this.bot = bot;
 	}
 	public void run(){
+		String[] data = new String[0];
+		String npTemp = "offair";
 		for(;;){
 			try {
-				InputStream input = new URL("http://" + GlobalVars.icecastHost + ":" + GlobalVars.icecastPort + "/" + GlobalVars.icecastMount).openStream();
-				ContentHandler handler = new DefaultHandler();
-				Metadata metadata = new Metadata();
-				Parser parser = new AutoDetectParser();
-				ParseContext parseCont = new ParseContext();
-				parser.parse(input, handler, metadata, parseCont);
-				input.close();
-				if(!GlobalVars.npSong.equalsIgnoreCase(metadata.get("TITLE"))){
-					GlobalVars.npSong = metadata.get("TITLE");
-					Logging.song(GlobalVars.npSong);
-					onSongChange();
-				}
-			} catch (MalformedURLException e) {
+				ArrayList<String> resultSet = MySQLConnector.sqlPush("radio", "getSong", data);
+				npTemp = resultSet.get(0);
+			} catch (IOException | SQLException e1) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (TikaException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e1.printStackTrace();
+			}
+			if(!npTemp.equalsIgnoreCase(GlobalVars.npSong)){
+				GlobalVars.npSong = npTemp;
+				onSongChange();
 			}
 			try {
 				updateIcecastInfo();
@@ -87,11 +76,16 @@ public class ListenCast extends Thread{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	public static void onSongChange(){
-		String[] data = new String[1];
-		data[0] = GlobalVars.npSong;
+		String[] data = new String[0];
 		try {
 			MySQLConnector.sqlPush("radio", "song", data);
 		} catch (IOException e) {
