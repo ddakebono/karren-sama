@@ -12,7 +12,7 @@ public class KillCommand extends ListenerAdapter{
 		PircBotX bot = event.getBot();
 		String ops = event.getChannel().getOps().toString();
 		boolean isAnOp = ops.contains(event.getUser().getNick());
-		if(isAnOp && message.startsWith(cmd)){
+		if(isAnOp && message.toLowerCase().startsWith(cmd)){
 				Logging.log("Bot has been killed by " + event.getUser().getNick(), true);
 				message = message.replaceFirst(cmd, "").trim();
 				bot.sendIRC().quitServer("Kill command fired, bot terminating.");

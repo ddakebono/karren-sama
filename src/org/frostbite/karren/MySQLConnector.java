@@ -17,7 +17,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 public class MySQLConnector {
 	public static ArrayList<String> sqlPush(String type, String mod, String[] data) throws IOException, SQLException{
-		String[] types = {"news", "site", "radio", "stats", "part"};
+		String[] types = {"news", "site", "radio", "stats", "part", "hash"};
 		ArrayList<String> result = new ArrayList<String>();
 		boolean validType = false;
 		for(String check : types){
@@ -40,6 +40,9 @@ public class MySQLConnector {
 			} else
 			if(type.equalsIgnoreCase(types[4])){
 				result.add(pushPart(mod, data));
+			} else
+			if(type.equalsIgnoreCase(types[5])){
+				result.add(String.valueOf(pushHash(mod, data)));
 			}
 		}
 		return result;
@@ -67,6 +70,53 @@ public class MySQLConnector {
 		String statmentBuild = "";
 		return false;
 	}
+	public static String pushHash(String mod, String[] data) throws SQLException{
+		String statmentBuild = "";
+		ArrayList<String> dataForSQL = new ArrayList<String>();
+		ResultSet result;
+		long hashTemp = 1;
+		String resultHash = "";
+		String hashStringComp = "";
+		boolean hasHash = false;
+		ArrayList<String> djList = new ArrayList<String>();
+		statmentBuild = "SELECT * FROM `Radio-DJ`";
+		result = runCommand(statmentBuild, dataForSQL, true, false, "sitebackend");
+		while(result.next()){
+			djList.add(result.getString("DJName"));
+		}
+		result.close();
+		hasHash = djList.contains(data[0]);
+		if(!hasHash){
+			//Generating new DJHash code
+			for(int i=0; i<data[0].length(); i++){
+				hashTemp = hashTemp * data[0].charAt(i);
+			}
+			hashTemp = hashTemp*GlobalVars.djHashGenKey;
+			char[] hashArray = String.valueOf(hashTemp).toCharArray();
+			if(hashArray.length>8){
+				for(int c=0; c<7; c++){
+					hashStringComp = hashStringComp + Character.toString(hashArray[c]);
+				}
+				resultHash = hashStringComp;
+			} else {
+				resultHash = String.valueOf(hashTemp);
+			}
+			statmentBuild = "INSERT INTO `Radio-DJ`(DJName, DJHash) VALUES (?, ?)";
+			dataForSQL.add(data[0]);
+			dataForSQL.add(String.valueOf(resultHash));
+			runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+			dataForSQL.clear();
+		
+		} else {
+			statmentBuild = "SELECT DJHash FROM `Radio-DJ` WHERE DJName= ?";
+			dataForSQL.add(data[0]);
+			result = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
+			if(result.next()){
+				resultHash = String.valueOf(result.getInt(1));
+			}
+		}
+		return resultHash;
+	}
 	public static String pushRadio(String mod, String[] data) throws IOException, SQLException{
 		String result = "";
 		String statmentBuild = "";
@@ -77,7 +127,9 @@ public class MySQLConnector {
 			ResultSet returned;
 			try {
 				returned = runCommand(statmentBuild, dataForSQL, true, false, "sitebackend");
-				result = String.valueOf(returned.getObject(1));
+				if(returned.next()){
+					result = returned.getString(1);
+				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -148,7 +200,6 @@ public class MySQLConnector {
 	 * Used to track and tell users how long they have been gone.
 	 */
 	public static String pushPart(String mod, String[] data) throws IOException{
-		int index = 0;
 		boolean userExists = false;
 		String result = null;
 		boolean isParted = false;
@@ -162,7 +213,6 @@ public class MySQLConnector {
 			ResultSet userGet = runCommand(query, dataForSQL, true, false, "");
 			while(userGet.next()){
 				savedUsers.add(userGet.getString("user"));
-				index++;
 			}
 		} catch(SQLException e) {
 			e.printStackTrace();

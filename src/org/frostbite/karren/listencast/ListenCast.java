@@ -46,7 +46,7 @@ public class ListenCast extends Thread{
 	public void run(){
 		String[] data = new String[0];
 		String npTemp = "offair";
-		for(;;){
+		while(true){
 			try {
 				ArrayList<String> resultSet = MySQLConnector.sqlPush("radio", "getSong", data);
 				npTemp = resultSet.get(0);
@@ -119,18 +119,21 @@ public class ListenCast extends Thread{
 						Element data = (Element)sourceData;
 						if(data.getAttribute("mount").equalsIgnoreCase("/" + GlobalVars.icecastMount)){
 							dataToSql[0] = data.getElementsByTagName("server_description").item(0).getTextContent();
-							GlobalVars.iceStreamTitle = dataToSql[0];
+							GlobalVars.iceDJ = dataToSql[0];
 							MySQLConnector.sqlPush("radio", "dj", dataToSql);
 							dataToSql[0] = data.getElementsByTagName("listeners").item(0).getTextContent();
 							GlobalVars.iceListeners = Integer.parseInt(dataToSql[0]);
 							GlobalVars.iceMaxListeners = Integer.parseInt(data.getElementsByTagName("max_listeners").item(0).getTextContent());
 							MySQLConnector.sqlPush("radio", "listen", dataToSql);
 							dataToSql[0] = data.getElementsByTagName("server_name").item(0).getTextContent();
-							GlobalVars.iceDJ = dataToSql[0];
+							GlobalVars.iceStreamTitle = dataToSql[0];
 							MySQLConnector.sqlPush("radio", "title", dataToSql);
 						}
 					}
 				}
+			} catch(NullPointerException e) {
+				dataToSql[0] = "Off-air";
+				MySQLConnector.sqlPush("radio", "dj", dataToSql);
 			} finally {
 				result.close();
 			}

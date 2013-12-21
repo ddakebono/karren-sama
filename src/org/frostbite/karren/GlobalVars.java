@@ -24,13 +24,14 @@ public class GlobalVars {
 			public static String icecastPort = "";
 			public static String icecastMount = "";
 			public static int icecastLPNum = 5;
+			public static int djHashGenKey = 0;
 		//IRC Configs
 			public static String nickservPass = "";
 			public static String channel = "";
 			public static String botname = "";
 			public static String hostname = "";
 	//Final storage
-		public final static String versionMarker = "v0.1.1";
+		public final static String versionMarker = "v0.2";
 	//Active storage
 		public static boolean loop = false;
 		public static String npSong = "offair";

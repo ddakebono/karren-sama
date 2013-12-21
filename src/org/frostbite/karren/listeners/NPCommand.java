@@ -47,7 +47,11 @@ public class NPCommand extends ListenerAdapter{
 					}
 				}
 			} else {
-				event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO.");
+				event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners);
+			}
+		} else {
+			if(message.startsWith(".dj")){
+				event.getChannel().send().message("Current DJ is " + GlobalVars.iceDJ);
 			}
 		}
 	}

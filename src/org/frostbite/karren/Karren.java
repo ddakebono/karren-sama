@@ -11,6 +11,7 @@ import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listeners.BradCommand;
 import org.frostbite.karren.listeners.EchoCommand;
 import org.frostbite.karren.listeners.GayCommand;
+import org.frostbite.karren.listeners.HashCommand;
 import org.frostbite.karren.listeners.HelpCommand;
 import org.frostbite.karren.listeners.HueCommand;
 import org.frostbite.karren.listeners.KillCommand;
@@ -31,7 +32,7 @@ public class Karren {
 		initConfig();
 		//Adding the listeners for our commands
 		@SuppressWarnings("unchecked")
-		Configuration config = new Configuration.Builder()
+		Configuration config = new Configuration.Builder<>()
 			.setName(GlobalVars.botname)
 			.setLogin("Karren")
 			.setRealName("Karren-sama IRC Bot")
@@ -49,6 +50,7 @@ public class Karren {
 			.addListener(new BradCommand())
 			.addListener(new TalkToCommand())
 			.addListener(new VersionCommand())
+			.addListener(new HashCommand())
 			.addListener(new SiteCommand()) //Doesn't function currently.
 			.setServerHostname(GlobalVars.hostname)
 			.addAutoJoinChannel(GlobalVars.channel)
@@ -100,6 +102,7 @@ public class Karren {
 		GlobalVars.nickservPass = cfg.getProperty("nickservPass", "changeme");
 		GlobalVars.channel = cfg.getProperty("channel", "#changeme");
 		GlobalVars.icecastLPNum = Integer.parseInt(cfg.getProperty("icecastLastPlayedSlots", "5"));
+		GlobalVars.djHashGenKey = Integer.parseInt(cfg.getProperty("djHashGenKey", "1"));
 		if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(GlobalVars.versionMarker)){
 			Logging.log("Updating configuration file!", true);
 			mkNewConfig();
@@ -124,6 +127,7 @@ public class Karren {
 		cfg.setProperty("icecastLastPlayedSlots", String.valueOf(GlobalVars.icecastLPNum));
 		cfg.setProperty("nickservPass", GlobalVars.nickservPass);
 		cfg.setProperty("channel", GlobalVars.channel);
+		cfg.setProperty("djHashGenKey", String.valueOf(GlobalVars.djHashGenKey));
 		cfg.store(new FileOutputStream("bot.prop"), comment);
 		System.out.println("Config file generated! Terminating!");
 		Logging.log("Your configuration file has been generated/updated!", false);
