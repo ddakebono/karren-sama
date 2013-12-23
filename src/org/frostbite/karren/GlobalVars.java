@@ -43,4 +43,7 @@ public class GlobalVars {
 		public static int hueCount = 0;
 		public static Channel npChannel;
 		public static ArrayList<String> awayUser = new ArrayList<String>();
+		public static String songLastPlayed = "";
+		public static int songPlayedAmount = 0;
+		public static int songFavCount = 0;
 }

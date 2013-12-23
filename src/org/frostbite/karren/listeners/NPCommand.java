@@ -41,17 +41,25 @@ public class NPCommand extends ListenerAdapter{
 					if(hasVoice || isAnOp){
 						//Stopping now playing functions of ListenCast
 						GlobalVars.loop = false;
-						event.getChannel().send().message("Now playing is now off, use .np to get current song.");
+						event.getChannel().send().message("Automagic now playing is now off, use .np to get current song.");
 					} else {
 						event.respond("Sorry but you do not have permission to do this");
 					}
 				}
 			} else {
-				event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners);
+				if(!GlobalVars.iceDJ.equalsIgnoreCase("noone")){
+					event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners);
+				} else {
+					event.getChannel().send().message("The stream is currently offline...");
+				}
 			}
 		} else {
 			if(message.startsWith(".dj")){
-				event.getChannel().send().message("Current DJ is " + GlobalVars.iceDJ);
+				if(!GlobalVars.iceDJ.equalsIgnoreCase("noone")){
+					event.getChannel().send().message("Current DJ is " + GlobalVars.iceDJ);
+				} else {
+					event.getChannel().send().message("The stream is currently offline...");
+				}
 			}
 		}
 	}

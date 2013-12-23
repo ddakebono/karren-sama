@@ -57,7 +57,7 @@ public class TalkToCommand extends ListenerAdapter{
 			MySQLConnector.sqlPush("part", "", data);
 			GlobalVars.awayUser.add(event.getUser().getNick());
 		}
-		if(hello){
+		if(hello&&!goodbye){
 			data[0] = event.getUser().getNick();
 			resultData.addAll(MySQLConnector.sqlPush("part", "back", data));
 			if(resultData.get(0) != null){

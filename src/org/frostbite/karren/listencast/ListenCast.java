@@ -96,7 +96,7 @@ public class ListenCast extends Thread{
 			e.printStackTrace();
 		}
 		if(GlobalVars.loop){
-			bot.sendIRC().message(GlobalVars.channel, "Current DJ: " + GlobalVars.iceDJ + " Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners);
+			bot.sendIRC().message(GlobalVars.channel, "Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners);
 		}
 	}
 	public static void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{

@@ -17,34 +17,60 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 public class MySQLConnector {
 	public static ArrayList<String> sqlPush(String type, String mod, String[] data) throws IOException, SQLException{
-		String[] types = {"news", "site", "radio", "stats", "part", "hash"};
 		ArrayList<String> result = new ArrayList<String>();
 		boolean validType = false;
-		for(String check : types){
-			if(type.equalsIgnoreCase(check)){
-				validType = true;
-			}
-		}
-		if(validType){
-			if(type.equalsIgnoreCase(types[0])){
+		switch(type){
+			case "news":
 				pushNews(mod, data);
-			} else
-			if(type.equalsIgnoreCase(types[1])){
+				break;
+			case "site":
 				pushSite(mod, data);
-			} else
-			if(type.equalsIgnoreCase(types[2])){
+				break;
+			case "radio":
 				result.add(pushRadio(mod, data));
-			} else
-			if(type.equalsIgnoreCase(types[3])){
+				break;
+			case "stats":
 				pushStats(mod);
-			} else
-			if(type.equalsIgnoreCase(types[4])){
+				break;
+			case "part":
 				result.add(pushPart(mod, data));
-			} else
-			if(type.equalsIgnoreCase(types[5])){
-				result.add(String.valueOf(pushHash(mod, data)));
-			}
+				break;
+			case "hash":
+				result.add(pushHash(mod, data));
+				break;
+			case "song":
+				result.addAll(pushSong(mod, data));
+				break;
+			default:
+				result.add(null);
+				break;
 		}
+		return result;
+	}
+	public static ArrayList<String> pushSong(String mod ,String[] data) throws SQLException{
+		ArrayList<String> result = new ArrayList<String>();
+		String statmentBuild = "";
+		ResultSet returned;
+		ArrayList<String> dataForSQL = new ArrayList<String>();
+		int songID = 0;
+		statmentBuild = "SELECT ID FROM SongDB WHERE SongTitle = ?";
+		dataForSQL.add(data[0]);
+		returned = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
+		dataForSQL.clear();
+		if(returned.next()){
+			songID = returned.getInt(1);
+		}
+		if(songID == 0){
+			//Adding song to DB
+			statmentBuild = "INSERT INTO SongDB(ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
+			dataForSQL.add(data[0]);
+			dataForSQL.add(getCurTime());
+		} else {
+			//Update info for song
+			statmentBuild = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1";
+			dataForSQL.add(getCurTime());
+		}
+		//if()
 		return result;
 	}
 	public static void pushNews(String mod, String[] data) throws IOException{
@@ -137,8 +163,8 @@ public class MySQLConnector {
 		}
 		if(mod.equalsIgnoreCase("Song")){
 			//Moving the last played down and adding new song
-			for(int i=GlobalVars.icecastLPNum; i<2; i--){
-				statmentBuild = "UPDATE lastplayed dt1, lastplayed dt2 SET dt1.SongTitle = dt2.SongTitle WHERE dt1.Spot = " + i + " AND dt2.Spot = " + (i-1);
+			for(int i=2; i<=GlobalVars.icecastLPNum; i++){
+				statmentBuild = "UPDATE lastplayed dt1, lastplayed dt2 SET dt1.SongTitle = dt2.SongTitle WHERE dt1.Spot = " + (i-1) + " AND dt2.Spot = " + i;
 				try {
 					runCommand(statmentBuild, dataForSQL, false, false, "sitebackend");
 				} catch (SQLException e) {
@@ -323,5 +349,12 @@ public class MySQLConnector {
 		Date date = new Date();
 		sqldate = dateFormat.format(date);
 		return sqldate;
+	}
+	public static String getCurTime(){
+		String curTime = "00-00-0000 00:00:00";
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+		Date date = new Date();
+		curTime = dateFormat.format(date);
+		return curTime;
 	}
 }
