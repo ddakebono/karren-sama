@@ -95,6 +95,12 @@ public class ListenCast extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		try {
+			SongDatabase.onSongChange(GlobalVars.npSong);
+		} catch (IOException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(GlobalVars.loop){
 			bot.sendIRC().message(GlobalVars.channel, "Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners);
 		}

@@ -47,30 +47,54 @@ public class MySQLConnector {
 		}
 		return result;
 	}
-	public static ArrayList<String> pushSong(String mod ,String[] data) throws SQLException{
+	public static ArrayList<String> pushSong(String mod ,String[] data) throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		String statmentBuild = "";
 		ResultSet returned;
 		ArrayList<String> dataForSQL = new ArrayList<String>();
-		int songID = 0;
-		statmentBuild = "SELECT ID FROM SongDB WHERE SongTitle = ?";
-		dataForSQL.add(data[0]);
-		returned = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
-		dataForSQL.clear();
-		if(returned.next()){
-			songID = returned.getInt(1);
-		}
-		if(songID == 0){
-			//Adding song to DB
-			statmentBuild = "INSERT INTO SongDB(ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
+		if(GlobalVars.songChange){
+			statmentBuild = "SELECT ID FROM SongDB WHERE SongTitle = ?";
 			dataForSQL.add(data[0]);
-			dataForSQL.add(getCurTime());
-		} else {
-			//Update info for song
-			statmentBuild = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1";
-			dataForSQL.add(getCurTime());
+			returned = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
+			dataForSQL.clear();
+			if(returned.next()){
+				GlobalVars.songID = returned.getInt(1);
+			} else {
+				GlobalVars.songID = 0;
+			}
+			returned.close();
+			if(GlobalVars.songID == 0){
+				//Adding song to DB and getting new ID for song
+				statmentBuild = "INSERT INTO SongDB(ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
+				dataForSQL.add(data[0]);
+				dataForSQL.add(getCurTime());
+				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+				GlobalVars.songChange = false;
+				dataForSQL.clear();
+				statmentBuild = "SELECT ID FROM SongDB WHERE SongTitle = ?";
+				dataForSQL.add(data[0]);
+				returned = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
+				if(returned.next())
+					GlobalVars.songID = returned.getInt(1);
+				returned.close();
+			} else {
+				//Update info for song
+				statmentBuild = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=" + GlobalVars.songID;
+				dataForSQL.add(getCurTime());
+				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+				GlobalVars.songChange = false;
+			}
+			statmentBuild = "SELECT * FROM SongDB WHERE ID= ?";
+			dataForSQL.add(String.valueOf(GlobalVars.songID));
+			returned = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
+			for(int i=1; !returned.next(); i++){
+				Logging.song(returned.getString(i));
+			}
 		}
-		//if()
+		if(mod.equalsIgnoreCase("fave")){
+			statmentBuild = "UPDATE SongDB SET FavCount=FavCount+1 WHERE ID= ?";
+			dataForSQL.add(String.valueOf(GlobalVars.songID));
+		}
 		return result;
 	}
 	public static void pushNews(String mod, String[] data) throws IOException{
@@ -162,19 +186,10 @@ public class MySQLConnector {
 			}
 		}
 		if(mod.equalsIgnoreCase("Song")){
-			//Moving the last played down and adding new song
-			for(int i=2; i<=GlobalVars.icecastLPNum; i++){
-				statmentBuild = "UPDATE lastplayed dt1, lastplayed dt2 SET dt1.SongTitle = dt2.SongTitle WHERE dt1.Spot = " + (i-1) + " AND dt2.Spot = " + i;
-				try {
-					runCommand(statmentBuild, dataForSQL, false, false, "sitebackend");
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			statmentBuild = "UPDATE radio dt1, lastplayed dt2 SET dt2.SongTitle = dt1.NowPlaying WHERE dt2.Spot = '1'";
+			statmentBuild = "INSERT INTO lastplayed(SongTitle, Spot) VALUES( ?, null)";
+			dataForSQL.add(GlobalVars.npSong);
 			try {
-				runCommand(statmentBuild, dataForSQL, false, false, "sitebackend");
+				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

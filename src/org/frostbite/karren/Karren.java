@@ -8,21 +8,15 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.frostbite.karren.listencast.ListenCast;
-import org.frostbite.karren.listeners.BradCommand;
-import org.frostbite.karren.listeners.EchoCommand;
-import org.frostbite.karren.listeners.GayCommand;
 import org.frostbite.karren.listeners.HashCommand;
-import org.frostbite.karren.listeners.HelpCommand;
 import org.frostbite.karren.listeners.HueCommand;
 import org.frostbite.karren.listeners.KillCommand;
+import org.frostbite.karren.listeners.MiscCommands;
 import org.frostbite.karren.listeners.NPCommand;
 import org.frostbite.karren.listeners.NewsCommand;
-import org.frostbite.karren.listeners.OriginCommand;
 import org.frostbite.karren.listeners.SiteCommand;
 import org.frostbite.karren.listeners.TalkToCommand;
 import org.frostbite.karren.listeners.TopicCommand;
-import org.frostbite.karren.listeners.VersionCommand;
-import org.frostbite.karren.Logging;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 
@@ -39,17 +33,12 @@ public class Karren {
 			.setAutoNickChange(true)
 			.setNickservPassword(GlobalVars.nickservPass)
 			.addListener(new NPCommand())
-			.addListener(new EchoCommand())
+			.addListener(new MiscCommands())
 			.addListener(new NewsCommand())
 			.addListener(new KillCommand())
 			.addListener(new TopicCommand())
 			.addListener(new HueCommand())
-			.addListener(new GayCommand())
-			.addListener(new OriginCommand())
-			.addListener(new HelpCommand())
-			.addListener(new BradCommand())
 			.addListener(new TalkToCommand())
-			.addListener(new VersionCommand())
 			.addListener(new HashCommand())
 			.addListener(new SiteCommand()) //Doesn't function currently.
 			.setServerHostname(GlobalVars.hostname)
@@ -101,7 +90,6 @@ public class Karren {
 		GlobalVars.icecastMount = cfg.getProperty("icecastMount", "changeme.mp3");
 		GlobalVars.nickservPass = cfg.getProperty("nickservPass", "changeme");
 		GlobalVars.channel = cfg.getProperty("channel", "#changeme");
-		GlobalVars.icecastLPNum = Integer.parseInt(cfg.getProperty("icecastLastPlayedSlots", "5"));
 		GlobalVars.djHashGenKey = Integer.parseInt(cfg.getProperty("djHashGenKey", "1"));
 		if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(GlobalVars.versionMarker)){
 			Logging.log("Updating configuration file!", true);
@@ -124,7 +112,6 @@ public class Karren {
 		cfg.setProperty("icecastHost", GlobalVars.icecastHost);
 		cfg.setProperty("icecastPort", GlobalVars.icecastPort);
 		cfg.setProperty("icecastMount", GlobalVars.icecastMount);
-		cfg.setProperty("icecastLastPlayedSlots", String.valueOf(GlobalVars.icecastLPNum));
 		cfg.setProperty("nickservPass", GlobalVars.nickservPass);
 		cfg.setProperty("channel", GlobalVars.channel);
 		cfg.setProperty("djHashGenKey", String.valueOf(GlobalVars.djHashGenKey));

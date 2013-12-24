@@ -23,7 +23,6 @@ public class GlobalVars {
 			public static String icecastHost = "";
 			public static String icecastPort = "";
 			public static String icecastMount = "";
-			public static int icecastLPNum = 5;
 			public static int djHashGenKey = 0;
 		//IRC Configs
 			public static String nickservPass = "";
@@ -31,7 +30,7 @@ public class GlobalVars {
 			public static String botname = "";
 			public static String hostname = "";
 	//Final storage
-		public final static String versionMarker = "v0.2";
+		public final static String versionMarker = "v0.3";
 	//Active storage
 		public static boolean loop = false;
 		public static String npSong = "offair";
@@ -43,6 +42,8 @@ public class GlobalVars {
 		public static int hueCount = 0;
 		public static Channel npChannel;
 		public static ArrayList<String> awayUser = new ArrayList<String>();
+		public static int songID = 0;
+		public static boolean songChange = false;
 		public static String songLastPlayed = "";
 		public static int songPlayedAmount = 0;
 		public static int songFavCount = 0;
