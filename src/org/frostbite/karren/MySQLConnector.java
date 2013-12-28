@@ -50,56 +50,52 @@ public class MySQLConnector {
 	public static ArrayList<String> pushSong(String mod ,String[] data) throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		String statmentBuild = "";
-		ResultSet returned;
+		ArrayList<Object> returned;
 		ArrayList<String> dataForSQL = new ArrayList<String>();
 		if(GlobalVars.songChange){
 			statmentBuild = "SELECT ID FROM SongDB WHERE SongTitle = ?";
-			dataForSQL.add(data[0]);
-			returned = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
+			dataForSQL.add(GlobalVars.npSong);
+			returned = runCommand(statmentBuild, dataForSQL, true, true, null);
 			dataForSQL.clear();
-			if(returned.next()){
-				GlobalVars.songID = returned.getInt(1);
+			if(returned.size()>0){
+				GlobalVars.songID = (int) returned.get(0);
 			} else {
 				GlobalVars.songID = 0;
 			}
-			returned.close();
+			returned.clear();
 			if(GlobalVars.songID == 0){
 				//Adding song to DB and getting new ID for song
-				statmentBuild = "INSERT INTO SongDB(ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
-				dataForSQL.add(data[0]);
+				statmentBuild = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
+				dataForSQL.add(GlobalVars.npSong);
 				dataForSQL.add(getCurTime());
-				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+				runCommand(statmentBuild, dataForSQL, false, true, null);
 				GlobalVars.songChange = false;
 				dataForSQL.clear();
 				statmentBuild = "SELECT ID FROM SongDB WHERE SongTitle = ?";
-				dataForSQL.add(data[0]);
-				returned = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
-				if(returned.next())
-					GlobalVars.songID = returned.getInt(1);
-				returned.close();
+				dataForSQL.add(GlobalVars.npSong);
+				returned = runCommand(statmentBuild, dataForSQL, true, true, null);
+				if(returned.size()>0){
+					GlobalVars.songID = (int) returned.get(0);
+				}
+				returned.clear();
 			} else {
 				//Update info for song
 				statmentBuild = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=" + GlobalVars.songID;
 				dataForSQL.add(getCurTime());
-				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+				runCommand(statmentBuild, dataForSQL, false, true, null);
 				GlobalVars.songChange = false;
 			}
-			statmentBuild = "SELECT * FROM SongDB WHERE ID= ?";
-			dataForSQL.add(String.valueOf(GlobalVars.songID));
-			returned = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
-			for(int i=1; !returned.next(); i++){
-				Logging.song(returned.getString(i));
-			}
+			Logging.song(GlobalVars.npSong + ":" + GlobalVars.songID + ":" + GlobalVars.songPlayedAmount);
 		}
 		if(mod.equalsIgnoreCase("fave")){
 			statmentBuild = "UPDATE SongDB SET FavCount=FavCount+1 WHERE ID= ?";
 			dataForSQL.add(String.valueOf(GlobalVars.songID));
+			runCommand(statmentBuild, dataForSQL, false, true, null);
 		}
 		return result;
 	}
 	public static void pushNews(String mod, String[] data) throws IOException{
 		ArrayList<String> dataForSQL = new ArrayList<String>();
-		String sqldb = "sitebackend";
 		String curdate = getSqlDate();
 		Logging.log(curdate, true);
 		String query = "INSERT INTO news (author, post, id, header, date) VALUES ( ? , ? , null, 1, ?)";
@@ -110,7 +106,7 @@ public class MySQLConnector {
 		//Adds timestamp
 		dataForSQL.add(curdate);
 		try{
-			runCommand(query, dataForSQL, false, true, sqldb);
+			runCommand(query, dataForSQL, false, true, "sitebackend");
 		} catch(SQLException e) {
 			Logging.log(e.toString(), true);
 		}
@@ -123,7 +119,7 @@ public class MySQLConnector {
 	public static String pushHash(String mod, String[] data) throws SQLException{
 		String statmentBuild = "";
 		ArrayList<String> dataForSQL = new ArrayList<String>();
-		ResultSet result;
+		ArrayList<Object> result;
 		long hashTemp = 1;
 		String resultHash = "";
 		String hashStringComp = "";
@@ -131,10 +127,10 @@ public class MySQLConnector {
 		ArrayList<String> djList = new ArrayList<String>();
 		statmentBuild = "SELECT * FROM `Radio-DJ`";
 		result = runCommand(statmentBuild, dataForSQL, true, false, "sitebackend");
-		while(result.next()){
-			djList.add(result.getString("DJName"));
+		for(int i=0; i<result.size(); i++){
+			djList.add((String)result.get(i));
 		}
-		result.close();
+		result.clear();
 		hasHash = djList.contains(data[0]);
 		if(!hasHash){
 			//Generating new DJHash code
@@ -161,9 +157,7 @@ public class MySQLConnector {
 			statmentBuild = "SELECT DJHash FROM `Radio-DJ` WHERE DJName= ?";
 			dataForSQL.add(data[0]);
 			result = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
-			if(result.next()){
-				resultHash = String.valueOf(result.getInt(1));
-			}
+			resultHash = (String)result.get(0);
 		}
 		return resultHash;
 	}
@@ -174,12 +168,11 @@ public class MySQLConnector {
 		//Updating now playing song
 		if(mod.equalsIgnoreCase("GetSong")){
 			statmentBuild = "SELECT NowPlaying FROM radio";
-			ResultSet returned;
+			ArrayList returned;
 			try {
 				returned = runCommand(statmentBuild, dataForSQL, true, false, "sitebackend");
-				if(returned.next()){
-					result = returned.getString(1);
-				}
+				if(returned.size()>0)
+					result = (String)returned.get(0);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -251,9 +244,9 @@ public class MySQLConnector {
 		ArrayList<String> savedUsers = new ArrayList<String>();
 		try{
 			query = "SELECT user FROM users";
-			ResultSet userGet = runCommand(query, dataForSQL, true, false, "");
-			while(userGet.next()){
-				savedUsers.add(userGet.getString("user"));
+			ArrayList<Object> usrTemp = runCommand(query, dataForSQL, true, false, null);
+			for(int i=0; i<usrTemp.size(); i++){
+				savedUsers.add((String) usrTemp.get(i));
 			}
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -272,12 +265,8 @@ public class MySQLConnector {
 				query = "SELECT botpart FROM users WHERE user= ?";
 				dataForSQL.clear();
 				dataForSQL.add(data[0]);
-				ResultSet returned1 = runCommand(query, dataForSQL, true, true, "");
-				if(returned1.next()){
-					isParted = returned1.getBoolean(1);
-				} else {
-					isParted = false;
-				}
+				ArrayList<Object> getIsParted = runCommand(query, dataForSQL, true, true, null);
+				isParted = (boolean)getIsParted.get(0);
 			} catch(SQLException e){
 				e.printStackTrace();
 				Logging.log(e.getMessage(), true);
@@ -287,7 +276,7 @@ public class MySQLConnector {
 					query = "UPDATE users SET botpart=false WHERE user= ?";
 					dataForSQL.clear();
 					dataForSQL.add(data[0]);
-					runCommand(query, dataForSQL, false, true, "");
+					runCommand(query, dataForSQL, false, true, null);
 				} catch(SQLException e){
 					e.printStackTrace();
 					Logging.log(e.getMessage(), true);
@@ -296,12 +285,8 @@ public class MySQLConnector {
 					query = "SELECT timepart FROM users WHERE user= ?";
 					dataForSQL.clear();
 					dataForSQL.add(data[0]);
-					ResultSet returned = runCommand(query, dataForSQL, true, true, "");
-					if(returned.next()){
-						result = String.valueOf(returned.getObject(1));
-					} else {
-						result = "0";
-					}
+					ArrayList<Object> getAwayTime = runCommand(query, dataForSQL, true, true, null);
+					result = (String)getAwayTime.get(0);
 				} catch(SQLException e){
 					e.printStackTrace();
 					Logging.log(e.getMessage(), true);
@@ -313,7 +298,7 @@ public class MySQLConnector {
 					query = "UPDATE users SET botpart=true, timepart= ? WHERE user= ?";
 					dataForSQL.add(String.valueOf(date.getTime()));
 					dataForSQL.add(data[0]);
-					runCommand(query, dataForSQL, false, true, "");
+					runCommand(query, dataForSQL, false, true, null);
 				} catch(SQLException e) {
 					e.printStackTrace();
 					Logging.log(e.getMessage(), true);
@@ -323,7 +308,7 @@ public class MySQLConnector {
 					query = "INSERT INTO users (user, botpart, timepart) VALUES ( ? , 1 , ? )";
 					dataForSQL.add(data[0]);
 					dataForSQL.add(String.valueOf(date.getTime()));
-					runCommand(query, dataForSQL, false, true, "");
+					runCommand(query, dataForSQL, false, true, null);
 				} catch(SQLException e) {
 					e.printStackTrace();
 					Logging.log(e.toString(), true);
@@ -335,9 +320,10 @@ public class MySQLConnector {
 	/*
 	 * runCommand is used to compile and run the query generated by the previous methods
 	 */
-	public static ResultSet runCommand(String command, ArrayList<String> data, boolean search, boolean pstNeeded, String overrideDB) throws SQLException{
+	public static ArrayList<Object> runCommand(String command, ArrayList<String> data, boolean search, boolean pstNeeded, String overrideDB) throws SQLException{
 		String activeDb = GlobalVars.sqldb;
-		if(overrideDB != "")
+		ArrayList<Object> result = new ArrayList<Object>();
+		if(overrideDB != null)
 			activeDb = overrideDB;
 		Connection run = DriverManager.getConnection("jdbc:mysql://" + GlobalVars.sqlhost + ":" + GlobalVars.sqlport + "/" + activeDb, GlobalVars.sqluser, GlobalVars.sqlpass);
 		PreparedStatement pst;
@@ -348,11 +334,16 @@ public class MySQLConnector {
 				pst.setString(i+1, data.get(i));
 			}
 		}
-		if(search)
+		if(search){
 			rs = pst.executeQuery();
+			for(int i=1; rs.next(); i++){
+				result.add(rs.getObject(i));
+			}
+		}
 		if(!search)
 			pst.execute();
-		return rs;
+		run.close();
+		return result;
 	}
 	/*
 	 * Returns a date in the format of YYYY-MM-DD to use with the SQL 

@@ -96,7 +96,8 @@ public class ListenCast extends Thread{
 			e.printStackTrace();
 		}
 		try {
-			SongDatabase.onSongChange(GlobalVars.npSong);
+			GlobalVars.songChange = true;
+			MySQLConnector.sqlPush("song", "", null);
 		} catch (IOException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

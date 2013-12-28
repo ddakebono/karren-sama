@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.Logging;
+import org.frostbite.karren.MySQLConnector;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -60,6 +61,11 @@ public class NPCommand extends ListenerAdapter{
 				} else {
 					event.getChannel().send().message("The stream is currently offline...");
 				}
+			} else if(message.startsWith(".fave") && !GlobalVars.iceDJ.equalsIgnoreCase("noone")){
+				String[] data = new String[1];
+				data[0] = String.valueOf(GlobalVars.songID);
+				MySQLConnector.sqlPush("song", "fave", data);
+				event.getUser().send().message("Favorited: " + GlobalVars.npSong);
 			}
 		}
 	}
