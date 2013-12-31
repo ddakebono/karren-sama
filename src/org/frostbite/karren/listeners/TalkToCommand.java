@@ -7,11 +7,12 @@ import java.util.Date;
 
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.MySQLConnector;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
-public class TalkToCommand extends ListenerAdapter{
-	public void onMessage(MessageEvent event) throws IOException, SQLException{
+public class TalkToCommand extends ListenerAdapter<PircBotX>{
+	public void onMessage(MessageEvent<PircBotX> event) throws IOException, SQLException{
 		String[] hiCheck = {"Hi", "Hello", "Hey", "Yo", "Greeting", "Salutations" };
 		String[] byeCheck = {"Bye", "Cya", "Good bye", "Goodbye"};
 		String[] randCheck = {"Pick", "Choose", "Select", "Draw"};

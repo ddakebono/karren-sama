@@ -1,9 +1,8 @@
 package org.frostbite.karren.listeners;
 
-import java.util.ArrayList;
-
-import org.frostbite.karren.MySQLConnector;
 import org.frostbite.karren.Logging;
+import org.frostbite.karren.MySQLConnector;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
@@ -11,8 +10,8 @@ import org.pircbotx.hooks.events.MessageEvent;
  * This file is 100% specific to the CRaZyPANTS website and will not work with other sites
  * Unless for some reason they have the same setup.
  */
-public class SiteCommand extends ListenerAdapter {
-	public void onMessage(MessageEvent event) throws Exception{
+public class SiteCommand extends ListenerAdapter<PircBotX> {
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
 		String cmd = ".site";
 		String message = event.getMessage();
 		String[] data = new String[2];

@@ -5,32 +5,27 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Logger;
-
-import org.frostbite.karren.Logging;
-import org.pircbotx.hooks.events.MessageEvent;
 
 public class MySQLConnector {
 	public static ArrayList<String> sqlPush(String type, String mod, String[] data) throws IOException, SQLException{
 		ArrayList<String> result = new ArrayList<String>();
-		boolean validType = false;
 		switch(type){
 			case "news":
 				pushNews(mod, data);
 				break;
 			case "site":
-				pushSite(mod, data);
+				//pushSite(mod, data);
 				break;
 			case "radio":
 				result.add(pushRadio(mod, data));
 				break;
 			case "stats":
-				pushStats(mod);
+				//pushStats(mod);
 				break;
 			case "part":
 				result.add(pushPart(mod, data));
@@ -41,6 +36,8 @@ public class MySQLConnector {
 			case "song":
 				result.addAll(pushSong(mod, data));
 				break;
+			case "fave":
+				result.addAll(getFave());
 			default:
 				result.add(null);
 				break;
@@ -59,8 +56,19 @@ public class MySQLConnector {
 			dataForSQL.clear();
 			if(returned.size()>0){
 				GlobalVars.songID = (int) returned.get(0);
+				returned.clear();
+				statmentBuild = "SELECT * FROM SongDB WHERE ID= ?";
+				dataForSQL.add(String.valueOf(GlobalVars.songID));
+				returned = runCommand(statmentBuild, dataForSQL, true, true, null);
+				GlobalVars.lpTime = (String)returned.get(2);
+				GlobalVars.songPlayedAmount = (int)returned.get(3);
+				GlobalVars.songFavCount = (int)returned.get(4);
+				dataForSQL.clear();
 			} else {
 				GlobalVars.songID = 0;
+				GlobalVars.lpTime = "Never";
+				GlobalVars.songFavCount = 0;
+				GlobalVars.songPlayedAmount = 1;
 			}
 			returned.clear();
 			if(GlobalVars.songID == 0){
@@ -88,9 +96,36 @@ public class MySQLConnector {
 			Logging.song(GlobalVars.npSong + ":" + GlobalVars.songID + ":" + GlobalVars.songPlayedAmount);
 		}
 		if(mod.equalsIgnoreCase("fave")){
-			statmentBuild = "UPDATE SongDB SET FavCount=FavCount+1 WHERE ID= ?";
-			dataForSQL.add(String.valueOf(GlobalVars.songID));
-			runCommand(statmentBuild, dataForSQL, false, true, null);
+			statmentBuild = "SELECT * FROM UserFaves WHERE SongID = ? AND User = ?";
+			dataForSQL.add(data[0]);
+			dataForSQL.add(data[1]);
+			returned = runCommand(statmentBuild, dataForSQL, true, true, null);
+			dataForSQL.clear();
+			if(returned.size()<1){
+				statmentBuild = "INSERT INTO UserFaves(ID, User, SongID) VALUES (null, ?, ?)";
+				dataForSQL.add(data[1]);
+				dataForSQL.add(data[0]);
+				runCommand(statmentBuild, dataForSQL, false, true, null);
+				dataForSQL.clear();
+				statmentBuild = "UPDATE SongDB SET FavCount=FavCount+1 WHERE ID= ?";
+				dataForSQL.add(String.valueOf(GlobalVars.songID));
+				runCommand(statmentBuild, dataForSQL, false, true, null);
+				result.add("1");
+			} else {
+				result.add("0");
+			}
+		}
+		return result;
+	}
+	public static ArrayList<String> getFave() throws IOException, SQLException{
+		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<Object> returned = new ArrayList<Object>();
+		ArrayList<String> dataForSQL = new ArrayList<String>();
+		String statmentBuild = "SELECT User FROM UserFaves WHERE SongID= ?";
+		dataForSQL.add(String.valueOf(GlobalVars.songID));
+		returned = runCommand(statmentBuild, dataForSQL, true, true, null);
+		for(Object nick : returned){
+			result.add((String)nick);
 		}
 		return result;
 	}
@@ -111,11 +146,11 @@ public class MySQLConnector {
 			Logging.log(e.toString(), true);
 		}
 	}
-	public static boolean pushSite(String mod, String[] data) throws IOException{
+	/*public static boolean pushSite(String mod, String[] data) throws IOException{
 		boolean result = false;
 		String statmentBuild = "";
 		return false;
-	}
+	}*/
 	public static String pushHash(String mod, String[] data) throws SQLException{
 		String statmentBuild = "";
 		ArrayList<String> dataForSQL = new ArrayList<String>();
@@ -157,18 +192,18 @@ public class MySQLConnector {
 			statmentBuild = "SELECT DJHash FROM `Radio-DJ` WHERE DJName= ?";
 			dataForSQL.add(data[0]);
 			result = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
-			resultHash = (String)result.get(0);
+			resultHash = String.valueOf(result.get(0));
 		}
 		return resultHash;
 	}
-	public static String pushRadio(String mod, String[] data) throws IOException, SQLException{
+	public static String pushRadio(String mod, String[] data) throws IOException{
 		String result = "";
 		String statmentBuild = "";
 		ArrayList<String> dataForSQL = new ArrayList<String>();
+		ArrayList<Object> returned;
 		//Updating now playing song
 		if(mod.equalsIgnoreCase("GetSong")){
 			statmentBuild = "SELECT NowPlaying FROM radio";
-			ArrayList returned;
 			try {
 				returned = runCommand(statmentBuild, dataForSQL, true, false, "sitebackend");
 				if(returned.size()>0)
@@ -179,12 +214,15 @@ public class MySQLConnector {
 			}
 		}
 		if(mod.equalsIgnoreCase("Song")){
-			statmentBuild = "INSERT INTO lastplayed(SongTitle, Spot) VALUES( ?, null)";
+			statmentBuild = "SELECT Spot FROM lastplayed WHERE SongTitle=?";
 			dataForSQL.add(GlobalVars.npSong);
 			try {
-				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+				returned = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
+				if(returned.size()<1){
+					statmentBuild = "INSERT INTO lastplayed(SongTitle, Spot) VALUES( ?, null)";
+					runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
+				}
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -220,7 +258,7 @@ public class MySQLConnector {
 		}
 		return result;
 	}
-	public static boolean pushStats(String mod) throws SQLException{
+	/*public static boolean pushStats(String mod) throws SQLException{
 		boolean doesExist = false;
 		boolean result = false;
 		ArrayList<String> dataForSQL = new ArrayList<String>();
@@ -228,7 +266,7 @@ public class MySQLConnector {
 		
 		return result;
 	}
-	/*
+	 /*
 	 * pushPart is used to access the tables containing the data of all user afk times
 	 * 
 	 * Used to track and tell users how long they have been gone.
@@ -240,7 +278,6 @@ public class MySQLConnector {
 		ArrayList<String> dataForSQL = new ArrayList<String>();
 		Date date = new Date();
 		String query;
-		PreparedStatement pst;
 		ArrayList<String> savedUsers = new ArrayList<String>();
 		try{
 			query = "SELECT user FROM users";
@@ -336,8 +373,12 @@ public class MySQLConnector {
 		}
 		if(search){
 			rs = pst.executeQuery();
-			for(int i=1; rs.next(); i++){
-				result.add(rs.getObject(i));
+			ResultSetMetaData md = rs.getMetaData();
+			int cCount = md.getColumnCount();
+			while(rs.next()){
+				for(int i=1; i<=cCount; i++){
+					result.add(rs.getObject(i));
+				}
 			}
 		}
 		if(!search)

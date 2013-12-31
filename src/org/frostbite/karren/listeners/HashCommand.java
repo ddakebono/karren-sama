@@ -3,11 +3,12 @@ package org.frostbite.karren.listeners;
 import java.util.ArrayList;
 
 import org.frostbite.karren.MySQLConnector;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
-public class HashCommand extends ListenerAdapter{
-	public void onMessage(MessageEvent event) throws Exception{
+public class HashCommand extends ListenerAdapter<PircBotX>{
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
 		String message = event.getMessage();
 		String cmd = ".hash";
 		int hashcode = 0;

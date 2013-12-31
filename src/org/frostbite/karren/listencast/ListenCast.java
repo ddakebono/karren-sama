@@ -1,10 +1,6 @@
 package org.frostbite.karren.listencast;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -21,32 +17,25 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.Parser;
 import org.frostbite.karren.GlobalVars;
-import org.frostbite.karren.Logging;
 import org.frostbite.karren.MySQLConnector;
 import org.pircbotx.PircBotX;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 public class ListenCast extends Thread{
 	public static PircBotX bot;
+	public static boolean killListencast = false; 
 	public ListenCast(PircBotX bot) {
-		this.bot = bot;
+		ListenCast.bot = bot;
 	}
 	public void run(){
 		String[] data = new String[0];
 		String npTemp = "offair";
-		while(true){
+		while(!killListencast){
 			try {
 				ArrayList<String> resultSet = MySQLConnector.sqlPush("radio", "getSong", data);
 				npTemp = resultSet.get(0);
@@ -56,7 +45,12 @@ public class ListenCast extends Thread{
 			}
 			if(!npTemp.equalsIgnoreCase(GlobalVars.npSong)){
 				GlobalVars.npSong = npTemp;
-				onSongChange();
+				try {
+					onSongChange();
+				} catch (IOException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			try {
 				updateIcecastInfo();
@@ -84,7 +78,7 @@ public class ListenCast extends Thread{
 			}
 		}
 	}
-	public static void onSongChange(){
+	public static void onSongChange() throws IOException, SQLException{
 		String[] data = new String[0];
 		try {
 			MySQLConnector.sqlPush("radio", "song", data);
@@ -103,7 +97,18 @@ public class ListenCast extends Thread{
 			e.printStackTrace();
 		}
 		if(GlobalVars.loop){
-			bot.sendIRC().message(GlobalVars.channel, "Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners);
+			bot.sendIRC().message(GlobalVars.channel, "Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners + ". This song was last played: " + GlobalVars.lpTime + ". Faves: " + GlobalVars.songFavCount + ". Plays: " + GlobalVars.songPlayedAmount);
+			alertFaves();
+		}
+	}
+	public static void alertFaves() throws IOException, SQLException{
+		ArrayList<String> returned = new ArrayList<String>();
+		returned = MySQLConnector.sqlPush("fave", "", null);
+		System.out.println("Running the fave alerter");
+		for(String nick : returned){
+			if(GlobalVars.userList.contains(nick)){
+				bot.sendIRC().message(nick, GlobalVars.npSong + " is now playing!");
+			}
 		}
 	}
 	public static void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{

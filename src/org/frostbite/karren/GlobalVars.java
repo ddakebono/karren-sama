@@ -1,11 +1,6 @@
 package org.frostbite.karren;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Properties;
 
 import org.pircbotx.Channel;
 
@@ -30,7 +25,7 @@ public class GlobalVars {
 			public static String botname = "";
 			public static String hostname = "";
 	//Final storage
-		public final static String versionMarker = "v0.3";
+		public final static String versionMarker = "v0.4";
 	//Active storage
 		public static boolean loop = false;
 		public static String npSong = "offair";
@@ -47,4 +42,6 @@ public class GlobalVars {
 		public static String songLastPlayed = "";
 		public static int songPlayedAmount = 0;
 		public static int songFavCount = 0;
+		public static ArrayList<String> userList = new ArrayList<String>();
+		public static String lpTime = "";
 }

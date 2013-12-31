@@ -6,8 +6,8 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
-public class HueCommand extends ListenerAdapter{
-	public void onMessage(MessageEvent event) throws Exception{
+public class HueCommand extends ListenerAdapter<PircBotX>{
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
 		PircBotX bot = event.getBot();
 		String cmd = "Hue";
 		String message = event.getMessage();

@@ -1,31 +1,20 @@
 package org.frostbite.karren.listeners;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.ArrayList;
 
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.Logging;
 import org.frostbite.karren.MySQLConnector;
-import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
-public class NPCommand extends ListenerAdapter{
-	public void onMessage(MessageEvent event) throws Exception{
+public class NPCommand extends ListenerAdapter<PircBotX>{
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
 		String message = event.getMessage();
 		String cmd = ".np";
 		User user = event.getUser();
-		PircBotX bot = event.getBot();
 		String ops = event.getChannel().getOps().toString();
 		String voices = event.getChannel().getVoices().toString();
 		boolean hasVoice = voices.contains(user.getNick());
@@ -49,7 +38,7 @@ public class NPCommand extends ListenerAdapter{
 				}
 			} else {
 				if(!GlobalVars.iceDJ.equalsIgnoreCase("noone")){
-					event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners);
+					event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners + ". Faves: " + GlobalVars.songFavCount + ". Plays: " + GlobalVars.songPlayedAmount);
 				} else {
 					event.getChannel().send().message("The stream is currently offline...");
 				}
@@ -61,11 +50,21 @@ public class NPCommand extends ListenerAdapter{
 				} else {
 					event.getChannel().send().message("The stream is currently offline...");
 				}
-			} else if(message.startsWith(".fave") && !GlobalVars.iceDJ.equalsIgnoreCase("noone")){
-				String[] data = new String[1];
-				data[0] = String.valueOf(GlobalVars.songID);
-				MySQLConnector.sqlPush("song", "fave", data);
-				event.getUser().send().message("Favorited: " + GlobalVars.npSong);
+			} else { 
+				if(message.startsWith(".fave") && !GlobalVars.iceDJ.equalsIgnoreCase("noone")){
+					ArrayList<String> returned = new ArrayList<String>();
+					String[] data = new String[2];
+					data[0] = String.valueOf(GlobalVars.songID);
+					data[1] = event.getUser().getNick();
+					returned.addAll(MySQLConnector.sqlPush("song", "fave", data));
+					if(Integer.parseInt(returned.get(0))==1){
+						event.getUser().send().message("Favorited: " + GlobalVars.npSong);
+					} else {
+						event.getUser().send().message("I know you like this song but you've already favorited it!");
+					}
+				} else if(message.startsWith(".fave")){
+					event.getUser().send().message("Sorry but the stream is down, you cannot favorite thing while nothing is playing!");
+				}
 			}
 		}
 	}

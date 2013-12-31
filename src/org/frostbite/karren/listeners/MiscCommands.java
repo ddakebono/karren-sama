@@ -1,12 +1,13 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.GlobalVars;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
-public class MiscCommands extends ListenerAdapter{
-	public void onMessage(MessageEvent event){
-		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help"};
+public class MiscCommands extends ListenerAdapter<PircBotX>{
+	public void onMessage(MessageEvent<PircBotX> event){
+		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help", "debug"};
 		String message = event.getMessage();
 		String cmd = "";
 		if(message.startsWith(".")){
@@ -47,6 +48,10 @@ public class MiscCommands extends ListenerAdapter{
 					event.getUser().send().message(".version command - replies with current version of the bot.");
 					event.getUser().send().message("Hello(or alternative), goodbye(or alternative), clayton commands - replies with responses accordingly");
 					event.getUser().send().message(".brad command - poop");
+					break;
+				case "debug":
+					for(String nick : GlobalVars.userList)
+						event.getUser().send().message("DEBUG USERLIST: " + nick);
 					break;
 			}
 		}

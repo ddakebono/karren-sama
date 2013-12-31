@@ -7,8 +7,8 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
-public class TopicCommand extends ListenerAdapter{
-	public void onMessage(MessageEvent event) throws Exception{
+public class TopicCommand extends ListenerAdapter<PircBotX>{
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
 		String message = event.getMessage();
 		String cmd = ".topic";
 		PircBotX bot = event.getBot();

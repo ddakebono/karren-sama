@@ -2,10 +2,6 @@ package org.frostbite.karren.listeners;
 
 import java.util.Random;
 
-import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.MessageEvent;
-
 public class RandCommand{
 	public static String randomList(String message){
 		String[] choiceSet = message.split(",");
