@@ -23,8 +23,6 @@ import org.frostbite.karren.listeners.NewsCommand;
 import org.frostbite.karren.listeners.SiteCommand;
 import org.frostbite.karren.listeners.TalkToCommand;
 import org.frostbite.karren.listeners.TopicCommand;
-import org.frostbite.karren.listeners.UserLogoff;
-import org.frostbite.karren.listeners.UserLogon;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 
@@ -33,7 +31,7 @@ public class Karren{
 		//Initialize and load our config file
 		initConfig();
 		//Adding the listeners for our commands
-		Configuration<PircBotX> config = new Configuration.Builder<>()
+		Configuration<PircBotX> config = new Configuration.Builder<PircBotX>()
 			.setName(GlobalVars.botname)
 			.setLogin("Karren")
 			.setRealName("Karren-sama IRC Bot")
@@ -47,8 +45,6 @@ public class Karren{
 			.addListener(new HueCommand())
 			.addListener(new TalkToCommand())
 			.addListener(new HashCommand())
-			.addListener(new UserLogon())
-			.addListener(new UserLogoff())
 			.addListener(new SiteCommand()) //Doesn't function currently.
 			.setServerHostname(GlobalVars.hostname)
 			.addAutoJoinChannel(GlobalVars.channel)

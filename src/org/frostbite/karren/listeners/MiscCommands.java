@@ -17,11 +17,11 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
 		String message = event.getMessage();
 		String cmd = "";
 		if(message.startsWith(".")){
-			message.replaceFirst(".", "");
+			message = message.replaceFirst(".", "").trim();
 			for(String check : cmds){
 				if(message.toLowerCase().startsWith(check)){
 					cmd = check;
-					message.replaceFirst("(?i)" + check, "");
+					message = message.replaceFirst("(?i)" + check, "").trim();
 				}
 			}
 			switch(cmd){
@@ -56,8 +56,9 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
 					event.getUser().send().message(".brad command - poop");
 					break;
 				case "debug":
-					for(String nick : GlobalVars.userList)
+					for(String nick : GlobalVars.userList){
 						event.getUser().send().message("DEBUG USERLIST: " + nick);
+                    }
 					break;
 			}
 		}

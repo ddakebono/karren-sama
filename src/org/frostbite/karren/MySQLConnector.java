@@ -153,9 +153,9 @@ public class MySQLConnector {
 		}
 	}
 	/*public static boolean pushSite(String mod, String[] data) throws IOException{
-		boolean result = false;
-		String statmentBuild = "";
-		return false;
+	*	boolean result = false;
+	*	String statmentBuild = "";
+	*	return false;
 	}*/
 	private static String pushHash(String mod, String[] data) throws SQLException{
 		ArrayList<String> dataForSQL = new ArrayList<String>();
@@ -168,7 +168,7 @@ public class MySQLConnector {
 		statmentBuild = "SELECT * FROM `Radio-DJ`";
 		result = runCommand(statmentBuild, dataForSQL, true, false, "sitebackend");
 		for(int i=0; i<result.size(); i++){
-			djList.add((String)result.get(i));
+			djList.add(String.valueOf(result.get(i)));
 		}
 		result.clear();
 		hasHash = djList.contains(data[0]);
@@ -263,13 +263,13 @@ public class MySQLConnector {
 		return result;
 	}
 	/*public static boolean pushStats(String mod) throws SQLException{
-		boolean doesExist = false;
-		boolean result = false;
-		ArrayList<String> dataForSQL = new ArrayList<String>();
-		String stamentBuild = "UPDATE ";
-		
-		return result;
-	}
+	*	boolean doesExist = false;
+	*	boolean result = false;
+	*	ArrayList<String> dataForSQL = new ArrayList<String>();
+	*	String stamentBuild = "UPDATE ";
+	*
+	*	return result;
+	}*/
 	 /*
 	 * pushPart is used to access the tables containing the data of all user afk times
 	 * 

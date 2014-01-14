@@ -41,7 +41,6 @@ public class GlobalVars {
 		public static int iceListeners = 0;
 		public static int iceMaxListeners = 0;
 		public static int hueCount = 0;
-		public static Channel npChannel;
 		public static ArrayList<String> awayUser = new ArrayList<String>();
 		public static int songID = 0;
 		public static boolean songChange = false;
@@ -50,4 +49,5 @@ public class GlobalVars {
 		public static int songFavCount = 0;
 		public static ArrayList<String> userList = new ArrayList<String>();
 		public static String lpTime = "";
+        public static Channel npChannel;
 }

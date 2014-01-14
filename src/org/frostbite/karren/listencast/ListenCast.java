@@ -26,6 +26,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.MySQLConnector;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -109,13 +110,14 @@ public class ListenCast extends Thread{
 	}
 	public static void alertFaves() throws IOException, SQLException{
 		ArrayList<String> returned = new ArrayList<String>();
+        ArrayList<User> userList = new ArrayList<>();
 		returned = MySQLConnector.sqlPush("fave", "", null);
-		System.out.println("Running the fave alerter");
-		for(String nick : returned){
-			if(GlobalVars.userList.contains(nick)){
-				bot.sendIRC().message(nick, GlobalVars.npSong + " is now playing!");
-			}
-		}
+        userList.addAll(GlobalVars.npChannel.getUsers());
+        for(User user : userList){
+            if(returned.contains(user.getNick())){
+                user.send().message(GlobalVars.npSong + " has started playing!");
+            }
+        }
 	}
 	public static void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{
 		String[] dataToSql = new String[1];

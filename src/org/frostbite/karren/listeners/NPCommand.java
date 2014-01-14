@@ -20,28 +20,21 @@ public class NPCommand extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
 		String message = event.getMessage();
 		String cmd = ".np";
-		User user = event.getUser();
-		String ops = event.getChannel().getOps().toString();
 		String voices = event.getChannel().getVoices().toString();
-		boolean hasVoice = voices.contains(user.getNick());
-		boolean isAnOp = ops.contains(user.getNick());
+		boolean hasVoice = voices.contains(event.getUser().getNick());
 		if(message.startsWith(cmd)){
 			message = message.replaceFirst(cmd, "").trim();
-			if(message.startsWith("on")||message.startsWith("off")){
-				if(message.startsWith("on") && (hasVoice || isAnOp)){
-					GlobalVars.loop = true;
-					GlobalVars.npChannel = event.getChannel();
-					event.getChannel().send().message("Automagic now playing is now active, periodic updates will occur.");
-					Logging.log("Now playing setting changed by " + user.getNick(), false);
-				} else {
-					if(hasVoice || isAnOp){
-						//Stopping now playing functions of ListenCast
-						GlobalVars.loop = false;
-						event.getChannel().send().message("Automagic now playing is now off, use .np to get current song.");
-					} else {
-						event.respond("Sorry but you do not have permission to do this");
-					}
-				}
+			if(message.startsWith("switch") && (event.getUser().isIrcop() || hasVoice)){
+                if(!GlobalVars.loop){
+                    GlobalVars.loop = true;
+                    GlobalVars.npChannel = event.getChannel();
+                    Logging.log("Now Playing enabled by " + event.getUser().getNick(), false);
+                    event.getChannel().send().message("Automagic now playing is now active, periodic updates of the now playing will occur.");
+                } else {
+                    GlobalVars.loop = false;
+                    GlobalVars.npChannel = null;
+                    Logging.log("Now Playing disabled by " + event.getUser().getNick(), false);
+                }
 			} else {
 				if(!GlobalVars.iceDJ.equalsIgnoreCase("noone")){
 					event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners + ". Faves: " + GlobalVars.songFavCount + ". Plays: " + GlobalVars.songPlayedAmount);
