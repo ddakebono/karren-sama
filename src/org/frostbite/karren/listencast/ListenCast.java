@@ -1,3 +1,9 @@
+/*
+ * Copyright 2014 ripxfrostbite
+ * Coded by Owen Bennett for the CRaZyPANTS Server Network, released under the MIT Licence, we take no responsibility if something breaks when you change code.
+ * If something breaks on the bot and you didn't change anything please log it as an issue so I can fix it.
+ */
+
 package org.frostbite.karren.listencast;
 
 import java.io.IOException;

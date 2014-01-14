@@ -1,3 +1,9 @@
+/*
+ * Copyright 2014 ripxfrostbite
+ * Coded by Owen Bennett for the CRaZyPANTS Server Network, released under the MIT Licence, we take no responsibility if something breaks when you change code.
+ * If something breaks on the bot and you didn't change anything please log it as an issue so I can fix it.
+ */
+
 package org.frostbite.karren;
 
 import java.io.IOException;
@@ -12,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MySQLConnector {
+    private static String statmentBuild = "";
 	public static ArrayList<String> sqlPush(String type, String mod, String[] data) throws IOException, SQLException{
 		ArrayList<String> result = new ArrayList<String>();
 		switch(type){
@@ -44,9 +51,8 @@ public class MySQLConnector {
 		}
 		return result;
 	}
-	public static ArrayList<String> pushSong(String mod ,String[] data) throws SQLException, IOException{
+	private static ArrayList<String> pushSong(String mod ,String[] data) throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
-		String statmentBuild = "";
 		ArrayList<Object> returned;
 		ArrayList<String> dataForSQL = new ArrayList<String>();
 		if(GlobalVars.songChange){
@@ -117,11 +123,11 @@ public class MySQLConnector {
 		}
 		return result;
 	}
-	public static ArrayList<String> getFave() throws IOException, SQLException{
+	private static ArrayList<String> getFave() throws IOException, SQLException{
 		ArrayList<String> result = new ArrayList<String>();
 		ArrayList<Object> returned = new ArrayList<Object>();
 		ArrayList<String> dataForSQL = new ArrayList<String>();
-		String statmentBuild = "SELECT User FROM UserFaves WHERE SongID= ?";
+		statmentBuild = "SELECT User FROM UserFaves WHERE SongID= ?";
 		dataForSQL.add(String.valueOf(GlobalVars.songID));
 		returned = runCommand(statmentBuild, dataForSQL, true, true, null);
 		for(Object nick : returned){
@@ -129,11 +135,11 @@ public class MySQLConnector {
 		}
 		return result;
 	}
-	public static void pushNews(String mod, String[] data) throws IOException{
+	private static void pushNews(String mod, String[] data) throws IOException{
 		ArrayList<String> dataForSQL = new ArrayList<String>();
 		String curdate = getSqlDate();
 		Logging.log(curdate, true);
-		String query = "INSERT INTO news (author, post, id, header, date) VALUES ( ? , ? , null, 1, ?)";
+		statmentBuild = "INSERT INTO news (author, post, id, header, date) VALUES ( ? , ? , null, 1, ?)";
 		//adds author info
 		dataForSQL.add(data[0]);
 		//Adds post
@@ -141,7 +147,7 @@ public class MySQLConnector {
 		//Adds timestamp
 		dataForSQL.add(curdate);
 		try{
-			runCommand(query, dataForSQL, false, true, "sitebackend");
+			runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
 		} catch(SQLException e) {
 			Logging.log(e.toString(), true);
 		}
@@ -151,8 +157,7 @@ public class MySQLConnector {
 		String statmentBuild = "";
 		return false;
 	}*/
-	public static String pushHash(String mod, String[] data) throws SQLException{
-		String statmentBuild = "";
+	private static String pushHash(String mod, String[] data) throws SQLException{
 		ArrayList<String> dataForSQL = new ArrayList<String>();
 		ArrayList<Object> result;
 		long hashTemp = 1;
@@ -196,9 +201,8 @@ public class MySQLConnector {
 		}
 		return resultHash;
 	}
-	public static String pushRadio(String mod, String[] data) throws IOException{
+	private static String pushRadio(String mod, String[] data) throws IOException{
 		String result = "";
-		String statmentBuild = "";
 		ArrayList<String> dataForSQL = new ArrayList<String>();
 		ArrayList<Object> returned;
 		//Updating now playing song
@@ -271,17 +275,16 @@ public class MySQLConnector {
 	 * 
 	 * Used to track and tell users how long they have been gone.
 	 */
-	public static String pushPart(String mod, String[] data) throws IOException{
+	private static String pushPart(String mod, String[] data) throws IOException{
 		boolean userExists = false;
 		String result = null;
 		boolean isParted = false;
 		ArrayList<String> dataForSQL = new ArrayList<String>();
 		Date date = new Date();
-		String query;
 		ArrayList<String> savedUsers = new ArrayList<String>();
 		try{
-			query = "SELECT user FROM users";
-			ArrayList<Object> usrTemp = runCommand(query, dataForSQL, true, false, null);
+			statmentBuild = "SELECT user FROM users";
+			ArrayList<Object> usrTemp = runCommand(statmentBuild, dataForSQL, true, false, null);
 			for(int i=0; i<usrTemp.size(); i++){
 				savedUsers.add((String) usrTemp.get(i));
 			}
@@ -299,10 +302,10 @@ public class MySQLConnector {
 		if(mod.equalsIgnoreCase("back")){
 			//Sets botpart to false and sends a message to the server stating how long user has been away
 			try{
-				query = "SELECT botpart FROM users WHERE user= ?";
+				statmentBuild = "SELECT botpart FROM users WHERE user= ?";
 				dataForSQL.clear();
 				dataForSQL.add(data[0]);
-				ArrayList<Object> getIsParted = runCommand(query, dataForSQL, true, true, null);
+				ArrayList<Object> getIsParted = runCommand(statmentBuild, dataForSQL, true, true, null);
 				isParted = (boolean)getIsParted.get(0);
 			} catch(SQLException e){
 				e.printStackTrace();
@@ -310,19 +313,19 @@ public class MySQLConnector {
 			}
 			if(isParted){
 				try{
-					query = "UPDATE users SET botpart=false WHERE user= ?";
+					statmentBuild = "UPDATE users SET botpart=false WHERE user= ?";
 					dataForSQL.clear();
 					dataForSQL.add(data[0]);
-					runCommand(query, dataForSQL, false, true, null);
+					runCommand(statmentBuild, dataForSQL, false, true, null);
 				} catch(SQLException e){
 					e.printStackTrace();
 					Logging.log(e.getMessage(), true);
 				}
 				try{
-					query = "SELECT timepart FROM users WHERE user= ?";
+					statmentBuild = "SELECT timepart FROM users WHERE user= ?";
 					dataForSQL.clear();
 					dataForSQL.add(data[0]);
-					ArrayList<Object> getAwayTime = runCommand(query, dataForSQL, true, true, null);
+					ArrayList<Object> getAwayTime = runCommand(statmentBuild, dataForSQL, true, true, null);
 					result = (String)getAwayTime.get(0);
 				} catch(SQLException e){
 					e.printStackTrace();
@@ -332,20 +335,20 @@ public class MySQLConnector {
 		} else {
 			if(userExists){
 				try{
-					query = "UPDATE users SET botpart=true, timepart= ? WHERE user= ?";
+					statmentBuild = "UPDATE users SET botpart=true, timepart= ? WHERE user= ?";
 					dataForSQL.add(String.valueOf(date.getTime()));
 					dataForSQL.add(data[0]);
-					runCommand(query, dataForSQL, false, true, null);
+					runCommand(statmentBuild, dataForSQL, false, true, null);
 				} catch(SQLException e) {
 					e.printStackTrace();
 					Logging.log(e.getMessage(), true);
 				}
 			} else {
 				try{
-					query = "INSERT INTO users (user, botpart, timepart) VALUES ( ? , 1 , ? )";
+					statmentBuild = "INSERT INTO users (user, botpart, timepart) VALUES ( ? , 1 , ? )";
 					dataForSQL.add(data[0]);
 					dataForSQL.add(String.valueOf(date.getTime()));
-					runCommand(query, dataForSQL, false, true, null);
+					runCommand(statmentBuild, dataForSQL, false, true, null);
 				} catch(SQLException e) {
 					e.printStackTrace();
 					Logging.log(e.toString(), true);
@@ -357,7 +360,7 @@ public class MySQLConnector {
 	/*
 	 * runCommand is used to compile and run the query generated by the previous methods
 	 */
-	public static ArrayList<Object> runCommand(String command, ArrayList<String> data, boolean search, boolean pstNeeded, String overrideDB) throws SQLException{
+	private static ArrayList<Object> runCommand(String command, ArrayList<String> data, boolean search, boolean pstNeeded, String overrideDB) throws SQLException{
 		String activeDb = GlobalVars.sqldb;
 		ArrayList<Object> result = new ArrayList<Object>();
 		if(overrideDB != null)
