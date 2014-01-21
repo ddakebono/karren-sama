@@ -24,6 +24,8 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.frostbite.karren.GlobalVars;
+import org.frostbite.karren.KarrenCon;
+import org.frostbite.karren.Logging;
 import org.frostbite.karren.MySQLConnector;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -34,7 +36,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class ListenCast extends Thread{
-	public static PircBotX bot;
+	private static PircBotX bot;
 	public static boolean killListencast = false; 
 	public ListenCast(PircBotX bot) {
 		ListenCast.bot = bot;
@@ -52,32 +54,14 @@ public class ListenCast extends Thread{
 			}
 			if(!npTemp.equalsIgnoreCase(GlobalVars.npSong)){
 				GlobalVars.npSong = npTemp;
-				try {
-					onSongChange();
-				} catch (IOException | SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				onSongChange();
 			}
-			try {
-				updateIcecastInfo();
-			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
+            try {
+                updateIcecastInfo();
+            } catch (IOException | SQLException | ParserConfigurationException | SAXException e) {
+                e.printStackTrace();
+            }
+            try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -85,41 +69,38 @@ public class ListenCast extends Thread{
 			}
 		}
 	}
-	public static void onSongChange() throws IOException, SQLException{
+	private static void onSongChange(){
 		String[] data = new String[0];
 		try {
 			MySQLConnector.sqlPush("radio", "song", data);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 		}
 		try {
 			GlobalVars.songChange = true;
 			MySQLConnector.sqlPush("song", "", null);
 		} catch (IOException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(GlobalVars.loop){
 			bot.sendIRC().message(GlobalVars.channel, "Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners + ". This song was last played: " + GlobalVars.lpTime + ". Faves: " + GlobalVars.songFavCount + ". Plays: " + GlobalVars.songPlayedAmount);
-			alertFaves();
-		}
-	}
-	public static void alertFaves() throws IOException, SQLException{
-		ArrayList<String> returned = new ArrayList<String>();
-        ArrayList<User> userList = new ArrayList<>();
-		returned = MySQLConnector.sqlPush("fave", "", null);
-        userList.addAll(GlobalVars.npChannel.getUsers());
-        for(User user : userList){
-            if(returned.contains(user.getNick())){
-                user.send().message(GlobalVars.npSong + " has started playing!");
+            try {
+                alertFaves();
+            } catch (IOException | SQLException e) {
+                e.printStackTrace();
             }
         }
 	}
-	public static void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{
+	private static void alertFaves() throws IOException, SQLException{
+		ArrayList<String> returned = new ArrayList<String>();
+		returned = MySQLConnector.sqlPush("fave", "", null);
+        for(KarrenCon check : GlobalVars.userList){
+            if(returned.contains(check.getUserObject().getNick()) && !check.getFaveAlert()){
+                check.getUserObject().send().message(GlobalVars.npSong + " Has started playing!");
+            }
+        }
+	}
+	private static void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{
 		String[] dataToSql = new String[1];
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -162,4 +143,13 @@ public class ListenCast extends Thread{
 		}
 		
 	}
+    public static void manualUpdate(String song){
+        Logging.log("A Manual update of the now playing information has been triggered!", false);
+        onSongChange();
+        try {
+            updateIcecastInfo();
+        } catch (IOException | SQLException | SAXException | ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
 }

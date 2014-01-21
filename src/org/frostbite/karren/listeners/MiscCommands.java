@@ -7,13 +7,14 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.GlobalVars;
+import org.frostbite.karren.KarrenCon;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help", "debug"};
+		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help", "debug", "faves"};
 		String message = event.getMessage();
 		String cmd = "";
 		if(message.startsWith(".")){
@@ -41,27 +42,45 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
 					event.getChannel().send().message(GlobalVars.botname + " is running version " + GlobalVars.versionMarker);
 					break;
 				case "help":
-					event.getUser().send().message("Karren-sama bot commands. (All commands are proceded by a . (Ex. .help))");
+					event.getUser().send().message(GlobalVars.botname + " bot commands. (All commands are proceded by a . (Ex. .help))");
 					event.getUser().send().message(".help command - Prints out this message.");
 					event.getUser().send().message(".isgay command - Sends a message to the server calling whatever follows .isgay gay(Ex. .isgay Seth)");
 					event.getUser().send().message(".kill command - Only operators on the channel can use this. Kills the bot.");
 					event.getUser().send().message(".news command - user must atleast have voice (+v) in the channel. Posts a news update to the CRaZyPANTS website.");
 					event.getUser().send().message(".np command - displays the currently playing song. (on/off change auto update mode)");
 					event.getUser().send().message(".origin command - Replies to you stating that Origin is bad.");
-					event.getUser().send().message("Random, command - This command allows you to get the bot to randomize a list of things. (Ex. Random, 1,2,3)");
+					event.getUser().send().message(GlobalVars.botname + ", [pick, choose, select, draw] one: 1,2,3,4,etc - The list of entries can contain anything and can include spaces as long as the entries are seperated by a comma.");
 					event.getUser().send().message(".echo command - Replies to you with an echo of whatever follows the command. (Ex. .echo Stuff)");
 					event.getUser().send().message(".topic command - Sets the MOTD section of the topic with whatever follows the command.");
 					event.getUser().send().message(".version command - replies with current version of the bot.");
-					event.getUser().send().message("Hello(or alternative), goodbye(or alternative), clayton commands - replies with responses accordingly");
+					event.getUser().send().message("(Hello, goodbye, clayton) " + GlobalVars.botname + " - Replies with different responses, hello and goodbye support many alternative words.");
+                    event.getUser().send().message(".faves (start/stop), Enables or Disables the fave alerting system, defaults to enabled.");
 					event.getUser().send().message(".brad command - poop");
 					break;
+                case "faves":
+                    if(message.equalsIgnoreCase("stop")){
+                        GlobalVars.userList.get(getUserPos(event)).setFaveAlert(false);
+                    } else if(message.equalsIgnoreCase("start")){
+                        GlobalVars.userList.get(getUserPos(event)).setFaveAlert(true);
+                    }
 				case "debug":
-					for(String nick : GlobalVars.userList){
-						event.getUser().send().message("DEBUG USERLIST: " + nick);
+					for(KarrenCon nick : GlobalVars.userList){
+                        event.getUser().send().message("PRINTING CURRENT USERLIST: " + nick.getUserObject().getNick());
                     }
 					break;
 			}
 		}
 	}
+    private static int getUserPos(MessageEvent event){
+        int result = 0;
+        boolean found = false;
+        for(int i=0; i<GlobalVars.userList.size() || !found; i++){
+            if(GlobalVars.userList.get(i).getUserObject().getNick().equals(event.getUser().getNick())){
+                result=i;
+                found=true;
+            }
+        }
+        return result;
+    }
 
 }

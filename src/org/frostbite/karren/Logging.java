@@ -13,7 +13,7 @@ import java.io.Writer;
 import java.util.Date;
 
 public class Logging {
-	public static void log(String out, boolean err) throws IOException{
+	public static void log(String out, boolean err){
 		try{
 			Writer logfile = new BufferedWriter(new FileWriter("log.log", true));
 			if(logfile.equals("")){
