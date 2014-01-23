@@ -19,7 +19,10 @@ import java.util.Date;
 
 public class MySQLConnector {
     private static String statmentBuild = "";
+    private static ArrayList<String> dataForSQL = new ArrayList<String>();
 	public static ArrayList<String> sqlPush(String type, String mod, String[] data) throws IOException, SQLException{
+        dataForSQL.clear();
+        statmentBuild = "";
 		ArrayList<String> result = new ArrayList<String>();
 		switch(type){
 			case "news":
@@ -34,8 +37,8 @@ public class MySQLConnector {
 			case "stats":
 				//pushStats(mod);
 				break;
-			case "part":
-				result.add(pushPart(mod, data));
+			case "user":
+				result.add(pushUser(mod, data));
 				break;
 			case "hash":
 				result.add(pushHash(mod, data));
@@ -45,16 +48,24 @@ public class MySQLConnector {
 				break;
 			case "fave":
 				result.addAll(getFave());
+                break;
 			default:
 				result.add(null);
 				break;
 		}
 		return result;
-	}
+	}/*
+	* pushSong - Handles all communication between the IRC bot and the internet radio database
+	*
+	* Gets song information and pushes fave information for a specific song, utilizes song IDs
+	* which are selected upon the song being played.
+	*
+	*/
 	private static ArrayList<String> pushSong(String mod ,String[] data) throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		ArrayList<Object> returned;
-		ArrayList<String> dataForSQL = new ArrayList<String>();
+        String curTime = "00-00-0000 00:00:00";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
 		if(GlobalVars.songChange){
 			statmentBuild = "SELECT ID FROM SongDB WHERE SongTitle = ?";
 			dataForSQL.add(GlobalVars.npSong);
@@ -81,7 +92,8 @@ public class MySQLConnector {
 				//Adding song to DB and getting new ID for song
 				statmentBuild = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
 				dataForSQL.add(GlobalVars.npSong);
-				dataForSQL.add(getCurTime());
+                curTime = getCurDate(curTime, dateFormat);
+				dataForSQL.add(curTime);
 				runCommand(statmentBuild, dataForSQL, false, true, null);
 				GlobalVars.songChange = false;
 				dataForSQL.clear();
@@ -95,7 +107,8 @@ public class MySQLConnector {
 			} else {
 				//Update info for song
 				statmentBuild = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=" + GlobalVars.songID;
-				dataForSQL.add(getCurTime());
+                curTime = getCurDate(curTime, dateFormat);
+				dataForSQL.add(curTime);
 				runCommand(statmentBuild, dataForSQL, false, true, null);
 				GlobalVars.songChange = false;
 			}
@@ -126,7 +139,6 @@ public class MySQLConnector {
 	private static ArrayList<String> getFave() throws IOException, SQLException{
 		ArrayList<String> result = new ArrayList<String>();
 		ArrayList<Object> returned = new ArrayList<Object>();
-		ArrayList<String> dataForSQL = new ArrayList<String>();
 		statmentBuild = "SELECT User FROM UserFaves WHERE SongID= ?";
 		dataForSQL.add(String.valueOf(GlobalVars.songID));
 		returned = runCommand(statmentBuild, dataForSQL, true, true, null);
@@ -136,16 +148,17 @@ public class MySQLConnector {
 		return result;
 	}
 	private static void pushNews(String mod, String[] data) throws IOException{
-		ArrayList<String> dataForSQL = new ArrayList<String>();
-		String curdate = getSqlDate();
-		Logging.log(curdate, true);
+        String curDate = "0000-00-00";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-DD");
+		curDate = getCurDate(curDate, dateFormat);
+		Logging.log(curDate, true);
 		statmentBuild = "INSERT INTO news (author, post, id, header, date) VALUES ( ? , ? , null, 1, ?)";
 		//adds author info
 		dataForSQL.add(data[0]);
 		//Adds post
 		dataForSQL.add(data[1]);
 		//Adds timestamp
-		dataForSQL.add(curdate);
+		dataForSQL.add(curDate);
 		try{
 			runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
 		} catch(SQLException e) {
@@ -157,8 +170,15 @@ public class MySQLConnector {
 	*	String statmentBuild = "";
 	*	return false;
 	}*/
+    /*
+    * pushHash - Handles the DJ-Hashcode system, this is used with the UTF8-Fixer program to allow(Sometimes) proper
+    * Unicode metadata transmission to the site and IRC bot.
+    *
+    * Generates a hashcode based off of the DJ's username and a secret multiplier code set in the configs.
+    *
+    * Likes to be negitive but it doesn't effect the operation.
+     */
 	private static String pushHash(String mod, String[] data) throws SQLException{
-		ArrayList<String> dataForSQL = new ArrayList<String>();
 		ArrayList<Object> result;
 		long hashTemp = 1;
 		String resultHash = "";
@@ -203,7 +223,6 @@ public class MySQLConnector {
 	}
 	private static String pushRadio(String mod, String[] data) throws IOException{
 		String result = "";
-		ArrayList<String> dataForSQL = new ArrayList<String>();
 		ArrayList<Object> returned;
 		//Updating now playing song
 		if(mod.equalsIgnoreCase("GetSong")){
@@ -271,34 +290,23 @@ public class MySQLConnector {
 	*	return result;
 	}*/
 	 /*
-	 * pushPart is used to access the tables containing the data of all user afk times
+	 * pushUser is used to access the tables containing the data of all IRC users
+	 *
+	 * Allows setting of the parting time for away time tracking.
 	 * 
-	 * Used to track and tell users how long they have been gone.
+	 * Also allows access to the stored settings such as fave alert settings and ignore settings.
+	 *
+	 *
 	 */
-	private static String pushPart(String mod, String[] data) throws IOException{
+	private static String pushUser(String mod, String[] data) throws IOException{
 		boolean userExists = false;
 		String result = null;
 		boolean isParted = false;
-		ArrayList<String> dataForSQL = new ArrayList<String>();
 		Date date = new Date();
-		ArrayList<String> savedUsers = new ArrayList<String>();
-		try{
-			statmentBuild = "SELECT user FROM users";
-			ArrayList<Object> usrTemp = runCommand(statmentBuild, dataForSQL, true, false, null);
-			for(int i=0; i<usrTemp.size(); i++){
-				savedUsers.add((String) usrTemp.get(i));
-			}
-		} catch(SQLException e) {
-			e.printStackTrace();
-			Logging.log(e.getMessage(), true);
-		}
-		if(savedUsers.size() > 0){
-			for(String curUser : savedUsers){
-				if(data[0].equalsIgnoreCase(curUser)){
-					userExists = true;
-				}
-			}
-		}
+		doesUserExist(data);
+        if(mod.equalsIgnoreCase("login")){
+
+        }
 		if(mod.equalsIgnoreCase("back")){
 			//Sets botpart to false and sends a message to the server stating how long user has been away
 			try{
@@ -330,30 +338,18 @@ public class MySQLConnector {
 				} catch(SQLException e){
 					e.printStackTrace();
 					Logging.log(e.getMessage(), true);
-				}
-			}
-		} else {
-			if(userExists){
-				try{
-					statmentBuild = "UPDATE users SET botpart=true, timepart= ? WHERE user= ?";
-					dataForSQL.add(String.valueOf(date.getTime()));
-					dataForSQL.add(data[0]);
-					runCommand(statmentBuild, dataForSQL, false, true, null);
-				} catch(SQLException e) {
-					e.printStackTrace();
-					Logging.log(e.getMessage(), true);
-				}
-			} else {
-				try{
-					statmentBuild = "INSERT INTO users (user, botpart, timepart) VALUES ( ? , 1 , ? )";
-					dataForSQL.add(data[0]);
-					dataForSQL.add(String.valueOf(date.getTime()));
-					runCommand(statmentBuild, dataForSQL, false, true, null);
-				} catch(SQLException e) {
-					e.printStackTrace();
-					Logging.log(e.toString(), true);
-				}
-			}
+                }
+		    } else {
+			    try{
+			    	statmentBuild = "UPDATE users SET botpart=true, timepart= ? WHERE user= ?";
+			    	dataForSQL.add(String.valueOf(date.getTime()));
+			    	dataForSQL.add(data[0]);
+			    	runCommand(statmentBuild, dataForSQL, false, true, null);
+			    } catch(SQLException e) {
+				    e.printStackTrace();
+				    Logging.log(e.getMessage(), true);
+               }
+            }
 		}
 		return result;
 	}
@@ -393,18 +389,45 @@ public class MySQLConnector {
 	 * Returns a date in the format of YYYY-MM-DD to use with the SQL 
 	 * 
 	 */
-	public static String getSqlDate(){
-		String sqldate = "0000-00-00";
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	public static String getCurDate(String dateLayout, SimpleDateFormat dateFormat){
 		Date date = new Date();
-		sqldate = dateFormat.format(date);
-		return sqldate;
+		dateLayout = dateFormat.format(date);
+		return dateLayout;
 	}
-	public static String getCurTime(){
-		String curTime = "00-00-0000 00:00:00";
-		SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-		Date date = new Date();
-		curTime = dateFormat.format(date);
-		return curTime;
-	}
+    /*
+    doesUserExist - Used to check if the target user exists with in the database,
+    if not it creates a new user for the target.
+
+     */
+    public static void doesUserExist(String[] data){
+        ArrayList<String> savedUsers = new ArrayList<String>();
+        boolean userExists = false;
+        try{
+            statmentBuild = "SELECT user FROM users";
+            ArrayList<Object> usrTemp = runCommand(statmentBuild, dataForSQL, true, false, null);
+            for(int i=0; i<usrTemp.size(); i++){
+                savedUsers.add((String) usrTemp.get(i));
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+            Logging.log(e.getMessage(), true);
+        }
+        if(savedUsers.size() > 0){
+            for(String curUser : savedUsers){
+                if(data[0].equalsIgnoreCase(curUser)){
+                    userExists = true;
+                }
+            }
+        }
+        if(!userExists){
+            //Creates new user in table
+            statmentBuild = "INSERT INTO users (user, botpart, timepart, timeWasted, isIgnored, faveSetting) VALUES (?, 0, 0, 0, 0, 0)";
+            dataForSQL.add(data[0]);
+            try {
+                runCommand(statmentBuild, dataForSQL, false, true, null);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

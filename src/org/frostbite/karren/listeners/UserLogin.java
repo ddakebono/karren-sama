@@ -11,11 +11,16 @@ import org.frostbite.karren.KarrenCon;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.JoinEvent;
 
+import java.util.Date;
+
 /**
  * Created by frostbite on 1/21/14.
  */
 public class UserLogin extends ListenerAdapter{
     public void onLogin(JoinEvent event){
-        GlobalVars.userList.add(new KarrenCon(event.getUser(), event.getChannel()));
+        Date date = new Date();
+        if(!event.getUser().getNick().equals(GlobalVars.botname)){
+            GlobalVars.userList.add(new KarrenCon(event.getUser(), event.getChannel(), date.getTime()));
+        }
     }
 }

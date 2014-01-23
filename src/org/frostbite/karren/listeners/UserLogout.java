@@ -18,9 +18,12 @@ public class UserLogout extends ListenerAdapter{
     public void onLogout(QuitEvent event){
         for(int i=0; i<GlobalVars.userList.size(); i++){
             if(GlobalVars.userList.get(i).getUserObject().getNick().equals(event.getUser().getNick())){
+                setTimeWasted(GlobalVars.userList.get(i));
                 GlobalVars.userList.remove(i);
             }
         }
     }
+    private static void setTimeWasted(KarrenCon user){
 
+    }
 }
