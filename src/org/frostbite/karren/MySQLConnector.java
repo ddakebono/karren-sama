@@ -20,7 +20,7 @@ import java.util.Date;
 public class MySQLConnector {
     private static String statmentBuild = "";
     private static ArrayList<String> dataForSQL = new ArrayList<String>();
-	public static ArrayList<String> sqlPush(String type, String mod, String[] data) throws IOException, SQLException{
+	public static ArrayList<String> sqlPush(String type, String mod, Object[] data) throws IOException, SQLException{
         dataForSQL.clear();
         statmentBuild = "";
 		ArrayList<String> result = new ArrayList<String>();
@@ -38,7 +38,7 @@ public class MySQLConnector {
 				//pushStats(mod);
 				break;
 			case "user":
-				result.add(pushUser(mod, data));
+				result.addAll(pushUser(mod, data));
 				break;
 			case "hash":
 				result.add(pushHash(mod, data));
@@ -61,7 +61,7 @@ public class MySQLConnector {
 	* which are selected upon the song being played.
 	*
 	*/
-	private static ArrayList<String> pushSong(String mod ,String[] data) throws SQLException, IOException{
+	private static ArrayList<String> pushSong(String mod ,Object[] data) throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		ArrayList<Object> returned;
         String curTime = "00-00-0000 00:00:00";
@@ -116,14 +116,14 @@ public class MySQLConnector {
 		}
 		if(mod.equalsIgnoreCase("fave")){
 			statmentBuild = "SELECT * FROM UserFaves WHERE SongID = ? AND User = ?";
-			dataForSQL.add(data[0]);
-			dataForSQL.add(data[1]);
+			dataForSQL.add(String.valueOf(data[0]));
+			dataForSQL.add(String.valueOf(data[1]));
 			returned = runCommand(statmentBuild, dataForSQL, true, true, null);
 			dataForSQL.clear();
 			if(returned.size()<1){
 				statmentBuild = "INSERT INTO UserFaves(ID, User, SongID) VALUES (null, ?, ?)";
-				dataForSQL.add(data[1]);
-				dataForSQL.add(data[0]);
+				dataForSQL.add(String.valueOf(data[1]));
+				dataForSQL.add(String.valueOf(data[0]));
 				runCommand(statmentBuild, dataForSQL, false, true, null);
 				dataForSQL.clear();
 				statmentBuild = "UPDATE SongDB SET FavCount=FavCount+1 WHERE ID= ?";
@@ -147,16 +147,16 @@ public class MySQLConnector {
 		}
 		return result;
 	}
-	private static void pushNews(String mod, String[] data) throws IOException{
+	private static void pushNews(String mod, Object[] data) throws IOException{
         String curDate = "0000-00-00";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-DD");
 		curDate = getCurDate(curDate, dateFormat);
 		Logging.log(curDate, true);
 		statmentBuild = "INSERT INTO news (author, post, id, header, date) VALUES ( ? , ? , null, 1, ?)";
 		//adds author info
-		dataForSQL.add(data[0]);
+		dataForSQL.add(String.valueOf(data[0]));
 		//Adds post
-		dataForSQL.add(data[1]);
+		dataForSQL.add(String.valueOf(data[1]));
 		//Adds timestamp
 		dataForSQL.add(curDate);
 		try{
@@ -178,7 +178,7 @@ public class MySQLConnector {
     *
     * Likes to be negitive but it doesn't effect the operation.
      */
-	private static String pushHash(String mod, String[] data) throws SQLException{
+	private static String pushHash(String mod, Object[] data) throws SQLException{
 		ArrayList<Object> result;
 		long hashTemp = 1;
 		String resultHash = "";
@@ -194,8 +194,8 @@ public class MySQLConnector {
 		hasHash = djList.contains(data[0]);
 		if(!hasHash){
 			//Generating new DJHash code
-			for(int i=0; i<data[0].length(); i++){
-				hashTemp = hashTemp * data[0].charAt(i);
+			for(int i=0; i<String.valueOf(data[0]).length(); i++){
+				hashTemp = hashTemp * String.valueOf(data[0]).charAt(i);
 			}
 			hashTemp = hashTemp*GlobalVars.djHashGenKey;
 			char[] hashArray = String.valueOf(hashTemp).toCharArray();
@@ -208,20 +208,20 @@ public class MySQLConnector {
 				resultHash = String.valueOf(hashTemp);
 			}
 			statmentBuild = "INSERT INTO `Radio-DJ`(DJName, DJHash) VALUES (?, ?)";
-			dataForSQL.add(data[0]);
+			dataForSQL.add((String)data[0]);
 			dataForSQL.add(String.valueOf(resultHash));
 			runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
 			dataForSQL.clear();
 		
 		} else {
 			statmentBuild = "SELECT DJHash FROM `Radio-DJ` WHERE DJName= ?";
-			dataForSQL.add(data[0]);
+			dataForSQL.add((String)data[0]);
 			result = runCommand(statmentBuild, dataForSQL, true, true, "sitebackend");
 			resultHash = String.valueOf(result.get(0));
 		}
 		return resultHash;
 	}
-	private static String pushRadio(String mod, String[] data) throws IOException{
+	private static String pushRadio(String mod, Object[] data) throws IOException{
 		String result = "";
 		ArrayList<Object> returned;
 		//Updating now playing song
@@ -251,7 +251,7 @@ public class MySQLConnector {
 		}
 		if(mod.equalsIgnoreCase("listen")){
 			statmentBuild = "UPDATE radio SET Listeners = ?";
-			dataForSQL.add(data[0]);
+			dataForSQL.add(String.valueOf(data[0]));
 			try {
 				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
 			} catch (SQLException e) {
@@ -261,7 +261,7 @@ public class MySQLConnector {
 		}
 		if(mod.equalsIgnoreCase("dj")){
 			statmentBuild = "UPDATE radio SET CurrentDJ = ?";
-			dataForSQL.add(data[0]);
+			dataForSQL.add(String.valueOf(data[0]));
 			try {
 				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
 			} catch (SQLException e) {
@@ -271,7 +271,7 @@ public class MySQLConnector {
 		}
 		if(mod.equalsIgnoreCase("title")){
 			statmentBuild = "UPDATE radio SET StreamName = ?";
-			dataForSQL.add(data[0]);
+			dataForSQL.add(String.valueOf(data[0]));
 			try {
 				runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
 			} catch (SQLException e) {
@@ -298,21 +298,35 @@ public class MySQLConnector {
 	 *
 	 *
 	 */
-	private static String pushUser(String mod, String[] data) throws IOException{
+	private static ArrayList<String> pushUser(String mod, Object[] data) throws IOException{
 		boolean userExists = false;
-		String result = null;
+		ArrayList<String> result = new ArrayList<String>();
 		boolean isParted = false;
+        ArrayList<Object> returned = new ArrayList<Object>();
 		Date date = new Date();
 		doesUserExist(data);
         if(mod.equalsIgnoreCase("login")){
-
+            statmentBuild = "SELECT * FROM users WHERE user= ?";
+            dataForSQL.clear();
+            dataForSQL.add(String.valueOf(data[0]));
+            try {
+                returned = runCommand(statmentBuild, dataForSQL, true, true, null);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            for(int i=0; i<returned.size(); i++){
+                result.add(String.valueOf(returned.get(i)));
+            }
+        }
+        if(mod.equalsIgnoreCase("logout")){
+            statmentBuild = "UPDATE users SET (botpart, timepart, timeWasted, isIgnored, faveSetting) VALUES (?, ?, ?, ?, ?) WHERE user= ?";
         }
 		if(mod.equalsIgnoreCase("back")){
 			//Sets botpart to false and sends a message to the server stating how long user has been away
 			try{
 				statmentBuild = "SELECT botpart FROM users WHERE user= ?";
 				dataForSQL.clear();
-				dataForSQL.add(data[0]);
+				dataForSQL.add(String.valueOf(data[0]));
 				ArrayList<Object> getIsParted = runCommand(statmentBuild, dataForSQL, true, true, null);
 				isParted = (boolean)getIsParted.get(0);
 			} catch(SQLException e){
@@ -323,7 +337,7 @@ public class MySQLConnector {
 				try{
 					statmentBuild = "UPDATE users SET botpart=false WHERE user= ?";
 					dataForSQL.clear();
-					dataForSQL.add(data[0]);
+					dataForSQL.add(String.valueOf(data[0]));
 					runCommand(statmentBuild, dataForSQL, false, true, null);
 				} catch(SQLException e){
 					e.printStackTrace();
@@ -332,9 +346,9 @@ public class MySQLConnector {
 				try{
 					statmentBuild = "SELECT timepart FROM users WHERE user= ?";
 					dataForSQL.clear();
-					dataForSQL.add(data[0]);
+					dataForSQL.add(String.valueOf(data[0]));
 					ArrayList<Object> getAwayTime = runCommand(statmentBuild, dataForSQL, true, true, null);
-					result = (String)getAwayTime.get(0);
+					result.add((String)getAwayTime.get(0));
 				} catch(SQLException e){
 					e.printStackTrace();
 					Logging.log(e.getMessage(), true);
@@ -343,7 +357,7 @@ public class MySQLConnector {
 			    try{
 			    	statmentBuild = "UPDATE users SET botpart=true, timepart= ? WHERE user= ?";
 			    	dataForSQL.add(String.valueOf(date.getTime()));
-			    	dataForSQL.add(data[0]);
+			    	dataForSQL.add(String.valueOf(data[0]));
 			    	runCommand(statmentBuild, dataForSQL, false, true, null);
 			    } catch(SQLException e) {
 				    e.printStackTrace();
@@ -370,6 +384,7 @@ public class MySQLConnector {
 				pst.setString(i+1, data.get(i));
 			}
 		}
+        dataForSQL.clear();
 		if(search){
 			rs = pst.executeQuery();
 			ResultSetMetaData md = rs.getMetaData();
@@ -399,7 +414,7 @@ public class MySQLConnector {
     if not it creates a new user for the target.
 
      */
-    public static void doesUserExist(String[] data){
+    public static void doesUserExist(Object[] data){
         ArrayList<String> savedUsers = new ArrayList<String>();
         boolean userExists = false;
         try{
@@ -414,7 +429,7 @@ public class MySQLConnector {
         }
         if(savedUsers.size() > 0){
             for(String curUser : savedUsers){
-                if(data[0].equalsIgnoreCase(curUser)){
+                if(String.valueOf(data[0]).equalsIgnoreCase(curUser)){
                     userExists = true;
                 }
             }
@@ -422,7 +437,7 @@ public class MySQLConnector {
         if(!userExists){
             //Creates new user in table
             statmentBuild = "INSERT INTO users (user, botpart, timepart, timeWasted, isIgnored, faveSetting) VALUES (?, 0, 0, 0, 0, 0)";
-            dataForSQL.add(data[0]);
+            dataForSQL.add(String.valueOf(data[0]));
             try {
                 runCommand(statmentBuild, dataForSQL, false, true, null);
             } catch (SQLException e) {

@@ -8,9 +8,13 @@ package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.KarrenCon;
+import org.frostbite.karren.MySQLConnector;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.JoinEvent;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -19,8 +23,16 @@ import java.util.Date;
 public class UserLogin extends ListenerAdapter{
     public void onLogin(JoinEvent event){
         Date date = new Date();
+        String[] data = new String[1];
+        ArrayList<String> returned = new ArrayList<String>();
         if(!event.getUser().getNick().equals(GlobalVars.botname)){
-            GlobalVars.userList.add(new KarrenCon(event.getUser(), event.getChannel(), date.getTime()));
+            data[0] = event.getUser().getNick();
+            try {
+                MySQLConnector.sqlPush("user", "login", data);
+            } catch (IOException | SQLException e) {
+                e.printStackTrace();
+            }
+            GlobalVars.userList.add(new KarrenCon(event.getUser(), event.getChannel(), date.getTime(), Boolean.parseBoolean(returned.get(1)), Long.parseLong(returned.get(2)), Long.parseLong(returned.get(3)), Boolean.parseBoolean(returned.get(4)), Boolean.parseBoolean(returned.get(5))));
         }
     }
 }

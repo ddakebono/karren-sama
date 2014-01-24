@@ -20,12 +20,19 @@ public class KarrenCon {
     private User userName;
     private Channel userChan;
     private boolean dontFaveAlert;
+    private boolean isBotParted;
+    private long timeOfPart;
     private boolean ignoreUser;
+    private long timeWasted;
     private long userEntryTimestamp;
-    public KarrenCon(User user, Channel channel, long entryTime){
+    public KarrenCon(User user, Channel channel, long entryTime, boolean isBotParted, long timeParted, long timeWasted, boolean isIgnored, boolean faveSetting){
         this.userName = user;
         this.userChan = channel;
         this.userEntryTimestamp = entryTime;
+        this.isBotParted = isBotParted;
+        this.timeOfPart = timeParted;
+        this.timeWasted = timeWasted;
+        this.ignoreUser = isIgnored;
     }
     public String toString(){
         String result = userName.getNick() + " " + userChan.getName();
