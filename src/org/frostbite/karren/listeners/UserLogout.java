@@ -8,17 +8,31 @@ package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.KarrenCon;
+import org.frostbite.karren.MySQLConnector;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.QuitEvent;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Created by frostbite on 1/21/14.
  */
 public class UserLogout extends ListenerAdapter{
     public void onLogout(QuitEvent event){
+        Object[] data = new Object[2];
         for(int i=0; i<GlobalVars.userList.size(); i++){
             if(GlobalVars.userList.get(i).getUserObject().getNick().equals(event.getUser().getNick())){
                 setTimeWasted(GlobalVars.userList.get(i));
+                data[0] = event.getUser().getNick();
+                data[1] = GlobalVars.userList.get(i);
+                try {
+                    MySQLConnector.sqlPush("user", "logout", data);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 GlobalVars.userList.remove(i);
             }
         }

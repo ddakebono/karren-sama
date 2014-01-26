@@ -38,7 +38,6 @@ public class Karren{
 			.setAutoNickChange(true)
 			.setNickservPassword(GlobalVars.nickservPass)
 			.addListener(new MiscCommands())
-            .addListener(new NPCommand())
 			.addListener(new NewsCommand())
 			.addListener(new KillCommand())
 			.addListener(new TopicCommand())

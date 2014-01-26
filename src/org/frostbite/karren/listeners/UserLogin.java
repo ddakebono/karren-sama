@@ -28,7 +28,7 @@ public class UserLogin extends ListenerAdapter{
         if(!event.getUser().getNick().equals(GlobalVars.botname)){
             data[0] = event.getUser().getNick();
             try {
-                MySQLConnector.sqlPush("user", "login", data);
+                returned = MySQLConnector.sqlPush("user", "login", data);
             } catch (IOException | SQLException e) {
                 e.printStackTrace();
             }

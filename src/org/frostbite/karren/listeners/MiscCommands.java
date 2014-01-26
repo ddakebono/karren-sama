@@ -8,13 +8,14 @@ package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.KarrenCon;
+import org.frostbite.karren.Logging;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help", "debug", "faves"};
+		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help", "debug", "faves", "fave", "dj", "np"};
 		String message = event.getMessage();
 		String cmd = "";
 		if(message.startsWith(".")){
@@ -63,11 +64,38 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     } else if(message.equalsIgnoreCase("start")){
                         GlobalVars.userList.get(getUserPos(event)).setFaveAlert(true);
                     }
+                    break;
 				case "debug":
 					for(KarrenCon nick : GlobalVars.userList){
                         event.getUser().send().message("PRINTING CURRENT USERLIST: " + nick.getUserObject().getNick());
                     }
 					break;
+                case "dj":
+                    if(!GlobalVars.iceDJ.equalsIgnoreCase("noone")){
+                        event.getChannel().send().message("Current DJ is " + GlobalVars.iceDJ);
+                    } else {
+                        event.getChannel().send().message("The stream is currently offline...");
+                    }
+                    break;
+                case "np":
+                    if(message.startsWith("switch") && event.getUser().isIrcop()){
+                        if(!GlobalVars.loop){
+                            GlobalVars.loop = true;
+                            GlobalVars.npChannel = event.getChannel();
+                            Logging.log("Now Playing enabled by " + event.getUser().getNick(), false);
+                            event.getChannel().send().message("Automagic now playing is now active, periodic updates of the now playing will occur.");
+                        } else {
+                            GlobalVars.loop = false;
+                            GlobalVars.npChannel = null;
+                            Logging.log("Now Playing disabled by " + event.getUser().getNick(), false);
+                        }
+                    } else {
+                        if(!GlobalVars.iceDJ.equalsIgnoreCase("noone")){
+                            event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners + ". Faves: " + GlobalVars.songFavCount + ". Plays: " + GlobalVars.songPlayedAmount);
+                        } else {
+                            event.getChannel().send().message("The stream is currently offline...");
+                        }
+                    }
 			}
 		}
 	}

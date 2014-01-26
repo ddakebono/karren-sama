@@ -60,8 +60,12 @@ public class KarrenCon {
     public boolean getFaveAlert(){
         return dontFaveAlert;
     }
+    public boolean getParted(){return isBotParted;}
     public boolean getIgnored(){
         return ignoreUser;
     }
-
+    public long getUserEntryTimestamp(){ return userEntryTimestamp;}
+    public long getTimeOfPart(){return timeOfPart;}
+    public long getTimeWasted(){return timeWasted;}
+    public String getUserName(){ return userName.getNick();}
 }
