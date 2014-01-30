@@ -67,6 +67,7 @@ public class Karren{
 			e.printStackTrace();
 			Logging.log(e.toString(), true);
 		}
+        //Initialize the bot
 		try{
 			bot.startBot();
 		} catch (Exception e){
@@ -95,6 +96,7 @@ public class Karren{
 		GlobalVars.nickservPass = cfg.getProperty("nickservPass", "changeme");
 		GlobalVars.channel = cfg.getProperty("channel", "#changeme");
 		GlobalVars.djHashGenKey = Integer.parseInt(cfg.getProperty("djHashGenKey", "1"));
+        GlobalVars.userCap = Integer.parseInt(cfg.getProperty("maximumUsers", "100"));
 		if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(GlobalVars.versionMarker)){
 			Logging.log("Updating configuration file!", true);
 			mkNewConfig();
@@ -119,6 +121,7 @@ public class Karren{
 		cfg.setProperty("nickservPass", GlobalVars.nickservPass);
 		cfg.setProperty("channel", GlobalVars.channel);
 		cfg.setProperty("djHashGenKey", String.valueOf(GlobalVars.djHashGenKey));
+        cfg.setProperty("maximumUsers", String.valueOf(GlobalVars.userCap));
 		cfg.store(new FileOutputStream("bot.prop"), comment);
 		System.out.println("Config file generated! Terminating!");
 		Logging.log("Your configuration file has been generated/updated!", false);

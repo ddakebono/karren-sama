@@ -30,8 +30,9 @@ public class GlobalVars {
 			public static String channel = "";
 			public static String botname = "";
 			public static String hostname = "";
+            public static int userCap = 0;
 	//Final storage
-		public final static String versionMarker = "v0.4";
+		public final static String versionMarker = "v0.5";
 	//Active storage
 		public static boolean loop = false;
 		public static String npSong = "offair";
@@ -49,6 +50,8 @@ public class GlobalVars {
 		public static int songFavCount = 0;
         public static ArrayList<String> nicks = new ArrayList<String>();
 		public static ArrayList<KarrenCon> userList = new ArrayList<KarrenCon>();
+        public static KarrenCon[] userListNew;
+        public static String[] userListNicks;
 		public static String lpTime = "";
         public static Channel npChannel;
 }
