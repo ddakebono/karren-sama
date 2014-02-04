@@ -6,10 +6,19 @@
 
 package org.frostbite.karren;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+
 /**
  * Created by frostbite on 1/30/14.
  */
-public class UserListManager {
+public class UserListManager extends Thread{
+    public static boolean isInChannel = false;
     public static int getUserIndex(String nick){
         int result = 0;
         boolean found = false;
@@ -22,6 +31,51 @@ public class UserListManager {
     }
     public static void rmUser(String nick){
         int userIndex = getUserIndex(nick);
-        //KarrenCon[] userListCopy
+        int target = 0;
+        String[] userListNickCopy = new String[GlobalVars.userCap-1];
+        KarrenCon[] userListCopy = new KarrenCon[GlobalVars.userCap-1];
+        for(int i=0; i<GlobalVars.userCap; i++){
+            if(i!=userIndex){
+                userListNickCopy[target] = GlobalVars.userListNicks[i];
+                userListCopy[target] = GlobalVars.userListNew[i];
+                target++;
+            }
+        }
+        GlobalVars.curUserCount--;
+        GlobalVars.userListNicks = userListNickCopy;
+        GlobalVars.userListNew = userListCopy;
+    }
+    public static void addUser(KarrenCon user, String nick){
+        GlobalVars.userListNew[GlobalVars.curUserCount] = user;
+        GlobalVars.userListNicks[GlobalVars.curUserCount] = nick;
+        GlobalVars.curUserCount++;
+    }
+    public void run(){
+        while(!Karren.bot.isConnected() || !isInChannel){
+            try {
+                Thread.sleep(50);
+                System.out.println("SPAM");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //Load current users into userlist
+        Object[] data = new String[1];
+        Date date = new Date();
+        ArrayList<String> returned = new ArrayList<String>();
+        GlobalVars.userListNew = new KarrenCon[GlobalVars.userCap];
+        GlobalVars.userListNicks = new String[GlobalVars.userCap];
+        Channel botChannel = Karren.bot.getUserBot().getChannels().first();
+        for(User load : botChannel.getUsers()){
+            if(!load.getNick().equalsIgnoreCase(GlobalVars.botname)){
+                data[0] = load.getNick();
+                try {
+                    returned = MySQLConnector.sqlPush("user", "login", data);
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                UserListManager.addUser(new KarrenCon(load, GlobalVars.npChannel, date.getTime(), Boolean.parseBoolean(returned.get(1)), Long.parseLong(returned.get(2)), Long.parseLong(returned.get(3)), Boolean.parseBoolean(returned.get(4)), Boolean.parseBoolean(returned.get(5))), load.getNick());
+            }
+        }
     }
 }

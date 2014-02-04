@@ -9,6 +9,7 @@ package org.frostbite.karren.listeners;
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.KarrenCon;
 import org.frostbite.karren.Logging;
+import org.frostbite.karren.UserListManager;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -60,13 +61,13 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
 					break;
                 case "faves":
                     if(message.equalsIgnoreCase("stop")){
-                        GlobalVars.userList.get(getUserPos(event)).setFaveAlert(false);
+                        GlobalVars.userListNew[UserListManager.getUserIndex(event.getUser().getNick())].setFaveAlert(false);
                     } else if(message.equalsIgnoreCase("start")){
-                        GlobalVars.userList.get(getUserPos(event)).setFaveAlert(true);
+                        GlobalVars.userListNew[UserListManager.getUserIndex(event.getUser().getNick())].setFaveAlert(true);
                     }
                     break;
 				case "debug":
-					for(KarrenCon nick : GlobalVars.userList){
+					for(KarrenCon nick : GlobalVars.userListNew){
                         event.getUser().send().message("PRINTING CURRENT USERLIST: " + nick.getUserObject().getNick());
                     }
 					break;
@@ -99,16 +100,4 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
 			}
 		}
 	}
-    private static int getUserPos(MessageEvent event){
-        int result = 0;
-        boolean found = false;
-        for(int i=0; i<GlobalVars.userList.size() || !found; i++){
-            if(GlobalVars.userList.get(i).getUserObject().getNick().equals(event.getUser().getNick())){
-                result=i;
-                found=true;
-            }
-        }
-        return result;
-    }
-
 }

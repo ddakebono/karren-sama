@@ -48,6 +48,7 @@ public class GlobalVars {
 		public static String songLastPlayed = "";
 		public static int songPlayedAmount = 0;
 		public static int songFavCount = 0;
+        public static int curUserCount = 0;
         public static ArrayList<String> nicks = new ArrayList<String>();
 		public static ArrayList<KarrenCon> userList = new ArrayList<KarrenCon>();
         public static KarrenCon[] userListNew;

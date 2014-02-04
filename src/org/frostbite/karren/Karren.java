@@ -11,8 +11,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 
+import com.google.common.collect.ImmutableSortedSet;
 import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listeners.HashCommand;
 import org.frostbite.karren.listeners.HueCommand;
@@ -23,10 +27,14 @@ import org.frostbite.karren.listeners.NewsCommand;
 import org.frostbite.karren.listeners.SiteCommand;
 import org.frostbite.karren.listeners.TalkToCommand;
 import org.frostbite.karren.listeners.TopicCommand;
+import org.pircbotx.Channel;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+import org.pircbotx.exception.IrcException;
 
 public class Karren{
+    public static PircBotX bot;
 	public static void main(String[] args) throws Exception{
 		//Initialize and load our config file
 		initConfig();
@@ -48,7 +56,7 @@ public class Karren{
 			.setServerHostname(GlobalVars.hostname)
 			.addAutoJoinChannel(GlobalVars.channel)
 			.buildConfiguration();
-		PircBotX bot = new PircBotX(config);
+		bot = new PircBotX(config);
 		
 		//Try and load the JDBC MySQL Driver
 		try{
@@ -67,6 +75,8 @@ public class Karren{
 			e.printStackTrace();
 			Logging.log(e.toString(), true);
 		}
+        UserListManager ulm = new UserListManager();
+        ulm.start();
         //Initialize the bot
 		try{
 			bot.startBot();
