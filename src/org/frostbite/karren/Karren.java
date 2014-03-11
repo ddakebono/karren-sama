@@ -6,36 +6,18 @@
 
 package org.frostbite.karren;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Properties;
-
-import com.google.common.collect.ImmutableSortedSet;
 import org.frostbite.karren.listencast.ListenCast;
-import org.frostbite.karren.listeners.HashCommand;
-import org.frostbite.karren.listeners.HueCommand;
-import org.frostbite.karren.listeners.KillCommand;
-import org.frostbite.karren.listeners.MiscCommands;
-import org.frostbite.karren.listeners.NPCommand;
-import org.frostbite.karren.listeners.NewsCommand;
-import org.frostbite.karren.listeners.SiteCommand;
-import org.frostbite.karren.listeners.TalkToCommand;
-import org.frostbite.karren.listeners.TopicCommand;
-import org.pircbotx.Channel;
+import org.frostbite.karren.listeners.*;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.pircbotx.exception.IrcException;
+
+import java.io.*;
+import java.util.Properties;
 
 public class Karren{
     public static PircBotX bot;
 	public static void main(String[] args){
+        System.out.println("Beginning startup");
 		//Initialize and load our config file
         try {
             initConfig();
@@ -56,7 +38,6 @@ public class Karren{
 			.addListener(new HueCommand())
 			.addListener(new TalkToCommand())
 			.addListener(new HashCommand())
-			.addListener(new SiteCommand()) //Doesn't function currently.
 			.setServerHostname(GlobalVars.hostname)
 			.addAutoJoinChannel(GlobalVars.channel)
 			.buildConfiguration();
@@ -93,7 +74,7 @@ public class Karren{
 		Properties cfg = new Properties();
 		File check = new File(GlobalVars.botConf);
 		if(check.isFile()){
-            FlatFileStorage.initInteractions();
+            FlatFileStorage.loadInteractions();
 			cfg.load(new FileInputStream(GlobalVars.botConf));
 		} else {
             new File("conf").mkdirs();
