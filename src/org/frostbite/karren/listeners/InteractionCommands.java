@@ -18,36 +18,29 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
-import java.util.regex.Pattern;
 
-/**
- * Created by frostbite on 2/4/14.
- */
-public class InteractionCommands extends ListenerAdapter {
-    public void onMessage(MessageEvent event){
+public class InteractionCommands extends ListenerAdapter<PircBotX> {
+    public void onMessage(MessageEvent<PircBotX> event){
         String msg = event.getMessage();
         String returned = "";
         String[] tags;
         Object[] data = new Object[1];
-        ArrayList<Object> resultData = new ArrayList<Object>();
-        Pattern match = Pattern.compile(".*" + GlobalVars.botname + ".*", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+        ArrayList<Object> resultData = new ArrayList<>();
         if(msg.toLowerCase().contains(GlobalVars.botname.toLowerCase())){
             for(Interactions check : GlobalVars.interactions){
                 returned = check.handleMessage(event);
-                if(returned.length()!=0){
+                if(returned.length()>0){
                     tags = check.getTags();
                     for(String tag : tags){
                         switch (tag.toLowerCase()){
                             case "name":
-                                returned.replace("%name", event.getUser().getNick());
+                                returned = returned.replace("%name", event.getUser().getNick());
                                 break;
                             case "depart":
                                 data[0] = event.getUser().getNick();
                                 try {
                                     MySQLConnector.sqlPush("part", "", data);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (SQLException e) {
+                                } catch (IOException|SQLException e) {
                                     e.printStackTrace();
                                 }
                                 GlobalVars.awayUser.add(event.getUser().getNick());
@@ -55,8 +48,7 @@ public class InteractionCommands extends ListenerAdapter {
                             case "random":
                                 String[] tempArray = event.getMessage().split(":");
                                 if(tempArray.length==2){
-                                    returned = check.getResponseTemplate();
-                                    returned.replace("%result", randomList(tempArray[1]));
+                                    returned = returned.replace("%result", randomList(tempArray[1]));
                                 } else {
                                     returned = "You want me to pick something but I can't tell what anything is...";
                                 }
@@ -65,21 +57,20 @@ public class InteractionCommands extends ListenerAdapter {
                                 data[0] = event.getUser().getNick();
                                 try {
                                     resultData.addAll(MySQLConnector.sqlPush("part", "back", data));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (SQLException e) {
+                                } catch (IOException|SQLException e) {
                                     e.printStackTrace();
                                 }
                                 if(resultData.get(0)!=null){
-                                    returned.replace("%away", calcAway((String)resultData.get(0)));
+                                    returned = returned.replace("%away", calcAway((String)resultData.get(0)));
                                 } else {
-                                    returned = "Hey," + event.getUser().getNick() + " are you bad? Say good bye next time!";
+                                    returned = "Hey," + event.getUser().getNick() + " are you new? Be sure to say good bye to me when you leave!";
                                 }
                         }
                     }
+                    break;
                 }
             }
-            if(returned.length()!=0){
+            if(returned.length()>0){
                 event.getChannel().send().message(returned);
             } else {
                 event.respond("It's not like I wanted to answer anyways....baka.");
@@ -88,15 +79,15 @@ public class InteractionCommands extends ListenerAdapter {
     }
     public static String randomList(String message){
         String[] choiceSet = message.split("[\\s*],[\\s*]");
-        String choice = "";
+        String choice;
         int random = new Random().nextInt(choiceSet.length);
         choice = choiceSet[random];
         return choice;
     }
     public static String calcAway(String leaveDate){
-        String backTime = "0";
-        long diffTime = 0;
-        long seconds = 0;
+        String backTime;
+        long diffTime;
+        long seconds;
         long minutes = 0;
         long hours = 0;
         long days = 0;

@@ -7,16 +7,12 @@
 package org.frostbite.karren;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-/**
- * Created by frostbite on 2/4/14.
- */
 public class FlatFileStorage {
     public static void loadInteractions(){
-        String buffer = "";
+        String buffer;
         String[] temp1;
         String ident;
         String[] tags;
@@ -34,12 +30,10 @@ public class FlatFileStorage {
                     tags = temp1[4].split(",");
                     GlobalVars.interactions.add(new Interactions(ident, tags, response, activators));
                 }
+                buffer = in.readLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    public static void saveInteractions(){
-
     }
 }

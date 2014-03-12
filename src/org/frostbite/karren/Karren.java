@@ -25,18 +25,18 @@ public class Karren{
             e.printStackTrace();
         }
         //Adding the listeners for our commands
-		Configuration<PircBotX> config = new Configuration.Builder<PircBotX>()
+		Configuration<PircBotX> config = new Configuration.Builder<>()
 			.setName(GlobalVars.botname)
 			.setLogin("Karren")
 			.setRealName("Karren-sama IRC Bot")
 			.setAutoNickChange(true)
 			.setNickservPassword(GlobalVars.nickservPass)
 			.addListener(new MiscCommands())
+            .addListener(new InteractionCommands())
 			.addListener(new NewsCommand())
 			.addListener(new KillCommand())
 			.addListener(new TopicCommand())
 			.addListener(new HueCommand())
-			.addListener(new TalkToCommand())
 			.addListener(new HashCommand())
 			.setServerHostname(GlobalVars.hostname)
 			.addAutoJoinChannel(GlobalVars.channel)
@@ -60,7 +60,7 @@ public class Karren{
 			e.printStackTrace();
 			Logging.log(e.toString(), true);
 		}
-        UserListManager ulm = new UserListManager();
+        //UserListManager ulm = new UserListManager();
         //ulm.start();
         //Initialize the bot
 		try{
@@ -100,7 +100,7 @@ public class Karren{
 			mkNewConfig();
 		}
 	}
-	public static void mkNewConfig() throws FileNotFoundException, IOException{
+	public static void mkNewConfig() throws IOException{
 		Properties cfg = new Properties();
 		String comment = "Karren-sama IRC bot properties file.";
 		cfg.setProperty("karrenVersion", GlobalVars.versionMarker);
