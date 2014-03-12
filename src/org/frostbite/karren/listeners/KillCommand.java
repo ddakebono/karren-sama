@@ -6,6 +6,7 @@
 
 package org.frostbite.karren.listeners;
 
+import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.Logging;
 import org.frostbite.karren.listencast.ListenCast;
 import org.pircbotx.PircBotX;
@@ -22,7 +23,12 @@ public class KillCommand extends ListenerAdapter<PircBotX>{
 		if(isAnOp && message.toLowerCase().startsWith(cmd)){
 				Logging.log("Bot has been killed by " + event.getUser().getNick(), true);
 				message = message.replaceFirst(cmd, "").trim();
-				bot.sendIRC().quitServer("Kill command fired, bot terminating.");
+                event.getChannel().send().message("Saving Interactions...");
+            GlobalVars.interHello.saveToStorage();
+            GlobalVars.interBye.saveToStorage();
+            GlobalVars.interMisc.saveToStorage();
+            GlobalVars.interRand.saveToStorage();
+            bot.sendIRC().quitServer("Kill command fired, bot terminating.");
 				ListenCast.killListencast = true;
 		} else {
 			if(!isAnOp && message.startsWith(cmd))

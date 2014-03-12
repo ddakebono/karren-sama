@@ -35,10 +35,14 @@ import org.pircbotx.exception.IrcException;
 
 public class Karren{
     public static PircBotX bot;
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args){
 		//Initialize and load our config file
-		initConfig();
-		//Adding the listeners for our commands
+        try {
+            initConfig();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //Adding the listeners for our commands
 		Configuration<PircBotX> config = new Configuration.Builder<PircBotX>()
 			.setName(GlobalVars.botname)
 			.setLogin("Karren")
@@ -76,7 +80,7 @@ public class Karren{
 			Logging.log(e.toString(), true);
 		}
         UserListManager ulm = new UserListManager();
-        ulm.start();
+        //ulm.start();
         //Initialize the bot
 		try{
 			bot.startBot();
@@ -87,10 +91,13 @@ public class Karren{
 	}
 	public static void initConfig() throws IOException{
 		Properties cfg = new Properties();
-		File check = new File("bot.prop");
+		File check = new File(GlobalVars.botConf);
 		if(check.isFile()){
-			cfg.load(new FileInputStream("bot.prop"));
-		}
+            FlatFileStorage.initInteractions();
+			cfg.load(new FileInputStream(GlobalVars.botConf));
+		} else {
+            new File("conf").mkdirs();
+        }
 		GlobalVars.botname = cfg.getProperty("botname", "Karren-sama");
 		GlobalVars.hostname = cfg.getProperty("hostname", "0.0.0.0");
 		GlobalVars.sqlhost = cfg.getProperty("sqlhost", "0.0.0.0");
@@ -132,7 +139,7 @@ public class Karren{
 		cfg.setProperty("channel", GlobalVars.channel);
 		cfg.setProperty("djHashGenKey", String.valueOf(GlobalVars.djHashGenKey));
         cfg.setProperty("maximumUsers", String.valueOf(GlobalVars.userCap));
-		cfg.store(new FileOutputStream("bot.prop"), comment);
+		cfg.store(new FileOutputStream(GlobalVars.botConf), comment);
 		System.out.println("Config file generated! Terminating!");
 		Logging.log("Your configuration file has been generated/updated!", false);
 		System.exit(0);

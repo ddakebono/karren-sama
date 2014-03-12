@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.MySQLConnector;
@@ -86,12 +87,19 @@ public class TalkToCommand extends ListenerAdapter<PircBotX>{
 			}
 			if(random){
 				msgOut = tempArray[1];
-				result = RandCommand.randomList(msgOut);
+				result = randomList(msgOut);
 				event.respond(result);
 			}
 		}
 		
 	}
+    public static String randomList(String message){
+        String[] choiceSet = message.split("[\\s*],[\\s*]");
+        String choice = "";
+        int random = new Random().nextInt(choiceSet.length);
+        choice = choiceSet[random];
+        return choice;
+    }
 	public static String calcAway(String leaveDate){
 		String backTime = "0";
 		long diffTime = 0;
