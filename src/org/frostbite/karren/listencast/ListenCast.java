@@ -14,6 +14,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.google.common.collect.ImmutableSortedSet;
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -91,15 +92,16 @@ public class ListenCast extends Thread{
             }
         }
 	}
-	private static void alertFaves() throws IOException, SQLException{
-		ArrayList<String> returned = new ArrayList<String>();
-		returned = MySQLConnector.sqlPush("fave", "", null);
-        for(KarrenCon check : GlobalVars.userList){
-            if(returned.contains(check.getUserObject().getNick()) && !check.getFaveAlert()){
-                check.getUserObject().send().message(GlobalVars.npSong + " Has started playing!");
+    private static void alertFaves() throws IOException, SQLException{
+        ArrayList<String> returned;
+        returned = MySQLConnector.sqlPush("fave", "", null);
+        ImmutableSortedSet<User> chanUsers = GlobalVars.npChannel.getUsers();
+        for(User user : chanUsers){
+            if(returned.contains(user.getNick())){
+                user.send().message(GlobalVars.npSong + " has started playing!");
             }
         }
-	}
+    }
 	private static void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{
 		String[] dataToSql = new String[1];
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

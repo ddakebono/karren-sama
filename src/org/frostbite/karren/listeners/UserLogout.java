@@ -23,10 +23,10 @@ public class UserLogout extends ListenerAdapter{
     public void onLogout(QuitEvent event){
         Object[] data = new Object[2];
         for(int i=0; i<GlobalVars.curUserCount; i++){
-            if(GlobalVars.userListNew[i].getUserObject().getNick().equals(event.getUser().getNick())){
+            if(GlobalVars.userList[i].getUserObject().getNick().equals(event.getUser().getNick())){
                 //setTimeWasted(GlobalVars.userList.get(i));
                 data[0] = event.getUser().getNick();
-                data[1] = GlobalVars.userListNew[i];
+                data[1] = GlobalVars.userList[i];
                 try {
                     MySQLConnector.sqlPush("user", "logout", data);
                 } catch (IOException e) {

@@ -39,7 +39,6 @@ public class GlobalVars {
 	//Active storage
 		public static boolean loop = false;
 		public static String npSong = "offair";
-		public static String npSongNew = "offair";
 		public static String iceDJ = "noone";
 		public static String iceStreamTitle = "Off-air";
 		public static int iceListeners = 0;
@@ -48,14 +47,11 @@ public class GlobalVars {
 		public static ArrayList<String> awayUser = new ArrayList<String>();
 		public static int songID = 0;
 		public static boolean songChange = false;
-		public static String songLastPlayed = "";
 		public static int songPlayedAmount = 0;
 		public static int songFavCount = 0;
-        public static int curUserCount = 0;
-        public static ArrayList<String> nicks = new ArrayList<String>();
-		public static ArrayList<KarrenCon> userList = new ArrayList<KarrenCon>();
-        public static KarrenCon[] userListNew;
-        public static String[] userListNicks;
 		public static String lpTime = "";
         public static Channel npChannel;
+        public static int curUserCount = 0;
+        public static KarrenCon[] userList;
+        public static String[] userListNicks;
 }

@@ -3,9 +3,7 @@
  * Coded by Owen Bennett for the CRaZyPANTS Server Network, released under the MIT Licence, we take no responsibility if something breaks when you change code.
  * If something breaks on the bot and you didn't change anything please log it as an issue so I can fix it.
  */
-
 package org.frostbite.karren;
-
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 
@@ -37,16 +35,16 @@ public class UserListManager extends Thread{
         for(int i=0; i<GlobalVars.userCap; i++){
             if(i!=userIndex){
                 userListNickCopy[target] = GlobalVars.userListNicks[i];
-                userListCopy[target] = GlobalVars.userListNew[i];
+                userListCopy[target] = GlobalVars.userList[i];
                 target++;
             }
         }
         GlobalVars.curUserCount--;
         GlobalVars.userListNicks = userListNickCopy;
-        GlobalVars.userListNew = userListCopy;
+        GlobalVars.userList = userListCopy;
     }
     public static void addUser(KarrenCon user, String nick){
-        GlobalVars.userListNew[GlobalVars.curUserCount] = user;
+        GlobalVars.userList[GlobalVars.curUserCount] = user;
         GlobalVars.userListNicks[GlobalVars.curUserCount] = nick;
         GlobalVars.curUserCount++;
     }
@@ -54,7 +52,6 @@ public class UserListManager extends Thread{
         while(!Karren.bot.isConnected() || !isInChannel){
             try {
                 Thread.sleep(50);
-                System.out.println("SPAM");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -63,7 +60,7 @@ public class UserListManager extends Thread{
         Object[] data = new String[1];
         Date date = new Date();
         ArrayList<String> returned = new ArrayList<String>();
-        GlobalVars.userListNew = new KarrenCon[GlobalVars.userCap];
+        GlobalVars.userList = new KarrenCon[GlobalVars.userCap];
         GlobalVars.userListNicks = new String[GlobalVars.userCap];
         Channel botChannel = Karren.bot.getUserBot().getChannels().first();
         for(User load : botChannel.getUsers()){

@@ -7,9 +7,7 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.GlobalVars;
-import org.frostbite.karren.KarrenCon;
 import org.frostbite.karren.Logging;
-import org.frostbite.karren.UserListManager;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -58,18 +56,6 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
 					event.getUser().send().message("(Hello, goodbye, clayton) " + GlobalVars.botname + " - Replies with different responses, hello and goodbye support many alternative words.");
                     event.getUser().send().message(".faves (start/stop), Enables or Disables the fave alerting system, defaults to enabled.");
 					event.getUser().send().message(".brad command - poop");
-					break;
-                case "faves":
-                    if(message.equalsIgnoreCase("stop")){
-                        GlobalVars.userListNew[UserListManager.getUserIndex(event.getUser().getNick())].setFaveAlert(false);
-                    } else if(message.equalsIgnoreCase("start")){
-                        GlobalVars.userListNew[UserListManager.getUserIndex(event.getUser().getNick())].setFaveAlert(true);
-                    }
-                    break;
-				case "debug":
-					for(KarrenCon nick : GlobalVars.userListNew){
-                        event.getUser().send().message("PRINTING CURRENT USERLIST: " + nick.getUserObject().getNick());
-                    }
 					break;
                 case "dj":
                     if(!GlobalVars.iceDJ.equalsIgnoreCase("noone")){

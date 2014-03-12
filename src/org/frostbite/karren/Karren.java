@@ -60,8 +60,6 @@ public class Karren{
 			e.printStackTrace();
 			Logging.log(e.toString(), true);
 		}
-        //UserListManager ulm = new UserListManager();
-        //ulm.start();
         //Initialize the bot
 		try{
 			bot.startBot();

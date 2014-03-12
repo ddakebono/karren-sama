@@ -455,7 +455,7 @@ public class MySQLConnector {
         }
         if(!userExists){
             //Creates new user in table
-            statmentBuild = "INSERT INTO users (user, botpart, timepart, timeWasted, isIgnored, faveSetting) VALUES (?, false, 0, 0, false, false)";
+            statmentBuild = "INSERT INTO users (user, botpart, timepart, timeWasted) VALUES (?, false, 0, 0)";
             dataForSQL.add(String.valueOf(data[0]));
             try {
                 runCommand(statmentBuild, dataForSQL, false, true, null);
