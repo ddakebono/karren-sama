@@ -7,6 +7,8 @@
 package org.frostbite.karren.listencast;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -35,40 +37,43 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import sun.org.mozilla.javascript.tools.shell.Global;
 
 public class ListenCast extends Thread{
 	private static PircBotX bot;
-	public static boolean killListencast = false; 
+	private static boolean killListencast = false;
 	public ListenCast(PircBotX bot) {
 		ListenCast.bot = bot;
 	}
 	public void run(){
-		String[] data = new String[0];
-		String npTemp = "offair";
-		while(!killListencast){
-			try {
-				ArrayList<String> resultSet = MySQLConnector.sqlPush("radio", "getSong", data);
-				npTemp = resultSet.get(0);
-			} catch (IOException | SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			if(!npTemp.equalsIgnoreCase(GlobalVars.npSong)){
-				GlobalVars.npSong = npTemp;
-				onSongChange();
-			}
-            try {
-                updateIcecastInfo();
-            } catch (IOException | SQLException | ParserConfigurationException | SAXException e) {
-                e.printStackTrace();
-            }
-            try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+        IcyStreamMeta streamFile;
+        try {
+            streamFile = new IcyStreamMeta(new URL(GlobalVars.icecastHost+":"+GlobalVars.icecastPort+"/"+GlobalVars.icecastMount));
+		    String npTemp = "offair";
+		    while(!killListencast){
+                streamFile.refreshMeta();
+                npTemp = streamFile.getArtist() + " - " + streamFile.getTitle();
+			    if(!npTemp.equalsIgnoreCase(GlobalVars.npSong)){
+				    GlobalVars.npSong = npTemp;
+				    onSongChange();
+			    }
+                try {
+                    updateIcecastInfo();
+                } catch (IOException | SQLException | ParserConfigurationException | SAXException e) {
+                    e.printStackTrace();
+                }
+                try {
+				    Thread.sleep(1000);
+			    } catch (InterruptedException e) {
+				    // TODO Auto-generated catch block
+				    e.printStackTrace();
+			    }
+		    }
+        } catch (IOException e) {
+            killListencast = true;
+            Logging.log("Bad stream host! Listencast thread died.", true);
+            e.printStackTrace();
+        }
 	}
 	private static void onSongChange(){
 		String[] data = new String[0];

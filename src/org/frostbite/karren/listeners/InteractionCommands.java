@@ -45,6 +45,8 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                                 }
                                 GlobalVars.awayUser.add(event.getUser().getNick());
                                 break;
+                            case "Song":
+                                returned = returned.replace("%song", GlobalVars.npSong);
                             case "random":
                                 String[] tempArray = event.getMessage().split(":");
                                 if(tempArray.length==2){
@@ -78,10 +80,10 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
         }
     }
     public static String randomList(String message){
-        String[] choiceSet = message.split("[\\s*],[\\s*]");
+        String[] choiceSet = message.split(",");
         String choice;
         int random = new Random().nextInt(choiceSet.length);
-        choice = choiceSet[random];
+        choice = choiceSet[random].trim();
         return choice;
     }
     public static String calcAway(String leaveDate){

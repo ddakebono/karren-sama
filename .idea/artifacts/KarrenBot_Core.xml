@@ -1,10 +1,12 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="KarrenBot-Core">
+  <artifact type="jar" build-on-make="true" name="KarrenBot-Core">
     <output-path>$PROJECT_DIR$/out/artifacts/KarrenBot_Core</output-path>
     <root id="archive" name="KarrenBot-Core.jar">
+      <element id="module-output" name="Karren-sama" />
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
       </element>
+      <element id="library" level="project" name="Karren-libs" />
     </root>
   </artifact>
 </component>
