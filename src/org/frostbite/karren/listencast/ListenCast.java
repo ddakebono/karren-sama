@@ -26,10 +26,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.frostbite.karren.GlobalVars;
-import org.frostbite.karren.KarrenCon;
-import org.frostbite.karren.Logging;
-import org.frostbite.karren.MySQLConnector;
+import org.frostbite.karren.*;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.w3c.dom.Document;
@@ -40,10 +37,11 @@ import org.xml.sax.SAXException;
 import sun.org.mozilla.javascript.tools.shell.Global;
 
 public class ListenCast extends Thread{
-	private static PircBotX bot;
+	private static KarrenBot bot;
 	private static boolean killListencast = false;
 	public ListenCast(PircBotX bot) {
-		ListenCast.bot = bot;
+        if(bot instanceof KarrenBot)
+		    ListenCast.bot = (KarrenBot)bot;
 	}
 	public void run(){
         IcyStreamMeta streamFile;
@@ -112,7 +110,7 @@ public class ListenCast extends Thread{
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		CredentialsProvider clientCreds = new BasicCredentialsProvider();
-		clientCreds.setCredentials(new AuthScope(GlobalVars.icecastHost, Integer.parseInt(GlobalVars.icecastPort)), new UsernamePasswordCredentials(GlobalVars.icecastAdminUsername, GlobalVars.icecastAdminPass));
+		clientCreds.setCredentials(new AuthScope((String)bot.getBotConf().getConfigPayload("icecasthost"), Integer.parseInt((String)(bot.getBotConf().getConfigPayload("icecastport"))), new UsernamePasswordCredentials((String)(bot.getBotConf().getConfigPayload("icecastadminusername")), (String)(bot.getBotConf().getConfigPayload("icecastadminpass"))));
 		CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(clientCreds).build();
 		try{
 			HttpGet httpGet = new HttpGet("http://" + GlobalVars.icecastHost + ":" + GlobalVars.icecastPort + "/admin/stats.xml");
