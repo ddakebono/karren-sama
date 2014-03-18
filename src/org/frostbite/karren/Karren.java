@@ -15,7 +15,6 @@ import java.io.*;
 import java.util.Properties;
 
 public class Karren{
-    public static PircBotX bot;
 	public static void main(String[] args){
         System.out.println("Beginning startup");
 		//Initialize and load our config file
@@ -41,7 +40,7 @@ public class Karren{
 			.setServerHostname(GlobalVars.hostname)
 			.addAutoJoinChannel(GlobalVars.channel)
 			.buildConfiguration();
-		bot = new PircBotX(config);
+		KarrenBot bot = new KarrenBot(config);
 		
 		//Try and load the JDBC MySQL Driver
 		try{

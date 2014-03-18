@@ -4,22 +4,11 @@
  * If something breaks on the bot and you didn't change anything please log it as an issue so I can fix it.
  */
 package org.frostbite.karren;
-import org.pircbotx.Channel;
-import org.pircbotx.User;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-
-/**
- * Created by frostbite on 1/30/14.
- */
 public class UserListManager extends Thread{
     public static boolean isInChannel = false;
     public static int getUserIndex(String nick){
         int result = 0;
-        boolean found = false;
         for(int i=0; i<GlobalVars.userListNicks.length; i++){
             if(GlobalVars.userListNicks[i].equalsIgnoreCase(nick)){
                 result = i;
@@ -48,7 +37,7 @@ public class UserListManager extends Thread{
         GlobalVars.userListNicks[GlobalVars.curUserCount] = nick;
         GlobalVars.curUserCount++;
     }
-    public void run(){
+    /*public void run(){
         while(!Karren.bot.isConnected() || !isInChannel){
             try {
                 Thread.sleep(50);
@@ -74,5 +63,5 @@ public class UserListManager extends Thread{
                 UserListManager.addUser(new KarrenCon(load, GlobalVars.npChannel, date.getTime(), Boolean.parseBoolean(returned.get(1)), Long.parseLong(returned.get(2)), Long.parseLong(returned.get(3)), Boolean.parseBoolean(returned.get(4)), Boolean.parseBoolean(returned.get(5))), load.getNick());
             }
         }
-    }
+    }*/
 }

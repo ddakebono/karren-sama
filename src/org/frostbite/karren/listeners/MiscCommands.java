@@ -7,6 +7,7 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.GlobalVars;
+import org.frostbite.karren.KarrenBot;
 import org.frostbite.karren.Logging;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -14,7 +15,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help", "debug", "faves", "fave", "dj", "np"};
+		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help", "faves", "fave", "dj", "np", "test"};
 		String message = event.getMessage();
 		String cmd = "";
 		if(message.startsWith(".")){
@@ -41,6 +42,11 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
 				case "version":
 					event.getChannel().send().message(GlobalVars.botname + " is running version " + GlobalVars.versionMarker);
 					break;
+                case "test":
+                    if(event.getBot() instanceof KarrenBot){
+                        event.respond(((KarrenBot) event.getBot()).getTestString());
+                    }
+                    break;
 				case "help":
 					event.getUser().send().message(GlobalVars.botname + " bot commands. (All commands are proceded by a . (Ex. .help))");
 					event.getUser().send().message(".help command - Prints out this message.");
