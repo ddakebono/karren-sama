@@ -18,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.google.common.collect.ImmutableSortedSet;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
@@ -46,7 +47,7 @@ public class ListenCast extends Thread{
 	public void run(){
         IcyStreamMeta streamFile;
         try {
-            streamFile = new IcyStreamMeta(new URL(GlobalVars.icecastHost+":"+GlobalVars.icecastPort+"/"+GlobalVars.icecastMount));
+            streamFile = new IcyStreamMeta(new URL(bot.getBotConf().getConfigPayload("icecasthost")+":"+bot.getBotConf().getConfigPayload("icecastport")+"/"+bot.getBotConf().getConfigPayload("icecastmount")));
 		    String npTemp = "offair";
 		    while(!killListencast){
                 streamFile.refreshMeta();
@@ -87,7 +88,7 @@ public class ListenCast extends Thread{
 			e.printStackTrace();
 		}
 		if(GlobalVars.loop){
-			bot.sendIRC().message(GlobalVars.channel, "Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners + ". This song was last played: " + GlobalVars.lpTime + ". Faves: " + GlobalVars.songFavCount + ". Plays: " + GlobalVars.songPlayedAmount);
+			bot.sendIRC().message((String)(bot.getBotConf().getConfigPayload("channel")), "Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners + ". This song was last played: " + GlobalVars.lpTime + ". Faves: " + GlobalVars.songFavCount + ". Plays: " + GlobalVars.songPlayedAmount);
             try {
                 alertFaves();
             } catch (IOException | SQLException e) {
@@ -110,10 +111,10 @@ public class ListenCast extends Thread{
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		CredentialsProvider clientCreds = new BasicCredentialsProvider();
-		clientCreds.setCredentials(new AuthScope((String)bot.getBotConf().getConfigPayload("icecasthost"), Integer.parseInt((String)(bot.getBotConf().getConfigPayload("icecastport"))), new UsernamePasswordCredentials((String)(bot.getBotConf().getConfigPayload("icecastadminusername")), (String)(bot.getBotConf().getConfigPayload("icecastadminpass"))));
+		clientCreds.setCredentials(new AuthScope(new HttpHost((String)(bot.getBotConf().getConfigPayload("icecasthost")), (int)(bot.getBotConf().getConfigPayload("icecastport")))), new UsernamePasswordCredentials((String)(bot.getBotConf().getConfigPayload("icecastadminusername")), (String)(bot.getBotConf().getConfigPayload("icecastadminpass"))));
 		CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(clientCreds).build();
 		try{
-			HttpGet httpGet = new HttpGet("http://" + GlobalVars.icecastHost + ":" + GlobalVars.icecastPort + "/admin/stats.xml");
+			HttpGet httpGet = new HttpGet("http://" + (String)(bot.getBotConf().getConfigPayload("icecasthost")) + ":" + (int)(bot.getBotConf().getConfigPayload("icecastport")) + "/admin/stats.xml");
 			CloseableHttpResponse result = httpClient.execute(httpGet);
 			try{
 				HttpEntity entity = result.getEntity();
@@ -123,7 +124,7 @@ public class ListenCast extends Thread{
 					Node sourceData = sources.item(i);
 					if(sourceData.getNodeType() == Node.ELEMENT_NODE){
 						Element data = (Element)sourceData;
-						if(data.getAttribute("mount").equalsIgnoreCase("/" + GlobalVars.icecastMount)){
+						if(data.getAttribute("mount").equalsIgnoreCase("/" + bot.getBotConf().getConfigPayload("icecastmount"))){
 							dataToSql[0] = data.getElementsByTagName("server_description").item(0).getTextContent();
 							GlobalVars.iceDJ = dataToSql[0];
 							MySQLConnector.sqlPush("radio", "dj", dataToSql);
@@ -156,5 +157,8 @@ public class ListenCast extends Thread{
         } catch (IOException | SQLException | SAXException | ParserConfigurationException e) {
             e.printStackTrace();
         }
+    }
+    public void kill(){
+        killListencast = true;
     }
 }

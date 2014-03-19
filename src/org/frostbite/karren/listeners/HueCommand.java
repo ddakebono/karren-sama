@@ -13,14 +13,15 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 public class HueCommand extends ListenerAdapter<PircBotX>{
+    private static int hueCount = 0;
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
 		PircBotX bot = event.getBot();
 		String cmd = "Hue";
 		String message = event.getMessage();
 		if(message.toLowerCase().startsWith(cmd.toLowerCase())){
 			event.getChannel().send().message("Hue");
-			GlobalVars.hueCount++;
-			if(GlobalVars.hueCount >= 3){
+			hueCount++;
+			if(hueCount >= 3){
 				if(event.getChannel().isOp(bot.getUserBot())){
 					event.getChannel().send().kick(event.getUser(), "Hue hue hue!");
 					event.getChannel().send().message("Wow, " + event.getUser().getNick() + " just got #rekt.");
@@ -29,7 +30,7 @@ public class HueCommand extends ListenerAdapter<PircBotX>{
 					event.respond("You're lucky this time, I don't have permission to kick you right now...");
 					Logging.log("Couldn't kick " + event.getUser().getNick() + " because permission are missing!", true);
 				}
-				GlobalVars.hueCount = 0;
+				hueCount = 0;
 			}
 		}
 	}

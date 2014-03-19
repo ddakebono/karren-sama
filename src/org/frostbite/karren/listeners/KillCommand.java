@@ -7,6 +7,7 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.GlobalVars;
+import org.frostbite.karren.KarrenBot;
 import org.frostbite.karren.Logging;
 import org.frostbite.karren.listencast.ListenCast;
 import org.pircbotx.PircBotX;
@@ -17,15 +18,13 @@ public class KillCommand extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
 		String cmd = ".kill";
 		String message = event.getMessage();
-		PircBotX bot = event.getBot();
+		KarrenBot bot = (KarrenBot)event.getBot();
 		String ops = event.getChannel().getOps().toString();
 		boolean isAnOp = ops.contains(event.getUser().getNick());
 		if(isAnOp && message.toLowerCase().startsWith(cmd)){
-				Logging.log("Bot has been killed by " + event.getUser().getNick(), true);
-				message = message.replaceFirst(cmd, "").trim();
-
-                bot.sendIRC().quitServer("Kill command fired, bot terminating.");
-				ListenCast.killListencast = true;
+			Logging.log("Bot has been killed by " + event.getUser().getNick(), true);
+            bot.sendIRC().quitServer("Kill command fired, bot terminating.");
+            bot.killListencast();
 		} else {
 			if(!isAnOp && message.startsWith(cmd))
 				event.respond("I will not be killed by you!");

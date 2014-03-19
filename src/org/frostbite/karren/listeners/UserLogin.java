@@ -27,7 +27,7 @@ public class UserLogin extends ListenerAdapter{
         Date date = new Date();
         String[] data = new String[1];
         ArrayList<String> returned = new ArrayList<String>();
-        if(!event.getUser().getNick().equals(GlobalVars.botname)){
+        if(!event.getUser().getNick().equals(event.getBot().getNick())){
             data[0] = event.getUser().getNick();
             try {
                 returned = MySQLConnector.sqlPush("user", "login", data);

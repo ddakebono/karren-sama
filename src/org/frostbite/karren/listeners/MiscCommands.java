@@ -40,26 +40,21 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
 					event.respond("Wow Origin is fucking terrible, you should probably just kill yourself.");
 					break;
 				case "version":
-					event.getChannel().send().message(GlobalVars.botname + " is running version " + GlobalVars.versionMarker);
+					event.getChannel().send().message(event.getBot().getNick() + " is running version " + ((KarrenBot)event.getBot()).getBotConf().getConfigPayload("version"));
 					break;
-                case "test":
-                    if(event.getBot() instanceof KarrenBot){
-                        event.respond(((KarrenBot) event.getBot()).getTestString());
-                    }
-                    break;
 				case "help":
-					event.getUser().send().message(GlobalVars.botname + " bot commands. (All commands are proceded by a . (Ex. .help))");
+					event.getUser().send().message(event.getBot().getNick() + " bot commands. (All commands are proceded by a . (Ex. .help))");
 					event.getUser().send().message(".help command - Prints out this message.");
 					event.getUser().send().message(".isgay command - Sends a message to the server calling whatever follows .isgay gay(Ex. .isgay Seth)");
 					event.getUser().send().message(".kill command - Only operators on the channel can use this. Kills the bot.");
 					event.getUser().send().message(".news command - user must atleast have voice (+v) in the channel. Posts a news update to the CRaZyPANTS website.");
 					event.getUser().send().message(".np command - displays the currently playing song. (on/off change auto update mode)");
 					event.getUser().send().message(".origin command - Replies to you stating that Origin is bad.");
-					event.getUser().send().message(GlobalVars.botname + ", [pick, choose, select, draw] one: 1,2,3,4,etc - The list of entries can contain anything and can include spaces as long as the entries are seperated by a comma.");
+					event.getUser().send().message(event.getBot().getNick() + ", [pick, choose, select, draw] one: 1,2,3,4,etc - The list of entries can contain anything and can include spaces as long as the entries are seperated by a comma.");
 					event.getUser().send().message(".echo command - Replies to you with an echo of whatever follows the command. (Ex. .echo Stuff)");
 					event.getUser().send().message(".topic command - Sets the MOTD section of the topic with whatever follows the command.");
 					event.getUser().send().message(".version command - replies with current version of the bot.");
-					event.getUser().send().message("(Hello, goodbye, clayton) " + GlobalVars.botname + " - Replies with different responses, hello and goodbye support many alternative words.");
+					event.getUser().send().message("(Hello, goodbye, clayton) " + event.getBot().getNick() + " - Replies with different responses, hello and goodbye support many alternative words.");
                     event.getUser().send().message(".faves (start/stop), Enables or Disables the fave alerting system, defaults to enabled.");
 					event.getUser().send().message(".brad command - poop");
 					break;

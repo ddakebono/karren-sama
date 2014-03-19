@@ -8,6 +8,7 @@ package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.Interactions;
+import org.frostbite.karren.KarrenBot;
 import org.frostbite.karren.MySQLConnector;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -26,7 +27,7 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
         String[] tags;
         Object[] data = new Object[1];
         ArrayList<Object> resultData = new ArrayList<>();
-        if(msg.toLowerCase().contains(GlobalVars.botname.toLowerCase())){
+        if(msg.toLowerCase().contains(event.getBot().getNick().toLowerCase())){
             for(Interactions check : GlobalVars.interactions){
                 returned = check.handleMessage(event);
                 if(returned.length()>0){

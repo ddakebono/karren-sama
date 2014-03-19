@@ -39,13 +39,13 @@ public class Karren{
                 .addListener(new HashCommand())
                 .setServerHostname((String)botConf.getConfigPayload("hostname"))
                 .addAutoJoinChannel((String)botConf.getConfigPayload("channel"))
-                .buildConfiguration();;
+                .buildConfiguration();
         //Adding the listeners for our commands
 		KarrenBot bot = new KarrenBot(config, botConf);
 		
 		//Try and load the JDBC MySQL Driver
 		try{
-			Logging.log(GlobalVars.botname + " version " + GlobalVars.versionMarker + " is now starting!", false);
+			Logging.log(bot.getNick() + " version " + bot.getBotConf().getConfigPayload("version") + " is now starting!", false);
 			Logging.log("Trying to load MySQL Driver...", false);
 			Class.forName("com.mysql.jdbc.Driver");
 			Logging.log("Loaded driver!", false);

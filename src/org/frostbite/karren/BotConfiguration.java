@@ -70,6 +70,8 @@ public class BotConfiguration {
                 return sqlhost;
             case "usercap":
                 return userCap;
+            case "version":
+                return versionMarker;
             default:
                 return false;
         }
