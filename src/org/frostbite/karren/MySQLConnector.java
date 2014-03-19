@@ -325,25 +325,7 @@ public class MySQLConnector {
         //The logout section saves the current user container(KarrenCon) to the SQL to preserve settings.
         if(mod.equalsIgnoreCase("logout")){
             dataForSQL.clear();
-            statmentBuild = "UPDATE users SET (botpart, timepart, timeWasted, isIgnored, faveSetting) VALUES (?, ?, ?, ?, ?) WHERE user= ?";
-            KarrenCon user = (KarrenCon)data[1];
-            //Botpart (Boolean)
-            dataForSQL.add(String.valueOf(user.getParted()));
-            //Timepart (Int)
-            dataForSQL.add(String.valueOf(user.getTimeOfPart()));
-            //timeWasted (Long)
-            dataForSQL.add(String.valueOf(user.getTimeWasted()));
-            //isIgnored (Boolean)
-            dataForSQL.add(String.valueOf(user.getIgnored()));
-            //FaveSetting (Boolean)
-            dataForSQL.add(String.valueOf(user.getFaveAlert()));
-            //user name (String)
-            dataForSQL.add(user.getUserName());
-            try {
-                runCommand(statmentBuild, dataForSQL, false, true, null);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+
         }
 		if(mod.equalsIgnoreCase("back")){
 			//Sets botpart to false and sends a message to the server stating how long user has been away
