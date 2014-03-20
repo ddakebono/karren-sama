@@ -1,6 +1,7 @@
 package org.frostbite.karren;
 
 import java.sql.*;
+import java.util.Date;
 import java.util.ArrayList;
 
 /**
@@ -17,6 +18,9 @@ public class MySQLInterface {
     private boolean pstNeeded;
     private String overrideDB;
     private ArrayList<String> sqlPayload = new ArrayList<>();
+    /*
+    CONSTRUCTORS
+     */
     public MySQLInterface(String sqlhost, String sqluser, String sqldb, String sqlpass, int sqlport){
         this.sqldb = sqldb;
         this.sqlhost = sqlhost;
@@ -31,6 +35,9 @@ public class MySQLInterface {
         sqlport = (Integer)botConf.getConfigPayload("sqlport");
         sqluser = (String)botConf.getConfigPayload("sqluser");
     }
+    /*
+    UTILITY OPERATIONS
+     */
     private void resetSQL(){
         sqlPayload.clear();
         query = null;
@@ -80,12 +87,12 @@ public class MySQLInterface {
         1 - CRaZyPANTS Radio interface
         2 - Retrieve song faves
      */
-    public int prepQuery(int type, String mod, String[] args){
+    public int prepQuery(int type, String mod, String[] args) throws SQLException {
         int result = 0;
         resetSQL();
         switch(type){
             case 0:
-                prepForUser(mod, args);
+                result = prepForUser(mod, args);
                 break;
             case 1:
                 break;
@@ -94,14 +101,55 @@ public class MySQLInterface {
         }
         return result;
     }
-    private void prepForUser(String mod, String[] args){
-        switch(mod.toLowerCase()){
-            case "part":
-                if(isNewUser(args[0]))
-                    makeUser(args[0]);
-
-        }
+    /*
+    USER OPERATIONS
+     */
+    public ArrayList<Object> getUserData(String nick) throws SQLException {
+        ArrayList<Object> result = null;
+        if(isNewUser(nick))
+            makeUser(nick);
+        query = "SELECT * FROM users WHERE user= ?";
+        sqlPayload.add(nick);
+        search = true;
+        pstNeeded = true;
+        result = executeQuery();
+        return result;
     }
+    private int prepForUser(String mod, String[] args) throws SQLException {
+        Date date = new Date();
+        ArrayList<Object> userData = getUserData(args[0]);
+        int ready = 0;
+        switch(mod.toLowerCase()){
+            case "return":
+                if(Boolean.parseBoolean((String)userData.get(1))){
+                    query = "UPDATE users SET botpart=false WHERE user= ?";
+                    sqlPayload.add(args[0]);
+                    search = false;
+                    pstNeeded = true;
+                    ready = 1;
+                } else {
+                    ready = 2;
+                }
+                break;
+            case "part":
+                if(!(Boolean.parseBoolean((String)userData.get(1)))){
+                    resetSQL();
+                    query = "UPDATE users SET (botpart, timepart) VALUES (true, ?) WHERE user= ?";
+                    sqlPayload.add(String.valueOf(date.getTime()));
+                    sqlPayload.add(args[0]);
+                    search = false;
+                    pstNeeded = true;
+                    ready = 1;
+                } else {
+                    ready = 2;
+                }
+                break;
+        }
+        return ready;
+    }
+    /*
+    SQL OPERATIONS
+     */
     public ArrayList<Object> executeQuery() throws SQLException {
         String targetDB = sqldb;
         ArrayList<Object> result = new ArrayList<Object>();

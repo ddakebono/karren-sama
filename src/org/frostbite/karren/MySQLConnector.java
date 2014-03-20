@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
+@Deprecated
 public class MySQLConnector {
     private static String statmentBuild = "";
     private static KarrenBot bot;
@@ -322,7 +322,7 @@ public class MySQLConnector {
                 result.add(String.valueOf(returned.get(i)));
             }
         }
-        //The logout section saves the current user container(KarrenCon) to the SQL to preserve settings.
+        //The logout section saves the current user container(K) to the SQL to preserve settings.
         if(mod.equalsIgnoreCase("logout")){
             dataForSQL.clear();
 

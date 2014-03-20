@@ -20,15 +20,10 @@ public class GlobalVars {
 		public static String iceStreamTitle = "Off-air";
 		public static int iceListeners = 0;
 		public static int iceMaxListeners = 0;
-		public static int hueCount = 0;
-		public static ArrayList<String> awayUser = new ArrayList<String>();
 		public static int songID = 0;
 		public static boolean songChange = false;
 		public static int songPlayedAmount = 0;
 		public static int songFavCount = 0;
 		public static String lpTime = "";
         public static Channel npChannel;
-        public static int curUserCount = 0;
-        public static KarrenCon[] userList;
-        public static String[] userListNicks;
 }

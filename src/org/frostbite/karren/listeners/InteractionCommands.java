@@ -25,7 +25,8 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
         String msg = event.getMessage();
         String returned = "";
         String[] tags;
-        Object[] data = new Object[1];
+        String[] data = new String[1];
+        KarrenBot bot = (KarrenBot)event.getBot();
         ArrayList<Object> resultData = new ArrayList<>();
         if(msg.toLowerCase().contains(event.getBot().getNick().toLowerCase())){
             for(Interactions check : GlobalVars.interactions){
@@ -40,8 +41,8 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                             case "depart":
                                 data[0] = event.getUser().getNick();
                                 try {
-                                    MySQLConnector.sqlPush("part", "", data);
-                                } catch (IOException|SQLException e) {
+                                    bot.getSql().prepQuery(0, "part", data);
+                                } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
                                 GlobalVars.awayUser.add(event.getUser().getNick());
