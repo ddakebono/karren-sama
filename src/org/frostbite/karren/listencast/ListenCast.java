@@ -6,16 +6,6 @@
 
 package org.frostbite.karren.listencast;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.SQLException;
-import java.util.ArrayList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import com.google.common.collect.ImmutableSortedSet;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -28,6 +18,7 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.frostbite.karren.*;
+import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.w3c.dom.Document;
@@ -35,25 +26,47 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import sun.org.mozilla.javascript.tools.shell.Global;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class ListenCast extends Thread{
-	private static KarrenBot bot;
-	private static boolean killListencast = false;
-	public ListenCast(PircBotX bot) {
+	private KarrenBot bot;
+    private String icecastHost;
+    private String icecastPort;
+    private String icecastMount;
+    private boolean nowPlaying;
+    private String npSong;
+    private String npTemp;
+    private String iceDJ;
+    private String iceStreamTitle;
+    private int iceListeners;
+    private Channel announceChannel;
+    private int songPlayedAmount;
+    private int songFavCount;
+    private String lpTime;
+    private int iceMaxListeners;
+	private boolean killListencast = false;
+	public ListenCast(PircBotX bot, BotConfiguration botConf) {
         if(bot instanceof KarrenBot)
-		    ListenCast.bot = (KarrenBot)bot;
+		    this.bot = (KarrenBot)bot;
+        icecastHost = (String)botConf.getConfigPayload("icecasthost");
+        icecastPort = (String)botConf.getConfigPayload("icecastport");
+        icecastMount = (String)botConf.getConfigPayload("icecastmount");
 	}
 	public void run(){
         IcyStreamMeta streamFile;
         try {
-            streamFile = new IcyStreamMeta(new URL(bot.getBotConf().getConfigPayload("icecasthost")+":"+bot.getBotConf().getConfigPayload("icecastport")+"/"+bot.getBotConf().getConfigPayload("icecastmount")));
-		    String npTemp = "offair";
+            streamFile = new IcyStreamMeta(new URL("http://"+icecastHost+":"+icecastPort+"/"+icecastMount));
 		    while(!killListencast){
                 streamFile.refreshMeta();
                 npTemp = streamFile.getArtist() + " - " + streamFile.getTitle();
-			    if(!npTemp.equalsIgnoreCase(GlobalVars.npSong)){
-				    GlobalVars.npSong = npTemp;
+			    if(npSong == null || !npTemp.equalsIgnoreCase(npSong)){
+				    npSong = npTemp;
 				    onSongChange();
 			    }
                 try {
@@ -74,21 +87,14 @@ public class ListenCast extends Thread{
             e.printStackTrace();
         }
 	}
-	private static void onSongChange(){
-		String[] data = new String[0];
-		try {
-			MySQLConnector.sqlPush("radio", "song", data);
-		} catch (IOException | SQLException e) {
-			e.printStackTrace();
-		}
-		try {
-			GlobalVars.songChange = true;
-			MySQLConnector.sqlPush("song", "", null);
-		} catch (IOException | SQLException e) {
-			e.printStackTrace();
-		}
-		if(GlobalVars.loop){
-			bot.sendIRC().message((String)(bot.getBotConf().getConfigPayload("channel")), "Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners + ". This song was last played: " + GlobalVars.lpTime + ". Faves: " + GlobalVars.songFavCount + ". Plays: " + GlobalVars.songPlayedAmount);
+	private void onSongChange(){
+        try {
+            bot.getSql().updateRadioPage(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if(nowPlaying){
+			bot.sendIRC().message((String)(bot.getBotConf().getConfigPayload("channel")), getNowPlayingStr());
             try {
                 alertFaves();
             } catch (IOException | SQLException e) {
@@ -96,17 +102,20 @@ public class ListenCast extends Thread{
             }
         }
 	}
-    private static void alertFaves() throws IOException, SQLException{
+    private void alertFaves() throws IOException, SQLException{
         ArrayList<String> returned;
         returned = MySQLConnector.sqlPush("fave", "", null);
-        ImmutableSortedSet<User> chanUsers = GlobalVars.npChannel.getUsers();
+        ImmutableSortedSet<User> chanUsers = announceChannel.getUsers();
         for(User user : chanUsers){
             if(returned.contains(user.getNick())){
-                user.send().message(GlobalVars.npSong + " has started playing!");
+                user.send().message(npSong + " has started playing!");
             }
         }
     }
-	private static void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{
+    public String getNowPlayingStr(){
+        return "Now playing: \"" + npSong + "\" On CRaZyRADIO ("+ iceStreamTitle +"). Listeners: " + iceListeners + "/" + iceMaxListeners + ". This song was last played: " + lpTime + ". Faves: " + songFavCount + ". Plays: " + songPlayedAmount;
+    }
+	private void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{
 		String[] dataToSql = new String[1];
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -126,14 +135,14 @@ public class ListenCast extends Thread{
 						Element data = (Element)sourceData;
 						if(data.getAttribute("mount").equalsIgnoreCase("/" + bot.getBotConf().getConfigPayload("icecastmount"))){
 							dataToSql[0] = data.getElementsByTagName("server_description").item(0).getTextContent();
-							GlobalVars.iceDJ = dataToSql[0];
+							iceDJ = dataToSql[0];
 							MySQLConnector.sqlPush("radio", "dj", dataToSql);
 							dataToSql[0] = data.getElementsByTagName("listeners").item(0).getTextContent();
-							GlobalVars.iceListeners = Integer.parseInt(dataToSql[0]);
-							GlobalVars.iceMaxListeners = Integer.parseInt(data.getElementsByTagName("max_listeners").item(0).getTextContent());
+							iceListeners = Integer.parseInt(dataToSql[0]);
+							iceMaxListeners = Integer.parseInt(data.getElementsByTagName("max_listeners").item(0).getTextContent());
 							MySQLConnector.sqlPush("radio", "listen", dataToSql);
 							dataToSql[0] = data.getElementsByTagName("server_name").item(0).getTextContent();
-							GlobalVars.iceStreamTitle = dataToSql[0];
+							iceStreamTitle = dataToSql[0];
 							MySQLConnector.sqlPush("radio", "title", dataToSql);
 						}
 					}
@@ -149,7 +158,7 @@ public class ListenCast extends Thread{
 		}
 		
 	}
-    public static void manualUpdate(String song){
+    public void manualUpdate(String song){
         Logging.log("A Manual update of the now playing information has been triggered!", false);
         onSongChange();
         try {
@@ -160,5 +169,22 @@ public class ListenCast extends Thread{
     }
     public void kill(){
         killListencast = true;
+    }
+    public String getIceDJ(){return iceDJ;}
+    public String getNpSong(){return npSong;}
+    public String getIceStreamTitle(){return iceStreamTitle;}
+    public int getIceListeners(){return iceListeners;}
+    public void setSongID(int id){
+        bot.setSongID(id);
+    }
+    public int getSongID(){return bot.getSongID();}
+    public boolean enableNP(Channel channel){
+        announceChannel = channel;
+        if(!nowPlaying){
+            nowPlaying = true;
+        } else {
+            nowPlaying = false;
+        }
+        return nowPlaying;
     }
 }

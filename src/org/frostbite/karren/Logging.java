@@ -35,10 +35,18 @@ public class Logging {
 			e.printStackTrace();
 		}
 	}
-	public static void song(String out) throws IOException{
-		Writer logfile = new BufferedWriter(new FileWriter("logs/songs.log", true));
-		Date date = new Date();
-		logfile.append("[" + date.toString() + "] Now playing updated to \"" + out + "\"\n");
-		logfile.close();
+	public static void song(String out){
+        Writer logfile = null;
+        try {
+            logfile = new BufferedWriter(new FileWriter("logs/songs.log", true));
+            Date date = new Date();
+            if (logfile != null) {
+                logfile.append("[" + date.toString() + "] Now playing updated to \"" + out + "\"\n");
+            }
+            logfile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 	}
 }

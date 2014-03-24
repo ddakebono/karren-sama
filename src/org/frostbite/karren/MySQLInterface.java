@@ -1,6 +1,9 @@
 package org.frostbite.karren;
 
+import org.frostbite.karren.listencast.ListenCast;
+
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 
@@ -32,7 +35,7 @@ public class MySQLInterface {
         sqldb = (String)botConf.getConfigPayload("sqldb");
         sqlhost = (String)botConf.getConfigPayload("sqlhost");
         sqlpass = (String)botConf.getConfigPayload("sqlpass");
-        sqlport = (Integer)botConf.getConfigPayload("sqlport");
+        sqlport = Integer.parseInt((String)botConf.getConfigPayload("sqlport"));
         sqluser = (String)botConf.getConfigPayload("sqluser");
     }
     /*
@@ -82,30 +85,11 @@ public class MySQLInterface {
         }
     }
     /*
-    prepQuery usable types:
-        0 - User queries(parting operations, fave handler)
-        1 - CRaZyPANTS Radio interface
-        2 - Retrieve song faves
-     */
-    public int prepQuery(int type, String mod, String[] args) throws SQLException {
-        int result = 0;
-        resetSQL();
-        switch(type){
-            case 0:
-                result = prepForUser(mod, args);
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-        }
-        return result;
-    }
-    /*
     USER OPERATIONS
      */
     public ArrayList<Object> getUserData(String nick) throws SQLException {
         ArrayList<Object> result = null;
+        resetSQL();
         if(isNewUser(nick))
             makeUser(nick);
         query = "SELECT * FROM users WHERE user= ?";
@@ -115,37 +99,96 @@ public class MySQLInterface {
         result = executeQuery();
         return result;
     }
-    private int prepForUser(String mod, String[] args) throws SQLException {
+    /*
+    Expected arguments:
+        1: Nick of user
+     */
+    public void userOperation(String mod, String[] args) throws SQLException {
         Date date = new Date();
         ArrayList<Object> userData = getUserData(args[0]);
+        resetSQL();
         int ready = 0;
         switch(mod.toLowerCase()){
             case "return":
-                if(Boolean.parseBoolean((String)userData.get(1))){
+                if((Boolean)userData.get(1)){
                     query = "UPDATE users SET botpart=false WHERE user= ?";
                     sqlPayload.add(args[0]);
                     search = false;
                     pstNeeded = true;
-                    ready = 1;
-                } else {
-                    ready = 2;
+                    executeQuery();
                 }
                 break;
             case "part":
-                if(!(Boolean.parseBoolean((String)userData.get(1)))){
-                    resetSQL();
-                    query = "UPDATE users SET (botpart, timepart) VALUES (true, ?) WHERE user= ?";
+                if(!((Boolean)userData.get(1))){
+                    query = "UPDATE users SET botpart=true, timepart= ? WHERE user= ?";
                     sqlPayload.add(String.valueOf(date.getTime()));
                     sqlPayload.add(args[0]);
                     search = false;
                     pstNeeded = true;
-                    ready = 1;
-                } else {
-                    ready = 2;
+                    executeQuery();
                 }
                 break;
         }
-        return ready;
+    }
+    /*
+    RADIO OPERATIONS
+     */
+    public void updateRadioPage(ListenCast lc) throws SQLException {
+        resetSQL();
+        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<Object> returned;
+        String curTime = "00-00-0000 00:00:00";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+        query = "SELECT ID FROM SongDB WHERE SongTitle = ?";
+        pstNeeded = true;
+        search = true;
+        sqlPayload.add(lc.getNpSong());
+        returned = executeQuery();
+        resetSQL();
+        if(returned.size()>0){
+            lc.setSongID((int)returned.get(0));
+            returned.clear();
+            query = "SELECT * FROM SongDB WHERE ID= ?";
+            sqlPayload.add(String.valueOf(lc.getSongID()));
+            search = true;
+            pstNeeded = true;
+            returned = executeQuery();
+            GlobalVars.lpTime = (String)returned.get(2);
+            GlobalVars.songPlayedAmount = (int)returned.get(3);
+            GlobalVars.songFavCount = (int)returned.get(4);
+            dataForSQL.clear();
+        } else {
+            GlobalVars.songID = 0;
+            GlobalVars.lpTime = "Never";
+            GlobalVars.songFavCount = 0;
+            GlobalVars.songPlayedAmount = 1;
+        }
+        returned.clear();
+        if(GlobalVars.songID == 0){
+            //Adding song to DB and getting new ID for song
+            statmentBuild = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
+            dataForSQL.add(GlobalVars.npSong);
+            curTime = getCurDate(curTime, dateFormat);
+            dataForSQL.add(curTime);
+            runCommand(statmentBuild, dataForSQL, false, true, null);
+            GlobalVars.songChange = false;
+            dataForSQL.clear();
+            statmentBuild = "SELECT ID FROM SongDB WHERE SongTitle = ?";
+            dataForSQL.add(GlobalVars.npSong);
+            returned = runCommand(statmentBuild, dataForSQL, true, true, null);
+            if(returned.size()>0){
+                GlobalVars.songID = (int) returned.get(0);
+            }
+            returned.clear();
+        } else {
+            //Update info for song
+            statmentBuild = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=" + GlobalVars.songID;
+            curTime = getCurDate(curTime, dateFormat);
+            dataForSQL.add(curTime);
+            runCommand(statmentBuild, dataForSQL, false, true, null);
+            GlobalVars.songChange = false;
+        }
+        Logging.song(npSong + ":" + songID + ":" + GlobalVars.songPlayedAmount);
     }
     /*
     SQL OPERATIONS

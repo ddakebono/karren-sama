@@ -29,7 +29,7 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
         KarrenBot bot = (KarrenBot)event.getBot();
         ArrayList<Object> resultData = new ArrayList<>();
         if(msg.toLowerCase().contains(event.getBot().getNick().toLowerCase())){
-            for(Interactions check : GlobalVars.interactions){
+            for(Interactions check : bot.getInteractions()){
                 returned = check.handleMessage(event);
                 if(returned.length()>0){
                     tags = check.getTags();
@@ -41,14 +41,14 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                             case "depart":
                                 data[0] = event.getUser().getNick();
                                 try {
-                                    bot.getSql().prepQuery(0, "part", data);
+                                    bot.getSql().userOperation("part", data);
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
-                                GlobalVars.awayUser.add(event.getUser().getNick());
                                 break;
-                            case "Song":
+                            case "song":
                                 returned = returned.replace("%song", GlobalVars.npSong);
+                                break;
                             case "random":
                                 String[] tempArray = event.getMessage().split(":");
                                 if(tempArray.length==2){
@@ -60,12 +60,13 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                             case "return":
                                 data[0] = event.getUser().getNick();
                                 try {
-                                    resultData.addAll(MySQLConnector.sqlPush("part", "back", data));
-                                } catch (IOException|SQLException e) {
+                                    bot.getSql().userOperation("return", data);
+                                    resultData.addAll(bot.getSql().getUserData(event.getUser().getNick()));
+                                } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
-                                if(resultData.get(0)!=null){
-                                    returned = returned.replace("%away", calcAway((String)resultData.get(0)));
+                                if(resultData.get(2)!=0){
+                                    returned = returned.replace("%away", calcAway((String)resultData.get(2)));
                                 } else {
                                     returned = "Hey," + event.getUser().getNick() + " are you new? Be sure to say good bye to me when you leave!";
                                 }

@@ -6,13 +6,10 @@
 
 package org.frostbite.karren;
 
-import org.pircbotx.Configuration;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Properties;
 
 /**
@@ -50,9 +47,9 @@ public class BotConfiguration {
                 return djHashGenKey;
             case "icecastmount":
                 return icecastMount;
-            case "icecastPort":
+            case "icecastport":
                 return icecastPort;
-            case "icecastHost":
+            case "icecasthost":
                 return icecastHost;
             case "icecastadminpass":
                 return icecastAdminPass;
@@ -76,7 +73,7 @@ public class BotConfiguration {
                 return false;
         }
     }
-    public void initConfig() throws IOException{
+    public void initConfig() throws IOException {
         Properties cfg = new Properties();
         File check = new File("conf/bot.prop");
         if(check.isFile()){

@@ -6,13 +6,9 @@
 
 package org.frostbite.karren;
 
-import java.util.ArrayList;
-
 import org.pircbotx.Channel;
-
+@Deprecated
 public class GlobalVars {
-    //Interaction check configs
-        public static ArrayList<Interactions> interactions = new ArrayList<Interactions>();
 	//Active storage
 		public static boolean loop = false;
 		public static String npSong = "offair";

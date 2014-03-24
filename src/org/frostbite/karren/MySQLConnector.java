@@ -229,17 +229,7 @@ public class MySQLConnector {
 		String result = "";
 		ArrayList<Object> returned;
 		//Updating now playing song
-		if(mod.equalsIgnoreCase("GetSong")){
-			statmentBuild = "SELECT NowPlaying FROM radio";
-			try {
-				returned = runCommand(statmentBuild, dataForSQL, true, false, "sitebackend");
-				if(returned.size()>0)
-					result = (String)returned.get(0);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+
 		if(mod.equalsIgnoreCase("Song")){
 			statmentBuild = "SELECT Spot FROM lastplayed WHERE SongTitle=?";
 			dataForSQL.add(GlobalVars.npSong);

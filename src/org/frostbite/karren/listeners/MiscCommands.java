@@ -8,16 +8,16 @@ package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.KarrenBot;
-import org.frostbite.karren.Logging;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help", "faves", "fave", "dj", "np", "test"};
+		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help", "faves", "fave", "dj", "np", "test", "reloadint"};
 		String message = event.getMessage();
 		String cmd = "";
+        KarrenBot bot = (KarrenBot)event.getBot();
 		if(message.startsWith(".")){
 			message = message.replaceFirst(".", "").trim();
 			for(String check : cmds){
@@ -42,6 +42,9 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
 				case "version":
 					event.getChannel().send().message(event.getBot().getNick() + " is running version " + ((KarrenBot)event.getBot()).getBotConf().getConfigPayload("version"));
 					break;
+                case "reloadint":
+                    bot.reloadInteractions();
+                    break;
 				case "help":
 					event.getUser().send().message(event.getBot().getNick() + " bot commands. (All commands are proceded by a . (Ex. .help))");
 					event.getUser().send().message(".help command - Prints out this message.");
@@ -67,19 +70,14 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     break;
                 case "np":
                     if(message.startsWith("switch") && event.getUser().isIrcop()){
-                        if(!GlobalVars.loop){
-                            GlobalVars.loop = true;
-                            GlobalVars.npChannel = event.getChannel();
-                            Logging.log("Now Playing enabled by " + event.getUser().getNick(), false);
-                            event.getChannel().send().message("Automagic now playing is now active, periodic updates of the now playing will occur.");
+                        if(bot.getListenCast().enableNP(event.getChannel())){
+                            event.getChannel().send().message("Automagic now playing has been activated!");
                         } else {
-                            GlobalVars.loop = false;
-                            GlobalVars.npChannel = null;
-                            Logging.log("Now Playing disabled by " + event.getUser().getNick(), false);
+                            event.getChannel().send().message("Automagic now playing has been deactivated...");
                         }
                     } else {
-                        if(!GlobalVars.iceDJ.equalsIgnoreCase("noone")){
-                            event.getChannel().send().message("Now playing: \"" + GlobalVars.npSong + "\" On CRaZyRADIO ("+ GlobalVars.iceStreamTitle +"). Listeners: " + GlobalVars.iceListeners + "/" + GlobalVars.iceMaxListeners + ". Faves: " + GlobalVars.songFavCount + ". Plays: " + GlobalVars.songPlayedAmount);
+                        if(!bot.getListenCast().getIceDJ().equalsIgnoreCase("noone")){
+                            event.getChannel().send().message(bot.getListenCast().getNowPlayingStr());
                         } else {
                             event.getChannel().send().message("The stream is currently offline...");
                         }
