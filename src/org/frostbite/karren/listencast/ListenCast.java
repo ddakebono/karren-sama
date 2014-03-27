@@ -40,16 +40,13 @@ public class ListenCast extends Thread{
     private String icecastPort;
     private String icecastMount;
     private boolean nowPlaying;
-    private String npSong;
-    private String npTemp;
     private String iceDJ;
     private String iceStreamTitle;
     private int iceListeners;
     private Channel announceChannel;
-    private int songPlayedAmount;
-    private int songFavCount;
-    private String lpTime;
     private int iceMaxListeners;
+    private Song currentSong;
+    private Song songTemp;
 	private boolean killListencast = false;
 	public ListenCast(PircBotX bot, BotConfiguration botConf) {
         if(bot instanceof KarrenBot)
@@ -64,9 +61,9 @@ public class ListenCast extends Thread{
             streamFile = new IcyStreamMeta(new URL("http://"+icecastHost+":"+icecastPort+"/"+icecastMount));
 		    while(!killListencast){
                 streamFile.refreshMeta();
-                npTemp = streamFile.getArtist() + " - " + streamFile.getTitle();
-			    if(npSong == null || !npTemp.equalsIgnoreCase(npSong)){
-				    npSong = npTemp;
+                songTemp = new Song(streamFile.getArtist() + " - " + streamFile.getTitle());
+			    if(currentSong == null || !songTemp.getSongName().equalsIgnoreCase(currentSong.getSongName())){
+				    currentSong = songTemp;
 				    onSongChange();
 			    }
                 try {
@@ -89,7 +86,7 @@ public class ListenCast extends Thread{
 	}
 	private void onSongChange(){
         try {
-            bot.getSql().updateRadioPage(this);
+            bot.getSql().updateRadioPage(currentSong);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -108,12 +105,12 @@ public class ListenCast extends Thread{
         ImmutableSortedSet<User> chanUsers = announceChannel.getUsers();
         for(User user : chanUsers){
             if(returned.contains(user.getNick())){
-                user.send().message(npSong + " has started playing!");
+                user.send().message(currentSong.getSongName() + " has started playing!");
             }
         }
     }
     public String getNowPlayingStr(){
-        return "Now playing: \"" + npSong + "\" On CRaZyRADIO ("+ iceStreamTitle +"). Listeners: " + iceListeners + "/" + iceMaxListeners + ". This song was last played: " + lpTime + ". Faves: " + songFavCount + ". Plays: " + songPlayedAmount;
+        return "Now playing: \"" + currentSong.getSongName() + "\" On CRaZyRADIO ("+ iceStreamTitle +"). Listeners: " + iceListeners + "/" + iceMaxListeners + ". This song was last played: " + currentSong.getLastPlayed() + ". Faves: " + currentSong.getFavCount() + ". Plays: " + currentSong.getPlayCount();
     }
 	private void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{
 		String[] dataToSql = new String[1];
@@ -158,26 +155,13 @@ public class ListenCast extends Thread{
 		}
 		
 	}
-    public void manualUpdate(String song){
-        Logging.log("A Manual update of the now playing information has been triggered!", false);
-        onSongChange();
-        try {
-            updateIcecastInfo();
-        } catch (IOException | SQLException | SAXException | ParserConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
     public void kill(){
         killListencast = true;
     }
     public String getIceDJ(){return iceDJ;}
-    public String getNpSong(){return npSong;}
+    public Song getSong(){return currentSong;}
     public String getIceStreamTitle(){return iceStreamTitle;}
     public int getIceListeners(){return iceListeners;}
-    public void setSongID(int id){
-        bot.setSongID(id);
-    }
-    public int getSongID(){return bot.getSongID();}
     public boolean enableNP(Channel channel){
         announceChannel = channel;
         if(!nowPlaying){

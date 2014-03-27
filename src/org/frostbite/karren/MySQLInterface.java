@@ -1,6 +1,7 @@
 package org.frostbite.karren;
 
 import org.frostbite.karren.listencast.ListenCast;
+import org.frostbite.karren.listencast.Song;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -133,7 +134,38 @@ public class MySQLInterface {
     /*
     RADIO OPERATIONS
      */
-    public void updateRadioPage(ListenCast lc) throws SQLException {
+    public ArrayList<Object> getUserFaves(Song song) throws SQLException {
+        ArrayList<Object> result;
+        resetSQL();
+        query = "SELECT User FROM UserFaves WHERE SongID=?";
+        sqlPayload.add(String.valueOf(song.getSongID()));
+        search = true;
+        pstNeeded = true;
+        result = executeQuery();
+        return result;
+    }
+    public boolean addFave(String user, Song song) throws SQLException {
+        resetSQL();
+        query = "SELECT * FROM UserFaves WHERE User=? AND SongID=?";
+        sqlPayload.add(user);
+        sqlPayload.add(String.valueOf(song.getSongID()));
+        search = true;
+        pstNeeded = true;
+        ArrayList<Object> returned = executeQuery();
+        if(returned.size()==0){
+            resetSQL();
+            query = "INSERT INTO UserFaves('ID', 'User', 'SongID') SET (null, ?, ?)";
+            sqlPayload.add(user);
+            sqlPayload.add(String.valueOf(song.getSongID()));
+            search = false;
+            pstNeeded = true;
+            executeQuery();
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public void updateRadioPage(Song song) throws SQLException {
         resetSQL();
         ArrayList<String> result = new ArrayList<String>();
         ArrayList<Object> returned;
@@ -142,53 +174,79 @@ public class MySQLInterface {
         query = "SELECT ID FROM SongDB WHERE SongTitle = ?";
         pstNeeded = true;
         search = true;
-        sqlPayload.add(lc.getNpSong());
+        sqlPayload.add(song.getSongName());
         returned = executeQuery();
         resetSQL();
         if(returned.size()>0){
-            lc.setSongID((int)returned.get(0));
+            song.setSongID((int)returned.get(0));
             returned.clear();
             query = "SELECT * FROM SongDB WHERE ID= ?";
-            sqlPayload.add(String.valueOf(lc.getSongID()));
+            sqlPayload.add(String.valueOf(song.getSongID()));
             search = true;
             pstNeeded = true;
             returned = executeQuery();
-            GlobalVars.lpTime = (String)returned.get(2);
-            GlobalVars.songPlayedAmount = (int)returned.get(3);
-            GlobalVars.songFavCount = (int)returned.get(4);
-            dataForSQL.clear();
+            song.setFieldsFromSQL(returned);
         } else {
-            GlobalVars.songID = 0;
-            GlobalVars.lpTime = "Never";
-            GlobalVars.songFavCount = 0;
-            GlobalVars.songPlayedAmount = 1;
+            song.setSongID(0);
+            returned.add("Never");
+            returned.add(0);
+            returned.add(0);
+            song.setFieldsFromSQL(returned);
+
         }
         returned.clear();
-        if(GlobalVars.songID == 0){
+        if(song.getSongID()==0){
             //Adding song to DB and getting new ID for song
-            statmentBuild = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
-            dataForSQL.add(GlobalVars.npSong);
+            resetSQL();
+            query = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
+            sqlPayload.add(song.getSongName());
             curTime = getCurDate(curTime, dateFormat);
-            dataForSQL.add(curTime);
-            runCommand(statmentBuild, dataForSQL, false, true, null);
-            GlobalVars.songChange = false;
-            dataForSQL.clear();
-            statmentBuild = "SELECT ID FROM SongDB WHERE SongTitle = ?";
-            dataForSQL.add(GlobalVars.npSong);
-            returned = runCommand(statmentBuild, dataForSQL, true, true, null);
+            sqlPayload.add(curTime);
+            search = false;
+            pstNeeded = true;
+            executeQuery();
+            resetSQL();
+            query = "SELECT ID FROM SongDB WHERE SongTitle = ?";
+            sqlPayload.add(song.getSongName());
+            search = true;
+            pstNeeded = true;
+            returned = executeQuery();
             if(returned.size()>0){
-                GlobalVars.songID = (int) returned.get(0);
+                song.setSongID((int) returned.get(0));
             }
-            returned.clear();
+            resetSQL();
         } else {
             //Update info for song
-            statmentBuild = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=" + GlobalVars.songID;
+            query = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=?";
             curTime = getCurDate(curTime, dateFormat);
-            dataForSQL.add(curTime);
-            runCommand(statmentBuild, dataForSQL, false, true, null);
-            GlobalVars.songChange = false;
+            sqlPayload.add(curTime);
+            sqlPayload.add(String.valueOf(song.getSongID()));
+            search = false;
+            pstNeeded = true;
+            executeQuery();
         }
-        Logging.song(npSong + ":" + songID + ":" + GlobalVars.songPlayedAmount);
+        Logging.song(song.getSongName() + ":" + song.getSongID() + ":" + song.getPlayCount());
+    }
+    /*
+    SITE INTERACTIONS
+     */
+    public boolean addNewsPost(String post, String author) throws SQLException {
+        resetSQL();
+        query = "INSERT INTO newspost ('id', 'post', 'author', 'date') SET (null, ?, ?, ?)";
+        if(post!=null && post.length()>0)
+            sqlPayload.add(post);
+        else
+            return false;
+        if(author!=null && author.length()>0)
+            sqlPayload.add(author);
+        else
+            return false;
+        sqlPayload.add(getCurDate("0000-00-00", new SimpleDateFormat("YYYY-mm-dd")));
+        search = false;
+        pstNeeded = true;
+        overrideDB = "symfonybackend";
+        executeQuery();
+        return true;
     }
     /*
     SQL OPERATIONS
@@ -221,5 +279,10 @@ public class MySQLInterface {
             pst.execute();
         run.close();
         return result;
+    }
+    public static String getCurDate(String dateLayout, SimpleDateFormat dateFormat){
+        Date date = new Date();
+        dateLayout = dateFormat.format(date);
+        return dateLayout;
     }
 }
