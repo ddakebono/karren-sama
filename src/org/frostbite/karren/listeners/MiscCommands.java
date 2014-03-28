@@ -6,7 +6,6 @@
 
 package org.frostbite.karren.listeners;
 
-import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.KarrenBot;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -14,7 +13,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help", "faves", "fave", "dj", "np", "test", "reloadint"};
+		String[] cmds = {"brad", "echo", "isgay", "origin", "version", "help", "faves", "fave", "dj", "npswitch", "test", "reloadint"};
 		String message = event.getMessage();
 		String cmd = "";
         KarrenBot bot = (KarrenBot)event.getBot();
@@ -62,14 +61,14 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
 					event.getUser().send().message(".brad command - poop");
 					break;
                 case "dj":
-                    if(!GlobalVars.iceDJ.equalsIgnoreCase("noone")){
-                        event.getChannel().send().message("Current DJ is " + GlobalVars.iceDJ);
+                    if(!bot.getListenCast().getIceDJ().equalsIgnoreCase("noone")){
+                        event.getChannel().send().message("Current DJ is " + bot.getListenCast().getIceDJ());
                     } else {
                         event.getChannel().send().message("The stream is currently offline...");
                     }
                     break;
-                case "np":
-                    if(message.startsWith("switch") && event.getUser().isIrcop()){
+                case "npswitch":
+                    if(event.getUser().isIrcop()){
                         if(bot.getListenCast().enableNP(event.getChannel())){
                             event.getChannel().send().message("Automagic now playing has been activated!");
                         } else {

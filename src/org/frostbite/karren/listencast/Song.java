@@ -6,7 +6,6 @@
 
 package org.frostbite.karren.listencast;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 
 /**

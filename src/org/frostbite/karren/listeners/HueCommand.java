@@ -6,7 +6,6 @@
 
 package org.frostbite.karren.listeners;
 
-import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.Logging;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;

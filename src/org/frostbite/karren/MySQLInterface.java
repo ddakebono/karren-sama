@@ -1,12 +1,11 @@
 package org.frostbite.karren;
 
-import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listencast.Song;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by frostbite on 19/03/14.
@@ -154,7 +153,7 @@ public class MySQLInterface {
         ArrayList<Object> returned = executeQuery();
         if(returned.size()==0){
             resetSQL();
-            query = "INSERT INTO UserFaves('ID', 'User', 'SongID') SET (null, ?, ?)";
+            query = "INSERT INTO UserFaves(ID, User, SongID) SET (null, ?, ?)";
             sqlPayload.add(user);
             sqlPayload.add(String.valueOf(song.getSongID()));
             search = false;
@@ -187,7 +186,10 @@ public class MySQLInterface {
             returned = executeQuery();
             song.setFieldsFromSQL(returned);
         } else {
+            returned.clear();
             song.setSongID(0);
+            returned.add(null);
+            returned.add(null);
             returned.add("Never");
             returned.add(0);
             returned.add(0);
@@ -200,7 +202,7 @@ public class MySQLInterface {
             resetSQL();
             query = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
             sqlPayload.add(song.getSongName());
-            curTime = getCurDate(curTime, dateFormat);
+            curTime = getCurDate(dateFormat);
             sqlPayload.add(curTime);
             search = false;
             pstNeeded = true;
@@ -216,9 +218,10 @@ public class MySQLInterface {
             }
             resetSQL();
         } else {
+            resetSQL();
             //Update info for song
             query = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=?";
-            curTime = getCurDate(curTime, dateFormat);
+            curTime = getCurDate(dateFormat);
             sqlPayload.add(curTime);
             sqlPayload.add(String.valueOf(song.getSongID()));
             search = false;
@@ -230,23 +233,16 @@ public class MySQLInterface {
     /*
     SITE INTERACTIONS
      */
-    public boolean addNewsPost(String post, String author) throws SQLException {
+    public void addNewsPost(String post, String author) throws SQLException {
         resetSQL();
-        query = "INSERT INTO newspost ('id', 'post', 'author', 'date') SET (null, ?, ?, ?)";
-        if(post!=null && post.length()>0)
-            sqlPayload.add(post);
-        else
-            return false;
-        if(author!=null && author.length()>0)
-            sqlPayload.add(author);
-        else
-            return false;
-        sqlPayload.add(getCurDate("0000-00-00", new SimpleDateFormat("YYYY-mm-dd")));
+        query = "INSERT INTO newspost (id, post, author, date) SET (null, ? , ? , ? )";
+        sqlPayload.add(post);
+        sqlPayload.add(author);
+        sqlPayload.add(getCurDate(new SimpleDateFormat("yyyy-MM-DD")));
         search = false;
         pstNeeded = true;
         overrideDB = "symfonybackend";
         executeQuery();
-        return true;
     }
     /*
     SQL OPERATIONS
@@ -280,9 +276,9 @@ public class MySQLInterface {
         run.close();
         return result;
     }
-    public static String getCurDate(String dateLayout, SimpleDateFormat dateFormat){
+    public static String getCurDate(SimpleDateFormat dateFormat){
         Date date = new Date();
-        dateLayout = dateFormat.format(date);
+        String dateLayout = dateFormat.format(date);
         return dateLayout;
     }
 }

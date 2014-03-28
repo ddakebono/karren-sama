@@ -26,13 +26,11 @@ public class BotConfiguration {
     private String icecastHost;
     private String icecastPort;
     private String icecastMount;
-    private int djHashGenKey;
     private String nickservPass;
     private String channel;
     private String botname;
     private String hostname;
-    private int userCap;
-    private final String versionMarker = "v0.5";
+    private final String versionMarker = "v1.0-INDEV";
     public Object getConfigPayload(String target){
         switch(target.toLowerCase()){
             case "botname":
@@ -43,8 +41,6 @@ public class BotConfiguration {
                 return channel;
             case "nickservpass":
                 return nickservPass;
-            case "djhashgenkey":
-                return djHashGenKey;
             case "icecastmount":
                 return icecastMount;
             case "icecastport":
@@ -65,8 +61,6 @@ public class BotConfiguration {
                 return sqluser;
             case "sqlhost":
                 return sqlhost;
-            case "usercap":
-                return userCap;
             case "version":
                 return versionMarker;
             default:
@@ -95,8 +89,6 @@ public class BotConfiguration {
         icecastMount = cfg.getProperty("icecastMount", "changeme.mp3");
         nickservPass = cfg.getProperty("nickservPass", "changeme");
         channel = cfg.getProperty("channel", "#changeme");
-        djHashGenKey = Integer.parseInt(cfg.getProperty("djHashGenKey", "1"));
-        userCap = Integer.parseInt(cfg.getProperty("maximumUsers", "100"));
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
             Logging.log("Updating configuration file!", true);
             mkNewConfig();
@@ -120,8 +112,6 @@ public class BotConfiguration {
         cfg.setProperty("icecastMount", icecastMount);
         cfg.setProperty("nickservPass", nickservPass);
         cfg.setProperty("channel", channel);
-        cfg.setProperty("djHashGenKey", String.valueOf(djHashGenKey));
-        cfg.setProperty("maximumUsers", String.valueOf(userCap));
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
         System.out.println("Config file generated! Terminating!");
         Logging.log("Your configuration file has been generated/updated!", false);

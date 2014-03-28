@@ -33,6 +33,7 @@ public class KarrenBot extends PircBotX {
         String ident;
         String[] tags;
         String response;
+        int confidence;
         String[] activators;
         ArrayList<Interactions> interactions = new ArrayList<>();
         System.out.println("Initializing interactions!");
@@ -46,7 +47,8 @@ public class KarrenBot extends PircBotX {
                     response = temp1[3];
                     activators = temp1[2].split("[,]\\s*");
                     tags = temp1[4].split("[,]\\s*");
-                    interactions.add(new Interactions(ident, tags, response, activators));
+                    confidence = Integer.parseInt(temp1[5]);
+                    interactions.add(new Interactions(ident, tags, response, activators, confidence));
                 }
                 buffer = in.readLine();
             }

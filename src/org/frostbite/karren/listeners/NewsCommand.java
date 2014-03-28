@@ -6,8 +6,8 @@
 
 package org.frostbite.karren.listeners;
 
+import org.frostbite.karren.KarrenBot;
 import org.frostbite.karren.Logging;
-import org.frostbite.karren.MySQLConnector;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -26,9 +26,7 @@ public class NewsCommand extends ListenerAdapter<PircBotX>{
 			message = message.replaceFirst(cmd, "").trim();
 			if(hasVoice || isAnOp){
 				if(message != null){
-					data[0] = user.getNick();
-					data[1] = message;
-					MySQLConnector.sqlPush("news", "add", data);
+                    ((KarrenBot)event.getBot()).getSql().addNewsPost(message, user.getNick());
 					Logging.log("A news update was posted by " + user.getNick(), false);
 				} else {
 					event.respond("You seem to be missing the news post, please supply a post after the command. (ex. .news This is my post!)");

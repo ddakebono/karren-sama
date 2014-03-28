@@ -216,7 +216,7 @@ public class MySQLConnector {
 			dataForSQL.add(String.valueOf(resultHash));
 			runCommand(statmentBuild, dataForSQL, false, true, "sitebackend");
 			dataForSQL.clear();
-		
+
 		} else {
 			statmentBuild = "SELECT DJHash FROM `Radio-DJ` WHERE DJName= ?";
 			dataForSQL.add((String)data[0]);
@@ -287,7 +287,7 @@ public class MySQLConnector {
 	 * pushUser is used to access the tables containing the data of all IRC users
 	 *
 	 * Allows setting of the parting time for away time tracking.
-	 * 
+	 *
 	 * Also allows access to the stored settings such as fave alert settings and ignore settings.
 	 *
 	 *
@@ -396,8 +396,8 @@ public class MySQLConnector {
 		return result;
 	}
 	/*
-	 * Returns a date in the format of YYYY-MM-DD to use with the SQL 
-	 * 
+	 * Returns a date in the format of YYYY-MM-DD to use with the SQL
+	 *
 	 */
 	public static String getCurDate(String dateLayout, SimpleDateFormat dateFormat){
 		Date date = new Date();

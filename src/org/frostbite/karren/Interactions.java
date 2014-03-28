@@ -8,7 +8,6 @@ package org.frostbite.karren;
 
 import org.pircbotx.hooks.events.MessageEvent;
 
-import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -19,10 +18,12 @@ public class Interactions {
     private String identifier = "";
     private String[] tags;
     private String responseTemplate = "";
-    public Interactions(String identifier, String[] tags, String responseTemplate, String[] activators){
+    private int confidenceAmount;
+    public Interactions(String identifier, String[] tags, String responseTemplate, String[] activators, int confidenceAmount){
         this.identifier = identifier;
         this.tags = tags;
         this.responseTemplate = responseTemplate;
+        this.confidenceAmount = confidenceAmount;
         for(int i=0; i<activators.length; i++)
             this.activator.add(activators[i]);
     }
@@ -34,11 +35,17 @@ public class Interactions {
      */
     public String handleMessage(MessageEvent event){
         String result = "";
+        int confidence = 0;
+        String[] tokenizedMessage = event.getMessage().split("\\s+");
         for(String check : activator){
-            if(event.getMessage().toLowerCase().contains(check.toLowerCase())){
-                result = responseTemplate;
+            for(String check2 : tokenizedMessage) {
+                if (check2.trim().toLowerCase().matches(check + "\\W?")) {
+                    confidence++;
+                }
             }
         }
+        if(confidence>=confidenceAmount)
+            result = responseTemplate;
         return result;
     }
     public String getIdentifier(){return identifier;}

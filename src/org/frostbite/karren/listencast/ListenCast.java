@@ -7,28 +7,13 @@
 package org.frostbite.karren.listencast;
 
 import com.google.common.collect.ImmutableSortedSet;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.frostbite.karren.*;
+import org.frostbite.karren.BotConfiguration;
+import org.frostbite.karren.KarrenBot;
+import org.frostbite.karren.Logging;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -40,11 +25,11 @@ public class ListenCast extends Thread{
     private String icecastPort;
     private String icecastMount;
     private boolean nowPlaying;
-    private String iceDJ;
-    private String iceStreamTitle;
-    private int iceListeners;
+    private String iceDJ = "Testing";
+    private String iceStreamTitle = "Testing";
+    private int iceListeners = 0;
     private Channel announceChannel;
-    private int iceMaxListeners;
+    private int iceMaxListeners = 0;
     private Song currentSong;
     private Song songTemp;
 	private boolean killListencast = false;
@@ -66,11 +51,11 @@ public class ListenCast extends Thread{
 				    currentSong = songTemp;
 				    onSongChange();
 			    }
-                try {
-                    updateIcecastInfo();
-                } catch (IOException | SQLException | ParserConfigurationException | SAXException e) {
-                    e.printStackTrace();
-                }
+                //try {
+                //   updateIcecastInfo();
+                // } catch (IOException | SQLException | ParserConfigurationException | SAXException e) {
+                //   e.printStackTrace();
+                //}
                 try {
 				    Thread.sleep(1000);
 			    } catch (InterruptedException e) {
@@ -100,8 +85,8 @@ public class ListenCast extends Thread{
         }
 	}
     private void alertFaves() throws IOException, SQLException{
-        ArrayList<String> returned;
-        returned = MySQLConnector.sqlPush("fave", "", null);
+        ArrayList<Object> returned;
+        returned = bot.getSql().getUserFaves(currentSong);
         ImmutableSortedSet<User> chanUsers = announceChannel.getUsers();
         for(User user : chanUsers){
             if(returned.contains(user.getNick())){
@@ -112,7 +97,7 @@ public class ListenCast extends Thread{
     public String getNowPlayingStr(){
         return "Now playing: \"" + currentSong.getSongName() + "\" On CRaZyRADIO ("+ iceStreamTitle +"). Listeners: " + iceListeners + "/" + iceMaxListeners + ". This song was last played: " + currentSong.getLastPlayed() + ". Faves: " + currentSong.getFavCount() + ". Plays: " + currentSong.getPlayCount();
     }
-	private void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{
+	/*private void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{
 		String[] dataToSql = new String[1];
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -154,7 +139,7 @@ public class ListenCast extends Thread{
 			httpClient.close();
 		}
 		
-	}
+	}*/
     public void kill(){
         killListencast = true;
     }

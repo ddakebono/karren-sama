@@ -6,15 +6,12 @@
 
 package org.frostbite.karren.listeners;
 
-import org.frostbite.karren.GlobalVars;
 import org.frostbite.karren.Interactions;
 import org.frostbite.karren.KarrenBot;
-import org.frostbite.karren.MySQLConnector;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,13 +38,17 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                             case "depart":
                                 data[0] = event.getUser().getNick();
                                 try {
+                                    resultData.addAll(bot.getSql().getUserData(event.getUser().getNick()));
+                                    if((boolean)resultData.get(1)){
+                                        returned = "Wait " + event.getUser().getNick() + ", you left earlier...well fine, good bye again.";
+                                    }
                                     bot.getSql().userOperation("part", data);
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
                                 break;
                             case "song":
-                                returned = returned.replace("%song", GlobalVars.npSong);
+                                returned = returned.replace("%song", bot.getListenCast().getSong().getSongName());
                                 break;
                             case "random":
                                 String[] tempArray = event.getMessage().split(":");
@@ -60,12 +61,12 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                             case "return":
                                 data[0] = event.getUser().getNick();
                                 try {
-                                    bot.getSql().userOperation("return", data);
                                     resultData.addAll(bot.getSql().getUserData(event.getUser().getNick()));
+                                    bot.getSql().userOperation("return", data);
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
-                                if(resultData.get(2)!=0){
+                                if((boolean)resultData.get(1)){
                                     returned = returned.replace("%away", calcAway((String)resultData.get(2)));
                                 } else {
                                     returned = "Hey," + event.getUser().getNick() + " are you new? Be sure to say good bye to me when you leave!";
@@ -89,6 +90,7 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
         choice = choiceSet[random].trim();
         return choice;
     }
+
     public static String calcAway(String leaveDate){
         String backTime;
         long diffTime;

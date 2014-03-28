@@ -6,13 +6,11 @@
 
 package org.frostbite.karren;
 
-import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listeners.*;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 
-import java.io.*;
-import java.util.Properties;
+import java.io.IOException;
 
 public class Karren{
 	public static void main(String[] args){
@@ -36,7 +34,6 @@ public class Karren{
                 .addListener(new KillCommand())
                 .addListener(new TopicCommand())
                 .addListener(new HueCommand())
-                .addListener(new HashCommand())
                 .setServerHostname((String)botConf.getConfigPayload("hostname"))
                 .addAutoJoinChannel((String)botConf.getConfigPayload("channel"))
                 .buildConfiguration();
