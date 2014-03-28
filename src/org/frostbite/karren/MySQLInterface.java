@@ -89,9 +89,9 @@ public class MySQLInterface {
      */
     public ArrayList<Object> getUserData(String nick) throws SQLException {
         ArrayList<Object> result = null;
-        resetSQL();
         if(isNewUser(nick))
             makeUser(nick);
+        resetSQL();
         query = "SELECT * FROM users WHERE user= ?";
         sqlPayload.add(nick);
         search = true;

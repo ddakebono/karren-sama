@@ -1,5 +1,18 @@
-karren-sama
+karren-sama - Broken Branch
 ===========
+
+This branch of the bot is hardly working, it will run, it will try to do things, then it will prolly have an error and die.
+
+Working:
+
+    Now playing - Sorta
+
+    User interaction system(New) - Operational with some changes needed.
+
+    SQL interaction - Plagued by numerous issues.
+
+    User away/return tracking - Working as intended(I think)
+
 
 Repo for the Karren-sama IRC bot as seen on the crazypants irc
 
