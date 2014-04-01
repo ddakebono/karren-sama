@@ -9,12 +9,12 @@ package org.frostbite.karren.listencast;
 import com.google.common.collect.ImmutableSortedSet;
 import org.frostbite.karren.BotConfiguration;
 import org.frostbite.karren.KarrenBot;
-import org.frostbite.karren.Logging;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -44,28 +44,30 @@ public class ListenCast extends Thread{
         IcyStreamMeta streamFile;
         try {
             streamFile = new IcyStreamMeta(new URL("http://"+icecastHost+":"+icecastPort+"/"+icecastMount));
-		    while(!killListencast){
-                streamFile.refreshMeta();
-                songTemp = new Song(streamFile.getArtist() + " - " + streamFile.getTitle());
-			    if(currentSong == null || !songTemp.getSongName().equalsIgnoreCase(currentSong.getSongName())){
-				    currentSong = songTemp;
-				    onSongChange();
-			    }
+            while(!killListencast){
+                try {
+                    streamFile.refreshMeta();
+                    songTemp = new Song(streamFile.getArtist() + " - " + streamFile.getTitle());
+                }catch(IOException e){
+                    songTemp = new Song("Off-air");
+                }
+                if (currentSong == null || !songTemp.getSongName().equalsIgnoreCase(currentSong.getSongName())) {
+                    currentSong = songTemp;
+                    onSongChange();
+                }
                 //try {
                 //   updateIcecastInfo();
                 // } catch (IOException | SQLException | ParserConfigurationException | SAXException e) {
                 //   e.printStackTrace();
                 //}
                 try {
-				    Thread.sleep(1000);
+		        Thread.sleep(1000);
 			    } catch (InterruptedException e) {
 				    // TODO Auto-generated catch block
 				    e.printStackTrace();
 			    }
 		    }
-        } catch (IOException e) {
-            killListencast = true;
-            Logging.log("Bad stream host! Listencast thread died.", true);
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 	}
@@ -149,11 +151,10 @@ public class ListenCast extends Thread{
     public int getIceListeners(){return iceListeners;}
     public boolean enableNP(Channel channel){
         announceChannel = channel;
-        if(!nowPlaying){
+        if(!nowPlaying)
             nowPlaying = true;
-        } else {
+        else
             nowPlaying = false;
-        }
         return nowPlaying;
     }
 }

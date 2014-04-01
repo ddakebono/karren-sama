@@ -22,9 +22,9 @@ public class TopicCommand extends ListenerAdapter<PircBotX>{
 		if(message.startsWith(cmd)){
 			message = message.replaceFirst(cmd, "").trim();
 			if(channel.isOp(event.getUser()) || channel.hasVoice(event.getUser())){
-				if(message != ""){
+				if(message.equals("")){
 					if(event.getChannel().isOp(bot.getUserBot())){
-						channel.send().setTopic(Colors.RED + "CRaZyPANTS Minecraft channel" + Colors.BLACK + ", use .help to get current commands avalable for use. MOTD: " + (Colors.GREEN + message));
+						channel.send().setTopic(Colors.RED + "Redirect Gaming channel" + Colors.GREEN + ", use .help to get current commands avalable for use. MOTD: " + (Colors.BLUE + message));
 						Logging.log("The MOTD has been changed to " + message + " By " + event.getUser().getNick(), false);
 					} else {
 						event.getChannel().send().message("I don't seem to have the correct permissions to change the topic...");

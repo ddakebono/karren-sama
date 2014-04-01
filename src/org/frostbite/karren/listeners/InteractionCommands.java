@@ -50,6 +50,12 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                             case "song":
                                 returned = returned.replace("%song", bot.getListenCast().getSong().getSongName());
                                 break;
+                            case "version":
+                                returned = returned.replace("%version", (String)bot.getBotConf().getConfigPayload("version"));
+                                break;
+                            case "dj":
+                                returned = returned.replace("%dj", bot.getListenCast().getIceDJ());
+                                break;
                             case "random":
                                 String[] tempArray = event.getMessage().split(":");
                                 if(tempArray.length==2){
