@@ -27,7 +27,7 @@ public class IcyStreamMeta {
      * @return String
      * @throws IOException
      */
-    public String getArtist() throws IOException {
+    public String getArtist() throws IOException, StringIndexOutOfBoundsException {
         Map<String, String> data = getMetadata();
 
         if (!data.containsKey("StreamTitle"))
@@ -44,7 +44,7 @@ public class IcyStreamMeta {
      * @return String
      * @throws IOException
      */
-    public String getTitle() throws IOException {
+    public String getTitle() throws IOException, StringIndexOutOfBoundsException {
         Map<String, String> data = getMetadata();
 
         if (!data.containsKey("StreamTitle"))

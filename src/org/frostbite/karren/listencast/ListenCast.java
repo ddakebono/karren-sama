@@ -32,6 +32,7 @@ public class ListenCast extends Thread{
     private int iceMaxListeners = 0;
     private Song currentSong;
     private Song songTemp;
+    private boolean doUpdate;
 	private boolean killListencast = false;
 	public ListenCast(PircBotX bot, BotConfiguration botConf) {
         if(bot instanceof KarrenBot)
@@ -45,11 +46,16 @@ public class ListenCast extends Thread{
         try {
             streamFile = new IcyStreamMeta(new URL("http://"+icecastHost+":"+icecastPort+"/"+icecastMount));
             while(!killListencast){
+                doUpdate = true;
                 try {
                     streamFile.refreshMeta();
                     songTemp = new Song(streamFile.getArtist() + " - " + streamFile.getTitle());
                 }catch(IOException e){
                     songTemp = new Song("Off-air");
+                    doUpdate = false;
+                }catch(StringIndexOutOfBoundsException e1){
+                    songTemp = new Song("Error encountered when parsing song info!");
+                    doUpdate = false;
                 }
                 if (currentSong == null || !songTemp.getSongName().equalsIgnoreCase(currentSong.getSongName())) {
                     currentSong = songTemp;
@@ -73,7 +79,8 @@ public class ListenCast extends Thread{
 	}
 	private void onSongChange(){
         try {
-            bot.getSql().updateRadioPage(currentSong);
+            if(doUpdate)
+                bot.getSql().updateRadioDatabase(currentSong);
         } catch (SQLException e) {
             e.printStackTrace();
         }

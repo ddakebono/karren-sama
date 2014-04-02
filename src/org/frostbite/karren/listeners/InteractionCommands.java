@@ -73,7 +73,7 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                                     e.printStackTrace();
                                 }
                                 if((boolean)resultData.get(1)){
-                                    returned = returned.replace("%away", calcAway((String)resultData.get(2)));
+                                    returned = returned.replace("%away", calcAway((long)resultData.get(2)));
                                 } else {
                                     returned = "Hey," + event.getUser().getNick() + " are you new? Be sure to say good bye to me when you leave!";
                                 }
@@ -97,7 +97,7 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
         return choice;
     }
 
-    public static String calcAway(String leaveDate){
+    public static String calcAway(long leaveDate){
         String backTime;
         long diffTime;
         long seconds;
@@ -105,7 +105,7 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
         long hours = 0;
         long days = 0;
         Date date = new Date();
-        diffTime = date.getTime()-Long.parseLong(leaveDate);
+        diffTime = date.getTime()-leaveDate;
         seconds = diffTime/1000;
         if(seconds>=60){
             minutes = seconds/60;

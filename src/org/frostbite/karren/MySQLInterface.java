@@ -1,5 +1,6 @@
 package org.frostbite.karren;
 
+import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listencast.Song;
 
 import java.sql.*;
@@ -143,6 +144,16 @@ public class MySQLInterface {
         result = executeQuery();
         return result;
     }
+    public void updateRadioPage(Song song, ListenCast lc) throws SQLException {
+        ArrayList<Object> returned = new ArrayList<>();
+        resetSQL();
+        query = "SELECT Spot FROM lastplayed WHERE song = ?";
+        sqlPayload.add(song.getSongName());
+        search = true;
+        pstNeeded = true;
+        returned = executeQuery();
+        //if(Integer.parseInt(returned.get(0))==1)
+    }
     public boolean addFave(String user, Song song) throws SQLException {
         resetSQL();
         query = "SELECT * FROM UserFaves WHERE User=? AND SongID=?";
@@ -164,7 +175,7 @@ public class MySQLInterface {
             return false;
         }
     }
-    public void updateRadioPage(Song song) throws SQLException {
+    public void updateRadioDatabase(Song song) throws SQLException {
         resetSQL();
         ArrayList<String> result = new ArrayList<String>();
         ArrayList<Object> returned;
