@@ -12,6 +12,7 @@ import org.frostbite.karren.KarrenBot;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -34,12 +35,14 @@ public class ListenCast extends Thread{
     private Song songTemp;
     private boolean doUpdate;
 	private boolean killListencast = false;
-	public ListenCast(PircBotX bot, BotConfiguration botConf) {
+    private Logger log;
+	public ListenCast(PircBotX bot, BotConfiguration botConf, Logger log) {
         if(bot instanceof KarrenBot)
 		    this.bot = (KarrenBot)bot;
         icecastHost = (String)botConf.getConfigPayload("icecasthost");
         icecastPort = (String)botConf.getConfigPayload("icecastport");
         icecastMount = (String)botConf.getConfigPayload("icecastmount");
+        this.log = log;
 	}
 	public void run(){
         IcyStreamMeta streamFile;

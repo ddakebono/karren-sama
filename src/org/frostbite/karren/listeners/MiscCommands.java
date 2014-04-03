@@ -33,7 +33,10 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     event.getChannel().send().message("Wow, " + message.trim() + " is so fucking gaaaaaaaaay!");
                     break;
                 case "reloadint":
-                    bot.reloadInteractions();
+                    if(event.getChannel().isOp(event.getUser())) {
+                        bot.getLog().info("Interactions system reload triggered by " + event.getUser().getNick());
+                        bot.reloadInteractions();
+                    }
                     break;
                 case "help":
                     event.getUser().send().message(event.getBot().getNick() + " bot commands. (All commands are proceded by a . (Ex. .help))");

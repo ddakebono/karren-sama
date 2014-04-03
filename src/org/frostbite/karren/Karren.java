@@ -9,16 +9,19 @@ package org.frostbite.karren;
 import org.frostbite.karren.listeners.*;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class Karren{
 	public static void main(String[] args){
-        System.out.println("Beginning startup");
         //Configs
+        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+        Logger log = LoggerFactory.getLogger(Karren.class);
         BotConfiguration botConf = new BotConfiguration();
         try {
-            botConf.initConfig();
+            botConf.initConfig(log);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,23 +41,23 @@ public class Karren{
                 .addAutoJoinChannel((String)botConf.getConfigPayload("channel"))
                 .buildConfiguration();
         //Adding the listeners for our commands
-		KarrenBot bot = new KarrenBot(config, botConf);
+		KarrenBot bot = new KarrenBot(config, botConf, log);
 		
 		//Try and load the JDBC MySQL Driver
 		try{
-			Logging.log(bot.getNick() + " version " + bot.getBotConf().getConfigPayload("version") + " is now starting!", false);
-			Logging.log("Trying to load MySQL Driver...", false);
+			log.info(bot.getNick() + " version " + bot.getBotConf().getConfigPayload("version") + " is now starting!");
+            log.debug("Trying to load MySQL Driver...");
 			Class.forName("com.mysql.jdbc.Driver");
-			Logging.log("Loaded driver!", false);
+            log.debug("Loaded driver!", false);
 		} catch(ClassNotFoundException e) {
-			Logging.log(e.toString(), true);
+			log.error("Error While Loading:", e);
 		}
         //Initialize the bot
 		try{
+            log.info(bot.getNick() + " Ready, connecting to " + bot.getBotConf().getConfigPayload("hostname"));
 			bot.startBot();
 		} catch (Exception e){
-			e.printStackTrace();
-			Logging.log(e.toString(), true);
+            log.error("Error While Loading:", e);
 		}
 	}
 }

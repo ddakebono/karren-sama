@@ -2,6 +2,7 @@ package org.frostbite.karren;
 
 import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listencast.Song;
+import org.slf4j.Logger;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -21,6 +22,7 @@ public class MySQLInterface {
     private boolean search;
     private boolean pstNeeded;
     private String overrideDB;
+    private Logger log;
     private ArrayList<String> sqlPayload = new ArrayList<>();
     /*
     CONSTRUCTORS
@@ -32,12 +34,13 @@ public class MySQLInterface {
         this.sqlport = sqlport;
         this.sqluser = sqluser;
     }
-    public MySQLInterface(BotConfiguration botConf){
+    public MySQLInterface(BotConfiguration botConf, Logger log){
         sqldb = (String)botConf.getConfigPayload("sqldb");
         sqlhost = (String)botConf.getConfigPayload("sqlhost");
         sqlpass = (String)botConf.getConfigPayload("sqlpass");
         sqlport = Integer.parseInt((String)botConf.getConfigPayload("sqlport"));
         sqluser = (String)botConf.getConfigPayload("sqluser");
+        this.log = log;
     }
     /*
     UTILITY OPERATIONS
@@ -62,7 +65,7 @@ public class MySQLInterface {
             }
         } catch(SQLException e) {
             e.printStackTrace();
-            Logging.log(e.getMessage(), true);
+            log.error("Error in SQL Operation:", e);
         }
         if(savedUsers.size() > 0){
             for(String curUser : savedUsers){
@@ -238,7 +241,7 @@ public class MySQLInterface {
             pstNeeded = true;
             executeQuery();
         }
-        Logging.song(song.getSongName() + ":" + song.getSongID() + ":" + song.getPlayCount());
+        log.info("Now playing: " + song.getSongName() + ":" + song.getSongID() + ":" + song.getPlayCount());
     }
     /*
     SITE INTERACTIONS

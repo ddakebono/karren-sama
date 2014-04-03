@@ -6,6 +6,8 @@
 
 package org.frostbite.karren;
 
+import org.slf4j.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -67,7 +69,7 @@ public class BotConfiguration {
                 return false;
         }
     }
-    public void initConfig() throws IOException {
+    public void initConfig(Logger log) throws IOException {
         Properties cfg = new Properties();
         File check = new File("conf/bot.prop");
         if(check.isFile()){
@@ -90,11 +92,11 @@ public class BotConfiguration {
         nickservPass = cfg.getProperty("nickservPass", "changeme");
         channel = cfg.getProperty("channel", "#changeme");
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
-            Logging.log("Updating configuration file!", true);
-            mkNewConfig();
+            log.warn("Updating configuration file!");
+            mkNewConfig(log);
         }
     }
-    public void mkNewConfig() throws IOException {
+    public void mkNewConfig(Logger log) throws IOException {
         Properties cfg = new Properties();
         String comment = "Karren-sama IRC bot properties file.";
         cfg.setProperty("karrenVersion", versionMarker);
@@ -113,8 +115,7 @@ public class BotConfiguration {
         cfg.setProperty("nickservPass", nickservPass);
         cfg.setProperty("channel", channel);
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
-        System.out.println("Config file generated! Terminating!");
-        Logging.log("Your configuration file has been generated/updated!", false);
+        log.info("Your configuration file has been generated/updated!");
         System.exit(0);
     }
 }

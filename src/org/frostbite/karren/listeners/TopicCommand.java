@@ -6,7 +6,7 @@
 
 package org.frostbite.karren.listeners;
 
-import org.frostbite.karren.Logging;
+import org.frostbite.karren.KarrenBot;
 import org.pircbotx.Channel;
 import org.pircbotx.Colors;
 import org.pircbotx.PircBotX;
@@ -16,19 +16,18 @@ import org.pircbotx.hooks.events.MessageEvent;
 public class TopicCommand extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
 		String message = event.getMessage();
-		String cmd = ".topic";
-		PircBotX bot = event.getBot();
+		KarrenBot bot = (KarrenBot)event.getBot();
 		Channel channel = event.getChannel();
-		if(message.startsWith(cmd)){
-			message = message.replaceFirst(cmd, "").trim();
+		if(message.startsWith(".topic")){
+			message = message.replaceFirst("\\.topic", "").trim();
 			if(channel.isOp(event.getUser()) || channel.hasVoice(event.getUser())){
-				if(message.equals("")){
-					if(event.getChannel().isOp(bot.getUserBot())){
+				if(!message.equals("")){
+					if(channel.isOp(bot.getUserBot())){
 						channel.send().setTopic(Colors.RED + "Redirect Gaming channel" + Colors.GREEN + ", use .help to get current commands avalable for use. MOTD: " + (Colors.BLUE + message));
-						Logging.log("The MOTD has been changed to " + message + " By " + event.getUser().getNick(), false);
+						bot.getLog().info("The MOTD has been changed to " + message + " By " + event.getUser().getNick());
 					} else {
-						event.getChannel().send().message("I don't seem to have the correct permissions to change the topic...");
-						Logging.log("Error! Couldn't set topic because permissions are missing!", true);
+						channel.send().message("I don't seem to have the correct permissions to change the topic...");
+						bot.getLog().error("Error! Couldn't set topic because permissions are missing!");
 					}
 				} else {
 					event.respond("Your message does not contain a new MOTD");

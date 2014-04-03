@@ -4,6 +4,7 @@ import org.frostbite.karren.listencast.ListenCast;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
+import org.slf4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -19,12 +20,14 @@ public class KarrenBot extends PircBotX {
     private BotConfiguration botConf;
     private MySQLInterface sql;
     private ArrayList<Interactions> interactions;
+    private Logger log;
     private int songID;
-    public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf){
+    public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log){
         super(config);
         this.botConf = botConf;
-        lc = new ListenCast(this, botConf);
-        sql = new MySQLInterface(botConf);
+        this.log = log;
+        lc = new ListenCast(this, botConf, log);
+        sql = new MySQLInterface(botConf, log);
         interactions = loadInteractions();
     }
     private ArrayList<Interactions> loadInteractions(){
@@ -36,7 +39,7 @@ public class KarrenBot extends PircBotX {
         int confidence;
         String[] activators;
         ArrayList<Interactions> interactions = new ArrayList<>();
-        System.out.println("Initializing interactions!");
+        log.debug("Initializing interactions!");
         try {
             BufferedReader in = new BufferedReader(new FileReader("conf/Interactions.txt"));
             buffer = in.readLine();
@@ -76,4 +79,5 @@ public class KarrenBot extends PircBotX {
         songID = id;
     }
     public int getSongID(){return songID;}
+    public Logger getLog(){return log;}
 }
