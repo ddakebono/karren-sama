@@ -147,12 +147,11 @@ public class MySQLInterface {
     public void updateRadioPage(Song song, ListenCast lc) throws SQLException {
         ArrayList<Object> returned = new ArrayList<>();
         resetSQL();
-        query = "SELECT Spot FROM lastplayed WHERE song = ?";
+        query = "SELECT Song FROM lastplayed ORDER BY id DESC LIMIT 1";
         sqlPayload.add(song.getSongName());
         search = true;
         pstNeeded = true;
         returned = executeQuery();
-        //if(Integer.parseInt(returned.get(0))==1)
     }
     public boolean addFave(String user, Song song) throws SQLException {
         resetSQL();
