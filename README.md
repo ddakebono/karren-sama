@@ -1,4 +1,4 @@
-karren-sama - Broken Branch
+karren-sama - Master Branch
 ===========
 
 Repo for the Karren-sama IRC bot as seen on the Redirect Gaming IRC
@@ -15,13 +15,11 @@ Usage:
         I will be compiling a SQL script to build it's database once I get this branch good and stable, maybe Maven at the same time.
     After this point the bot should be operational.
 
-This branch of the bot is hardly working, it will run, it will try to do things, then it will prolly have an error and die.
-
 Working:
 
-    Now playing - Sorta
+    Now playing - WORKING!
     User interaction system(New) - Operational with some changes needed.
-    SQL interaction - Plagued by numerous issues.
+    SQL interaction - Plagued by some issues.
     User away/return tracking - Working as intended(I think)
 
 Dependencies(2lazy4maven):
