@@ -11,9 +11,11 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
+import java.sql.SQLException;
+
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"echo", "isgay", "help", "npswitch", "reloadint"};
+		String[] cmds = {"echo", "isgay", "help", "npswitch", "reloadint", "fave"};
 		String message = event.getMessage();
 		String cmd = "";
         KarrenBot bot = (KarrenBot)event.getBot();
@@ -31,6 +33,14 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     break;
                 case "isgay":
                     event.getChannel().send().message("Wow, " + message.trim() + " is so fucking gaaaaaaaaay!");
+                    break;
+                case "fave":
+                    event.getUser().send().message(bot.getListenCast().getSong().getSongName() + " added to your favorites!");
+                    try {
+                        bot.getSql().addFave(event.getUser().getNick(), bot.getListenCast().getSong());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "reloadint":
                     if(event.getChannel().isOp(event.getUser())) {

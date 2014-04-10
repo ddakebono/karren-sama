@@ -7,16 +7,32 @@
 package org.frostbite.karren.listencast;
 
 import com.google.common.collect.ImmutableSortedSet;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.frostbite.karren.BotConfiguration;
 import org.frostbite.karren.KarrenBot;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.slf4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -30,7 +46,9 @@ public class ListenCast extends Thread{
     private String iceStreamTitle = "Testing";
     private int iceListeners = 0;
     private Channel announceChannel;
-    private int iceMaxListeners = 0;
+    private String iceMaxListeners;
+    private String artist;
+    private String title;
     private Song currentSong;
     private Song songTemp;
     private boolean doUpdate;
@@ -45,39 +63,32 @@ public class ListenCast extends Thread{
         this.log = log;
 	}
 	public void run(){
-        IcyStreamMeta streamFile;
-        try {
-            streamFile = new IcyStreamMeta(new URL("http://"+icecastHost+":"+icecastPort+"/"+icecastMount));
-            while(!killListencast){
-                doUpdate = true;
-                try {
-                    streamFile.refreshMeta();
-                    songTemp = new Song(streamFile.getArtist() + " - " + streamFile.getTitle());
-                }catch(IOException e){
-                    songTemp = new Song("Off-air");
-                    doUpdate = false;
-                }catch(StringIndexOutOfBoundsException e1){
-                    songTemp = new Song("Error encountered when parsing song info!");
-                    doUpdate = false;
-                }
-                if (currentSong == null || !songTemp.getSongName().equalsIgnoreCase(currentSong.getSongName())) {
-                    currentSong = songTemp;
-                    onSongChange();
-                }
-                //try {
-                //   updateIcecastInfo();
-                // } catch (IOException | SQLException | ParserConfigurationException | SAXException e) {
-                //   e.printStackTrace();
-                //}
-                try {
-		        Thread.sleep(1000);
-			    } catch (InterruptedException e) {
-				    // TODO Auto-generated catch block
-				    e.printStackTrace();
-			    }
-		    }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        while(!killListencast) {
+            doUpdate = true;
+            try {
+                updateIcecastInfo();
+                songTemp = new Song(artist + " - " + title);
+            } catch (IOException e) {
+                songTemp = new Song("Off-air");
+                doUpdate = false;
+            } catch (StringIndexOutOfBoundsException | SQLException | ParserConfigurationException | SAXException e1) {
+                songTemp = new Song("Error encountered when parsing song info!");
+                doUpdate = false;
+            }
+            if(iceDJ.equalsIgnoreCase("offline")){
+                songTemp = new Song("Off-air");
+                doUpdate = false;
+            }
+            if (currentSong == null || !songTemp.getSongName().equalsIgnoreCase(currentSong.getSongName())) {
+                currentSong = songTemp;
+                onSongChange();
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 	}
 	private void onSongChange(){
@@ -109,15 +120,15 @@ public class ListenCast extends Thread{
     public String getNowPlayingStr(){
         return "Now playing: \"" + currentSong.getSongName() + "\" On CRaZyRADIO ("+ iceStreamTitle +"). Listeners: " + iceListeners + "/" + iceMaxListeners + ". This song was last played: " + currentSong.getLastPlayed() + ". Faves: " + currentSong.getFavCount() + ". Plays: " + currentSong.getPlayCount();
     }
-	/*private void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException{
-		String[] dataToSql = new String[1];
+	private void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException {
+        boolean onair = false;
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		CredentialsProvider clientCreds = new BasicCredentialsProvider();
-		clientCreds.setCredentials(new AuthScope(new HttpHost((String)(bot.getBotConf().getConfigPayload("icecasthost")), (int)(bot.getBotConf().getConfigPayload("icecastport")))), new UsernamePasswordCredentials((String)(bot.getBotConf().getConfigPayload("icecastadminusername")), (String)(bot.getBotConf().getConfigPayload("icecastadminpass"))));
+		clientCreds.setCredentials(new AuthScope(new HttpHost((String)(bot.getBotConf().getConfigPayload("icecasthost")), Integer.parseInt((String)bot.getBotConf().getConfigPayload("icecastport")))), new UsernamePasswordCredentials((String)(bot.getBotConf().getConfigPayload("icecastadminusername")), (String)(bot.getBotConf().getConfigPayload("icecastadminpass"))));
 		CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(clientCreds).build();
 		try{
-			HttpGet httpGet = new HttpGet("http://" + (String)(bot.getBotConf().getConfigPayload("icecasthost")) + ":" + (int)(bot.getBotConf().getConfigPayload("icecastport")) + "/admin/stats.xml");
+			HttpGet httpGet = new HttpGet("http://" + (bot.getBotConf().getConfigPayload("icecasthost")) + ":" + (bot.getBotConf().getConfigPayload("icecastport")) + "/admin/stats.xml");
 			CloseableHttpResponse result = httpClient.execute(httpGet);
 			try{
 				HttpEntity entity = result.getEntity();
@@ -128,30 +139,29 @@ public class ListenCast extends Thread{
 					if(sourceData.getNodeType() == Node.ELEMENT_NODE){
 						Element data = (Element)sourceData;
 						if(data.getAttribute("mount").equalsIgnoreCase("/" + bot.getBotConf().getConfigPayload("icecastmount"))){
-							dataToSql[0] = data.getElementsByTagName("server_description").item(0).getTextContent();
-							iceDJ = dataToSql[0];
-							MySQLConnector.sqlPush("radio", "dj", dataToSql);
-							dataToSql[0] = data.getElementsByTagName("listeners").item(0).getTextContent();
-							iceListeners = Integer.parseInt(dataToSql[0]);
-							iceMaxListeners = Integer.parseInt(data.getElementsByTagName("max_listeners").item(0).getTextContent());
-							MySQLConnector.sqlPush("radio", "listen", dataToSql);
-							dataToSql[0] = data.getElementsByTagName("server_name").item(0).getTextContent();
-							iceStreamTitle = dataToSql[0];
-							MySQLConnector.sqlPush("radio", "title", dataToSql);
+                            onair = true;
+							iceDJ = data.getElementsByTagName("server_description").item(0).getTextContent();
+							iceListeners = Integer.parseInt(data.getElementsByTagName("listeners").item(0).getTextContent());
+							iceMaxListeners = data.getElementsByTagName("max_listeners").item(0).getTextContent();
+							iceStreamTitle = data.getElementsByTagName("server_name").item(0).getTextContent();
+                            artist = data.getElementsByTagName("artist").item(0).getTextContent();
+                            title = data.getElementsByTagName("title").item(0).getTextContent();
 						}
 					}
 				}
 			} catch(NullPointerException e) {
-				dataToSql[0] = "Off-air";
-				MySQLConnector.sqlPush("radio", "dj", dataToSql);
+				iceDJ = "Off-air";
+                iceStreamTitle = "Offline";
 			} finally {
 				result.close();
 			}
 		} finally {
 			httpClient.close();
 		}
-		
-	}*/
+		if(!onair){
+            iceDJ = "offline";
+        }
+	}
     public void kill(){
         killListencast = true;
     }

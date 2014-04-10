@@ -166,7 +166,7 @@ public class MySQLInterface {
         ArrayList<Object> returned = executeQuery();
         if(returned.size()==0){
             resetSQL();
-            query = "INSERT INTO UserFaves(ID, User, SongID) SET (null, ?, ?)";
+            query = "INSERT INTO UserFaves(ID, User, SongID) VALUES (null, ?, ?)";
             sqlPayload.add(user);
             sqlPayload.add(String.valueOf(song.getSongID()));
             search = false;
@@ -265,7 +265,7 @@ public class MySQLInterface {
         ArrayList<Object> result = new ArrayList<Object>();
         if(overrideDB != null)
             targetDB = overrideDB;
-        Connection run = DriverManager.getConnection("jdbc:mysql://" + sqlhost + ":" + sqlport + "/" + targetDB, sqluser, sqlpass);
+        Connection run = DriverManager.getConnection("jdbc:mysql://" + sqlhost + ":" + sqlport + "/" + targetDB + "?useUnicode=true&characterEncoding=UTF-8", sqluser, sqlpass);
         PreparedStatement pst;
         ResultSet rs = null;
         pst = run.prepareStatement(query);
