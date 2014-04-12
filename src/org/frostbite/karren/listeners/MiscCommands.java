@@ -15,12 +15,12 @@ import java.sql.SQLException;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"echo", "isgay", "help", "npswitch", "reloadint", "fave"};
+		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave"};
 		String message = event.getMessage();
 		String cmd = "";
         KarrenBot bot = (KarrenBot)event.getBot();
-		if(message.startsWith(".")){
-			message = message.replaceFirst(".", "").trim();
+		if(message.startsWith(bot.getBotConf().getCommandPrefix())){
+			message = message.replaceFirst(bot.getBotConf().getCommandPrefix(), "").trim();
 			for(String check : cmds){
 				if(message.toLowerCase().startsWith(check)){
 					cmd = check;
@@ -47,22 +47,6 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                         bot.getLog().info("Interactions system reload triggered by " + event.getUser().getNick());
                         bot.reloadInteractions();
                     }
-                    break;
-                case "help":
-                    event.getUser().send().message(event.getBot().getNick() + " bot commands. (All commands are proceded by a . (Ex. .help))");
-                    event.getUser().send().message(".help command - Prints out this message.");
-                    event.getUser().send().message(".isgay command - Sends a message to the server calling whatever follows .isgay gay(Ex. .isgay Seth)");
-                    event.getUser().send().message(".kill command - Only operators on the channel can use this. Kills the bot.");
-                    event.getUser().send().message(".news command - user must atleast have voice (+v) in the channel. Posts a news update to the CRaZyPANTS website.");
-                    event.getUser().send().message(".np command - displays the currently playing song. (on/off change auto update mode)");
-                    event.getUser().send().message(".origin command - Replies to you stating that Origin is bad.");
-                    event.getUser().send().message(event.getBot().getNick() + ", [pick, choose, select, draw] one: 1,2,3,4,etc - The list of entries can contain anything and can include spaces as long as the entries are seperated by a comma.");
-                    event.getUser().send().message(".echo command - Replies to you with an echo of whatever follows the command. (Ex. .echo Stuff)");
-                    event.getUser().send().message(".topic command - Sets the MOTD section of the topic with whatever follows the command.");
-                    event.getUser().send().message(".version command - replies with current version of the bot.");
-                    event.getUser().send().message("(Hello, goodbye, clayton) " + event.getBot().getNick() + " - Replies with different responses, hello and goodbye support many alternative words.");
-                    event.getUser().send().message(".faves (start/stop), Enables or Disables the fave alerting system, defaults to enabled.");
-                    event.getUser().send().message(".brad command - poop");
                     break;
                 case "npswitch":
                     if (event.getChannel().isOp(event.getUser())) {

@@ -18,8 +18,8 @@ public class TopicCommand extends ListenerAdapter<PircBotX>{
 		String message = event.getMessage();
 		KarrenBot bot = (KarrenBot)event.getBot();
 		Channel channel = event.getChannel();
-		if(message.startsWith(".topic")){
-			message = message.replaceFirst("\\.topic", "").trim();
+		if(message.startsWith(bot.getBotConf().getCommandPrefix() + "topic")){
+			message = message.replaceFirst(bot.getBotConf().getCommandPrefix() + "topic", "").trim();
 			if(channel.isOp(event.getUser()) || channel.hasVoice(event.getUser())){
 				if(!message.equals("")){
 					if(channel.isOp(bot.getUserBot())){

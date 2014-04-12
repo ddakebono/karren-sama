@@ -25,7 +25,7 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
         String[] data = new String[1];
         KarrenBot bot = (KarrenBot)event.getBot();
         ArrayList<Object> resultData = new ArrayList<>();
-        if(msg.toLowerCase().contains(event.getBot().getNick().toLowerCase())){
+        if(msg.toLowerCase().contains(event.getBot().getNick().toLowerCase()) && bot.getBotConf().getEnableInteractions().equalsIgnoreCase("true")){
             for(Interactions check : bot.getInteractions()){
                 returned = check.handleMessage(event);
                 if(returned.length()>0){
@@ -51,7 +51,7 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                                 returned = returned.replace("%song", bot.getListenCast().getSong().getSongName());
                                 break;
                             case "version":
-                                returned = returned.replace("%version", (String)bot.getBotConf().getConfigPayload("version"));
+                                returned = returned.replace("%version", bot.getBotConf().getVersionMarker());
                                 break;
                             case "dj":
                                 returned = returned.replace("%dj", bot.getListenCast().getIceDJ());

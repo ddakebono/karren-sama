@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.impl.SimpleLogger;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class Karren{
 	public static void main(String[] args){
@@ -29,26 +30,29 @@ public class Karren{
             e.printStackTrace();
         }
         Configuration<PircBotX> config = new Configuration.Builder<>()
-                .setName((String)botConf.getConfigPayload("botname"))
+                .setName(botConf.getBotname())
                 .setLogin("Karren")
                 .setRealName("Karren-sama IRC Bot")
                 .setAutoNickChange(true)
-                .setNickservPassword((String) botConf.getConfigPayload("nickservpass"))
+                .setNickservPassword(botConf.getNickservPass())
+                .setServerPassword(botConf.getServerPassword())
                 .addListener(new MiscCommands())
                 .addListener(new InteractionCommands())
                 .addListener(new NewsCommand())
                 .addListener(new KillCommand())
                 .addListener(new TopicCommand())
                 .addListener(new HueCommand())
-                .setServerHostname((String)botConf.getConfigPayload("hostname"))
-                .addAutoJoinChannel((String)botConf.getConfigPayload("channel"))
+                .addListener(new HelpCommand())
+                .setEncoding(Charset.forName("UTF-8"))
+                .setServerHostname(botConf.getHostname())
+                .addAutoJoinChannel(botConf.getChannel())
                 .buildConfiguration();
         //Adding the listeners for our commands
 		KarrenBot bot = new KarrenBot(config, botConf, log);
 		
 		//Try and load the JDBC MySQL Driver
 		try{
-			log.info(bot.getNick() + " version " + bot.getBotConf().getConfigPayload("version") + " is now starting!");
+			log.info(bot.getNick() + " version " + botConf.getVersionMarker() + " is now starting!");
             log.debug("Trying to load MySQL Driver...");
 			Class.forName("com.mysql.jdbc.Driver");
             log.debug("Loaded driver!");
@@ -57,7 +61,7 @@ public class Karren{
 		}
         //Initialize the bot
 		try{
-            log.info(bot.getNick() + " Ready, connecting to " + bot.getBotConf().getConfigPayload("hostname"));
+            log.info(bot.getNick() + " Ready, connecting to " + botConf.getHostname());
 			bot.startBot();
 		} catch (Exception e){
             log.error("Error While Loading:", e);

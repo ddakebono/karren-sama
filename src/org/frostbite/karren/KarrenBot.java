@@ -21,7 +21,6 @@ public class KarrenBot extends PircBotX {
     private MySQLInterface sql;
     private ArrayList<Interactions> interactions;
     private Logger log;
-    private int songID;
     public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log){
         super(config);
         this.botConf = botConf;
@@ -75,9 +74,5 @@ public class KarrenBot extends PircBotX {
         lc.kill();
     }
     public ListenCast getListenCast(){return lc;}
-    public void setSongID(int id){
-        songID = id;
-    }
-    public int getSongID(){return songID;}
     public Logger getLog(){return log;}
 }

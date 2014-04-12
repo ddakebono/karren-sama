@@ -23,6 +23,7 @@ public class MySQLInterface {
     private boolean pstNeeded;
     private String overrideDB;
     private Logger log;
+    private boolean rwEnabled;
     private ArrayList<String> sqlPayload = new ArrayList<>();
     /*
     CONSTRUCTORS
@@ -35,11 +36,12 @@ public class MySQLInterface {
         this.sqluser = sqluser;
     }
     public MySQLInterface(BotConfiguration botConf, Logger log){
-        sqldb = (String)botConf.getConfigPayload("sqldb");
-        sqlhost = (String)botConf.getConfigPayload("sqlhost");
-        sqlpass = (String)botConf.getConfigPayload("sqlpass");
-        sqlport = Integer.parseInt((String)botConf.getConfigPayload("sqlport"));
-        sqluser = (String)botConf.getConfigPayload("sqluser");
+        sqldb = botConf.getSqldb();
+        sqlhost = botConf.getSqlhost();
+        sqlpass = botConf.getSqlpass();
+        sqlport = Integer.parseInt(botConf.getSqlport());
+        sqluser = botConf.getSqluser();
+        rwEnabled = Boolean.parseBoolean(botConf.getAllowSQLRW());
         this.log = log;
     }
     /*
@@ -178,80 +180,82 @@ public class MySQLInterface {
         }
     }
     public void updateRadioDatabase(Song song) throws SQLException {
-        resetSQL();
-        ArrayList<String> result = new ArrayList<String>();
-        ArrayList<Object> returned;
-        String curTime = "00-00-0000 00:00:00";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-        query = "SELECT ID FROM SongDB WHERE SongTitle = ?";
-        pstNeeded = true;
-        search = true;
-        sqlPayload.add(song.getSongName());
-        returned = executeQuery();
-        resetSQL();
-        if(returned.size()>0){
-            song.setSongID((int)returned.get(0));
-            returned.clear();
-            query = "SELECT * FROM SongDB WHERE ID= ?";
-            sqlPayload.add(String.valueOf(song.getSongID()));
-            search = true;
-            pstNeeded = true;
-            returned = executeQuery();
-            song.setFieldsFromSQL(returned);
-        } else {
-            returned.clear();
-            song.setSongID(0);
-            returned.add(null);
-            returned.add(null);
-            returned.add("Never");
-            returned.add(0);
-            returned.add(0);
-            song.setFieldsFromSQL(returned);
-
-        }
-        returned.clear();
-        if(song.getSongID()==0){
-            //Adding song to DB and getting new ID for song
+        if(rwEnabled) {
             resetSQL();
-            query = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
-            sqlPayload.add(song.getSongName());
-            curTime = getCurDate(dateFormat);
-            sqlPayload.add(curTime);
-            search = false;
-            pstNeeded = true;
-            executeQuery();
-            resetSQL();
+            ArrayList<String> result = new ArrayList<String>();
+            ArrayList<Object> returned;
+            String curTime = "00-00-0000 00:00:00";
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
             query = "SELECT ID FROM SongDB WHERE SongTitle = ?";
-            sqlPayload.add(song.getSongName());
+            pstNeeded = true;
             search = true;
-            pstNeeded = true;
+            sqlPayload.add(song.getSongName());
             returned = executeQuery();
-            if(returned.size()>0){
+            resetSQL();
+            if (returned.size() > 0) {
                 song.setSongID((int) returned.get(0));
+                returned.clear();
+                query = "SELECT * FROM SongDB WHERE ID= ?";
+                sqlPayload.add(String.valueOf(song.getSongID()));
+                search = true;
+                pstNeeded = true;
+                returned = executeQuery();
+                song.setFieldsFromSQL(returned);
+            } else {
+                returned.clear();
+                song.setSongID(0);
+                returned.add(null);
+                returned.add(null);
+                returned.add("Never");
+                returned.add(0);
+                returned.add(0);
+                song.setFieldsFromSQL(returned);
+
             }
-            resetSQL();
-        } else {
-            resetSQL();
-            //Update info for song
-            query = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=?";
-            curTime = getCurDate(dateFormat);
-            sqlPayload.add(curTime);
-            sqlPayload.add(String.valueOf(song.getSongID()));
-            search = false;
-            pstNeeded = true;
-            executeQuery();
+            returned.clear();
+            if (song.getSongID() == 0) {
+                //Adding song to DB and getting new ID for song
+                resetSQL();
+                query = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
+                sqlPayload.add(song.getSongName());
+                curTime = getCurDate(dateFormat);
+                sqlPayload.add(curTime);
+                search = false;
+                pstNeeded = true;
+                executeQuery();
+                resetSQL();
+                query = "SELECT ID FROM SongDB WHERE SongTitle = ?";
+                sqlPayload.add(song.getSongName());
+                search = true;
+                pstNeeded = true;
+                returned = executeQuery();
+                if (returned.size() > 0) {
+                    song.setSongID((int) returned.get(0));
+                }
+                resetSQL();
+            } else {
+                resetSQL();
+                //Update info for song
+                query = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=?";
+                curTime = getCurDate(dateFormat);
+                sqlPayload.add(curTime);
+                sqlPayload.add(String.valueOf(song.getSongID()));
+                search = false;
+                pstNeeded = true;
+                executeQuery();
+            }
+            log.info("Now playing: " + song.getSongName() + ":" + song.getSongID() + ":" + song.getPlayCount());
         }
-        log.info("Now playing: " + song.getSongName() + ":" + song.getSongID() + ":" + song.getPlayCount());
     }
     /*
     SITE INTERACTIONS
      */
     public void addNewsPost(String post, String author) throws SQLException {
         resetSQL();
-        query = "INSERT INTO newspost (id, post, author, date) SET (null, ? , ? , ? )";
+        query = "INSERT INTO newsposts (id, post, author, date) VALUES (null, ? , ? , ? )";
         sqlPayload.add(post);
         sqlPayload.add(author);
-        sqlPayload.add(getCurDate(new SimpleDateFormat("yyyy-MM-DD")));
+        sqlPayload.add(getCurDate(new SimpleDateFormat("yyyy-MM-dd")));
         search = false;
         pstNeeded = true;
         overrideDB = "symfonybackend";

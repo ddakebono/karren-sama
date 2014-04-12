@@ -57,13 +57,13 @@ public class ListenCast extends Thread{
 	public ListenCast(PircBotX bot, BotConfiguration botConf, Logger log) {
         if(bot instanceof KarrenBot)
 		    this.bot = (KarrenBot)bot;
-        icecastHost = (String)botConf.getConfigPayload("icecasthost");
-        icecastPort = (String)botConf.getConfigPayload("icecastport");
-        icecastMount = (String)botConf.getConfigPayload("icecastmount");
+        icecastHost = botConf.getIcecastHost();
+        icecastPort = botConf.getIcecastPort();
+        icecastMount = botConf.getIcecastMount();
         this.log = log;
 	}
 	public void run(){
-        while(!killListencast) {
+        while(!killListencast && bot.getBotConf().getEnableListencast().equalsIgnoreCase("true")) {
             doUpdate = true;
             try {
                 updateIcecastInfo();
@@ -99,7 +99,7 @@ public class ListenCast extends Thread{
             e.printStackTrace();
         }
         if(nowPlaying){
-			bot.sendIRC().message((String)(bot.getBotConf().getConfigPayload("channel")), getNowPlayingStr());
+			bot.sendIRC().message(bot.getBotConf().getChannel(), getNowPlayingStr());
             try {
                 alertFaves();
             } catch (IOException | SQLException e) {
@@ -125,10 +125,10 @@ public class ListenCast extends Thread{
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		CredentialsProvider clientCreds = new BasicCredentialsProvider();
-		clientCreds.setCredentials(new AuthScope(new HttpHost((String)(bot.getBotConf().getConfigPayload("icecasthost")), Integer.parseInt((String)bot.getBotConf().getConfigPayload("icecastport")))), new UsernamePasswordCredentials((String)(bot.getBotConf().getConfigPayload("icecastadminusername")), (String)(bot.getBotConf().getConfigPayload("icecastadminpass"))));
+		clientCreds.setCredentials(new AuthScope(new HttpHost(icecastHost, Integer.parseInt(icecastPort))), new UsernamePasswordCredentials(bot.getBotConf().getIcecastAdminUsername(), bot.getBotConf().getIcecastAdminPass()));
 		CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(clientCreds).build();
 		try{
-			HttpGet httpGet = new HttpGet("http://" + (bot.getBotConf().getConfigPayload("icecasthost")) + ":" + (bot.getBotConf().getConfigPayload("icecastport")) + "/admin/stats.xml");
+			HttpGet httpGet = new HttpGet("http://" + icecastHost + ":" + icecastPort + "/admin/stats.xml");
 			CloseableHttpResponse result = httpClient.execute(httpGet);
 			try{
 				HttpEntity entity = result.getEntity();
@@ -138,7 +138,7 @@ public class ListenCast extends Thread{
 					Node sourceData = sources.item(i);
 					if(sourceData.getNodeType() == Node.ELEMENT_NODE){
 						Element data = (Element)sourceData;
-						if(data.getAttribute("mount").equalsIgnoreCase("/" + bot.getBotConf().getConfigPayload("icecastmount"))){
+						if(data.getAttribute("mount").equalsIgnoreCase("/" + icecastMount)){
                             onair = true;
 							iceDJ = data.getElementsByTagName("server_description").item(0).getTextContent();
 							iceListeners = Integer.parseInt(data.getElementsByTagName("listeners").item(0).getTextContent());

@@ -15,7 +15,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 public class NewsCommand extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
 		String message = event.getMessage();
-		String cmd = ".news";
+		String cmd = ((KarrenBot)event.getBot()).getBotConf().getCommandPrefix() + "news";
 		User user = event.getUser();
 		String ops = event.getChannel().getOps().toString();
 		boolean hasVoice = ops.contains(user.getNick());

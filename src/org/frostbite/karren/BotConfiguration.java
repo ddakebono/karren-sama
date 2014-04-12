@@ -32,43 +32,84 @@ public class BotConfiguration {
     private String channel;
     private String botname;
     private String hostname;
-    private final String versionMarker = "v1.0-INDEV";
-    public Object getConfigPayload(String target){
-        switch(target.toLowerCase()){
-            case "botname":
-                return botname;
-            case "hostname":
-                return hostname;
-            case "channel":
-                return channel;
-            case "nickservpass":
-                return nickservPass;
-            case "icecastmount":
-                return icecastMount;
-            case "icecastport":
-                return icecastPort;
-            case "icecasthost":
-                return icecastHost;
-            case "icecastadminpass":
-                return icecastAdminPass;
-            case "icecastadminusername":
-                return icecastAdminUsername;
-            case "sqlpass":
-                return sqlpass;
-            case "sqldb":
-                return sqldb;
-            case "sqlport":
-                return sqlport;
-            case "sqluser":
-                return sqluser;
-            case "sqlhost":
-                return sqlhost;
-            case "version":
-                return versionMarker;
-            default:
-                return false;
+    private String serverPassword;
+    private String allowSQLRW;
+    private String enableListencast;
+    private String enableInteractions;
+    private String commandPrefix;
+    private final String versionMarker = "ALPHA-v1.0.1";
+    /*
+    Config Getters
+     */
+    public String getSqlhost() {
+        return sqlhost;
+    }
+    public String getSqlport() {
+        return sqlport;
+    }
+    public String getSqluser() {
+        return sqluser;
+    }
+    public String getSqldb() {
+        return sqldb;
+    }
+    public String getVersionMarker() {
+        return versionMarker;
+    }
+    public String getHostname() {
+        return hostname;
+    }
+    public String getBotname() {
+        return botname;
+    }
+    public String getChannel() {
+        return channel;
+    }
+    public String getNickservPass() {
+        if(nickservPass.length()==0){
+            return "nothing";
+        } else {
+            return nickservPass;
         }
     }
+    public String getIcecastMount() {
+        return icecastMount;
+    }
+    public String getIcecastPort() {
+        return icecastPort;
+    }
+    public String getIcecastHost() {
+        return icecastHost;
+    }
+    public String getIcecastAdminPass() {
+        return icecastAdminPass;
+    }
+    public String getIcecastAdminUsername() {
+        return icecastAdminUsername;
+    }
+    public String getSqlpass() {
+        return sqlpass;
+    }
+    public String getServerPassword() {
+        if(serverPassword.length()==0){
+            return "nothing";
+        } else {
+            return serverPassword;
+        }
+    }
+    public String getAllowSQLRW() {
+        return allowSQLRW;
+    }
+    public String getEnableListencast() {
+        return enableListencast;
+    }
+    public String getEnableInteractions() {
+        return enableInteractions;
+    }
+    public String getCommandPrefix() { return commandPrefix; }
+    /*
+    Config Loader.
+    */
     public void initConfig(Logger log) throws IOException {
         Properties cfg = new Properties();
         File check = new File("conf/bot.prop");
@@ -91,6 +132,11 @@ public class BotConfiguration {
         icecastMount = cfg.getProperty("icecastMount", "changeme.mp3");
         nickservPass = cfg.getProperty("nickservPass", "changeme");
         channel = cfg.getProperty("channel", "#changeme");
+        allowSQLRW = cfg.getProperty("allowSQLReadWrite", "true");
+        serverPassword = cfg.getProperty("serverPassword", "changeme");
+        enableInteractions = cfg.getProperty("enableInteractionSystem", "true");
+        enableListencast = cfg.getProperty("enableListencastSystem", "true");
+        commandPrefix = cfg.getProperty("commandPrefix", ".");
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
             log.warn("Updating configuration file!");
             mkNewConfig(log);
@@ -114,6 +160,11 @@ public class BotConfiguration {
         cfg.setProperty("icecastMount", icecastMount);
         cfg.setProperty("nickservPass", nickservPass);
         cfg.setProperty("channel", channel);
+        cfg.setProperty("allowSQLReadWrite", allowSQLRW);
+        cfg.setProperty("serverPassword", serverPassword);
+        cfg.setProperty("enableInteractionSystem", enableInteractions);
+        cfg.setProperty("enableListencastSystem", enableListencast);
+        cfg.setProperty("commandPrefix", commandPrefix);
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
         log.info("Your configuration file has been generated/updated!");
         System.exit(0);

@@ -50,11 +50,25 @@ public class Interactions {
     }
     public String getIdentifier(){return identifier;}
     public String[] getTags(){return tags;}
+    public String getTagsToString(){
+        String result = "";
+        for(int i=0; i<tags.length; i++){
+            result += tags[i];
+        }
+        return result;
+    }
     public String getResponseTemplate(){return responseTemplate;}
-    public Object[] getActivator(){
+    public String[] getActivator(){
         String[] result = new String[activator.size()];
         for(int i=0; i<result.length; i++){
             result[i] = activator.get(i);
+        }
+        return result;
+    }
+    public String getActivatorsToString(){
+        String result = "";
+        for(int i=0; i<activator.size(); i++){
+            result += activator.get(i) + " ";
         }
         return result;
     }

@@ -13,7 +13,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 public class KillCommand extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
-		String cmd = ".kill";
+		String cmd = ((KarrenBot)event.getBot()).getBotConf().getCommandPrefix() + "kill";
 		String message = event.getMessage();
 		KarrenBot bot = (KarrenBot)event.getBot();
 		String ops = event.getChannel().getOps().toString();
