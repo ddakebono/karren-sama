@@ -35,17 +35,23 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     event.getChannel().send().message("Wow, " + message.trim() + " is so fucking gaaaaaaaaay!");
                     break;
                 case "fave":
-                    event.getUser().send().message(bot.getListenCast().getSong().getSongName() + " added to your favorites!");
-                    try {
-                        bot.getSql().addFave(event.getUser().getNick(), bot.getListenCast().getSong());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    if(bot.getListenCast().getSong().getSongID()!=0) {
+                        event.getUser().send().message(bot.getListenCast().getSong().getSongName() + " added to your favorites!");
+                        try {
+                            bot.getSql().addFave(event.getUser().getNick(), bot.getListenCast().getSong());
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        event.getUser().send().message("You can't fave something that isn't playing!");
                     }
                     break;
                 case "reloadint":
                     if(event.getChannel().isOp(event.getUser())) {
                         bot.getLog().info("Interactions system reload triggered by " + event.getUser().getNick());
                         bot.reloadInteractions();
+                    } else {
+                        event.respond("You do not have the permissions to use this...(Not Operator)");
                     }
                     break;
                 case "npswitch":
@@ -56,7 +62,7 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                             event.getChannel().send().message("Automagic now playing has been deactivated...");
                         }
                     } else {
-                        event.respond("You do not have the permissions to change this...");
+                        event.respond("You do not have the permissions to change this...(Not Operator)");
                     }
 			}
 		}

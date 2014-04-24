@@ -33,7 +33,7 @@ public class TopicCommand extends ListenerAdapter<PircBotX>{
 					event.respond("Your message does not contain a new MOTD");
 				}
 			} else {
-				event.respond("You do not have permission to change the topic!");
+				event.respond("You do not have permission to change the topic! (Not Voice or OP)");
 			}
 		}
 	}

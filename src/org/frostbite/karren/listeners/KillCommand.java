@@ -16,15 +16,13 @@ public class KillCommand extends ListenerAdapter<PircBotX>{
 		String cmd = ((KarrenBot)event.getBot()).getBotConf().getCommandPrefix() + "kill";
 		String message = event.getMessage();
 		KarrenBot bot = (KarrenBot)event.getBot();
-		String ops = event.getChannel().getOps().toString();
-		boolean isAnOp = ops.contains(event.getUser().getNick());
-		if(isAnOp && message.toLowerCase().startsWith(cmd)){
+		if(event.getChannel().isOp(event.getUser()) && message.toLowerCase().startsWith(cmd)){
 			bot.getLog().info("Bot has been killed by " + event.getUser().getNick());
             bot.sendIRC().quitServer("Kill command fired, bot terminating.");
             bot.killListencast();
 		} else {
-			if(!isAnOp && message.startsWith(cmd))
-				event.respond("I will not be killed by you!");
+			if(!event.getChannel().isOp(event.getUser()) && message.startsWith(cmd))
+				event.respond("I will not be killed by you! (Not Operator)");
 		}
 	}
 

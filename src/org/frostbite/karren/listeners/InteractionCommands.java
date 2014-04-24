@@ -85,7 +85,7 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
             if(returned.length()>0){
                 event.getChannel().send().message(returned);
             } else {
-                event.respond("It's not like I wanted to answer anyways....baka.");
+                event.respond("It's not like I wanted to answer anyways....baka. (Use \"" + bot.getBotConf().getCommandPrefix() + "help interactions\" to view all usable interactions)");
             }
         }
     }

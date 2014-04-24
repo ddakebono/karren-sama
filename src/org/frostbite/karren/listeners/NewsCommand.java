@@ -17,20 +17,17 @@ public class NewsCommand extends ListenerAdapter<PircBotX>{
 		String message = event.getMessage();
 		String cmd = ((KarrenBot)event.getBot()).getBotConf().getCommandPrefix() + "news";
 		User user = event.getUser();
-		String ops = event.getChannel().getOps().toString();
-		boolean hasVoice = ops.contains(user.getNick());
-		boolean isAnOp = ops.contains(user.getNick());
 		if(message.startsWith(cmd)){
 			message = message.replaceFirst(cmd, "").trim();
-			if(hasVoice || isAnOp){
-				if(message != null){
+			if(event.getChannel().isOp(event.getUser()) || event.getChannel().hasVoice(event.getUser())){
+				if(message.length() > 0){
                     ((KarrenBot)event.getBot()).getSql().addNewsPost(message, user.getNick());
                     ((KarrenBot)event.getBot()).getLog().info("A news update was posted by " + user.getNick(), false);
 				} else {
 					event.respond("You seem to be missing the news post, please supply a post after the command. (ex. .news This is my post!)");
 				}
 			} else {
-				event.respond("You do not have the required permission to do this.");
+				event.respond("You do not have the required permission to do this. (Not Voice or OP)");
 			}
 			
 		}

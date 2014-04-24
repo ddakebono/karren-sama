@@ -14,9 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-/**
- * Created by frostbite on 3/18/14.
- */
 public class BotConfiguration {
     private String sqlhost;
     private String sqlport;
@@ -111,12 +108,18 @@ public class BotConfiguration {
     Config Loader.
     */
     public void initConfig(Logger log) throws IOException {
+        String[] testMount;
         Properties cfg = new Properties();
         File check = new File("conf/bot.prop");
         if(check.isFile()){
             cfg.load(new FileInputStream("conf/bot.prop"));
         } else {
-            new File("conf").mkdirs();
+            boolean conf = new File("conf").mkdirs();
+            if(!conf) {
+                log.error("CONFIGURATION FOLDER COULD NOT BE CREATED!");
+                log.error("Shutting down bot due to error.");
+                System.exit(1);
+            }
         }
         botname = cfg.getProperty("botname", "Karren-sama");
         hostname = cfg.getProperty("hostname", "0.0.0.0");
@@ -129,7 +132,7 @@ public class BotConfiguration {
         icecastAdminPass = cfg.getProperty("icecastAdminPass", "changeme");
         icecastHost = cfg.getProperty("icecastHost", "0.0.0.0");
         icecastPort = cfg.getProperty("icecastPort", "8000");
-        icecastMount = cfg.getProperty("icecastMount", "changeme.mp3");
+        icecastMount = cfg.getProperty("icecastMount", "changeme.ogg");
         nickservPass = cfg.getProperty("nickservPass", "changeme");
         channel = cfg.getProperty("channel", "#changeme");
         allowSQLRW = cfg.getProperty("allowSQLReadWrite", "true");
@@ -141,6 +144,12 @@ public class BotConfiguration {
             log.warn("Updating configuration file!");
             mkNewConfig(log);
         }
+        testMount = icecastMount.split("\\.?");
+        if(testMount.length>2)
+            log.error("icecastMount should only have one . in it. (EX. stream.ogg)");
+        else if(testMount[1].equalsIgnoreCase("mp3"))
+            log.error("Use of .mp3 for your stream is not recommended! .mp3 does not properly handle Unicode tags!");
+
     }
     public void mkNewConfig(Logger log) throws IOException {
         Properties cfg = new Properties();

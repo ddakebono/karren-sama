@@ -50,7 +50,6 @@ public class ListenCast extends Thread{
     private String artist;
     private String title;
     private Song currentSong;
-    private Song songTemp;
     private boolean doUpdate;
 	private boolean killListencast = false;
     private Logger log;
@@ -63,6 +62,7 @@ public class ListenCast extends Thread{
         this.log = log;
 	}
 	public void run(){
+        Song songTemp;
         while(!killListencast && bot.getBotConf().getEnableListencast().equalsIgnoreCase("true")) {
             doUpdate = true;
             try {
@@ -70,9 +70,11 @@ public class ListenCast extends Thread{
                 songTemp = new Song(artist + " - " + title);
             } catch (IOException e) {
                 songTemp = new Song("Off-air");
+                log.info("Stream seems to have shutdown.");
                 doUpdate = false;
             } catch (StringIndexOutOfBoundsException | SQLException | ParserConfigurationException | SAXException e1) {
                 songTemp = new Song("Error encountered when parsing song info!");
+                log.error("Bad info in song data, couldn't parse song title!");
                 doUpdate = false;
             }
             if(iceDJ.equalsIgnoreCase("offline")){
@@ -118,7 +120,10 @@ public class ListenCast extends Thread{
         }
     }
     public String getNowPlayingStr(){
-        return "Now playing: \"" + currentSong.getSongName() + "\" On CRaZyRADIO ("+ iceStreamTitle +"). Listeners: " + iceListeners + "/" + iceMaxListeners + ". This song was last played: " + currentSong.getLastPlayed() + ". Faves: " + currentSong.getFavCount() + ". Plays: " + currentSong.getPlayCount();
+        if(!currentSong.getSongName().equalsIgnoreCase("off-air"))
+            return "Now playing: \"" + currentSong.getSongName() + "\" On CRaZyRADIO ("+ getIceStreamTitle() +"). Listeners: " + getIceListeners() + "/" + getIceMaxListeners() + ". This song was last played: " + currentSong.getLastPlayed() + ". Faves: " + currentSong.getFavCount() + ". Plays: " + currentSong.getPlayCount();
+        else
+            return "Source disconnected, the stream is now offline.";
     }
 	private void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException {
         boolean onair = false;
@@ -126,38 +131,32 @@ public class ListenCast extends Thread{
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		CredentialsProvider clientCreds = new BasicCredentialsProvider();
 		clientCreds.setCredentials(new AuthScope(new HttpHost(icecastHost, Integer.parseInt(icecastPort))), new UsernamePasswordCredentials(bot.getBotConf().getIcecastAdminUsername(), bot.getBotConf().getIcecastAdminPass()));
-		CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(clientCreds).build();
-		try{
-			HttpGet httpGet = new HttpGet("http://" + icecastHost + ":" + icecastPort + "/admin/stats.xml");
-			CloseableHttpResponse result = httpClient.execute(httpGet);
-			try{
-				HttpEntity entity = result.getEntity();
-				Document stats = dBuilder.parse(entity.getContent());
-				NodeList sources = stats.getElementsByTagName("source");
-				for(int i=0; i<sources.getLength(); i++){
-					Node sourceData = sources.item(i);
-					if(sourceData.getNodeType() == Node.ELEMENT_NODE){
-						Element data = (Element)sourceData;
-						if(data.getAttribute("mount").equalsIgnoreCase("/" + icecastMount)){
+        try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(clientCreds).build()) {
+            HttpGet httpGet = new HttpGet("http://" + icecastHost + ":" + icecastPort + "/admin/stats.xml");
+            try (CloseableHttpResponse result = httpClient.execute(httpGet)) {
+                HttpEntity entity = result.getEntity();
+                Document stats = dBuilder.parse(entity.getContent());
+                NodeList sources = stats.getElementsByTagName("source");
+                for (int i = 0; i < sources.getLength(); i++) {
+                    Node sourceData = sources.item(i);
+                    if (sourceData.getNodeType() == Node.ELEMENT_NODE) {
+                        Element data = (Element) sourceData;
+                        if (data.getAttribute("mount").equalsIgnoreCase("/" + icecastMount)) {
                             onair = true;
-							iceDJ = data.getElementsByTagName("server_description").item(0).getTextContent();
-							iceListeners = Integer.parseInt(data.getElementsByTagName("listeners").item(0).getTextContent());
-							iceMaxListeners = data.getElementsByTagName("max_listeners").item(0).getTextContent();
-							iceStreamTitle = data.getElementsByTagName("server_name").item(0).getTextContent();
+                            iceDJ = data.getElementsByTagName("server_description").item(0).getTextContent();
+                            iceListeners = Integer.parseInt(data.getElementsByTagName("listeners").item(0).getTextContent());
+                            iceMaxListeners = data.getElementsByTagName("max_listeners").item(0).getTextContent();
+                            iceStreamTitle = data.getElementsByTagName("server_name").item(0).getTextContent();
                             artist = data.getElementsByTagName("artist").item(0).getTextContent();
                             title = data.getElementsByTagName("title").item(0).getTextContent();
-						}
-					}
-				}
-			} catch(NullPointerException e) {
-				iceDJ = "Off-air";
+                        }
+                    }
+                }
+            } catch (NullPointerException e) {
+                iceDJ = "Off-air";
                 iceStreamTitle = "Offline";
-			} finally {
-				result.close();
-			}
-		} finally {
-			httpClient.close();
-		}
+            }
+        }
 		if(!onair){
             iceDJ = "offline";
         }
@@ -168,13 +167,11 @@ public class ListenCast extends Thread{
     public String getIceDJ(){return iceDJ;}
     public Song getSong(){return currentSong;}
     public String getIceStreamTitle(){return iceStreamTitle;}
+    public String getIceMaxListeners(){return iceMaxListeners;}
     public int getIceListeners(){return iceListeners;}
     public boolean enableNP(Channel channel){
         announceChannel = channel;
-        if(!nowPlaying)
-            nowPlaying = true;
-        else
-            nowPlaying = false;
+        nowPlaying = !nowPlaying;
         return nowPlaying;
     }
 }
