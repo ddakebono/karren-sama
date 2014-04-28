@@ -62,7 +62,8 @@ public class Karren{
         //Initialize the bot
 		try{
             log.info(bot.getNick() + " Ready, connecting to " + botConf.getHostname());
-			bot.startBot();
+            if(botConf.getConnectToIRC().equalsIgnoreCase("true"))
+                bot.startBot();
 		} catch (Exception e){
             log.error("Error While Loading:", e);
 		}

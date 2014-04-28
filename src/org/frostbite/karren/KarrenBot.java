@@ -1,6 +1,7 @@
 package org.frostbite.karren;
 
 import org.frostbite.karren.listencast.ListenCast;
+import org.frostbite.karren.space.SpaceController;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
@@ -21,12 +22,14 @@ public class KarrenBot extends PircBotX {
     private MySQLInterface sql;
     private ArrayList<Interactions> interactions;
     private Logger log;
+    private SpaceController space;
     public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log){
         super(config);
         this.botConf = botConf;
         this.log = log;
         lc = new ListenCast(this, botConf, log);
         sql = new MySQLInterface(botConf, log);
+        space = new SpaceController(sql);
         interactions = loadInteractions();
     }
     private ArrayList<Interactions> loadInteractions(){

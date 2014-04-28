@@ -2,6 +2,8 @@ package org.frostbite.karren;
 
 import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listencast.Song;
+import org.frostbite.karren.space.SpaceEvent;
+import org.frostbite.karren.space.SpaceFaction;
 import org.slf4j.Logger;
 
 import java.sql.*;
@@ -260,6 +262,41 @@ public class MySQLInterface {
         pstNeeded = true;
         overrideDB = "symfonybackend";
         executeQuery();
+    }
+    /*
+    SPACE ENGINEERS INTERACTIONS
+     */
+    public SpaceFaction[] loadSpaceFactions() throws SQLException {
+        ArrayList<Object> returned;
+        SpaceFaction[] result = null;
+        int factionCount;
+        resetSQL();
+        query = "SELECT * FROM space_faction";
+        search = true;
+        pstNeeded = false;
+        returned = executeQuery();
+        factionCount = returned.size()/3;
+        result = new SpaceFaction[factionCount];
+        for(int i=0; i<factionCount; i++){
+            result[i] = new SpaceFaction((int)returned.get(3*i), (String)returned.get(1+(3*i)), ((String)returned.get(2+(3*i))).split(","));
+        }
+        return result;
+    }
+    public SpaceEvent[] loadSpaceEvents() throws SQLException{
+        SpaceEvent[] result = null;
+        ArrayList<Object> returned = new ArrayList<Object>();
+        int eventCount;
+        resetSQL();
+        query = "SELECT * FROM space_event";
+        search = true;
+        pstNeeded = false;
+        returned = executeQuery();
+        eventCount = returned.size()/4;
+        result = new SpaceEvent[eventCount];
+        for(int i=0; i<eventCount; i++){
+            result[i] = new SpaceEvent((int)returned.get(4*i), (String)returned.get(1+(4*i)), Long.parseLong((String)returned.get(2+(4*i))), Long.parseLong((String)returned.get(3+(4*i))));
+        }
+        return result;
     }
     /*
     SQL OPERATIONS

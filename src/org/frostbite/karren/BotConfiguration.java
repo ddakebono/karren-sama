@@ -34,7 +34,8 @@ public class BotConfiguration {
     private String enableListencast;
     private String enableInteractions;
     private String commandPrefix;
-    private final String versionMarker = "ALPHA-v1.0.1";
+    private String connectToIRC;
+    private final String versionMarker = "ALPHA-v1.0.2";
     /*
     Config Getters
      */
@@ -62,6 +63,7 @@ public class BotConfiguration {
     public String getChannel() {
         return channel;
     }
+    public String getConnectToIRC() {return connectToIRC;}
     public String getNickservPass() {
         if(nickservPass.length()==0){
             return "nothing";
@@ -140,6 +142,7 @@ public class BotConfiguration {
         enableInteractions = cfg.getProperty("enableInteractionSystem", "true");
         enableListencast = cfg.getProperty("enableListencastSystem", "true");
         commandPrefix = cfg.getProperty("commandPrefix", ".");
+        connectToIRC = cfg.getProperty("connectToIRC", "true");
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
             log.warn("Updating configuration file!");
             mkNewConfig(log);
@@ -174,6 +177,7 @@ public class BotConfiguration {
         cfg.setProperty("enableInteractionSystem", enableInteractions);
         cfg.setProperty("enableListencastSystem", enableListencast);
         cfg.setProperty("commandPrefix", commandPrefix);
+        cfg.setProperty("connectToIRC", connectToIRC);
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
         log.info("Your configuration file has been generated/updated!");
         System.exit(0);
