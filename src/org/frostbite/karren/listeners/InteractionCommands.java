@@ -99,6 +99,9 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                 event.getChannel().send().message(returned);
             else if(hasBotTag && !msg.toLowerCase().contains(bot.getBotConf().getBotname().toLowerCase()))
                 event.respond("It's not like I wanted to answer anyways....baka. (Use \"" + bot.getBotConf().getCommandPrefix() + "help interactions\" to view all usable interactions)");
+            else if(returned.length()>0 && !hasBotTag)
+                event.getChannel().send().message(returned);
+
         }
     }
     public static String randomList(String message){
