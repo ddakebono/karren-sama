@@ -35,7 +35,7 @@ public class BotConfiguration {
     private String enableInteractions;
     private String commandPrefix;
     private String connectToIRC;
-    private final String versionMarker = "ALPHA-v1.0.2";
+    private final String versionMarker = "1.0.2-ALPHA";
     /*
     Config Getters
      */
