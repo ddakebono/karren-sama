@@ -22,10 +22,11 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
         String msg = event.getMessage();
         String returned = "";
         String[] tags;
+        boolean hasBotTag = false;
         String[] data = new String[1];
         KarrenBot bot = (KarrenBot)event.getBot();
         ArrayList<Object> resultData = new ArrayList<>();
-        if(msg.toLowerCase().contains(event.getBot().getNick().toLowerCase()) && bot.getBotConf().getEnableInteractions().equalsIgnoreCase("true")){
+        if(bot.getBotConf().getEnableInteractions().equalsIgnoreCase("true")){
             for(Interactions check : bot.getInteractions()){
                 returned = check.handleMessage(event);
                 if(returned.length()>0){
@@ -53,6 +54,12 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                             case "version":
                                 returned = returned.replace("%version", bot.getBotConf().getVersionMarker());
                                 break;
+                            case "songtime":
+                                returned = returned.replace("%songtime", bot.getListenCast().getMinSecFormattedString(bot.getListenCast().getSongCurTime()));
+                                break;
+                            case "songdur":
+                                returned = returned.replace("%songdur", bot.getListenCast().getMinSecFormattedString(bot.getListenCast().getSong().getLastSongDuration()));
+                                break;
                             case "dj":
                                 returned = returned.replace("%dj", bot.getListenCast().getIceDJ());
                                 break;
@@ -63,6 +70,9 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                                 } else {
                                     returned = "You want me to pick something but I can't tell what anything is...";
                                 }
+                                break;
+                            case "bot":
+                                hasBotTag = true;
                                 break;
                             case "return":
                                 data[0] = event.getUser().getNick();
@@ -77,16 +87,18 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                                 } else {
                                     returned = "Hey," + event.getUser().getNick() + " are you new? Be sure to say good bye to me when you leave!";
                                 }
+                                break;
+                            default:
+                                bot.getLog().error("Please check the Interactions file, a tag that does not exist is being used!");
                         }
                     }
                     break;
                 }
             }
-            if(returned.length()>0){
+            if(hasBotTag && msg.toLowerCase().contains(bot.getBotConf().getBotname().toLowerCase()))
                 event.getChannel().send().message(returned);
-            } else {
+            else if(hasBotTag && !msg.toLowerCase().contains(bot.getBotConf().getBotname().toLowerCase()))
                 event.respond("It's not like I wanted to answer anyways....baka. (Use \"" + bot.getBotConf().getCommandPrefix() + "help interactions\" to view all usable interactions)");
-            }
         }
     }
     public static String randomList(String message){

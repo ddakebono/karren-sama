@@ -35,6 +35,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ListenCast extends Thread{
 	private KarrenBot bot;
@@ -82,7 +83,18 @@ public class ListenCast extends Thread{
                 doUpdate = false;
             }
             if (currentSong == null || !songTemp.getSongName().equalsIgnoreCase(currentSong.getSongName())) {
+                Song lastSong = currentSong;
                 currentSong = songTemp;
+                if(lastSong != null) {
+                    lastSong.songEnded();
+                    bot.getLog().debug("The last song played for " + lastSong.getSongDuration());
+                    try {
+                        bot.getSql().updateSongData(lastSong);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                }
                 onSongChange();
             }
             try {
@@ -121,9 +133,9 @@ public class ListenCast extends Thread{
     }
     public String getNowPlayingStr(){
         if(!currentSong.getSongName().equalsIgnoreCase("off-air"))
-            return "Now playing: \"" + currentSong.getSongName() + "\" On CRaZyRADIO ("+ getIceStreamTitle() +"). Listeners: " + getIceListeners() + "/" + getIceMaxListeners() + ". This song was last played: " + currentSong.getLastPlayed() + ". Faves: " + currentSong.getFavCount() + ". Plays: " + currentSong.getPlayCount();
+            return "Now playing: \"" + currentSong.getSongName() + "\" (" + getMinSecFormattedString(currentSong.getLastSongDuration()) + ") On CRaZyRADIO ("+ getIceStreamTitle() +"). Listeners: " + getIceListeners() + "/" + getIceMaxListeners() + ". This song was last played: " + currentSong.getLastPlayed() + ". Faves: " + currentSong.getFavCount() + ". Plays: " + currentSong.getPlayCount();
         else
-            return "Source disconnected, the stream is now offline.";
+            return "No Source connected, the stream is offline.";
     }
 	private void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException {
         boolean onair = false;
@@ -153,12 +165,12 @@ public class ListenCast extends Thread{
                     }
                 }
             } catch (NullPointerException e) {
-                iceDJ = "Off-air";
+                iceDJ = "Offline";
                 iceStreamTitle = "Offline";
             }
         }
 		if(!onair){
-            iceDJ = "offline";
+            iceDJ = "Offline";
         }
 	}
     public void kill(){
@@ -173,5 +185,23 @@ public class ListenCast extends Thread{
         announceChannel = channel;
         nowPlaying = !nowPlaying;
         return nowPlaying;
+    }
+    public long getSongCurTime(){
+        long result;
+        Date date = new Date();
+        result = date.getTime() - currentSong.getSongStartTime();
+        return result;
+    }
+    public String getMinSecFormattedString(long time){
+        String result = "00:00";
+        long seconds = time/1000;
+        long minutes = 0;
+        if(seconds/60>=1) {
+            minutes = seconds / 60;
+            seconds = seconds - (minutes*60);
+        }
+        if(time!=0)
+            result = minutes + ":" + seconds;
+        return result;
     }
 }

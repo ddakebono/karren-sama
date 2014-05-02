@@ -9,10 +9,8 @@ package org.frostbite.karren;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-/**
- * Created by frostbite on 3/6/14.
- */
 public class Interactions {
     private ArrayList<String> activator = new ArrayList<String>();
     private String identifier = "";
@@ -24,8 +22,7 @@ public class Interactions {
         this.tags = tags;
         this.responseTemplate = responseTemplate;
         this.confidenceAmount = confidenceAmount;
-        for(int i=0; i<activators.length; i++)
-            this.activator.add(activators[i]);
+        Collections.addAll(this.activator, activators);
     }
     public void addActivator(String activator){
         this.activator.add(activator.trim().toLowerCase());
@@ -36,11 +33,13 @@ public class Interactions {
     public String handleMessage(MessageEvent event){
         String result = "";
         int confidence = 0;
-        String[] tokenizedMessage = event.getMessage().split("\\s+");
-        for(String check : activator){
-            for(String check2 : tokenizedMessage) {
-                if (check2.trim().toLowerCase().matches(check + "\\W?")) {
-                    confidence++;
+        if(!event.getMessage().startsWith(((KarrenBot)event.getBot()).getBotConf().getCommandPrefix())) {
+            String[] tokenizedMessage = event.getMessage().split("\\s+");
+            for (String check : activator) {
+                for (String check2 : tokenizedMessage) {
+                    if (check2.trim().toLowerCase().matches(check + "\\W?")) {
+                        confidence++;
+                    }
                 }
             }
         }
@@ -52,8 +51,8 @@ public class Interactions {
     public String[] getTags(){return tags;}
     public String getTagsToString(){
         String result = "";
-        for(int i=0; i<tags.length; i++){
-            result += tags[i];
+        for (String tag : tags) {
+            result += tag;
         }
         return result;
     }
@@ -67,8 +66,8 @@ public class Interactions {
     }
     public String getActivatorsToString(){
         String result = "";
-        for(int i=0; i<activator.size(); i++){
-            result += activator.get(i) + " ";
+        for (String anActivator : activator) {
+            result += anActivator + " ";
         }
         return result;
     }

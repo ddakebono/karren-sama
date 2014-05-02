@@ -11,9 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Created by frostbite on 19/03/14.
- */
 public class MySQLInterface {
     private String sqlhost;
     private String sqluser;
@@ -30,13 +27,6 @@ public class MySQLInterface {
     /*
     CONSTRUCTORS
      */
-    public MySQLInterface(String sqlhost, String sqluser, String sqldb, String sqlpass, int sqlport){
-        this.sqldb = sqldb;
-        this.sqlhost = sqlhost;
-        this.sqlpass = sqlpass;
-        this.sqlport = sqlport;
-        this.sqluser = sqluser;
-    }
     public MySQLInterface(BotConfiguration botConf, Logger log){
         sqldb = botConf.getSqldb();
         sqlhost = botConf.getSqlhost();
@@ -64,8 +54,8 @@ public class MySQLInterface {
             search = true;
             pstNeeded = false;
             ArrayList<Object> usrTemp = executeQuery();
-            for(int i=0; i<usrTemp.size(); i++){
-                savedUsers.add((String) usrTemp.get(i));
+            for (Object user : usrTemp) {
+                savedUsers.add((String) user);
             }
         } catch(SQLException e) {
             e.printStackTrace();
@@ -96,7 +86,7 @@ public class MySQLInterface {
     USER OPERATIONS
      */
     public ArrayList<Object> getUserData(String nick) throws SQLException {
-        ArrayList<Object> result = null;
+        ArrayList<Object> result;
         if(isNewUser(nick))
             makeUser(nick);
         resetSQL();
@@ -115,7 +105,6 @@ public class MySQLInterface {
         Date date = new Date();
         ArrayList<Object> userData = getUserData(args[0]);
         resetSQL();
-        int ready = 0;
         switch(mod.toLowerCase()){
             case "return":
                 if((Boolean)userData.get(1)){
@@ -181,12 +170,20 @@ public class MySQLInterface {
             return false;
         }
     }
+    public void updateSongData(Song lastsong) throws SQLException{
+        resetSQL();
+        query = "UPDATE songdb SET songduration=? WHERE id=?";
+        sqlPayload.add(String.valueOf(lastsong.getSongDuration()));
+        sqlPayload.add(String.valueOf(lastsong.getSongID()));
+        search = false;
+        pstNeeded = true;
+        executeQuery();
+    }
     public void updateRadioDatabase(Song song) throws SQLException {
         if(rwEnabled) {
             resetSQL();
-            ArrayList<String> result = new ArrayList<String>();
             ArrayList<Object> returned;
-            String curTime = "00-00-0000 00:00:00";
+            String curTime;
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
             query = "SELECT ID FROM SongDB WHERE SongTitle = ?";
             pstNeeded = true;
@@ -203,6 +200,7 @@ public class MySQLInterface {
                 pstNeeded = true;
                 returned = executeQuery();
                 song.setFieldsFromSQL(returned);
+                song.setLastSongDuration((long)returned.get(5));
             } else {
                 returned.clear();
                 song.setSongID(0);
@@ -212,13 +210,14 @@ public class MySQLInterface {
                 returned.add(0);
                 returned.add(0);
                 song.setFieldsFromSQL(returned);
+                song.setLastSongDuration(0);
 
             }
             returned.clear();
             if (song.getSongID() == 0) {
                 //Adding song to DB and getting new ID for song
                 resetSQL();
-                query = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount) VALUES (null, ?, ?, 1, 0)";
+                query = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount, SongDuration) VALUES (null, ?, ?, 1, 0, 0)";
                 sqlPayload.add(song.getSongName());
                 curTime = getCurDate(dateFormat);
                 sqlPayload.add(curTime);
@@ -268,7 +267,7 @@ public class MySQLInterface {
      */
     public SpaceFaction[] loadSpaceFactions() throws SQLException {
         ArrayList<Object> returned;
-        SpaceFaction[] result = null;
+        SpaceFaction[] result;
         int factionCount;
         resetSQL();
         query = "SELECT * FROM space_faction";
@@ -283,8 +282,8 @@ public class MySQLInterface {
         return result;
     }
     public SpaceEvent[] loadSpaceEvents() throws SQLException{
-        SpaceEvent[] result = null;
-        ArrayList<Object> returned = new ArrayList<Object>();
+        SpaceEvent[] result;
+        ArrayList<Object> returned;
         int eventCount;
         resetSQL();
         query = "SELECT * FROM space_event";
@@ -298,6 +297,9 @@ public class MySQLInterface {
         }
         return result;
     }
+    public void saveSpaceEvents(SpaceEvent[] events) throws SQLException{
+
+    }
     /*
     SQL OPERATIONS
      */
@@ -308,7 +310,7 @@ public class MySQLInterface {
             targetDB = overrideDB;
         Connection run = DriverManager.getConnection("jdbc:mysql://" + sqlhost + ":" + sqlport + "/" + targetDB + "?useUnicode=true&characterEncoding=UTF-8", sqluser, sqlpass);
         PreparedStatement pst;
-        ResultSet rs = null;
+        ResultSet rs;
         pst = run.prepareStatement(query);
         if(pstNeeded){
             for(int i=0; i<sqlPayload.size(); i++){
@@ -332,7 +334,6 @@ public class MySQLInterface {
     }
     public static String getCurDate(SimpleDateFormat dateFormat){
         Date date = new Date();
-        String dateLayout = dateFormat.format(date);
-        return dateLayout;
+        return dateFormat.format(date);
     }
 }
