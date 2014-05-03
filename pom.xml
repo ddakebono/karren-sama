@@ -78,14 +78,14 @@
                 <version>2.8</version>
                 <executions>
                     <execution>
-                        <id>src-dependencies</id>
+                        <id>unpack</id>
                         <phase>package</phase>
                         <goals>
                             <!-- use copy-dependencies instead if you don't want to explode the sources -->
-                            <goal>unpack-dependencies</goal>
+                            <goal>unpack</goal>
                         </goals>
                         <configuration>
-                            <classifier>sources</classifier>
+                            <classifier>classes</classifier>
                             <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
                             <outputDirectory>target/classes</outputDirectory>
                         </configuration>
