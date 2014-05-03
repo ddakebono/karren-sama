@@ -78,15 +78,13 @@
                 <version>2.8</version>
                 <executions>
                     <execution>
-                        <id>unpack</id>
-                        <phase>package</phase>
+                        <id>apr-bin-unpack</id>
+                        <phase>generate-resources</phase>
                         <goals>
                             <!-- use copy-dependencies instead if you don't want to explode the sources -->
-                            <goal>unpack</goal>
+                            <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <classifier>classes</classifier>
-                            <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
                             <outputDirectory>target/classes</outputDirectory>
                         </configuration>
                     </execution>
