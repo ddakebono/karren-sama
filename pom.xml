@@ -87,7 +87,7 @@
                         <configuration>
                             <classifier>sources</classifier>
                             <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
-                            <outputDirectory>src</outputDirectory>
+                            <outputDirectory>target/classes</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
