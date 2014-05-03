@@ -32,6 +32,8 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public class ListenCast extends Thread{
         icecastPort = botConf.getIcecastPort();
         icecastMount = botConf.getIcecastMount();
         this.log = log;
-	}
+    }
 	public void run(){
         Song songTemp;
         while(!killListencast && bot.getBotConf().getEnableListencast().equalsIgnoreCase("true")) {
@@ -87,7 +89,7 @@ public class ListenCast extends Thread{
                 currentSong = songTemp;
                 if(lastSong != null) {
                     lastSong.songEnded();
-                    bot.getLog().debug("The last song played for " + lastSong.getSongDuration());
+                    log.debug("The last song played for " + lastSong.getSongDuration());
                     try {
                         bot.getSql().updateSongData(lastSong);
                     } catch (SQLException e) {
@@ -106,6 +108,11 @@ public class ListenCast extends Thread{
         }
 	}
 	private void onSongChange(){
+        try {
+            writeToSongLog(currentSong);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         try {
             if(doUpdate)
                 bot.getSql().updateRadioDatabase(currentSong);
@@ -133,7 +140,7 @@ public class ListenCast extends Thread{
     }
     public String getNowPlayingStr(){
         if(!currentSong.getSongName().equalsIgnoreCase("off-air"))
-            return "Now playing: \"" + currentSong.getSongName() + "\" (" + getMinSecFormattedString(currentSong.getLastSongDuration()) + ") On CRaZyRADIO ("+ getIceStreamTitle() +"). Listeners: " + getIceListeners() + "/" + getIceMaxListeners() + ". This song was last played: " + currentSong.getLastPlayed() + ". Faves: " + currentSong.getFavCount() + ". Plays: " + currentSong.getPlayCount();
+            return "Now playing: \"" + currentSong.getSongName() + "\" (" + getMinSecFormattedString(currentSong.getLastSongDuration()) + ") On Redirect Radio ("+ getIceStreamTitle() +"). Listeners: " + getIceListeners() + "/" + getIceMaxListeners() + ". This song was last played: " + currentSong.getLastPlayed() + ". Faves: " + currentSong.getFavCount() + ". Plays: " + currentSong.getPlayCount();
         else
             return "No Source connected, the stream is offline.";
     }
@@ -181,6 +188,11 @@ public class ListenCast extends Thread{
     public String getIceStreamTitle(){return iceStreamTitle;}
     public String getIceMaxListeners(){return iceMaxListeners;}
     public int getIceListeners(){return iceListeners;}
+    public void writeToSongLog(Song curSong) throws IOException {
+        BufferedWriter songLog = new BufferedWriter(new FileWriter("logs/songs.log", true));
+        songLog.append(curSong.getSongName()).append(":").append(String.valueOf(curSong.getSongID())).append("\n");
+        songLog.close();
+    }
     public boolean enableNP(Channel channel){
         announceChannel = channel;
         nowPlaying = !nowPlaying;
