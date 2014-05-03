@@ -11,7 +11,6 @@ import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.SimpleLogger;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -19,9 +18,6 @@ import java.nio.charset.Charset;
 public class Karren{
 	public static void main(String[] args){
         //Configs
-        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
-        System.setProperty(SimpleLogger.LOG_FILE_KEY, "logs/bot.log");
-        System.setProperty(SimpleLogger.LOG_FILE_KEY, "System.err");
         Logger log = LoggerFactory.getLogger(Karren.class);
         BotConfiguration botConf = new BotConfiguration();
         try {
