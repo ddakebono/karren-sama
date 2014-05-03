@@ -3,6 +3,8 @@ karren-sama - Master Branch
 
 Repo for the Karren-sama IRC bot as seen on the Redirect Gaming IRC
 
+Hey look at that, I got a POM to work, we maven now.
+
 Uses PircBotX for the core IRC functions.
 
 Usage:
@@ -18,18 +20,14 @@ Usage:
 Working:
 
     Now playing - WORKING!
-    User interaction system(New) - Operational with some changes needed.
-    SQL interaction - Plagued by some issues.
-    User away/return tracking - Working as intended(I think)
+    User interaction system(New) - Appears to be fully working.
+    SQL interaction - Stable at the current point.
+    User away/return tracking - WORKING!
 
-Dependencies(2lazy4maven):
-
-    PircBotX.jar
-    Apache Common Lang
-    Apache Common codec
-    Google guava
-    slf4j api and simple
-    MySQL java connector library
-    Apache HTTP Client
-    Apache HTTP Core
-    Apache Tika
+Latest Changes:
+    
+    Added the ability for the bot to tell how long a song is and give feedback on it.
+    New logging system, actually outputs to a file now.
+    Songs played are now logged.
+    We maven now.
+    
