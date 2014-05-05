@@ -18,6 +18,7 @@ public class Song {
     private long songStartTime;
     private long songEndTime;
     private long lastSongDuration;
+    private boolean isDurationLocked;
     private Date date = new Date();
     public Song(String songName){
         this.songName = songName;
@@ -27,13 +28,12 @@ public class Song {
         lastPlayed = (String)results.get(2);
         playCount = (int)results.get(3);
         favCount = (int)results.get(4);
-    }
-    public void setLastSongDuration(long duration){
-        lastSongDuration = duration;
+        lastSongDuration = (long)results.get(5);
+        isDurationLocked = (boolean)results.get(6);
     }
     public long getSongDuration(){
         long result = songEndTime-songStartTime;
-        if((result-lastSongDuration)>=-5000 && (result-lastSongDuration)<=5000)
+        if((result-lastSongDuration)>=-5000 && (result-lastSongDuration)<=5000 && !isDurationLocked)
             result = lastSongDuration;
         return result;
     }
