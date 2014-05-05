@@ -200,7 +200,6 @@ public class MySQLInterface {
                 pstNeeded = true;
                 returned = executeQuery();
                 song.setFieldsFromSQL(returned);
-                song.setLastSongDuration((long)returned.get(5));
             } else {
                 returned.clear();
                 song.setSongID(0);
@@ -209,9 +208,9 @@ public class MySQLInterface {
                 returned.add("Never");
                 returned.add(0);
                 returned.add(0);
+                returned.add(0);
+                returned.add(false);
                 song.setFieldsFromSQL(returned);
-                song.setLastSongDuration(0);
-
             }
             returned.clear();
             if (song.getSongID() == 0) {
