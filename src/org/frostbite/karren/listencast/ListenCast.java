@@ -109,16 +109,17 @@ public class ListenCast extends Thread{
 	}
 	private void onSongChange(){
         try {
-            writeToSongLog(currentSong);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             if(doUpdate)
                 bot.getSql().updateRadioDatabase(currentSong);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        try {
+            writeToSongLog(currentSong);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        log.debug("Song \"" + currentSong.getSongName() + "\" duration lock: " + Boolean.toString(currentSong.isDurationLocked()));
         if(nowPlaying){
 			bot.sendIRC().message(bot.getBotConf().getChannel(), getNowPlayingStr());
             try {
@@ -190,8 +191,10 @@ public class ListenCast extends Thread{
     public int getIceListeners(){return iceListeners;}
     public void writeToSongLog(Song curSong) throws IOException {
         BufferedWriter songLog = new BufferedWriter(new FileWriter("logs/songs.log", true));
-        songLog.append(curSong.getSongName()).append(":").append(String.valueOf(curSong.getSongID())).append("\n");
-        songLog.close();
+        if(curSong.getSongID() != 0) {
+            songLog.append(curSong.getSongName()).append(":").append(String.valueOf(curSong.getSongID())).append("\n");
+            songLog.close();
+        }
     }
     public boolean enableNP(Channel channel){
         announceChannel = channel;
@@ -205,15 +208,18 @@ public class ListenCast extends Thread{
         return result;
     }
     public String getMinSecFormattedString(long time){
-        String result = "00:00";
+        String result;
         long seconds = time/1000;
         long minutes = 0;
         if(seconds/60>=1) {
             minutes = seconds / 60;
             seconds = seconds - (minutes*60);
         }
-        if(time!=0)
+        if(time!=0 && seconds<10) {
+            result = minutes + ":" + "0" + seconds;
+        } else {
             result = minutes + ":" + seconds;
+        }
         return result;
     }
 }

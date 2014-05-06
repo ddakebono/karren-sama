@@ -47,7 +47,7 @@ public class MySQLInterface {
         overrideDB = null;
     }
     public boolean isNewUser(String nick){
-        ArrayList<String> savedUsers = new ArrayList<String>();
+        ArrayList<String> savedUsers = new ArrayList<>();
         boolean userNew = true;
         try{
             query = "SELECT user FROM users";
@@ -165,19 +165,32 @@ public class MySQLInterface {
             search = false;
             pstNeeded = true;
             executeQuery();
+            resetSQL();
+            query = "UPDATE songdb SET FavCount=FavCount+1 WHERE id=?";
+            sqlPayload.add(String.valueOf(song.getSongID()));
+            search = false;
+            pstNeeded = true;
+            executeQuery();
             return true;
         } else {
             return false;
         }
     }
     public void updateSongData(Song lastsong) throws SQLException{
-        resetSQL();
-        query = "UPDATE songdb SET songduration=? WHERE id=?";
-        sqlPayload.add(String.valueOf(lastsong.getSongDuration()));
-        sqlPayload.add(String.valueOf(lastsong.getSongID()));
-        search = false;
-        pstNeeded = true;
-        executeQuery();
+        if(!lastsong.isDurationLocked()) {
+            resetSQL();
+            if (lastsong.getLastSongDuration() == lastsong.getSongDuration()) {
+                query = "UPDATE songdb SET songduration=?, DurationLock=1 WHERE id=?";
+                log.debug("Setting \"" + lastsong.getSongName() + "\" duration lock to true");
+            } else {
+                query = "UPDATE songdb SET songduration=? WHERE id=?";
+            }
+            sqlPayload.add(String.valueOf(lastsong.getSongDuration()));
+            sqlPayload.add(String.valueOf(lastsong.getSongID()));
+            search = false;
+            pstNeeded = true;
+            executeQuery();
+        }
     }
     public void updateRadioDatabase(Song song) throws SQLException {
         if(rwEnabled) {
@@ -216,7 +229,7 @@ public class MySQLInterface {
             if (song.getSongID() == 0) {
                 //Adding song to DB and getting new ID for song
                 resetSQL();
-                query = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount, SongDuration) VALUES (null, ?, ?, 1, 0, 0)";
+                query = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount, SongDuration, DurationLock) VALUES (null, ?, ?, 1, 0, 0, false)";
                 sqlPayload.add(song.getSongName());
                 curTime = getCurDate(dateFormat);
                 sqlPayload.add(curTime);
@@ -296,15 +309,12 @@ public class MySQLInterface {
         }
         return result;
     }
-    public void saveSpaceEvents(SpaceEvent[] events) throws SQLException{
-
-    }
     /*
     SQL OPERATIONS
      */
     public ArrayList<Object> executeQuery() throws SQLException {
         String targetDB = sqldb;
-        ArrayList<Object> result = new ArrayList<Object>();
+        ArrayList<Object> result = new ArrayList<>();
         if(overrideDB != null)
             targetDB = overrideDB;
         Connection run = DriverManager.getConnection("jdbc:mysql://" + sqlhost + ":" + sqlport + "/" + targetDB + "?useUnicode=true&characterEncoding=UTF-8", sqluser, sqlpass);

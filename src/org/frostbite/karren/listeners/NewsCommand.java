@@ -24,7 +24,7 @@ public class NewsCommand extends ListenerAdapter<PircBotX>{
                     ((KarrenBot)event.getBot()).getSql().addNewsPost(message, user.getNick());
                     ((KarrenBot)event.getBot()).getLog().info("A news update was posted by " + user.getNick(), false);
 				} else {
-					event.respond("You seem to be missing the news post, please supply a post after the command. (ex. .news This is my post!)");
+					event.respond("You seem to be missing the news post, please supply a post after the command. (ex. " + ((KarrenBot)event.getBot()).getBotConf().getCommandPrefix() + "news This is my post!)");
 				}
 			} else {
 				event.respond("You do not have the required permission to do this. (Not Voice or OP)");

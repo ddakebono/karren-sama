@@ -28,14 +28,17 @@ public class Song {
         lastPlayed = (String)results.get(2);
         playCount = (int)results.get(3);
         favCount = (int)results.get(4);
-        lastSongDuration = (long)results.get(5);
+        lastSongDuration = Long.valueOf(results.get(5).toString());
         isDurationLocked = (boolean)results.get(6);
     }
     public long getSongDuration(){
         long result = songEndTime-songStartTime;
-        if((result-lastSongDuration)>=-5000 && (result-lastSongDuration)<=5000 && !isDurationLocked)
+        if(((result-lastSongDuration)>=-2000 && (result-lastSongDuration)<=2000) || isDurationLocked)
             result = lastSongDuration;
         return result;
+    }
+    public boolean isDurationLocked(){
+        return isDurationLocked;
     }
     public void songEnded(){
         Date date = new Date();
