@@ -4,9 +4,6 @@ import org.frostbite.karren.MySQLInterface;
 
 import java.sql.SQLException;
 
-/**
- * Created by frostbite on 27/04/14.
- */
 public class SpaceController {
     private MySQLInterface sql;
     private SpaceFaction[] factions;
