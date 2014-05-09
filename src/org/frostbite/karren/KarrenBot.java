@@ -29,7 +29,7 @@ public class KarrenBot extends PircBotX {
         this.log = log;
         lc = new ListenCast(this, botConf, log);
         sql = new MySQLInterface(botConf, log);
-        space = new SpaceController(sql);
+        space = new SpaceController(sql, this, this.getUserBot().getChannels().first());
         interactions = loadInteractions();
     }
     private ArrayList<Interactions> loadInteractions(){

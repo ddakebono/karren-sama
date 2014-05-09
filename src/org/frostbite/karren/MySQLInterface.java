@@ -4,6 +4,7 @@ import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listencast.Song;
 import org.frostbite.karren.space.SpaceEvent;
 import org.frostbite.karren.space.SpaceFaction;
+import org.frostbite.karren.space.SpaceUser;
 import org.slf4j.Logger;
 
 import java.sql.*;
@@ -286,10 +287,10 @@ public class MySQLInterface {
         search = true;
         pstNeeded = false;
         returned = executeQuery();
-        factionCount = returned.size()/3;
+        factionCount = returned.size()/2;
         result = new SpaceFaction[factionCount];
         for(int i=0; i<factionCount; i++){
-            result[i] = new SpaceFaction((int)returned.get(3*i), (String)returned.get(1+(3*i)), ((String)returned.get(2+(3*i))).split(","));
+            result[i] = new SpaceFaction((int)returned.get(3*i), (String)returned.get(1+(3*i)));
         }
         return result;
     }
@@ -302,10 +303,122 @@ public class MySQLInterface {
         search = true;
         pstNeeded = false;
         returned = executeQuery();
-        eventCount = returned.size()/4;
+        eventCount = returned.size()/5;
         result = new SpaceEvent[eventCount];
         for(int i=0; i<eventCount; i++){
-            result[i] = new SpaceEvent((int)returned.get(4*i), (String)returned.get(1+(4*i)), Long.parseLong((String)returned.get(2+(4*i))), Long.parseLong((String)returned.get(3+(4*i))));
+            result[i] = new SpaceEvent((int)returned.get(5*i), (String)returned.get(1+(5*i)), Long.parseLong((String)returned.get(2+(5*i))), Long.parseLong((String)returned.get(3+(5*i))), (String)returned.get(4+(5*i)));
+        }
+        return result;
+    }
+    public SpaceUser[] loadSpaceUsers() throws SQLException {
+        SpaceUser[] result;
+        ArrayList<Object> returned;
+        int eventCount;
+        resetSQL();
+        query = "SELECT * FROM space_user";
+        search = true;
+        pstNeeded = false;
+        returned = executeQuery();
+        eventCount = returned.size()/3;
+        result = new SpaceUser[eventCount];
+        for(int i=0; i<eventCount; i++){
+            result[i] = new SpaceUser((String)returned.get(3*i), (int)returned.get(1+(3*i)), (int)returned.get(2+(3*i)));
+        }
+        return result;
+    }
+    public void saveSpaceEvent(SpaceEvent event) throws SQLException {
+        resetSQL();
+        if(doesEventExist(event)){
+            query = "UPDATE space_event SET eventdata=?, startdate=?, enddate=? WHERE id=?";
+            sqlPayload.add(event.getEventData());
+            sqlPayload.add(String.valueOf(event.getStartDate()));
+            sqlPayload.add(String.valueOf(event.getEndDate()));
+            sqlPayload.add(String.valueOf(event.getEventID()));
+            pstNeeded = true;
+            search = false;
+            executeQuery();
+        } else {
+            query = "INSERT INTO space_events ('id', 'eventdata', 'startdate', 'enddate', 'ident') VALUES (null, ?, ?, ?, ?)";
+            sqlPayload.add(event.getEventData());
+            sqlPayload.add(String.valueOf(event.getStartDate()));
+            sqlPayload.add(String.valueOf(event.getEndDate()));
+            sqlPayload.add(event.getEventIdent());
+            pstNeeded = true;
+            search = false;
+            executeQuery();
+        }
+
+    }
+    public void saveSpaceUser(SpaceUser user) throws SQLException {
+        resetSQL();
+        if(doesUserExist(user)){
+            query = "UPDATE space_user SET faction=? WHERE id=?";
+            sqlPayload.add(String.valueOf(user.getFactionID()));
+            sqlPayload.add(String.valueOf(user.getUserID()));
+            pstNeeded = true;
+            search = false;
+            executeQuery();
+        } else {
+            query = "INSERT INTO space_users ('nick', 'id', 'faction') VALUES (?, null, ?)";
+            sqlPayload.add(user.getNick());
+            sqlPayload.add(String.valueOf(user.getFactionID()));
+            pstNeeded = true;
+            search = false;
+            executeQuery();
+        }
+    }
+    public void saveSpaceFaction(SpaceFaction faction) throws SQLException {
+        resetSQL();
+        if(!doesFactionExist(faction)){
+            query = "INSERT INTO space_faction ('id', 'name') VALUES (null, ?)";
+            sqlPayload.add(faction.getFactionName());
+            pstNeeded = true;
+            search = false;
+            executeQuery();
+        }
+    }
+    /*
+    SPACE ENGINEERS UTILITIES
+     */
+    private boolean doesFactionExist(SpaceFaction faction) throws SQLException {
+        boolean result = false;
+        resetSQL();
+        ArrayList<Object> returned;
+        query = "SELECT * FROM space_faction WHERE name=?";
+        sqlPayload.add(faction.getFactionName());
+        pstNeeded = true;
+        search = true;
+        returned = executeQuery();
+        if(returned.size()>0){
+            result = true;
+        }
+        return result;
+    }
+    private boolean doesUserExist(SpaceUser user) throws SQLException {
+        boolean result = false;
+        resetSQL();
+        ArrayList<Object> returned;
+        query = "SELECT * FROM space_user WHERE nick=?";
+        sqlPayload.add(user.getNick());
+        pstNeeded = true;
+        search = true;
+        returned = executeQuery();
+        if(returned.size()>0){
+            result = true;
+        }
+        return result;
+    }
+    private boolean doesEventExist(SpaceEvent event) throws SQLException {
+        boolean result = false;
+        resetSQL();
+        ArrayList<Object> returned;
+        query = "SELECT * FROM space_event WHERE ident=?";
+        sqlPayload.add(event.getEventIdent());
+        pstNeeded = true;
+        search = true;
+        returned = executeQuery();
+        if(returned.size()>0){
+            result = true;
         }
         return result;
     }

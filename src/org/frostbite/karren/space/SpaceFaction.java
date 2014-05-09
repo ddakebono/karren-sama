@@ -6,10 +6,15 @@ package org.frostbite.karren.space;
 public class SpaceFaction {
     private int factionID;
     private String factionName;
-    private String[] factionMembers;
-    public SpaceFaction(int factionID, String factionName, String[] factionMembers){
+    public SpaceFaction(int factionID, String factionName){
         this.factionName = factionName;
-        this.factionMembers = factionMembers;
         this.factionID = factionID;
+    }
+
+    public int getFactionID() {
+        return factionID;
+    }
+    public String getFactionName() {
+        return factionName;
     }
 }
