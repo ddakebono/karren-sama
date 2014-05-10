@@ -33,9 +33,10 @@ public class BotConfiguration {
     private String allowSQLRW;
     private String enableListencast;
     private String enableInteractions;
+    private String enableSpaceController;
     private String commandPrefix;
     private String connectToIRC;
-    private final String versionMarker = "1.0.2-ALPHA";
+    private final String versionMarker = "1.0.3-ALPHA";
     /*
     Config Getters
      */
@@ -64,6 +65,7 @@ public class BotConfiguration {
         return channel;
     }
     public String getConnectToIRC() {return connectToIRC;}
+    public String getEnableSpaceController(){return enableSpaceController;}
     public String getNickservPass() {
         if(nickservPass.length()==0){
             return "nothing";
@@ -143,6 +145,7 @@ public class BotConfiguration {
         enableListencast = cfg.getProperty("enableListencastSystem", "true");
         commandPrefix = cfg.getProperty("commandPrefix", ".");
         connectToIRC = cfg.getProperty("connectToIRC", "true");
+        enableSpaceController = cfg.getProperty("SpaceManager", "true");
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
             log.warn("Updating configuration file!");
             mkNewConfig(log);
@@ -178,6 +181,7 @@ public class BotConfiguration {
         cfg.setProperty("enableListencastSystem", enableListencast);
         cfg.setProperty("commandPrefix", commandPrefix);
         cfg.setProperty("connectToIRC", connectToIRC);
+        cfg.setProperty("SpaceManager", enableSpaceController);
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
         log.info("Your configuration file has been generated/updated!");
         System.exit(0);

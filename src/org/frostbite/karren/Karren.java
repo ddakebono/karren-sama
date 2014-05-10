@@ -39,9 +39,12 @@ public class Karren{
                 .addListener(new TopicCommand())
                 .addListener(new HueCommand())
                 .addListener(new HelpCommand())
+                .addListener(new ConnectListener())
+                .addListener(new DisconnectListener())
                 .setEncoding(Charset.forName("UTF-8"))
                 .setServerHostname(botConf.getHostname())
                 .addAutoJoinChannel(botConf.getChannel())
+                .setAutoReconnect(true)
                 .buildConfiguration();
         //Adding the listeners for our commands
 		KarrenBot bot = new KarrenBot(config, botConf, log);
