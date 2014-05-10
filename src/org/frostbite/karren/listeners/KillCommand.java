@@ -12,17 +12,21 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 public class KillCommand extends ListenerAdapter<PircBotX>{
-	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
-		String cmd = ((KarrenBot)event.getBot()).getBotConf().getCommandPrefix() + "kill";
+	public void onMessage(MessageEvent<PircBotX> event){
 		String message = event.getMessage();
 		KarrenBot bot = (KarrenBot)event.getBot();
-		if(event.getChannel().isOp(event.getUser()) && message.toLowerCase().startsWith(cmd)){
+        String cmd = bot.getBotConf().getCommandPrefix() + "kill";
+        String cmd2 = bot.getBotConf().getCommandPrefix() + "restart";
+		if((event.getChannel().isOp(event.getUser())||event.getChannel().isOwner(event.getUser())) && (message.toLowerCase().startsWith(cmd)||message.toLowerCase().startsWith(cmd2))){
 			bot.getLog().info("Bot has been killed by " + event.getUser().getNick());
+            bot.botIsKill();
+            if(message.toLowerCase().startsWith(cmd)){
+                bot.stopBotReconnect();
+            }
             bot.sendIRC().quitServer("Kill command fired, bot terminating.");
-            bot.killListencast();
-		} else {
+        } else {
 			if(!event.getChannel().isOp(event.getUser()) && message.startsWith(cmd))
-				event.respond("I will not be killed by you! (Not Operator)");
+				event.respond("You can't tell me what to do! (Not Operator)");
 		}
 	}
 

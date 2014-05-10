@@ -56,7 +56,7 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     break;
                 case "npswitch":
                     if (event.getChannel().isOp(event.getUser())) {
-                        if (bot.getListenCast().enableNP(event.getChannel())) {
+                        if (bot.getListenCast().enableNP()) {
                             event.getChannel().send().message("Automagic now playing has been activated!");
                         } else {
                             event.getChannel().send().message("Automagic now playing has been deactivated...");

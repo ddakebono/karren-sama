@@ -4,12 +4,12 @@ import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.space.SpaceController;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -23,14 +23,27 @@ public class KarrenBot extends PircBotX {
     private ArrayList<Interactions> interactions;
     private Logger log;
     private SpaceController space;
+    private boolean botKilled = false;
+    private boolean threadsInitialized = false;
     public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log){
         super(config);
         this.botConf = botConf;
         this.log = log;
-        lc = new ListenCast(this, botConf, log);
         sql = new MySQLInterface(botConf, log);
-        space = new SpaceController(sql, this, this.getUserBot().getChannels().first());
         interactions = loadInteractions();
+    }
+    public void initThreads(){
+        threadsInitialized = true;
+        space = new SpaceController(sql, this);
+        lc = new ListenCast(this, botConf);
+    }
+    public void startThreads(){
+        if(threadsInitialized){
+            lc.start();
+            space.start();
+        } else {
+            log.error("Threads must be initialized prior to being started!");
+        }
     }
     private ArrayList<Interactions> loadInteractions(){
         String buffer;
@@ -62,20 +75,24 @@ public class KarrenBot extends PircBotX {
         }
         return interactions;
     }
-    public void startBot() throws IOException, IrcException {
-        lc.start();
-        super.startBot();
-    }
     public void reloadInteractions(){
         interactions.clear();
         interactions = loadInteractions();
     }
+    public boolean isBotKill(){return botKilled;}
+    public void botIsKill(){botKilled = true;}
     public ArrayList<Interactions> getInteractions(){return interactions;}
     public MySQLInterface getSql(){return sql;}
     public BotConfiguration getBotConf(){return botConf;}
-    public void killListencast(){
+    public boolean areThreadsInitialized(){return threadsInitialized;}
+    public void terminateThreads() throws SQLException {
         lc.kill();
+        space.killController();
+        lc = null;
+        space = null;
+        threadsInitialized = false;
     }
     public ListenCast getListenCast(){return lc;}
     public Logger getLog(){return log;}
+    public SpaceController getSpace(){return space;}
 }

@@ -44,9 +44,9 @@ public class ListenCast extends Thread{
     private String icecastHost;
     private String icecastPort;
     private String icecastMount;
-    private boolean nowPlaying;
-    private String iceDJ = "Testing";
-    private String iceStreamTitle = "Testing";
+    private boolean nowPlaying = true;
+    private String iceDJ;
+    private String iceStreamTitle;
     private int iceListeners = 0;
     private Channel announceChannel;
     private String iceMaxListeners;
@@ -54,18 +54,20 @@ public class ListenCast extends Thread{
     private String title;
     private Song currentSong;
     private boolean doUpdate;
-	private boolean killListencast = false;
+	private boolean killListencast;
     private Logger log;
-	public ListenCast(PircBotX bot, BotConfiguration botConf, Logger log) {
+	public ListenCast(PircBotX bot, BotConfiguration botConf) {
         if(bot instanceof KarrenBot)
 		    this.bot = (KarrenBot)bot;
         icecastHost = botConf.getIcecastHost();
         icecastPort = botConf.getIcecastPort();
         icecastMount = botConf.getIcecastMount();
-        this.log = log;
+        log = this.bot.getLog();
     }
 	public void run(){
         Song songTemp;
+        killListencast = false;
+        announceChannel = bot.getUserBot().getChannels().first();
         while(!killListencast && bot.getBotConf().getEnableListencast().equalsIgnoreCase("true")) {
             doUpdate = true;
             try {
@@ -100,12 +102,13 @@ public class ListenCast extends Thread{
                 onSongChange();
             }
             try {
-                Thread.sleep(1000);
+                sleep(1000);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
+        log.info("Listencast Thread Terminated!");
 	}
 	private void onSongChange(){
         try {
@@ -196,8 +199,7 @@ public class ListenCast extends Thread{
             songLog.close();
         }
     }
-    public boolean enableNP(Channel channel){
-        announceChannel = channel;
+    public boolean enableNP(){
         nowPlaying = !nowPlaying;
         return nowPlaying;
     }
