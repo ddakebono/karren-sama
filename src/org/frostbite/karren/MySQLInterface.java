@@ -290,7 +290,7 @@ public class MySQLInterface {
         factionCount = returned.size()/2;
         result = new SpaceFaction[factionCount];
         for(int i=0; i<factionCount; i++){
-            result[i] = new SpaceFaction((int)returned.get(3*i), (String)returned.get(1+(3*i)));
+            result[i] = new SpaceFaction((int)returned.get(2*i), (String)returned.get(1+(2*i)));
         }
         return result;
     }
