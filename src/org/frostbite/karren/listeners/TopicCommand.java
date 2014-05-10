@@ -20,7 +20,7 @@ public class TopicCommand extends ListenerAdapter<PircBotX>{
 		Channel channel = event.getChannel();
 		if(message.startsWith(bot.getBotConf().getCommandPrefix() + "topic")){
 			message = message.replaceFirst(bot.getBotConf().getCommandPrefix() + "topic", "").trim();
-			if(channel.isOp(event.getUser()) || channel.hasVoice(event.getUser())){
+			if(channel.isOp(event.getUser()) || channel.hasVoice(event.getUser()) || event.getChannel().isOwner(event.getUser())){
 				if(!message.equals("")){
 					if(channel.isOp(bot.getUserBot())){
 						channel.send().setTopic(Colors.RED + "Redirect Gaming channel" + Colors.GREEN + ", use .help to get current commands avalable for use. MOTD: " + (Colors.BLUE + message));
