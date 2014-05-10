@@ -47,7 +47,7 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     }
                     break;
                 case "reloadint":
-                    if(event.getChannel().isOp(event.getUser())) {
+                    if(event.getChannel().isOp(event.getUser())|| event.getChannel().isOwner(event.getUser())) {
                         bot.getLog().info("Interactions system reload triggered by " + event.getUser().getNick());
                         bot.reloadInteractions();
                     } else {
@@ -55,7 +55,7 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     }
                     break;
                 case "npswitch":
-                    if (event.getChannel().isOp(event.getUser())) {
+                    if (event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())) {
                         if (bot.getListenCast().enableNP()) {
                             event.getChannel().send().message("Automagic now playing has been activated!");
                         } else {

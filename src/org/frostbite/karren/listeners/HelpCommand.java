@@ -31,7 +31,7 @@ public class HelpCommand extends ListenerAdapter<PircBotX>{
         event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "help command - Prints out this message. Use " + bot.getBotConf().getCommandPrefix() + "help interactions to list all interactions.");
         event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "isgay command - Sends a message to the server calling whatever follows .isgay gay(Ex. .isgay Seth)");
         event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "echo command - Replies to you with an echo of whatever follows the command. (Ex. .echo Stuff)");
-        if (event.getChannel().isOp(event.getUser()) || event.getChannel().hasVoice(event.getUser())) {
+        if (event.getChannel().isOp(event.getUser()) || event.getChannel().hasVoice(event.getUser()) || event.getChannel().isOwner(event.getUser())) {
             event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "topic command - Sets the MOTD section of the topic with whatever follows the command.");
             event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "kill command - Kills the bot.");
             event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "news command - Posts a news update to the CRaZyPANTS website.");

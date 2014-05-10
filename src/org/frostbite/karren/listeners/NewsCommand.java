@@ -19,7 +19,7 @@ public class NewsCommand extends ListenerAdapter<PircBotX>{
 		User user = event.getUser();
 		if(message.startsWith(cmd)){
 			message = message.replaceFirst(cmd, "").trim();
-			if(event.getChannel().isOp(event.getUser()) || event.getChannel().hasVoice(event.getUser())){
+			if(event.getChannel().isOp(event.getUser()) || event.getChannel().hasVoice(event.getUser()) || event.getChannel().isOwner(event.getUser())){
 				if(message.length() > 0){
                     ((KarrenBot)event.getBot()).getSql().addNewsPost(message, user.getNick());
                     ((KarrenBot)event.getBot()).getLog().info("A news update was posted by " + user.getNick(), false);
