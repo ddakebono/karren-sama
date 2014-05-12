@@ -39,6 +39,7 @@ public class Karren{
                 .addListener(new TopicCommand())
                 .addListener(new HueCommand())
                 .addListener(new HelpCommand())
+                .addListener(new SpaceCommands())
                 .addListener(new ConnectListener())
                 .addListener(new DisconnectListener())
                 .setEncoding(Charset.forName("UTF-8"))

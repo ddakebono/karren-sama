@@ -1,6 +1,5 @@
 package org.frostbite.karren;
 
-import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listencast.Song;
 import org.frostbite.karren.space.SpaceEvent;
 import org.frostbite.karren.space.SpaceFaction;
@@ -141,7 +140,7 @@ public class MySQLInterface {
         result = executeQuery();
         return result;
     }
-    public void updateRadioPage(Song song, ListenCast lc) throws SQLException {
+    /*public void updateRadioPage(Song song, ListenCast lc) throws SQLException {
         ArrayList<Object> returned = new ArrayList<>();
         resetSQL();
         query = "SELECT Song FROM lastplayed ORDER BY id DESC LIMIT 1";
@@ -149,7 +148,7 @@ public class MySQLInterface {
         search = true;
         pstNeeded = true;
         returned = executeQuery();
-    }
+    }*/
     public boolean addFave(String user, Song song) throws SQLException {
         resetSQL();
         query = "SELECT * FROM UserFaves WHERE User=? AND SongID=?";
@@ -329,6 +328,7 @@ public class MySQLInterface {
     public void saveSpaceEvent(SpaceEvent event) throws SQLException {
         resetSQL();
         if(doesEventExist(event)){
+            resetSQL();
             query = "UPDATE space_event SET eventdata=?, startdate=?, enddate=? WHERE id=?";
             sqlPayload.add(event.getEventData());
             sqlPayload.add(String.valueOf(event.getStartDate()));
@@ -338,7 +338,8 @@ public class MySQLInterface {
             search = false;
             executeQuery();
         } else {
-            query = "INSERT INTO space_events ('id', 'eventdata', 'startdate', 'enddate', 'ident') VALUES (null, ?, ?, ?, ?)";
+            resetSQL();
+            query = "INSERT INTO space_events (id, eventdata, startdate, enddate, ident) VALUES (null, ?, ?, ?, ?)";
             sqlPayload.add(event.getEventData());
             sqlPayload.add(String.valueOf(event.getStartDate()));
             sqlPayload.add(String.valueOf(event.getEndDate()));
@@ -350,8 +351,8 @@ public class MySQLInterface {
 
     }
     public void saveSpaceUser(SpaceUser user) throws SQLException {
-        resetSQL();
         if(doesUserExist(user)){
+            resetSQL();
             query = "UPDATE space_user SET faction=? WHERE id=?";
             sqlPayload.add(String.valueOf(user.getFactionID()));
             sqlPayload.add(String.valueOf(user.getUserID()));
@@ -359,7 +360,8 @@ public class MySQLInterface {
             search = false;
             executeQuery();
         } else {
-            query = "INSERT INTO space_users ('nick', 'id', 'faction') VALUES (?, null, ?)";
+            resetSQL();
+            query = "INSERT INTO space_user (nick, id, faction) VALUES (?, null, ?)";
             sqlPayload.add(user.getNick());
             sqlPayload.add(String.valueOf(user.getFactionID()));
             pstNeeded = true;
@@ -368,9 +370,9 @@ public class MySQLInterface {
         }
     }
     public void saveSpaceFaction(SpaceFaction faction) throws SQLException {
-        resetSQL();
         if(!doesFactionExist(faction)){
-            query = "INSERT INTO space_faction ('id', 'name') VALUES (null, ?)";
+            resetSQL();
+            query = "INSERT INTO space_faction (id, name) VALUES (null, ?)";
             sqlPayload.add(faction.getFactionName());
             pstNeeded = true;
             search = false;

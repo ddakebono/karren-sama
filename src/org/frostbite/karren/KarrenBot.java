@@ -12,9 +12,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-/**
- * Created by frostbite on 17/03/14.
- */
 public class KarrenBot extends PircBotX {
     //private MySQLConnector sql;
     private ListenCast lc;
@@ -39,8 +36,10 @@ public class KarrenBot extends PircBotX {
     }
     public void startThreads(){
         if(threadsInitialized){
-            lc.start();
-            space.start();
+            if(botConf.getEnableListencast().equalsIgnoreCase("true"))
+                lc.start();
+            if(botConf.getEnableSpaceController().equalsIgnoreCase("true"))
+                space.start();
         } else {
             log.error("Threads must be initialized prior to being started!");
         }
