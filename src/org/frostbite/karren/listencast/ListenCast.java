@@ -68,7 +68,7 @@ public class ListenCast extends Thread{
         Song songTemp;
         killListencast = false;
         announceChannel = bot.getUserBot().getChannels().first();
-        while(!killListencast && bot.getBotConf().getEnableListencast().equalsIgnoreCase("true")) {
+        while(!killListencast) {
             doUpdate = true;
             try {
                 updateIcecastInfo();

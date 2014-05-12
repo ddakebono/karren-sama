@@ -25,9 +25,11 @@ public class SpaceController extends Thread {
     }
     public void loadFromSQL(){
         try {
+            log.info("Loading all data for Space Engineers tracker.");
             factions = sql.loadSpaceFactions();
             events = sql.loadSpaceEvents();
             users = sql.loadSpaceUsers();
+            log.debug("Space Engineers data loaded!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -35,14 +37,39 @@ public class SpaceController extends Thread {
     public void killController() throws SQLException {
         log.info("Shutting down and save Space Engineers Data...");
         stopController = true;
+        saveAllData();
+        log.info("Space Engineers Controller data saved!");
+    }
+    public void saveAllData() throws SQLException {
         for(SpaceEvent event : events)
             sql.saveSpaceEvent(event);
         for(SpaceUser user : users)
             sql.saveSpaceUser(user);
         for(SpaceFaction faction : factions)
             sql.saveSpaceFaction(faction);
-        log.info("Space Engineers Controller data saved!");
     }
+    public void addUser(SpaceUser user) throws SQLException {
+        for(SpaceUser saveUser : users)
+            sql.saveSpaceUser(saveUser);
+        sql.saveSpaceUser(user);
+        users = sql.loadSpaceUsers();
+    }
+    public void addFaction(SpaceFaction faction) throws SQLException {
+        for(SpaceFaction saveFaction : factions)
+            sql.saveSpaceFaction(saveFaction);
+        sql.saveSpaceFaction(faction);
+        factions = sql.loadSpaceFactions();
+    }
+    public void addEvent(SpaceEvent event) throws SQLException{
+        for(SpaceEvent saveEvent : events)
+            sql.saveSpaceEvent(saveEvent);
+        sql.saveSpaceEvent(event);
+        events = sql.loadSpaceEvents();
+    }
+    public SpaceUser[] getUsers(){
+        return users;
+    }
+    public SpaceFaction[] getFactions(){return factions;}
     public void run(){
         stopController = false;
         Date date = new Date();
