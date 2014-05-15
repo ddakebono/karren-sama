@@ -177,9 +177,9 @@ public class MySQLInterface {
         }
     }
     public void updateSongData(Song lastsong) throws SQLException{
-        if(!lastsong.isDurationLocked()) {
+        if(!lastsong.isDurationLocked() || lastsong.getLastSongDuration() == 0) {
             resetSQL();
-            if (lastsong.getLastSongDuration() == lastsong.getSongDuration()) {
+            if (lastsong.getLastSongDuration() == lastsong.getSongDuration() && lastsong.getLastSongDuration() > 0) {
                 query = "UPDATE songdb SET songduration=?, DurationLock=1 WHERE id=?";
                 log.debug("Setting \"" + lastsong.getSongName() + "\" duration lock to true");
             } else {
@@ -318,10 +318,10 @@ public class MySQLInterface {
         search = true;
         pstNeeded = false;
         returned = executeQuery();
-        eventCount = returned.size()/3;
+        eventCount = returned.size()/4;
         result = new SpaceUser[eventCount];
         for(int i=0; i<eventCount; i++){
-            result[i] = new SpaceUser((String)returned.get(3*i), (int)returned.get(1+(3*i)), (int)returned.get(2+(3*i)));
+            result[i] = new SpaceUser((String)returned.get(4*i), (int)returned.get(1+(4*i)), (int)returned.get(2+(4*i)), (String)returned.get(3+(4*i)));
         }
         return result;
     }
@@ -353,17 +353,19 @@ public class MySQLInterface {
     public void saveSpaceUser(SpaceUser user) throws SQLException {
         if(doesUserExist(user)){
             resetSQL();
-            query = "UPDATE space_user SET faction=? WHERE id=?";
+            query = "UPDATE space_user SET faction=?, email=? WHERE id=?";
             sqlPayload.add(String.valueOf(user.getFactionID()));
+            sqlPayload.add(user.getEmail());
             sqlPayload.add(String.valueOf(user.getUserID()));
             pstNeeded = true;
             search = false;
             executeQuery();
         } else {
             resetSQL();
-            query = "INSERT INTO space_user (nick, id, faction) VALUES (?, null, ?)";
+            query = "INSERT INTO space_user (nick, id, faction, email) VALUES (?, null, ?, ?)";
             sqlPayload.add(user.getNick());
             sqlPayload.add(String.valueOf(user.getFactionID()));
+            sqlPayload.add(user.getEmail());
             pstNeeded = true;
             search = false;
             executeQuery();
