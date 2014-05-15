@@ -16,15 +16,20 @@ public class SpaceCommands extends ListenerAdapter<PircBotX>{
         if(msg.toLowerCase().startsWith(bot.getBotConf().getCommandPrefix() + "space")){
             msg = msg.substring(bot.getBotConf().getCommandPrefix().length() + 5).trim();
             if(msg.toLowerCase().startsWith("register")){
-                if(findUserInUsers(event.getUser().getNick(), bot.getSpace().getUsers()) == -1) {
-                    try {
-                        bot.getSpace().addUser(new SpaceUser(event.getUser().getNick(), 0, 0));
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                msg = msg.substring(8).trim();
+                if(msg.length()>0 && msg.contains("@")) {
+                    if (findUserInUsers(event.getUser().getNick(), bot.getSpace().getUsers()) == -1) {
+                        try {
+                            bot.getSpace().addUser(new SpaceUser(event.getUser().getNick(), 0, 0, msg));
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        event.respond("You are now added to the Space Engineers user tracker, events related to you or your faction will be displayed.");
+                    } else {
+                        event.respond("You have already registered with the Space Engineers tracker.");
                     }
-                    event.respond("You are now added to the Space Engineers user tracker, events related to you or your faction will be displayed.");
                 } else {
-                    event.respond("You have already registered with the Space Engineers tracker.");
+                    event.respond("You must supply a real email when adding an account to the Space Engineers tracker!");
                 }
             } else if(msg.toLowerCase().startsWith("faction")){
                 SpaceUser[] users = bot.getSpace().getUsers();
