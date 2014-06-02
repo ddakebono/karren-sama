@@ -6,9 +6,11 @@ import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.slf4j.Logger;
 
+import javax.mail.MessagingException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -18,6 +20,7 @@ public class KarrenBot extends PircBotX {
     private BotConfiguration botConf;
     private MySQLInterface sql;
     private ArrayList<Interactions> interactions;
+    private Mailer mail;
     private Logger log;
     private SpaceController space;
     private boolean botKilled = false;
@@ -26,6 +29,13 @@ public class KarrenBot extends PircBotX {
         super(config);
         this.botConf = botConf;
         this.log = log;
+        try {
+            mail = new Mailer(botConf);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
         sql = new MySQLInterface(botConf, log);
         interactions = loadInteractions();
     }
@@ -44,6 +54,7 @@ public class KarrenBot extends PircBotX {
             log.error("Threads must be initialized prior to being started!");
         }
     }
+    public Mailer getMail(){return mail;}
     private ArrayList<Interactions> loadInteractions(){
         String buffer;
         String[] temp1;
