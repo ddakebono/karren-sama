@@ -11,11 +11,13 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave"};
+		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "testmail"};
 		String message = event.getMessage();
 		String cmd = "";
         KarrenBot bot = (KarrenBot)event.getBot();
@@ -64,6 +66,19 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     } else {
                         event.respond("You do not have the permissions to change this...(Not Operator)");
                     }
+                    break;
+                case "testmail":
+                    if(event.getChannel().isOwner(event.getUser())){
+                        try {
+                            bot.getMail().sendMail("frostbite@thegreatredirect.ca", "Test email system.", "This is a test email from " + bot.getBotConf().getBotname());
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        } catch (MessagingException e) {
+                            e.printStackTrace();
+                        }
+                        event.respond("Email sent");
+                    }
+                    break;
 			}
 		}
 	}

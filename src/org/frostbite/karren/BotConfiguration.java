@@ -35,11 +35,16 @@ public class BotConfiguration {
     private String enableInteractions;
     private String enableSpaceController;
     private String commandPrefix;
+    private String emailAddress;
     private String connectToIRC;
-    private final String versionMarker = "1.0.3-ALPHA";
+    private String emailPassword;
+    private String smtpServer;
+    private final String versionMarker = "1.1.1-ALPHA";
     /*
     Config Getters
      */
+    public String getSmtpServer(){return smtpServer;}
+    public String getEmailPassword(){return emailPassword;}
     public String getSqlhost() {
         return sqlhost;
     }
@@ -66,6 +71,7 @@ public class BotConfiguration {
     }
     public String getConnectToIRC() {return connectToIRC;}
     public String getEnableSpaceController(){return enableSpaceController;}
+    public String getEmailAddress() {return emailAddress;}
     public String getNickservPass() {
         if(nickservPass.length()==0){
             return "nothing";
@@ -146,6 +152,9 @@ public class BotConfiguration {
         commandPrefix = cfg.getProperty("commandPrefix", ".");
         connectToIRC = cfg.getProperty("connectToIRC", "true");
         enableSpaceController = cfg.getProperty("SpaceManager", "true");
+        emailAddress = cfg.getProperty("EmailAddress", "changethis@emailaddress.bad");
+        emailPassword = cfg.getProperty("EmailAddressPassword", "hackme");
+        smtpServer = cfg.getProperty("SmtpServerAddress", "changemetoo.bad");
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
             log.warn("Updating configuration file!");
             mkNewConfig(log);
@@ -182,6 +191,9 @@ public class BotConfiguration {
         cfg.setProperty("commandPrefix", commandPrefix);
         cfg.setProperty("connectToIRC", connectToIRC);
         cfg.setProperty("SpaceManager", enableSpaceController);
+        cfg.setProperty("EmailAddress", emailAddress);
+        cfg.setProperty("EmailAddressPassword", emailPassword);
+        cfg.setProperty("SmtpServerAddress", smtpServer);
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
         log.info("Your configuration file has been generated/updated!");
         System.exit(0);
