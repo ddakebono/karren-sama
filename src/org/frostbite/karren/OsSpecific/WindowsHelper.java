@@ -30,6 +30,6 @@ public class WindowsHelper {
         path = URLDecoder.decode(path, "UTF-8");
         System.out.println("Trying to elevate bot to higher permissions...");
         rt.exec("elevate.exe java -jar " + path + execPath.getName());
-
+        System.exit(0);
     }
 }
