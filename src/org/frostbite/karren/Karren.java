@@ -18,6 +18,8 @@ import java.nio.charset.Charset;
 
 public class Karren{
 	public static void main(String[] args){
+        OutputWindow out = new OutputWindow("Karren-sama IRC bot");
+        out.displayWindow();
         Logger log = LoggerFactory.getLogger(Karren.class);
         boolean isWindows = false;
         //Windows specific check, bot will be elevated to allow access to services controls
