@@ -31,11 +31,11 @@ public class WindowsHelper {
         System.out.println("Trying to elevate bot to higher permissions...");
         System.out.println("Launching " + path);
         try {
-            Thread.sleep(10000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        rt.exec("elevate.exe java -jar " + execPath.getName());
+        rt.exec("elevate.exe java -jar " + path);
         System.exit(0);
     }
 }
