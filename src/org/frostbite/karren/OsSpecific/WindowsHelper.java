@@ -35,7 +35,7 @@ public class WindowsHelper {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        rt.exec("elevate.exe java -jar " + path);
+        rt.exec("elevate.exe -wait java -jar " + path);
         System.exit(0);
     }
 }
