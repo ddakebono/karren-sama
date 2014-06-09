@@ -29,7 +29,13 @@ public class WindowsHelper {
         String path = execPath.getPath();
         path = URLDecoder.decode(path, "UTF-8");
         System.out.println("Trying to elevate bot to higher permissions...");
-        rt.exec("elevate.exe java -jar " + path + execPath.getName());
+        System.out.println("Launching " + execPath.getName());
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        rt.exec("elevate.exe java -jar " + execPath.getName());
         System.exit(0);
     }
 }
