@@ -39,7 +39,8 @@ public class BotConfiguration {
     private String connectToIRC;
     private String emailPassword;
     private String smtpServer;
-    private final String versionMarker = "1.1.1-ALPHA";
+    private String enableServicesController;
+    private final String versionMarker = "1.1.2-ALPHA";
     /*
     Config Getters
      */
@@ -72,6 +73,7 @@ public class BotConfiguration {
     public String getConnectToIRC() {return connectToIRC;}
     public String getEnableSpaceController(){return enableSpaceController;}
     public String getEmailAddress() {return emailAddress;}
+    public String getEnableServicesController(){return enableServicesController;}
     public String getNickservPass() {
         if(nickservPass.length()==0){
             return "nothing";
@@ -155,6 +157,7 @@ public class BotConfiguration {
         emailAddress = cfg.getProperty("EmailAddress", "changethis@emailaddress.bad");
         emailPassword = cfg.getProperty("EmailAddressPassword", "hackme");
         smtpServer = cfg.getProperty("SmtpServerAddress", "changemetoo.bad");
+        enableServicesController = cfg.getProperty("EnableServiceController", "true");
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
             log.warn("Updating configuration file!");
             mkNewConfig(log);
@@ -194,6 +197,7 @@ public class BotConfiguration {
         cfg.setProperty("EmailAddress", emailAddress);
         cfg.setProperty("EmailAddressPassword", emailPassword);
         cfg.setProperty("SmtpServerAddress", smtpServer);
+        cfg.setProperty("EnableServicesController", enableServicesController);
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
         log.info("Your configuration file has been generated/updated!");
         System.exit(0);

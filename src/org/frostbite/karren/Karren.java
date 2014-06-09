@@ -6,6 +6,7 @@
 
 package org.frostbite.karren;
 
+import org.frostbite.karren.OsSpecific.WindowsHelper;
 import org.frostbite.karren.listeners.*;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -17,8 +18,22 @@ import java.nio.charset.Charset;
 
 public class Karren{
 	public static void main(String[] args){
-        //Configs
         Logger log = LoggerFactory.getLogger(Karren.class);
+        boolean isWindows = false;
+        //Windows specific check, bot will be elevated to allow access to services controls
+        WindowsHelper check = new WindowsHelper();
+        if(check.isSystemWindows()){
+            log.debug("Windows operating system detected.");
+            if(!check.checkIfElevated())
+                try {
+                    check.elevateApplication();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            else
+                isWindows = true;
+        }
+        //Configs
         BotConfiguration botConf = new BotConfiguration();
         try {
             botConf.initConfig(log);
@@ -42,13 +57,14 @@ public class Karren{
                 .addListener(new SpaceCommands())
                 .addListener(new ConnectListener())
                 .addListener(new DisconnectListener())
+                .addListener(new WindowsServiceCommands())
                 .setEncoding(Charset.forName("UTF-8"))
                 .setServerHostname(botConf.getHostname())
                 .addAutoJoinChannel(botConf.getChannel())
                 .setAutoReconnect(true)
                 .buildConfiguration();
         //Adding the listeners for our commands
-		KarrenBot bot = new KarrenBot(config, botConf, log);
+		KarrenBot bot = new KarrenBot(config, botConf, log, isWindows);
 		
 		//Try and load the JDBC MySQL Driver
 		try{

@@ -1,5 +1,6 @@
 package org.frostbite.karren;
 
+import org.frostbite.karren.OsSpecific.WindowsService;
 import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.space.SpaceController;
 import org.pircbotx.Configuration;
@@ -25,10 +26,13 @@ public class KarrenBot extends PircBotX {
     private SpaceController space;
     private boolean botKilled = false;
     private boolean threadsInitialized = false;
-    public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log){
+    private boolean isWindows;
+    private ArrayList<WindowsService> services;
+    public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log, boolean isWindows){
         super(config);
         this.botConf = botConf;
         this.log = log;
+        this.isWindows = isWindows;
         try {
             mail = new Mailer(botConf);
         } catch (UnsupportedEncodingException e) {
@@ -38,6 +42,7 @@ public class KarrenBot extends PircBotX {
         }
         sql = new MySQLInterface(botConf, log);
         interactions = loadInteractions();
+        services = loadServices();
     }
     public void initThreads(){
         threadsInitialized = true;
@@ -54,7 +59,30 @@ public class KarrenBot extends PircBotX {
             log.error("Threads must be initialized prior to being started!");
         }
     }
-    public Mailer getMail(){return mail;}
+    private ArrayList<WindowsService> loadServices(){
+        String buffer;
+        String[] temp1;
+        String name;
+        String ident;
+        log.debug("Initializing monitored Services!");
+        ArrayList<WindowsService> services = new ArrayList<>();
+        try {
+            BufferedReader in = new BufferedReader(new FileReader("conf/Services.txt"));
+            buffer = in.readLine();
+            while(buffer!=null){
+                temp1 = buffer.split(":");
+                if(temp1[0].equalsIgnoreCase("Service")){
+                    ident = temp1[1];
+                    name = temp1[2];
+                    services.add(new WindowsService(name , ident));
+                }
+                buffer = in.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return services;
+    }
     private ArrayList<Interactions> loadInteractions(){
         String buffer;
         String[] temp1;
@@ -89,6 +117,13 @@ public class KarrenBot extends PircBotX {
         interactions.clear();
         interactions = loadInteractions();
     }
+    public void reloadServices(){
+        services.clear();
+        services = loadServices();
+    }
+    public Mailer getMail(){return mail;}
+    public ArrayList<WindowsService> getServices(){return services;}
+    public boolean isWindows(){return isWindows;}
     public boolean isBotKill(){return botKilled;}
     public void botIsKill(){botKilled = true;}
     public ArrayList<Interactions> getInteractions(){return interactions;}
