@@ -27,11 +27,13 @@ public class KarrenBot extends PircBotX {
     private boolean botKilled = false;
     private boolean threadsInitialized = false;
     private boolean isWindows;
+    private OutputWindow out;
     private ArrayList<WindowsService> services;
-    public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log, boolean isWindows){
+    public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log, boolean isWindows, OutputWindow out){
         super(config);
         this.botConf = botConf;
         this.log = log;
+        this.out = out;
         this.isWindows = isWindows;
         try {
             mail = new Mailer(botConf);
@@ -121,6 +123,7 @@ public class KarrenBot extends PircBotX {
         services.clear();
         services = loadServices();
     }
+    public OutputWindow getWindow(){return out;}
     public Mailer getMail(){return mail;}
     public ArrayList<WindowsService> getServices(){return services;}
     public boolean isWindows(){return isWindows;}

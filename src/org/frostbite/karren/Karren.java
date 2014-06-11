@@ -66,7 +66,7 @@ public class Karren{
                 .setAutoReconnect(true)
                 .buildConfiguration();
         //Adding the listeners for our commands
-		KarrenBot bot = new KarrenBot(config, botConf, log, isWindows);
+		KarrenBot bot = new KarrenBot(config, botConf, log, isWindows, out);
 		
 		//Try and load the JDBC MySQL Driver
 		try{

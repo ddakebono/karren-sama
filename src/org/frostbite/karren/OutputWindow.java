@@ -18,6 +18,9 @@ public class OutputWindow {
         window.setVisible(true);
         redirectSystemStreams();
     }
+    public void destroyWindow(){
+        window.dispose();
+    }
     private void updateTextArea(final String text) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

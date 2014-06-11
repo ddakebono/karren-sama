@@ -22,6 +22,7 @@ public class KillCommand extends ListenerAdapter<PircBotX>{
             bot.botIsKill();
             if(message.toLowerCase().startsWith(cmd)){
                 bot.stopBotReconnect();
+                bot.getWindow().destroyWindow();
             }
             bot.sendIRC().quitServer("Kill command fired, bot terminating.");
         } else {
