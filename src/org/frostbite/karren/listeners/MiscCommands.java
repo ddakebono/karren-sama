@@ -11,13 +11,11 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
-import javax.mail.MessagingException;
-import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "testmail"};
+		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "reloadserv"};
 		String message = event.getMessage();
 		String cmd = "";
         KarrenBot bot = (KarrenBot)event.getBot();
@@ -49,11 +47,27 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     }
                     break;
                 case "reloadint":
-                    if(event.getChannel().isOp(event.getUser())|| event.getChannel().isOwner(event.getUser())) {
-                        bot.getLog().info("Interactions system reload triggered by " + event.getUser().getNick());
-                        bot.reloadInteractions();
+                    if(bot.getBotConf().getEnableInteractions().equalsIgnoreCase("true")) {
+                        if (event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())) {
+                            bot.getLog().info("Interactions system reload triggered by " + event.getUser().getNick());
+                            bot.reloadInteractions();
+                        } else {
+                            event.respond("You do not have the permissions to use this...(Not Operator)");
+                        }
                     } else {
-                        event.respond("You do not have the permissions to use this...(Not Operator)");
+                        event.respond("Interactions system disabled by configuration.");
+                    }
+                    break;
+                case "reloadserv":
+                    if(bot.isWindows() || bot.getBotConf().getEnableServicesController().equalsIgnoreCase("true")) {
+                        if (event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())) {
+                            bot.getLog().info("Windows Services controller system reload triggered by " + event.getUser().getNick());
+                            bot.reloadServices();
+                        } else {
+                            event.respond("You do not have permission to use this...(Not Operator)");
+                        }
+                    } else {
+                        event.respond("This bot is currently running on a non Windows based platform or service control is disabled.");
                     }
                     break;
                 case "npswitch":
@@ -65,18 +79,6 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                         }
                     } else {
                         event.respond("You do not have the permissions to change this...(Not Operator)");
-                    }
-                    break;
-                case "testmail":
-                    if(event.getChannel().isOwner(event.getUser())){
-                        try {
-                            bot.getMail().sendMail("frostbite@thegreatredirect.ca", "Test email system.", "This is a test email from " + bot.getBotConf().getBotname());
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        } catch (MessagingException e) {
-                            e.printStackTrace();
-                        }
-                        event.respond("Email sent");
                     }
                     break;
 			}

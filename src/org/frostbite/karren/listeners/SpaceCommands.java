@@ -7,6 +7,8 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 
 public class SpaceCommands extends ListenerAdapter<PircBotX>{
@@ -21,7 +23,8 @@ public class SpaceCommands extends ListenerAdapter<PircBotX>{
                     if (findUserInUsers(event.getUser().getNick(), bot.getSpace().getUsers()) == -1) {
                         try {
                             bot.getSpace().addUser(new SpaceUser(event.getUser().getNick(), 0, 0, msg));
-                        } catch (SQLException e) {
+                            bot.getMail().sendMail(msg, "All alerts will be sent though this email regarding the Space Engineers event system.", "Placeholder test email");
+                        } catch (SQLException | MessagingException | UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                         event.respond("You are now added to the Space Engineers user tracker, events related to you or your faction will be displayed.");
