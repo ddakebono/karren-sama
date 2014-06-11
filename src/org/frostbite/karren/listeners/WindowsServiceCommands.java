@@ -20,10 +20,10 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
         if(bot.isWindows()){
             if(event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())){
                 if(msg.toLowerCase().startsWith(cmd)){
-                    msg = msg.substring(0, cmd.length()).trim();
+                    msg = msg.substring(cmd.length(), msg.length()).trim();
                     bot.getLog().debug("Services command triggered.");
                     if(msg.toLowerCase().startsWith("stop")){
-                        msg = msg.substring(0, 4).trim();
+                        msg = msg.substring(4, msg.length()).trim();
                         bot.getLog().debug("Trying to stop " + msg);
                         service = getServiceObject(msg, bot);
                         if(service != null)
@@ -37,7 +37,7 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                             event.respond("Service could not be stopped. (" + msg + " not a monitored service!)");
                     }
                     if(msg.toLowerCase().startsWith("start")){
-                        msg = msg.substring(0, 5).trim();
+                        msg = msg.substring(5, msg.length()).trim();
                         bot.getLog().debug("Trying to start " + msg);
                         service = getServiceObject(msg, bot);
                         if(service != null)
@@ -51,7 +51,7 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                             event.respond("Service could not be started. (" + msg + " not a monitored service!)");
                     }
                     if(msg.toLowerCase().startsWith("restart")){
-                        msg = msg.substring(0, 7).trim();
+                        msg = msg.substring(7, msg.length()).trim();
                         bot.getLog().debug("Trying to restart " + msg);
                         service = getServiceObject(msg, bot);
                         if(service != null)
