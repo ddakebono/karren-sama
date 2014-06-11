@@ -2,9 +2,6 @@ package org.frostbite.karren.OsSpecific;
 
 import java.io.IOException;
 
-/**
- * Created by frostbite on 09/06/14.
- */
 public class WindowsService {
     private String name;
     private String ident;
@@ -13,25 +10,18 @@ public class WindowsService {
         this.name = name;
         this.ident = ident;
     }
-    public boolean stop() throws IOException {
-        Process result = rt.exec("sc stop " + name);
-        if(result.exitValue() == 0){
-            return true;
-        } else {
-            return false;
-        }
+    public boolean stop() throws IOException, InterruptedException {
+        Process result = rt.exec("net stop " + name);
+        Thread.sleep(5000);
+        return result.exitValue() == 0;
     }
-    public boolean start() throws IOException {
-        Process result = rt.exec("sc start " + name);
-        if(result.exitValue() == 0){
-            return true;
-        } else {
-            return false;
-        }
+    public boolean start() throws IOException, InterruptedException {
+        Process result = rt.exec("net start " + name);
+        Thread.sleep(5000);
+        return result.exitValue() == 0;
     }
     public boolean restart() throws InterruptedException, IOException {
         stop();
-        Thread.sleep(5000);
         return start();
     }
     public String getIdent(){return ident;}

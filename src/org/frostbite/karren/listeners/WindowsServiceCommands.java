@@ -8,15 +8,13 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 import java.io.IOException;
 
-/**
- * Created by frostbite on 09/06/14.
- */
 public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
     public void onMessage(MessageEvent event){
         KarrenBot bot = (KarrenBot)event.getBot();
         String cmd = bot.getBotConf().getCommandPrefix() + "services";
         String msg = event.getMessage();
         WindowsService service;
+        boolean returnState;
         if(bot.isWindows()){
             if(event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())){
                 if(msg.toLowerCase().startsWith(cmd)){
@@ -28,9 +26,14 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                         service = getServiceObject(msg, bot);
                         if(service != null)
                             try {
-                                service.stop();
                                 event.respond("Stopping service.");
-                            } catch (IOException e) {
+                                returnState = service.stop();
+                                if(returnState)
+                                    event.respond("Service " + msg + " has been stopped!");
+                                else
+                                    event.respond("Service " + msg + "could not be stopped!");
+
+                            } catch (IOException | InterruptedException e) {
                                 e.printStackTrace();
                             }
                         else
@@ -42,9 +45,13 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                         service = getServiceObject(msg, bot);
                         if(service != null)
                             try {
-                                service.start();
                                 event.respond("Started service.");
-                            } catch (IOException e) {
+                                returnState = service.start();
+                                if(returnState)
+                                    event.respond("Service " + msg + " has been started!");
+                                else
+                                    event.respond("Service " + msg + "could not be started!");
+                            } catch (IOException | InterruptedException e) {
                                 e.printStackTrace();
                             }
                         else
@@ -56,11 +63,13 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                         service = getServiceObject(msg, bot);
                         if(service != null)
                             try {
-                                service.restart();
                                 event.respond("Restarting service.");
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
+                                returnState = service.restart();
+                                if(returnState)
+                                    event.respond("Service " + msg + " has been restarted!");
+                                else
+                                    event.respond("Service " + msg + "could not be restarted!");
+                            } catch (InterruptedException | IOException e) {
                                 e.printStackTrace();
                             }
                         else
