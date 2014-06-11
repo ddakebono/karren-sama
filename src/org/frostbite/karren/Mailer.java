@@ -6,9 +6,6 @@ import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
-/**
- * Created by frostbite on 13/05/14.
- */
 public class Mailer {
     private Properties prop = new Properties();
     private Session session;
@@ -30,7 +27,7 @@ public class Mailer {
 
     }
     public void sendMail(String sendTo, String body, String subject) throws UnsupportedEncodingException, MessagingException {
-        msg.setRecipient(Message.RecipientType.TO, new InternetAddress(sendTo, "RDG User"));
+        msg.setRecipient(Message.RecipientType.TO, new InternetAddress(sendTo, sendTo));
         msg.setSubject(subject);
         msg.setText(body);
         Transport.send(msg);
