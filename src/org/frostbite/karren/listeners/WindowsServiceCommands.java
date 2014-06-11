@@ -21,12 +21,15 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
             if(event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())){
                 if(msg.toLowerCase().startsWith(cmd)){
                     msg = msg.substring(0, cmd.length()).trim();
+                    bot.getLog().debug("Services command triggered.");
                     if(msg.toLowerCase().startsWith("stop")){
                         msg = msg.substring(0, 4).trim();
+                        bot.getLog().debug("Trying to stop " + msg);
                         service = getServiceObject(msg, bot);
                         if(service != null)
                             try {
                                 service.stop();
+                                event.respond("Stopping service.");
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -35,10 +38,12 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                     }
                     if(msg.toLowerCase().startsWith("start")){
                         msg = msg.substring(0, 5).trim();
+                        bot.getLog().debug("Trying to start " + msg);
                         service = getServiceObject(msg, bot);
                         if(service != null)
                             try {
                                 service.start();
+                                event.respond("Started service.");
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -47,10 +52,12 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                     }
                     if(msg.toLowerCase().startsWith("restart")){
                         msg = msg.substring(0, 7).trim();
+                        bot.getLog().debug("Trying to restart " + msg);
                         service = getServiceObject(msg, bot);
                         if(service != null)
                             try {
                                 service.restart();
+                                event.respond("Restarting service.");
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             } catch (IOException e) {
