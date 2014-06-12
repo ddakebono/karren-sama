@@ -16,7 +16,7 @@ public class SpaceController extends Thread {
     private boolean stopController;
     private KarrenBot bot;
     private Logger log;
-    private Channel announceChannel;
+
     public SpaceController(MySQLInterface sql, KarrenBot bot){
         this.sql = sql;
         this.bot = bot;
@@ -73,7 +73,7 @@ public class SpaceController extends Thread {
     public void run(){
         stopController = false;
         Date date = new Date();
-        announceChannel = bot.getUserBot().getChannels().first();
+        Channel announceChannel = bot.getUserBot().getChannels().first();
         while(!stopController){
             for(SpaceEvent event : events){
                 if(event.getStartDate() <= date.getTime() && !event.hasEventBegun()){

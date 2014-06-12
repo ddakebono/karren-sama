@@ -1,8 +1,5 @@
 package org.frostbite.karren.space;
 
-/**
- * Created by frostbite on 06/05/14.
- */
 public class SpaceUser {
     private String nick;
     private int userID;

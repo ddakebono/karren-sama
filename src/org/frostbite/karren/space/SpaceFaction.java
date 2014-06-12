@@ -1,8 +1,6 @@
 package org.frostbite.karren.space;
 
-/**
- * Created by frostbite on 27/04/14.
- */
+
 public class SpaceFaction {
     private int factionID;
     private String factionName;

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Interactions {
-    private ArrayList<String> activator = new ArrayList<String>();
+    private ArrayList<String> activator = new ArrayList<>();
     private String identifier = "";
     private String[] tags;
     private String responseTemplate = "";

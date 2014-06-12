@@ -37,6 +37,8 @@ public class HelpCommand extends ListenerAdapter<PircBotX>{
             event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "news command - Posts a news update to the CRaZyPANTS website.");
             event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "npswitch command - Enables or disables the automatic now playing announcements.");
             event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "reloadint command - Triggers a refresh of the interactions system, reloading all interactions from the Interactions.txt");
+            event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "reloadserv command - Triggers a refresh of the service controller system, reloads all monitored services from Services.txt");
+            event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "services [start, stop, restart] [Service name] command - Starts, stops, or restarts target service. (EX. " + bot.getBotConf().getCommandPrefix() + "services start SpaceEng)");
         }
     }
 }

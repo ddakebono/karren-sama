@@ -7,18 +7,17 @@ import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 public class Mailer {
-    private Properties prop = new Properties();
-    private Session session;
     private Message msg;
     public Mailer(BotConfiguration botConf) throws UnsupportedEncodingException, MessagingException {
         final String address = botConf.getEmailAddress();
         final String password = botConf.getEmailPassword();
+        Properties prop = new Properties();
         prop.put("mail.smtp.host", botConf.getSmtpServer());
         prop.put("mail.smtp.from", botConf.getEmailAddress());
         prop.put("mail.smtp.port", "25");
         prop.put("mail.smtp.auth", true);
-        session = Session.getDefaultInstance(prop, new Authenticator(){
-            protected PasswordAuthentication getPasswordAuthenication(){
+        Session session = Session.getDefaultInstance(prop, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthenication() {
                 return new PasswordAuthentication(address, password);
             }
         });

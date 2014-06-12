@@ -37,9 +37,7 @@ public class KarrenBot extends PircBotX {
         this.isWindows = isWindows;
         try {
             mail = new Mailer(botConf);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (MessagingException e) {
+        } catch (UnsupportedEncodingException | MessagingException e) {
             e.printStackTrace();
         }
         sql = new MySQLInterface(botConf, log);

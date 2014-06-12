@@ -8,9 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 
-/**
- * Created by frostbite on 09/06/14.
- */
 public class WindowsHelper {
     public interface Shell32 extends StdCallLibrary{
         boolean IsUserAnAdmin() throws LastErrorException;
