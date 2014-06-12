@@ -1,8 +1,5 @@
 package org.frostbite.karren.space;
 
-/**
- * Created by frostbite on 27/04/14.
- */
 public class SpaceEvent {
     private int eventID;
     private String eventData;

@@ -7,9 +7,6 @@ import org.pircbotx.hooks.events.DisconnectEvent;
 
 import java.sql.SQLException;
 
-/**
- * Created by frostbite on 10/05/14.
- */
 public class DisconnectListener extends ListenerAdapter<PircBotX> {
     public void onDisconnect(DisconnectEvent event){
         KarrenBot bot = (KarrenBot)event.getBot();

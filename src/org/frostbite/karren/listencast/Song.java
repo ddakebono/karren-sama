@@ -19,9 +19,10 @@ public class Song {
     private long songEndTime;
     private long lastSongDuration;
     private boolean isDurationLocked;
-    private Date date = new Date();
+
     public Song(String songName){
         this.songName = songName;
+        Date date = new Date();
         this.songStartTime = date.getTime();
     }
     public void setFieldsFromSQL(ArrayList<Object> results){

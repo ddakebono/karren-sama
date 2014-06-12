@@ -15,6 +15,7 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
         String msg = event.getMessage();
         WindowsService service;
         boolean returnState;
+        boolean listServices = false;
         if(bot.isWindows()){
             if(event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())){
                 if(msg.toLowerCase().startsWith(cmd)){
@@ -24,11 +25,11 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                         msg = msg.substring(4, msg.length()).trim();
                         bot.getLog().debug("Trying to stop " + msg);
                         service = getServiceObject(msg, bot);
-                        if(service != null)
+                        if(service != null) {
                             try {
                                 event.respond("Stopping service.");
                                 returnState = service.stop();
-                                if(returnState)
+                                if (returnState)
                                     event.respond("Service " + msg + " has been stopped!");
                                 else
                                     event.respond("Service " + msg + "could not be stopped!");
@@ -36,44 +37,56 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                             } catch (IOException | InterruptedException e) {
                                 e.printStackTrace();
                             }
-                        else
+                        } else {
                             event.respond("Service could not be stopped. (" + msg + " not a monitored service!)");
-                    }
-                    if(msg.toLowerCase().startsWith("start")){
+                            listServices = true;
+                        }
+                    } else if(msg.toLowerCase().startsWith("start")){
                         msg = msg.substring(5, msg.length()).trim();
                         bot.getLog().debug("Trying to start " + msg);
                         service = getServiceObject(msg, bot);
-                        if(service != null)
+                        if(service != null) {
                             try {
                                 event.respond("Started service.");
                                 returnState = service.start();
-                                if(returnState)
+                                if (returnState)
                                     event.respond("Service " + msg + " has been started!");
                                 else
                                     event.respond("Service " + msg + "could not be started!");
                             } catch (IOException | InterruptedException e) {
                                 e.printStackTrace();
                             }
-                        else
+                        } else {
                             event.respond("Service could not be started. (" + msg + " not a monitored service!)");
-                    }
-                    if(msg.toLowerCase().startsWith("restart")){
+                            listServices = true;
+                        }
+                    } else if(msg.toLowerCase().startsWith("restart")){
                         msg = msg.substring(7, msg.length()).trim();
                         bot.getLog().debug("Trying to restart " + msg);
                         service = getServiceObject(msg, bot);
-                        if(service != null)
+                        if(service != null) {
                             try {
                                 event.respond("Restarting service.");
                                 returnState = service.restart();
-                                if(returnState)
+                                if (returnState)
                                     event.respond("Service " + msg + " has been restarted!");
                                 else
                                     event.respond("Service " + msg + "could not be restarted!");
                             } catch (InterruptedException | IOException e) {
                                 e.printStackTrace();
                             }
-                        else
+                        } else {
                             event.respond("Service could not be restarted. (" + msg + " not a monitored service!)");
+                            listServices = true;
+                        }
+                    } else {
+                        event.respond("The entered command is not one of the usable commands for the " + bot.getBotConf().getCommandPrefix() + "services command.");
+                    }
+                    if(listServices){
+                        event.getUser().send().message("List of monitored services:");
+                        for(WindowsService print : bot.getServices()){
+                            event.getUser().send().message("Service name: " + print.getIdent() + ", Windows Services Name: " + print.getName());
+                        }
                     }
                 }
             }
