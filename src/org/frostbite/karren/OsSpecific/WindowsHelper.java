@@ -4,10 +4,6 @@ import com.sun.jna.LastErrorException;
 import com.sun.jna.Native;
 import com.sun.jna.win32.StdCallLibrary;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URLDecoder;
-
 public class WindowsHelper {
     public interface Shell32 extends StdCallLibrary{
         boolean IsUserAnAdmin() throws LastErrorException;
@@ -19,20 +15,5 @@ public class WindowsHelper {
     public boolean checkIfElevated(){
         Shell32 INSTANCE = (Shell32) Native.loadLibrary("shell32", Shell32.class);
         return INSTANCE.IsUserAnAdmin();
-    }
-    public void elevateApplication() throws IOException {
-        Runtime rt = Runtime.getRuntime();
-        File execPath = new File(WindowsHelper.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-        String path = execPath.getPath();
-        path = URLDecoder.decode(path, "UTF-8");
-        System.out.println("Trying to elevate bot to higher permissions...");
-        System.out.println("Launching " + path);
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        rt.exec("elevate.exe -wait java -jar " + path);
-        System.exit(0);
     }
 }
