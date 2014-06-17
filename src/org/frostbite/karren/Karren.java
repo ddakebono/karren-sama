@@ -27,11 +27,7 @@ public class Karren{
         if(check.isSystemWindows()){
             log.debug("Windows operating system detected.");
             if(!check.checkIfElevated())
-                try {
-                    check.elevateApplication();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                log.error("To make full use of Windows specific features like Service control the bot must be started with Administrative permissions.");
             else
                 isWindows = true;
         }
