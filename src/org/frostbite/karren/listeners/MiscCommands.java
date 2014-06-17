@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "reloadserv"};
+		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "reloadserv", "recover-nick"};
 		String message = event.getMessage();
 		String cmd = "";
         KarrenBot bot = (KarrenBot)event.getBot();
@@ -79,6 +79,18 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                         }
                     } else {
                         event.respond("You do not have the permissions to change this...(Not Operator)");
+                    }
+                    break;
+                case "recover-nick":
+                    if(event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())){
+                        if(!bot.getNick().equalsIgnoreCase(bot.getBotConf().getBotname())){
+                            bot.sendIRC().changeNick(bot.getBotConf().getBotname());
+                            bot.sendIRC().identify(bot.getBotConf().getNickservPass());
+                        } else {
+                            event.respond("I already have the nick I was told to have, if you want to change it check the configuration.");
+                        }
+                    } else {
+                        event.respond("You do not have the permissions required to use this... (Operator/Owner required)");
                     }
                     break;
 			}
