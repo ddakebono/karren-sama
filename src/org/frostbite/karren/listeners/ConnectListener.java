@@ -17,5 +17,6 @@ public class ConnectListener extends ListenerAdapter<PircBotX> {
         }
         bot.initThreads();
         bot.startThreads();
+        bot.sendIRC().joinChannel(bot.getBotConf().getChannel());
     }
 }
