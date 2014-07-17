@@ -40,7 +40,7 @@ public class BotConfiguration {
     private String emailPassword;
     private String smtpServer;
     private String enableServicesController;
-    private final String versionMarker = "1.1.2-ALPHA";
+    private final String versionMarker = "1.2-ALPHA";
     /*
     Config Getters
      */
