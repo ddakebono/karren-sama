@@ -133,7 +133,7 @@ public class MySQLInterface {
     public ArrayList<Object> getUserFaves(Song song) throws SQLException {
         ArrayList<Object> result;
         resetSQL();
-        query = "SELECT User FROM UserFaves WHERE SongID=?";
+        query = "SELECT User FROM userfaves WHERE SongID=?";
         sqlPayload.add(String.valueOf(song.getSongID()));
         search = true;
         pstNeeded = true;
@@ -151,7 +151,7 @@ public class MySQLInterface {
     }*/
     public boolean addFave(String user, Song song) throws SQLException {
         resetSQL();
-        query = "SELECT * FROM UserFaves WHERE User=? AND SongID=?";
+        query = "SELECT * FROM userfaves WHERE User=? AND SongID=?";
         sqlPayload.add(user);
         sqlPayload.add(String.valueOf(song.getSongID()));
         search = true;
@@ -198,7 +198,7 @@ public class MySQLInterface {
             ArrayList<Object> returned;
             String curTime;
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
-            query = "SELECT ID FROM SongDB WHERE SongTitle = ?";
+            query = "SELECT ID FROM songdb WHERE SongTitle = ?";
             pstNeeded = true;
             search = true;
             sqlPayload.add(song.getSongName());
@@ -207,7 +207,7 @@ public class MySQLInterface {
             if (returned.size() > 0) {
                 song.setSongID((int) returned.get(0));
                 returned.clear();
-                query = "SELECT * FROM SongDB WHERE ID= ?";
+                query = "SELECT * FROM songdb WHERE ID= ?";
                 sqlPayload.add(String.valueOf(song.getSongID()));
                 search = true;
                 pstNeeded = true;
@@ -229,7 +229,7 @@ public class MySQLInterface {
             if (song.getSongID() == 0) {
                 //Adding song to DB and getting new ID for song
                 resetSQL();
-                query = "INSERT INTO SongDB (ID, SongTitle, LPTime, PlayCount, FavCount, SongDuration, DurationLock) VALUES (null, ?, ?, 1, 0, 0, false)";
+                query = "INSERT INTO songdb (ID, SongTitle, LPTime, PlayCount, FavCount, SongDuration, DurationLock) VALUES (null, ?, ?, 1, 0, 0, false)";
                 sqlPayload.add(song.getSongName());
                 curTime = getCurDate(dateFormat);
                 sqlPayload.add(curTime);
@@ -237,7 +237,7 @@ public class MySQLInterface {
                 pstNeeded = true;
                 executeQuery();
                 resetSQL();
-                query = "SELECT ID FROM SongDB WHERE SongTitle = ?";
+                query = "SELECT ID FROM songdb WHERE SongTitle = ?";
                 sqlPayload.add(song.getSongName());
                 search = true;
                 pstNeeded = true;
@@ -249,7 +249,7 @@ public class MySQLInterface {
             } else {
                 resetSQL();
                 //Update info for song
-                query = "UPDATE SongDB SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=?";
+                query = "UPDATE songdb SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=?";
                 curTime = getCurDate(dateFormat);
                 sqlPayload.add(curTime);
                 sqlPayload.add(String.valueOf(song.getSongID()));
