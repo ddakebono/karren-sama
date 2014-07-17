@@ -1,6 +1,6 @@
 package org.frostbite.karren;
 
-import org.frostbite.karren.OsSpecific.WindowsService;
+import org.frostbite.karren.OsSpecific.SystemService;
 import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.space.SpaceController;
 import org.pircbotx.Configuration;
@@ -26,15 +26,17 @@ public class KarrenBot extends PircBotX {
     private SpaceController space;
     private boolean botKilled = false;
     private boolean threadsInitialized = false;
-    private boolean isWindows;
+    private int osType = 0;
+    private boolean enableServiceControl = false;
     private OutputWindow out;
-    private ArrayList<WindowsService> services;
-    public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log, boolean isWindows, OutputWindow out){
+    private ArrayList<SystemService> services;
+    public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log, int osType, OutputWindow out, boolean enableServiceControl){
         super(config);
         this.botConf = botConf;
         this.log = log;
         this.out = out;
-        this.isWindows = isWindows;
+        this.osType = osType;
+        this.enableServiceControl = enableServiceControl;
         try {
             mail = new Mailer(botConf);
         } catch (UnsupportedEncodingException | MessagingException e) {
@@ -42,7 +44,8 @@ public class KarrenBot extends PircBotX {
         }
         sql = new MySQLInterface(botConf, log);
         interactions = loadInteractions();
-        services = loadServices();
+        if(enableServiceControl)
+            services = loadServices();
     }
     public void initThreads(){
         threadsInitialized = true;
@@ -59,13 +62,13 @@ public class KarrenBot extends PircBotX {
             log.error("Threads must be initialized prior to being started!");
         }
     }
-    private ArrayList<WindowsService> loadServices(){
+    private ArrayList<SystemService> loadServices(){
         String buffer;
         String[] temp1;
         String name;
         String ident;
         log.debug("Initializing monitored Services!");
-        ArrayList<WindowsService> services = new ArrayList<>();
+        ArrayList<SystemService> services = new ArrayList<>();
         try {
             BufferedReader in = new BufferedReader(new FileReader("conf/Services.txt"));
             buffer = in.readLine();
@@ -74,7 +77,7 @@ public class KarrenBot extends PircBotX {
                 if(temp1[0].equalsIgnoreCase("Service")){
                     ident = temp1[1];
                     name = temp1[2];
-                    services.add(new WindowsService(name , ident));
+                    services.add(new SystemService(name , ident));
                 }
                 buffer = in.readLine();
             }
@@ -123,8 +126,8 @@ public class KarrenBot extends PircBotX {
     }
     public OutputWindow getWindow(){return out;}
     public Mailer getMail(){return mail;}
-    public ArrayList<WindowsService> getServices(){return services;}
-    public boolean isWindows(){return isWindows;}
+    public ArrayList<SystemService> getServices(){return services;}
+    public int getOsType(){return osType;}
     public boolean isBotKill(){return botKilled;}
     public void botIsKill(){botKilled = true;}
     public ArrayList<Interactions> getInteractions(){return interactions;}
@@ -141,4 +144,5 @@ public class KarrenBot extends PircBotX {
     public ListenCast getListenCast(){return lc;}
     public Logger getLog(){return log;}
     public SpaceController getSpace(){return space;}
+    public boolean isEnableServiceControl(){return enableServiceControl;}
 }

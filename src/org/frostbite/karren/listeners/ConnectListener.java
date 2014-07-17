@@ -8,7 +8,16 @@ import org.pircbotx.hooks.events.ConnectEvent;
 public class ConnectListener extends ListenerAdapter<PircBotX> {
     public void onConnect(ConnectEvent event){
         KarrenBot bot = (KarrenBot)event.getBot();
-        while(bot.getUserBot().getChannels().size()==0 || bot.areThreadsInitialized()){
+        while(bot.areThreadsInitialized()){
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        bot.getLog().debug("Connecting to " + bot.getBotConf().getChannel());
+        bot.sendIRC().joinChannel(bot.getBotConf().getChannel());
+        while(bot.getUserBot().getChannels().size()==0){
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -17,6 +26,5 @@ public class ConnectListener extends ListenerAdapter<PircBotX> {
         }
         bot.initThreads();
         bot.startThreads();
-        bot.sendIRC().joinChannel(bot.getBotConf().getChannel());
     }
 }

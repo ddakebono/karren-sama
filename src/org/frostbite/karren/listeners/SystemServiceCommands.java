@@ -1,22 +1,22 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.KarrenBot;
-import org.frostbite.karren.OsSpecific.WindowsService;
+import org.frostbite.karren.OsSpecific.SystemService;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import java.io.IOException;
 
-public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
+public class SystemServiceCommands extends ListenerAdapter<PircBotX> {
     public void onMessage(MessageEvent event){
         KarrenBot bot = (KarrenBot)event.getBot();
         String cmd = bot.getBotConf().getCommandPrefix() + "services";
         String msg = event.getMessage();
-        WindowsService service;
+        SystemService service;
         boolean returnState;
         boolean listServices = false;
-        if(bot.isWindows()){
+        if(bot.getOsType() != 0 && bot.isEnableServiceControl()){
             if(event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())){
                 if(msg.toLowerCase().startsWith(cmd)){
                     msg = msg.substring(cmd.length(), msg.length()).trim();
@@ -28,7 +28,11 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                         if(service != null) {
                             try {
                                 event.respond("Stopping service.");
-                                returnState = service.stop();
+                                if(bot.getOsType() == 1){
+                                    returnState = service.winStop();
+                                } else {
+                                    returnState = service.linStop();
+                                }
                                 if (returnState)
                                     event.respond("Service " + msg + " has been stopped!");
                                 else
@@ -48,7 +52,11 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                         if(service != null) {
                             try {
                                 event.respond("Started service.");
-                                returnState = service.start();
+                                if(bot.getOsType() == 1){
+                                    returnState = service.winStart();
+                                } else {
+                                    returnState = service.linStart();
+                                }
                                 if (returnState)
                                     event.respond("Service " + msg + " has been started!");
                                 else
@@ -67,7 +75,11 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                         if(service != null) {
                             try {
                                 event.respond("Restarting service.");
-                                returnState = service.restart();
+                                if(bot.getOsType() == 1){
+                                    returnState = service.winRestart();
+                                } else {
+                                    returnState = service.linRestart();
+                                }
                                 if (returnState)
                                     event.respond("Service " + msg + " has been restarted!");
                                 else
@@ -84,7 +96,7 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
                     }
                     if(listServices){
                         event.getUser().send().message("List of monitored services:");
-                        for(WindowsService print : bot.getServices()){
+                        for(SystemService print : bot.getServices()){
                             event.getUser().send().message("Service name: " + print.getIdent() + ", Windows Services Name: " + print.getName());
                         }
                     }
@@ -92,9 +104,9 @@ public class WindowsServiceCommands extends ListenerAdapter<PircBotX> {
             }
         }
     }
-    public WindowsService getServiceObject(String ident, KarrenBot bot){
-        WindowsService result = null;
-        for(WindowsService check : bot.getServices()){
+    public SystemService getServiceObject(String ident, KarrenBot bot){
+        SystemService result = null;
+        for(SystemService check : bot.getServices()){
             if(check.getIdent().equalsIgnoreCase(ident))
                 result = check;
         }

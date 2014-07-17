@@ -6,7 +6,7 @@
 
 package org.frostbite.karren;
 
-import org.frostbite.karren.OsSpecific.WindowsHelper;
+import org.frostbite.karren.OsSpecific.OsDiscovery;
 import org.frostbite.karren.listeners.*;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -21,15 +21,32 @@ public class Karren{
         OutputWindow out = new OutputWindow("Karren-sama IRC bot");
         out.displayWindow();
         Logger log = LoggerFactory.getLogger(Karren.class);
-        boolean isWindows = false;
+        boolean enableServiceControl = false;
+        int osType = 0; //0 = Unknown, 1 = Windows, 2 = Linux
         //Windows specific check, bot will be elevated to allow access to services controls
-        WindowsHelper check = new WindowsHelper();
-        if(check.isSystemWindows()){
-            log.debug("Windows operating system detected.");
-            if(!check.checkIfElevated())
-                log.error("To make full use of Windows specific features like Service control the bot must be started with Administrative permissions.");
-            else
-                isWindows = true;
+        OsDiscovery check = new OsDiscovery();
+        switch(check.getSystemType()){
+            case "Windows":
+                osType = 1;
+                log.debug("Windows operating system detected.");
+                if(!check.checkIfElevated())
+                    log.error("To make full use of Windows specific features like Service control the bot must be started with Administrative permissions.");
+                else
+                    enableServiceControl = true;
+                break;
+            case "Linux":
+                log.debug("Linux based operating system detected.");
+                log.info("Currently only Init.d is supported in the bot.");
+                osType = 2;
+                try {
+                    if(!check.checkIfInitd()){
+                        log.error("Either your system configuration has an issue or your system doesn't use Init.d. Service control disabled!");
+                    } else {
+                        enableServiceControl = true;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
         }
         //Configs
         BotConfiguration botConf = new BotConfiguration();
@@ -55,13 +72,13 @@ public class Karren{
                 .addListener(new SpaceCommands())
                 .addListener(new ConnectListener())
                 .addListener(new DisconnectListener())
-                .addListener(new WindowsServiceCommands())
+                .addListener(new SystemServiceCommands())
                 .setEncoding(Charset.forName("UTF-8"))
                 .setServerHostname(botConf.getHostname())
                 .setAutoReconnect(true)
                 .buildConfiguration();
         //Adding the listeners for our commands
-		KarrenBot bot = new KarrenBot(config, botConf, log, isWindows, out);
+		KarrenBot bot = new KarrenBot(config, botConf, log, osType, out, enableServiceControl);
 		
 		//Try and load the JDBC MySQL Driver
 		try{

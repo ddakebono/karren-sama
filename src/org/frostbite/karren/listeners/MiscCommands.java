@@ -59,7 +59,7 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     }
                     break;
                 case "reloadserv":
-                    if(bot.isWindows() || bot.getBotConf().getEnableServicesController().equalsIgnoreCase("true")) {
+                    if(bot.getOsType() != 0 && bot.getBotConf().getEnableServicesController().equalsIgnoreCase("true")) {
                         if (event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())) {
                             bot.getLog().info("Windows Services controller system reload triggered by " + event.getUser().getNick());
                             bot.reloadServices();
