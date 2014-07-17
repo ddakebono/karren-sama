@@ -27,14 +27,13 @@ public class KarrenBot extends PircBotX {
     private boolean botKilled = false;
     private boolean threadsInitialized = false;
     private int osType = 0;
-    private boolean enableServiceControl = false;
     private OutputWindow out;
+    private boolean enableServiceControl = false;
     private ArrayList<SystemService> services;
     public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log, int osType, OutputWindow out, boolean enableServiceControl){
         super(config);
         this.botConf = botConf;
         this.log = log;
-        this.out = out;
         this.osType = osType;
         this.enableServiceControl = enableServiceControl;
         try {
@@ -46,6 +45,7 @@ public class KarrenBot extends PircBotX {
         interactions = loadInteractions();
         if(enableServiceControl)
             services = loadServices();
+        this.out = out;
     }
     public void initThreads(){
         threadsInitialized = true;
@@ -124,12 +124,20 @@ public class KarrenBot extends PircBotX {
         services.clear();
         services = loadServices();
     }
-    public OutputWindow getWindow(){return out;}
+    public void killBot(KarrenBot bot, String killer, boolean restart){
+        bot.getLog().info("Bot has been killed by " + killer);
+        botKilled = true;
+        if(!restart) {
+            bot.stopBotReconnect();
+            if (bot.getWindow() != null)
+                bot.getWindow().destroyWindow();
+        }
+        bot.sendIRC().quitServer("Kill command fired, bot terminating.");
+    }
     public Mailer getMail(){return mail;}
     public ArrayList<SystemService> getServices(){return services;}
     public int getOsType(){return osType;}
     public boolean isBotKill(){return botKilled;}
-    public void botIsKill(){botKilled = true;}
     public ArrayList<Interactions> getInteractions(){return interactions;}
     public MySQLInterface getSql(){return sql;}
     public BotConfiguration getBotConf(){return botConf;}
@@ -144,5 +152,6 @@ public class KarrenBot extends PircBotX {
     public ListenCast getListenCast(){return lc;}
     public Logger getLog(){return log;}
     public SpaceController getSpace(){return space;}
+    public OutputWindow getWindow(){return out;}
     public boolean isEnableServiceControl(){return enableServiceControl;}
 }

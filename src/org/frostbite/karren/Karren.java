@@ -18,8 +18,11 @@ import java.nio.charset.Charset;
 
 public class Karren{
 	public static void main(String[] args){
-        OutputWindow out = new OutputWindow("Karren-sama IRC bot");
-        out.displayWindow();
+        OutputWindow out = null;
+        if(args.length==0 || !args[0].equalsIgnoreCase("nogui")) {
+            out = new OutputWindow("Karren-sama IRC bot");
+            out.displayWindow();
+        }
         Logger log = LoggerFactory.getLogger(Karren.class);
         boolean enableServiceControl = false;
         int osType = 0; //0 = Unknown, 1 = Windows, 2 = Linux
@@ -79,7 +82,8 @@ public class Karren{
                 .buildConfiguration();
         //Adding the listeners for our commands
 		KarrenBot bot = new KarrenBot(config, botConf, log, osType, out, enableServiceControl);
-		
+		ConsoleInputThread con = new ConsoleInputThread(bot);
+        con.start();
 		//Try and load the JDBC MySQL Driver
 		try{
 			log.info(bot.getNick() + " version " + botConf.getVersionMarker() + " is now starting!");
