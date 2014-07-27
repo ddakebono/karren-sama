@@ -261,20 +261,6 @@ public class MySQLInterface {
         }
     }
     /*
-    SITE INTERACTIONS
-     */
-    public void addNewsPost(String post, String author) throws SQLException {
-        resetSQL();
-        query = "INSERT INTO newsposts (id, post, author, date) VALUES (null, ? , ? , ? )";
-        sqlPayload.add(post);
-        sqlPayload.add(author);
-        sqlPayload.add(getCurDate(new SimpleDateFormat("yyyy-MM-dd")));
-        search = false;
-        pstNeeded = true;
-        overrideDB = "symfonybackend";
-        executeQuery();
-    }
-    /*
     SPACE ENGINEERS INTERACTIONS
      */
     public SpaceFaction[] loadSpaceFactions() throws SQLException {

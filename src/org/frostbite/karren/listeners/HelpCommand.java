@@ -34,7 +34,6 @@ public class HelpCommand extends ListenerAdapter<PircBotX>{
         if (event.getChannel().isOp(event.getUser()) || event.getChannel().hasVoice(event.getUser()) || event.getChannel().isOwner(event.getUser())) {
             event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "topic command - Sets the MOTD section of the topic with whatever follows the command.");
             event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "kill command - Kills the bot.");
-            event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "news command - Posts a news update to the CRaZyPANTS website.");
             event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "npswitch command - Enables or disables the automatic now playing announcements.");
             event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "reloadint command - Triggers a refresh of the interactions system, reloading all interactions from the Interactions.txt");
             event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "reloadserv command - Triggers a refresh of the service controller system, reloads all monitored services from Services.txt");

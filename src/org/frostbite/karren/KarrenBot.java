@@ -45,8 +45,7 @@ public class KarrenBot extends PircBotX {
         interactions = loadInteractions();
         if(enableServiceControl)
             services = loadServices();
-        this.out = out;
-    }
+        this.out = out;    }
     public void initThreads(){
         threadsInitialized = true;
         space = new SpaceController(sql, this);
@@ -143,10 +142,12 @@ public class KarrenBot extends PircBotX {
     public BotConfiguration getBotConf(){return botConf;}
     public boolean areThreadsInitialized(){return threadsInitialized;}
     public void terminateThreads() throws SQLException {
-        lc.kill();
-        space.killController();
-        lc = null;
-        space = null;
+        if(lc!=null && space!=null) {
+            lc.kill();
+            space.killController();
+            lc = null;
+            space = null;
+        }
         threadsInitialized = false;
     }
     public ListenCast getListenCast(){return lc;}
