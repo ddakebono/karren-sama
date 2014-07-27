@@ -1,4 +1,0 @@
-Service:nginx:nginx
-Service:mysql:mysql-server
-Service:Minecraft:minecraft
-Service:Murmur:mumble-server
