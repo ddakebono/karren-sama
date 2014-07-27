@@ -67,7 +67,6 @@ public class Karren{
                 .setServerPassword(botConf.getServerPassword())
                 .addListener(new MiscCommands())
                 .addListener(new InteractionCommands())
-                .addListener(new NewsCommand())
                 .addListener(new KillCommand())
                 .addListener(new TopicCommand())
                 .addListener(new HueCommand())
