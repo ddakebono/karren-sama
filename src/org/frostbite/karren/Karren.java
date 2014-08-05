@@ -100,5 +100,9 @@ public class Karren{
 		} catch (Exception e){
             log.error("Error While Loading:", e);
 		}
+        //Final shutdown output
+        if(!bot.isBotKill()){
+            log.error("Warning! Bot shutdown was not triggered, this means that the bot has crashed...");
+        }
 	}
 }
