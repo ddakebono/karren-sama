@@ -75,6 +75,7 @@ public class Karren{
                 .addListener(new ConnectListener())
                 .addListener(new DisconnectListener())
                 .addListener(new SystemServiceCommands())
+                .addListener(new SCRAMCommand())
                 .setEncoding(Charset.forName("UTF-8"))
                 .setServerHostname(botConf.getHostname())
                 .setAutoReconnect(true)
