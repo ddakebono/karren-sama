@@ -162,11 +162,11 @@ public class BotConfiguration {
             log.warn("Updating configuration file!");
             mkNewConfig(log);
         }
-        testMount = icecastMount.split("\\.?");
+        testMount = icecastMount.split("\\.");
         if(testMount.length>2)
             log.error("icecastMount should only have one . in it. (EX. stream.ogg)");
         else if(testMount[1].equalsIgnoreCase("mp3"))
-            log.error("Use of .mp3 for your stream is not recommended! .mp3 does not properly handle Unicode tags!");
+            log.info("If you're using mp3 encoding on your stream you may have issues with Unicode characters in song metadata.");
 
     }
     public void mkNewConfig(Logger log) throws IOException {
