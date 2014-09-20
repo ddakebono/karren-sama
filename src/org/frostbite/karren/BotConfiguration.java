@@ -33,7 +33,6 @@ public class BotConfiguration {
     private String allowSQLRW;
     private String enableListencast;
     private String enableInteractions;
-    private String enableSpaceController;
     private String commandPrefix;
     private String emailAddress;
     private String connectToIRC;
@@ -71,7 +70,6 @@ public class BotConfiguration {
         return channel;
     }
     public String getConnectToIRC() {return connectToIRC;}
-    public String getEnableSpaceController(){return enableSpaceController;}
     public String getEmailAddress() {return emailAddress;}
     public String getEnableServicesController(){return enableServicesController;}
     public String getNickservPass() {
@@ -153,7 +151,6 @@ public class BotConfiguration {
         enableListencast = cfg.getProperty("enableListencastSystem", "true");
         commandPrefix = cfg.getProperty("commandPrefix", ".");
         connectToIRC = cfg.getProperty("connectToIRC", "true");
-        enableSpaceController = cfg.getProperty("SpaceManager", "true");
         emailAddress = cfg.getProperty("EmailAddress", "changethis@emailaddress.bad");
         emailPassword = cfg.getProperty("EmailAddressPassword", "hackme");
         smtpServer = cfg.getProperty("SmtpServerAddress", "changemetoo.bad");
@@ -193,7 +190,6 @@ public class BotConfiguration {
         cfg.setProperty("enableListencastSystem", enableListencast);
         cfg.setProperty("commandPrefix", commandPrefix);
         cfg.setProperty("connectToIRC", connectToIRC);
-        cfg.setProperty("SpaceManager", enableSpaceController);
         cfg.setProperty("EmailAddress", emailAddress);
         cfg.setProperty("EmailAddressPassword", emailPassword);
         cfg.setProperty("SmtpServerAddress", smtpServer);
