@@ -2,7 +2,6 @@ package org.frostbite.karren;
 
 import org.frostbite.karren.OsSpecific.SystemService;
 import org.frostbite.karren.listencast.ListenCast;
-import org.frostbite.karren.space.SpaceController;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.slf4j.Logger;
@@ -23,7 +22,6 @@ public class KarrenBot extends PircBotX {
     private ArrayList<Interactions> interactions;
     private Mailer mail;
     private Logger log;
-    private SpaceController space;
     private boolean botKilled = false;
     private boolean threadsInitialized = false;
     private int osType = 0;
@@ -48,15 +46,12 @@ public class KarrenBot extends PircBotX {
         this.out = out;    }
     public void initThreads(){
         threadsInitialized = true;
-        space = new SpaceController(sql, this);
         lc = new ListenCast(this, botConf);
     }
     public void startThreads(){
         if(threadsInitialized){
             if(botConf.getEnableListencast().equalsIgnoreCase("true"))
                 lc.start();
-            if(botConf.getEnableSpaceController().equalsIgnoreCase("true"))
-                space.start();
         } else {
             log.error("Threads must be initialized prior to being started!");
         }
@@ -142,17 +137,14 @@ public class KarrenBot extends PircBotX {
     public BotConfiguration getBotConf(){return botConf;}
     public boolean areThreadsInitialized(){return threadsInitialized;}
     public void terminateThreads() throws SQLException {
-        if(lc!=null && space!=null) {
+        if(lc!=null) {
             lc.kill();
-            space.killController();
             lc = null;
-            space = null;
         }
         threadsInitialized = false;
     }
     public ListenCast getListenCast(){return lc;}
     public Logger getLog(){return log;}
-    public SpaceController getSpace(){return space;}
     public OutputWindow getWindow(){return out;}
     public boolean isEnableServiceControl(){return enableServiceControl;}
 }

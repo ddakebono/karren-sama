@@ -71,7 +71,6 @@ public class Karren{
                 .addListener(new TopicCommand())
                 .addListener(new HueCommand())
                 .addListener(new HelpCommand())
-                .addListener(new SpaceCommands())
                 .addListener(new ConnectListener())
                 .addListener(new DisconnectListener())
                 .addListener(new SystemServiceCommands())
