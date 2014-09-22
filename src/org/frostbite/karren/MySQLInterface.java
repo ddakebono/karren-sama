@@ -69,7 +69,7 @@ public class MySQLInterface {
     }
     public void makeUser(String nick){
         resetSQL();
-        query = "INSERT INTO users (user, botpart, timepart, timeWasted) VALUES (?, false, 0, 0)";
+        query = "INSERT INTO users (ircuserid, user, botpart, timepart, linkCode) VALUES (null, ?, false, 0, null)";
         sqlPayload.add(nick);
         try {
             search = false;
@@ -124,6 +124,15 @@ public class MySQLInterface {
                 break;
         }
     }
+    public void userLink(String uid, String linkCode) throws SQLException {
+        resetSQL();
+        query = "UPDATE Users SET linkCode=? WHERE ID=?";
+        sqlPayload.add(linkCode);
+        sqlPayload.add(uid);
+        search = false;
+        pstNeeded = true;
+        executeQuery();
+    }
     /*
     RADIO OPERATIONS
      */
@@ -137,15 +146,6 @@ public class MySQLInterface {
         result = executeQuery();
         return result;
     }
-    /*public void updateRadioPage(Song song, ListenCast lc) throws SQLException {
-        ArrayList<Object> returned = new ArrayList<>();
-        resetSQL();
-        query = "SELECT Song FROM lastplayed ORDER BY id DESC LIMIT 1";
-        sqlPayload.add(song.getSongName());
-        search = true;
-        pstNeeded = true;
-        returned = executeQuery();
-    }*/
     public boolean addFave(String user, Song song) throws SQLException {
         resetSQL();
         query = "SELECT * FROM userfaves WHERE User=? AND SongID=?";
@@ -171,6 +171,26 @@ public class MySQLInterface {
             return true;
         } else {
             return false;
+        }
+    }
+    public void updateDJActivity(String curDJ, String streamName) throws SQLException {
+        if(curDJ.length()==0){
+            //Setting no DJ to active(Stream offair)
+            resetSQL();
+            query = "UPDATE radio_dj SET active=false";
+            search = false;
+            pstNeeded = false;
+            executeQuery();
+        } else {
+            resetSQL();
+            query = "INSERT INTO radio_dj(ID,displayName,connectName,streamName,djPicture,active) VALUES (null, ?, ?, ?, 'default', true) ON DUPLICATE KEY UPDATE active=true, streamName=?";
+            sqlPayload.add(curDJ);
+            sqlPayload.add(curDJ);
+            sqlPayload.add(streamName);
+            sqlPayload.add(streamName);
+            search = false;
+            pstNeeded = true;
+            executeQuery();
         }
     }
     public void updateSongData(Song lastsong) throws SQLException{
