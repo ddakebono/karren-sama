@@ -46,6 +46,8 @@ public class ListenCast extends Thread{
     private String icecastMount;
     private boolean nowPlaying = true;
     private String iceDJ;
+    private String lastDJ = "";
+    private String lastStreamTitle = "";
     private String iceStreamTitle;
     private int iceListeners = 0;
     private Channel announceChannel;
@@ -82,7 +84,7 @@ public class ListenCast extends Thread{
                 log.error("Bad info in song data, couldn't parse song title!");
                 doUpdate = false;
             }
-            if(iceDJ.equalsIgnoreCase("offline")){
+            if(iceDJ.equalsIgnoreCase("")){
                 songTemp = new Song("Off-air");
                 doUpdate = false;
             }
@@ -114,6 +116,11 @@ public class ListenCast extends Thread{
         try {
             if(doUpdate)
                 bot.getSql().updateRadioDatabase(currentSong);
+            if(!lastDJ.equalsIgnoreCase(iceDJ) || !lastStreamTitle.equalsIgnoreCase(iceStreamTitle)){
+                bot.getSql().updateDJActivity(iceDJ, iceStreamTitle);
+                lastDJ=iceDJ;
+                lastStreamTitle=iceStreamTitle;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -176,12 +183,12 @@ public class ListenCast extends Thread{
                     }
                 }
             } catch (NullPointerException e) {
-                iceDJ = "Offline";
+                iceDJ = "";
                 iceStreamTitle = "Offline";
             }
         }
 		if(!onair){
-            iceDJ = "Offline";
+            iceDJ = "";
         }
 	}
     public void kill(){

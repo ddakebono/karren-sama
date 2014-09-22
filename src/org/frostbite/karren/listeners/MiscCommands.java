@@ -6,16 +6,18 @@
 
 package org.frostbite.karren.listeners;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.frostbite.karren.KarrenBot;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "reloadserv", "recover-nick"};
+		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "reloadserv", "recover-nick", "genlink"};
 		String message = event.getMessage();
 		String cmd = "";
         KarrenBot bot = (KarrenBot)event.getBot();
@@ -92,6 +94,21 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     } else {
                         event.respond("You do not have the permissions required to use this... (Operator/Owner required)");
                     }
+                    break;
+                case "genlink":
+                    String rndString = "";
+                    try {
+                        ArrayList<Object> user = bot.getSql().getUserData(event.getUser().getNick());
+                        if(((String)(user.get(4))).length()==0){
+                            rndString = RandomStringUtils.random(12);
+                            bot.getSql().userLink((String)user.get(0), rndString);
+                        } else {
+                            rndString = (String)user.get(4);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    event.getUser().send().message("Your link code is: " + rndString);
                     break;
 			}
 		}
