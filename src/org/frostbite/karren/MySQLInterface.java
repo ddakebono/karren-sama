@@ -4,7 +4,6 @@ import org.frostbite.karren.listencast.Song;
 import org.slf4j.Logger;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -20,6 +19,7 @@ public class MySQLInterface {
     private String overrideDB;
     private Logger log;
     private boolean rwEnabled;
+    private Date date = new Date();
     private ArrayList<String> sqlPayload = new ArrayList<>();
     /*
     CONSTRUCTORS
@@ -173,6 +173,35 @@ public class MySQLInterface {
             return false;
         }
     }
+    public ArrayList<Song> getOldSongDataFromDB() throws SQLException {
+        ArrayList<Song> songs = new ArrayList<>();
+        resetSQL();
+        query = "SELECT * FROM songdb_old";
+        search = true;
+        pstNeeded = false;
+        ArrayList<Object> result = executeQuery();
+        int songCount = result.size()/7;
+        for(int i=0; i<songCount; i++){
+            songs.add(new Song((String)result.get(1+(7*(i))),(int)result.get(3+(7*(i))),(int)result.get(4+(7*(i))),(boolean)result.get(6+(7*(i))),(String)result.get(2+(7*(i))), (long)result.get(5+(7*(i)))));
+        }
+        return songs;
+    }
+    public void insertSongData(Song song) throws SQLException {
+        resetSQL();
+        int durLock = 0;
+        if(song.isDurationLocked())
+            durLock = 1;
+        query = "INSERT INTO songdb (ID, SongTitle, LPTime, PlayCount, FavCount, SongDuration, DurationLock) VALUES (null, ?, ?, ?, ?, ?, ?)";
+        sqlPayload.add(song.getSongName());
+        sqlPayload.add(String.valueOf(song.getLastPlayedRaw()));
+        sqlPayload.add(String.valueOf(song.getPlayCount()));
+        sqlPayload.add(String.valueOf(song.getFavCount()));
+        sqlPayload.add(String.valueOf(song.getLastSongDuration()));
+        sqlPayload.add(String.valueOf(durLock));
+        pstNeeded = true;
+        search = false;
+        executeQuery();
+    }
     public void updateDJActivity(String curDJ, String streamName) throws SQLException {
         if(curDJ.length()==0){
             //Setting no DJ to active(Stream offair)
@@ -213,8 +242,7 @@ public class MySQLInterface {
         if(rwEnabled) {
             resetSQL();
             ArrayList<Object> returned;
-            String curTime;
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss");
+            Long curTime;
             query = "SELECT ID FROM songdb WHERE SongTitle = ?";
             pstNeeded = true;
             search = true;
@@ -235,7 +263,7 @@ public class MySQLInterface {
                 song.setSongID(0);
                 returned.add(null);
                 returned.add(null);
-                returned.add("Never");
+                returned.add((long) 0);
                 returned.add(0);
                 returned.add(0);
                 returned.add(0);
@@ -248,8 +276,8 @@ public class MySQLInterface {
                 resetSQL();
                 query = "INSERT INTO songdb (ID, SongTitle, LPTime, PlayCount, FavCount, SongDuration, DurationLock) VALUES (null, ?, ?, 1, 0, 0, false)";
                 sqlPayload.add(song.getSongName());
-                curTime = getCurDate(dateFormat);
-                sqlPayload.add(curTime);
+                curTime = date.getTime();
+                sqlPayload.add(curTime.toString());
                 search = false;
                 pstNeeded = true;
                 executeQuery();
@@ -267,8 +295,8 @@ public class MySQLInterface {
                 resetSQL();
                 //Update info for song
                 query = "UPDATE songdb SET LPTime= ?, PlayCount=PlayCount+1 WHERE ID=?";
-                curTime = getCurDate(dateFormat);
-                sqlPayload.add(curTime);
+                curTime = date.getTime();
+                sqlPayload.add(curTime.toString());
                 sqlPayload.add(String.valueOf(song.getSongID()));
                 search = false;
                 pstNeeded = true;
@@ -308,9 +336,5 @@ public class MySQLInterface {
             pst.execute();
         run.close();
         return result;
-    }
-    public static String getCurDate(SimpleDateFormat dateFormat){
-        Date date = new Date();
-        return dateFormat.format(date);
     }
 }

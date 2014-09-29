@@ -6,12 +6,14 @@
 
 package org.frostbite.karren.listencast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Song {
     private String songName;
-    private String lastPlayed;
+    private long lastPlayed;
     private int playCount;
     private int favCount;
     private int songID;
@@ -25,8 +27,16 @@ public class Song {
         Date date = new Date();
         this.songStartTime = date.getTime();
     }
+    public Song(String songName, int playCount, int favCount, boolean isDurationLocked, String lastPlayed, long lastSongDuration){
+        this.songName = songName;
+        this.playCount = playCount;
+        this.favCount = favCount;
+        this.isDurationLocked = isDurationLocked;
+        this.lastSongDuration = lastSongDuration;
+        this.lastPlayed = getEpochTimeFromDateTime(lastPlayed);
+    }
     public void setFieldsFromSQL(ArrayList<Object> results){
-        lastPlayed = (String)results.get(2);
+        lastPlayed = (Long)results.get(2);
         playCount = (int)results.get(3);
         favCount = (int)results.get(4);
         lastSongDuration = Long.valueOf(results.get(5).toString());
@@ -34,7 +44,7 @@ public class Song {
     }
     public long getSongDuration(){
         long result = songEndTime-songStartTime;
-        if(((result-lastSongDuration)>=-2000 && (result-lastSongDuration)<=2000) || isDurationLocked)
+        if(((result-lastSongDuration)>=-2000 && (result-lastSongDuration)<=2000) && !isDurationLocked)
             result = lastSongDuration;
         return result;
     }
@@ -50,9 +60,28 @@ public class Song {
         this.songID = songID;
     }
     public String getSongName(){return songName;}
-    public String getLastPlayed(){return lastPlayed;}
+    public long getLastPlayedRaw(){return lastPlayed;}
+    public String getLastPlayed(){return getDateTimeFromEpoch(lastPlayed);}
     public int getPlayCount(){return playCount;}
     public int getFavCount(){return favCount;}
     public int getSongID(){return songID;}
     public long getLastSongDuration(){return lastSongDuration;}
+    public String getDateTimeFromEpoch(Long epoch){
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(epoch);
+        return new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss").format(cal.getTime());
+    }
+    public long getEpochTimeFromDateTime(String dateTime){
+        String[] dateTimeSplit = dateTime.split("@");
+        String[] dateSplit = dateTimeSplit[0].split("-");
+        String[] timeSplit = dateTimeSplit[1].split(":");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MONTH, Integer.parseInt(dateSplit[0].trim()));
+        cal.set(Calendar.DATE, Integer.parseInt(dateSplit[1].trim()));
+        cal.set(Calendar.YEAR, Integer.parseInt(dateSplit[2].trim()));
+        cal.set(Calendar.HOUR, Integer.parseInt(timeSplit[0].trim()));
+        cal.set(Calendar.MINUTE, Integer.parseInt(timeSplit[1].trim()));
+        cal.set(Calendar.SECOND, Integer.parseInt(timeSplit[2].trim()));
+        return cal.getTimeInMillis();
+    }
 }

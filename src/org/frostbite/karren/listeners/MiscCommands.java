@@ -8,6 +8,7 @@ package org.frostbite.karren.listeners;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.frostbite.karren.KarrenBot;
+import org.frostbite.karren.listencast.Song;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "reloadserv", "recover-nick", "genlink"};
+		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "reloadserv", "recover-nick", "genlink", "update-db"};
 		String message = event.getMessage();
 		String cmd = "";
         KarrenBot bot = (KarrenBot)event.getBot();
@@ -109,6 +110,23 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                         e.printStackTrace();
                     }
                     event.getUser().send().message("Your link code is: " + rndString);
+                    break;
+                case "update-db":
+                    if(event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())){
+                        int progress = 0;
+                        try {
+                            ArrayList<Song> songs = bot.getSql().getOldSongDataFromDB();
+                            for(Song song : songs){
+                                bot.getLog().info("Coverting song data " + progress + "/" + songs.size());
+                                bot.getSql().insertSongData(song);
+                                progress++;
+                            }
+                            event.respond("Update complete, coverted " + progress + " songs to the new format.");
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            event.respond("Table not found in database! (" + message + ")");
+                        }
+                    }
                     break;
 			}
 		}
