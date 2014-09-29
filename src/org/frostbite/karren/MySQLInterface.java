@@ -19,7 +19,6 @@ public class MySQLInterface {
     private String overrideDB;
     private Logger log;
     private boolean rwEnabled;
-    private Date date = new Date();
     private ArrayList<String> sqlPayload = new ArrayList<>();
     /*
     CONSTRUCTORS
@@ -271,6 +270,7 @@ public class MySQLInterface {
                 song.setFieldsFromSQL(returned);
             }
             returned.clear();
+            Date date = new Date();
             if (song.getSongID() == 0) {
                 //Adding song to DB and getting new ID for song
                 resetSQL();
