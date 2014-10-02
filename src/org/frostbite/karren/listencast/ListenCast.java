@@ -74,7 +74,13 @@ public class ListenCast extends Thread{
             doUpdate = true;
             try {
                 updateIcecastInfo();
-                songTemp = new Song(artist + " - " + title);
+                if(title!=null && artist !=null) {
+                    songTemp = new Song(artist + " - " + title);
+                } else if(title!=null){
+                    songTemp = new Song(title);
+                } else {
+                    songTemp = new Song("Off-air");
+                }
             } catch (IOException e) {
                 songTemp = new Song("Off-air");
                 log.info("Stream seems to have shutdown.");
@@ -177,14 +183,16 @@ public class ListenCast extends Thread{
                             iceListeners = Integer.parseInt(data.getElementsByTagName("listeners").item(0).getTextContent());
                             iceMaxListeners = data.getElementsByTagName("max_listeners").item(0).getTextContent();
                             iceStreamTitle = data.getElementsByTagName("server_name").item(0).getTextContent();
-                            artist = data.getElementsByTagName("artist").item(0).getTextContent();
                             title = data.getElementsByTagName("title").item(0).getTextContent();
+                            NodeList artistElement = data.getElementsByTagName("artist");
+                            if(artistElement.item(0)!=null)
+                                artist = artistElement.item(0).getTextContent();
                         }
                     }
                 }
             } catch (NullPointerException e) {
-                iceDJ = "";
-                iceStreamTitle = "Offline";
+                e.printStackTrace();
+                log.debug("NPE Occurred at XML processing. Raw Title Line " + title + " Raw Artist Line " + artist);
             }
         }
 		if(!onair){
