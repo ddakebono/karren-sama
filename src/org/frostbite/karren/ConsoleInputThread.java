@@ -8,8 +8,11 @@ public class ConsoleInputThread extends Thread {
         this.bot = bot;
     }
     public void run(){
-        Scanner in = new Scanner(System.in);
-        String command = in.next();
+        String command = "";
+        if(!bot.isBotKill()) {
+            Scanner in = new Scanner(System.in);
+            command = in.next();
+        }
         while(!bot.isBotKill()){
             if(command.equalsIgnoreCase("kill")){
                 bot.killBot(bot, "Console User", false);
