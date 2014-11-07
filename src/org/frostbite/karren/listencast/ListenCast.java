@@ -187,6 +187,8 @@ public class ListenCast extends Thread{
                             NodeList artistElement = data.getElementsByTagName("artist");
                             if(artistElement.item(0)!=null)
                                 artist = artistElement.item(0).getTextContent();
+                            else
+                                artist = null;
                         }
                     }
                 }
