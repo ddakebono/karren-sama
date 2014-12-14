@@ -22,12 +22,15 @@ public class KarrenBot extends PircBotX {
     private ArrayList<Interactions> interactions;
     private Mailer mail;
     private Logger log;
+    private BotWatchdog watchdog;
     private boolean botKilled = false;
     private boolean threadsInitialized = false;
     private int osType = 0;
     private OutputWindow out;
     private boolean enableServiceControl = false;
     private ArrayList<SystemService> services;
+
+
     public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log, int osType, OutputWindow out, boolean enableServiceControl){
         super(config);
         this.botConf = botConf;
@@ -43,19 +46,28 @@ public class KarrenBot extends PircBotX {
         interactions = loadInteractions();
         if(enableServiceControl)
             services = loadServices();
-        this.out = out;    }
+        this.out = out;
+    }
+
+
     public void initThreads(){
         threadsInitialized = true;
         lc = new ListenCast(this, botConf);
+        watchdog = new BotWatchdog(log, this);
     }
+
+
     public void startThreads(){
         if(threadsInitialized){
             if(botConf.getEnableListencast().equalsIgnoreCase("true"))
                 lc.start();
+            watchdog.start();
         } else {
             log.error("Threads must be initialized prior to being started!");
         }
     }
+
+
     private ArrayList<SystemService> loadServices(){
         String buffer;
         String[] temp1;
@@ -80,6 +92,8 @@ public class KarrenBot extends PircBotX {
         }
         return services;
     }
+
+
     private ArrayList<Interactions> loadInteractions(){
         String buffer;
         String[] temp1;
@@ -110,14 +124,20 @@ public class KarrenBot extends PircBotX {
         }
         return interactions;
     }
+
+
     public void reloadInteractions(){
         interactions.clear();
         interactions = loadInteractions();
     }
+
+
     public void reloadServices(){
         services.clear();
         services = loadServices();
     }
+
+
     public void killBot(KarrenBot bot, String killer, boolean restart){
         bot.getLog().info("Bot has been killed by " + killer);
         botKilled = true;
@@ -128,7 +148,9 @@ public class KarrenBot extends PircBotX {
         }
         bot.sendIRC().quitServer("Kill command fired, bot terminating.");
     }
-    public Mailer getMail(){return mail;}
+
+
+    //public Mailer getMail(){return mail;}
     public ArrayList<SystemService> getServices(){return services;}
     public int getOsType(){return osType;}
     public boolean isBotKill(){return botKilled;}
@@ -143,8 +165,11 @@ public class KarrenBot extends PircBotX {
         }
         threadsInitialized = false;
     }
+
+
     public ListenCast getListenCast(){return lc;}
     public Logger getLog(){return log;}
     public OutputWindow getWindow(){return out;}
     public boolean isEnableServiceControl(){return enableServiceControl;}
+    public BotWatchdog getWatchdog(){return watchdog;}
 }
