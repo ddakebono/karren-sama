@@ -6,24 +6,22 @@
 
 package org.frostbite.karren.listeners;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.frostbite.karren.KarrenBot;
-import org.frostbite.karren.listencast.Song;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class MiscCommands extends ListenerAdapter<PircBotX>{
 	public void onMessage(MessageEvent<PircBotX> event){
-		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "reloadserv", "recover-nick", "genlink", "update-db"};
+		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "reloadserv", "recover-nick"};
 		String message = event.getMessage();
 		String cmd = "";
         KarrenBot bot = (KarrenBot)event.getBot();
 		if(message.startsWith(bot.getBotConf().getCommandPrefix())){
-			message = message.replaceFirst(bot.getBotConf().getCommandPrefix(), "").trim();
+			message = message.replaceFirst(Pattern.quote(bot.getBotConf().getCommandPrefix()), "").trim();
 			for(String check : cmds){
 				if(message.toLowerCase().startsWith(check)){
 					cmd = check;
@@ -94,38 +92,6 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                         }
                     } else {
                         event.respond("You do not have the permissions required to use this... (Operator/Owner required)");
-                    }
-                    break;
-                case "genlink":
-                    String rndString = "";
-                    try {
-                        ArrayList<Object> user = bot.getSql().getUserData(event.getUser().getNick());
-                        if(((String)(user.get(4))).length()==0){
-                            rndString = RandomStringUtils.random(12);
-                            bot.getSql().userLink((String)user.get(0), rndString);
-                        } else {
-                            rndString = (String)user.get(4);
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    event.getUser().send().message("Your link code is: " + rndString);
-                    break;
-                case "update-db":
-                    if(event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())){
-                        int progress = 0;
-                        try {
-                            ArrayList<Song> songs = bot.getSql().getOldSongDataFromDB();
-                            for(Song song : songs){
-                                bot.getLog().info("Coverting song data " + progress + "/" + songs.size());
-                                bot.getSql().insertSongData(song);
-                                progress++;
-                            }
-                            event.respond("Update complete, coverted " + progress + " songs to the new format.");
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                            event.respond("Table not found in database! (" + message + ")");
-                        }
                     }
                     break;
 			}
