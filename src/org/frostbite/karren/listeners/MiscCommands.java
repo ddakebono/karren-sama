@@ -84,12 +84,8 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     break;
                 case "recover-nick":
                     if(event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())){
-                        if(!bot.getNick().equalsIgnoreCase(bot.getBotConf().getBotname())){
-                            bot.sendIRC().changeNick(bot.getBotConf().getBotname());
-                            bot.sendIRC().identify(bot.getBotConf().getNickservPass());
-                        } else {
+                        if(!bot.getWatchdog().recoverNick())
                             event.respond("I already have the nick I was told to have, if you want to change it check the configuration.");
-                        }
                     } else {
                         event.respond("You do not have the permissions required to use this... (Operator/Owner required)");
                     }

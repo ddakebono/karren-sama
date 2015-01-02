@@ -25,6 +25,18 @@ public class BotWatchdog extends Thread{
             //Make sure the bot stays in the channel.
             if(bot.getUserBot().getChannels().size() == 0 && !bot.isBotKill())
                 bot.sendIRC().joinChannel(bot.getBotConf().getChannel());
+            //Ensure the bot always has it's configured nick
+            recoverNick();
+
+        }
+    }
+    public boolean recoverNick(){
+        if(!bot.getNick().equalsIgnoreCase(bot.getBotConf().getBotname())) {
+            bot.sendIRC().changeNick(bot.getBotConf().getBotname());
+            bot.sendIRC().identify(bot.getBotConf().getNickservPass());
+            return true;
+        } else {
+            return false;
         }
     }
     public void resetPingCount(){
