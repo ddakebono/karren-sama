@@ -177,13 +177,16 @@ public class ListenCast extends Thread{
                     Node sourceData = sources.item(i);
                     if (sourceData.getNodeType() == Node.ELEMENT_NODE) {
                         Element data = (Element) sourceData;
-                        if (data.getAttribute("mount").equalsIgnoreCase("/" + icecastMount)) {
+                        if (data.getAttribute("mount").equalsIgnoreCase("/" + icecastMount) && data.getElementsByTagName("server_url").item(0) !=null) {
                             onair = true;
                             iceDJ = data.getElementsByTagName("server_description").item(0).getTextContent();
                             iceListeners = Integer.parseInt(data.getElementsByTagName("listeners").item(0).getTextContent());
                             iceMaxListeners = data.getElementsByTagName("max_listeners").item(0).getTextContent();
                             iceStreamTitle = data.getElementsByTagName("server_name").item(0).getTextContent();
-                            title = data.getElementsByTagName("title").item(0).getTextContent();
+                            if(data.getElementsByTagName("title").item(0)!=null)
+                                title = data.getElementsByTagName("title").item(0).getTextContent();
+                            else
+                                onair = false;
                             NodeList artistElement = data.getElementsByTagName("artist");
                             if(artistElement.item(0)!=null)
                                 artist = artistElement.item(0).getTextContent();
