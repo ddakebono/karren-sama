@@ -25,18 +25,14 @@ public class KarrenBot extends PircBotX {
     private BotWatchdog watchdog;
     private boolean botKilled = false;
     private boolean threadsInitialized = false;
-    private int osType = 0;
     private OutputWindow out;
-    private boolean enableServiceControl = false;
     private ArrayList<SystemService> services;
 
 
-    public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log, int osType, OutputWindow out, boolean enableServiceControl){
+    public KarrenBot(Configuration<PircBotX> config, BotConfiguration botConf, Logger log, OutputWindow out){
         super(config);
         this.botConf = botConf;
         this.log = log;
-        this.osType = osType;
-        this.enableServiceControl = enableServiceControl;
         try {
             mail = new Mailer(botConf);
         } catch (UnsupportedEncodingException | MessagingException e) {
@@ -44,8 +40,6 @@ public class KarrenBot extends PircBotX {
         }
         sql = new MySQLInterface(botConf, log);
         interactions = loadInteractions();
-        if(enableServiceControl)
-            services = loadServices();
         this.out = out;
     }
 
@@ -53,7 +47,6 @@ public class KarrenBot extends PircBotX {
     public void initThreads(){
         threadsInitialized = true;
         lc = new ListenCast(this, botConf);
-        watchdog = new BotWatchdog(log, this);
     }
 
 
@@ -61,7 +54,6 @@ public class KarrenBot extends PircBotX {
         if(threadsInitialized){
             if(botConf.getEnableListencast().equalsIgnoreCase("true"))
                 lc.start();
-            watchdog.start();
         } else {
             log.error("Threads must be initialized prior to being started!");
         }
@@ -152,7 +144,6 @@ public class KarrenBot extends PircBotX {
 
     //public Mailer getMail(){return mail;}
     public ArrayList<SystemService> getServices(){return services;}
-    public int getOsType(){return osType;}
     public boolean isBotKill(){return botKilled;}
     public ArrayList<Interactions> getInteractions(){return interactions;}
     public MySQLInterface getSql(){return sql;}
@@ -170,6 +161,16 @@ public class KarrenBot extends PircBotX {
     public ListenCast getListenCast(){return lc;}
     public Logger getLog(){return log;}
     public OutputWindow getWindow(){return out;}
-    public boolean isEnableServiceControl(){return enableServiceControl;}
     public BotWatchdog getWatchdog(){return watchdog;}
+    public void setWatchdog(BotWatchdog dog){this.watchdog = dog;}
+
+    public boolean recoverNick(){
+        if(!this.getNick().equalsIgnoreCase(this.getBotConf().getBotname())) {
+            this.sendIRC().changeNick(this.getBotConf().getBotname());
+            this.sendIRC().identify(this.getBotConf().getNickservPass());
+        } else {
+            return false;
+        }
+        return true;
+    }
 }
