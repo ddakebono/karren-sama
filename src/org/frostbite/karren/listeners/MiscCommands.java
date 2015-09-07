@@ -59,18 +59,7 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                         event.respond("Interactions system disabled by configuration.");
                     }
                     break;
-                case "reloadserv":
-                    if(bot.getOsType() != 0 && bot.getBotConf().getEnableServicesController().equalsIgnoreCase("true")) {
-                        if (event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())) {
-                            bot.getLog().info("Windows Services controller system reload triggered by " + event.getUser().getNick());
-                            bot.reloadServices();
-                        } else {
-                            event.respond("You do not have permission to use this...(Not Operator)");
-                        }
-                    } else {
-                        event.respond("This bot is currently running on a non Windows based platform or service control is disabled.");
-                    }
-                    break;
+
                 case "npswitch":
                     if (event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())) {
                         if (bot.getListenCast().enableNP()) {
@@ -84,7 +73,7 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
                     break;
                 case "recover-nick":
                     if(event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())){
-                        if(!bot.getWatchdog().recoverNick())
+                        if(!bot.recoverNick())
                             event.respond("I already have the nick I was told to have, if you want to change it check the configuration.");
                     } else {
                         event.respond("You do not have the permissions required to use this... (Operator/Owner required)");

@@ -6,7 +6,6 @@
 
 package org.frostbite.karren;
 
-import org.frostbite.karren.OsSpecific.OsDiscovery;
 import org.frostbite.karren.listeners.*;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -24,33 +23,6 @@ public class Karren{
             out.displayWindow();
         }
         Logger log = LoggerFactory.getLogger(Karren.class);
-        boolean enableServiceControl = false;
-        int osType = 0; //0 = Unknown, 1 = Windows, 2 = Linux
-        //Windows specific check, bot will be elevated to allow access to services controls
-        OsDiscovery check = new OsDiscovery();
-        switch(check.getSystemType()){
-            case "Windows":
-                osType = 1;
-                log.debug("Windows operating system detected.");
-                if(!check.checkIfElevated())
-                    log.error("To make full use of Windows specific features like Service control the bot must be started with Administrative permissions.");
-                else
-                    enableServiceControl = true;
-                break;
-            case "Linux":
-                log.debug("Linux based operating system detected.");
-                log.info("Currently only Init.d is supported in the bot.");
-                osType = 2;
-                try {
-                    if(!check.checkIfInitd()){
-                        log.error("Either your system configuration has an issue or your system doesn't use Init.d. Service control disabled!");
-                    } else {
-                        enableServiceControl = true;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-        }
         //Configs
         BotConfiguration botConf = new BotConfiguration();
         try {
@@ -73,17 +45,16 @@ public class Karren{
                 .addListener(new HelpCommand())
                 .addListener(new ConnectListener())
                 .addListener(new DisconnectListener())
-                .addListener(new SystemServiceCommands())
                 .addListener(new SCRAMCommand())
                 .addListener(new ServerPingListener())
                 .setEncoding(Charset.forName("UTF-8"))
                 .setServerHostname(botConf.getHostname())
                 .setAutoReconnect(true)
                 .buildConfiguration();
-        //Adding the listeners for our commands
-		KarrenBot bot = new KarrenBot(config, botConf, log, osType, out, enableServiceControl);
-		ConsoleInputThread con = new ConsoleInputThread(bot);
-        con.start();
+        //Setup the objects we need.
+		KarrenBot bot = new KarrenBot(config, botConf, log, out);
+        BotWatchdog watchdog = new BotWatchdog(log, bot);
+		ConsoleInputThread con = new ConsoleInputThread(watchdog);
 		//Try and load the JDBC MySQL Driver
 		try{
 			log.info(bot.getNick() + " version " + botConf.getVersionMarker() + " is now starting!");
@@ -93,17 +64,8 @@ public class Karren{
 		} catch(ClassNotFoundException e) {
 			log.error("Error While Loading:", e);
 		}
-        //Initialize the bot
-		try{
-            log.info(bot.getNick() + " Ready, connecting to " + botConf.getHostname());
-            if(botConf.getConnectToIRC().equalsIgnoreCase("true"))
-                bot.startBot();
-		} catch (Exception e){
-            log.error("Error While Loading:", e);
-		}
-        //Final shutdown output
-        if(!bot.isBotKill()){
-            log.error("Warning! Bot shutdown was not triggered, this means that the bot has crashed...");
-        }
+        //Fire up the watchdog, bot and the console command stuff.
+        con.start();
+        watchdog.start();
 	}
 }
