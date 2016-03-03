@@ -6,58 +6,44 @@
 
 package org.frostbite.karren;
 
-import org.frostbite.karren.listeners.*;
-import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sx.blah.discord.api.ClientBuilder;
+import sx.blah.discord.api.DiscordException;
+import sx.blah.discord.api.IDiscordClient;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 public class Karren{
+
+    public static KarrenBot bot;
+    public static Logger log;
+    public static BotConfiguration conf;
+
 	public static void main(String[] args){
-        OutputWindow out = null;
-        if(args.length==0 || !args[0].equalsIgnoreCase("nogui")) {
-            out = new OutputWindow("Karren-sama IRC bot");
-            out.displayWindow();
-        }
-        Logger log = LoggerFactory.getLogger(Karren.class);
+        log = LoggerFactory.getLogger(Karren.class);
         //Configs
-        BotConfiguration botConf = new BotConfiguration();
+        conf = new BotConfiguration();
         try {
-            botConf.initConfig(log);
+            conf.initConfig(log);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Configuration<PircBotX> config = new Configuration.Builder<>()
-                .setName(botConf.getBotname())
-                .setLogin("Karren")
-                .setRealName("Karren-sama IRC Bot")
-                .setAutoNickChange(true)
-                .setNickservPassword(botConf.getNickservPass())
-                .setServerPassword(botConf.getServerPassword())
-                .addListener(new MiscCommands())
-                .addListener(new InteractionCommands())
-                .addListener(new KillCommand())
-                .addListener(new TopicCommand())
-                .addListener(new HueCommand())
-                .addListener(new HelpCommand())
-                .addListener(new ConnectListener())
-                .addListener(new DisconnectListener())
-                .addListener(new SCRAMCommand())
-                .addListener(new ServerPingListener())
-                .setEncoding(Charset.forName("UTF-8"))
-                .setServerHostname(botConf.getHostname())
-                .setAutoReconnect(true)
-                .buildConfiguration();
+
+        //Build our discord client
+        IDiscordClient client = null;
+        try {
+            client = new ClientBuilder().withLogin(conf.getEmailAddress(), conf.getDiscordPass()).build();
+        } catch (DiscordException e) {
+            e.printStackTrace();
+        }
+
         //Setup the objects we need.
-		KarrenBot bot = new KarrenBot(config, botConf, log, out);
-        BotWatchdog watchdog = new BotWatchdog(log, bot);
-		ConsoleInputThread con = new ConsoleInputThread(watchdog);
+        bot = new KarrenBot(client);
+
 		//Try and load the JDBC MySQL Driver
 		try{
-			log.info(bot.getNick() + " version " + botConf.getVersionMarker() + " is now starting!");
+			log.info("Karren-sama version " + conf.getVersionMarker() + " is now starting!");
             log.debug("Trying to load MySQL Driver...");
 			Class.forName("com.mysql.jdbc.Driver");
             log.debug("Loaded driver!");
@@ -65,7 +51,6 @@ public class Karren{
 			log.error("Error While Loading:", e);
 		}
         //Fire up the watchdog, bot and the console command stuff.
-        con.start();
-        watchdog.start();
+        bot.initDiscord();
 	}
 }

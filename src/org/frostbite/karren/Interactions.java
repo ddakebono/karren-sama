@@ -6,7 +6,7 @@
 
 package org.frostbite.karren;
 
-import org.pircbotx.hooks.events.MessageEvent;
+import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,11 +30,11 @@ public class Interactions {
     /*
     handleMessage checks which interaction type the message is and runs the respective functions.
      */
-    public String handleMessage(MessageEvent event){
+    public String handleMessage(MessageReceivedEvent event){
         String result = "";
         int confidence = 0;
-        if(!event.getMessage().startsWith(((KarrenBot)event.getBot()).getBotConf().getCommandPrefix())) {
-            String[] tokenizedMessage = event.getMessage().split("\\s+");
+        if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix())) {
+            String[] tokenizedMessage = event.getMessage().getContent().split("\\s+");
             for (String check : activator) {
                 for (String check2 : tokenizedMessage) {
                     if (check2.trim().toLowerCase().matches(check + "\\W?")) {

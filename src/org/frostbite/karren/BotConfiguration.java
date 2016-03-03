@@ -25,25 +25,21 @@ public class BotConfiguration {
     private String icecastHost;
     private String icecastPort;
     private String icecastMount;
-    private String nickservPass;
-    private String channel;
-    private String botname;
-    private String hostname;
-    private String serverPassword;
+    private String discordPass;
+    private String streamAnnounceChannel;
     private String allowSQLRW;
     private String enableListencast;
     private String enableInteractions;
     private String commandPrefix;
     private String emailAddress;
-    private String connectToIRC;
+    private String connectToDiscord;
     private String emailPassword;
-    private String smtpServer;
-    private String enableServicesController;
-    private final String versionMarker = "1.2.1-ALPHA";
+    private String extPort;
+    private String extAddr;
+    private final String versionMarker = "2.0-DISCORD";
     /*
     Config Getters
      */
-    public String getSmtpServer(){return smtpServer;}
     public String getEmailPassword(){return emailPassword;}
     public String getSqlhost() {
         return sqlhost;
@@ -60,23 +56,17 @@ public class BotConfiguration {
     public String getVersionMarker() {
         return versionMarker;
     }
-    public String getHostname() {
-        return hostname;
+
+    public String getStreamAnnounceChannel() {
+        return streamAnnounceChannel;
     }
-    public String getBotname() {
-        return botname;
-    }
-    public String getChannel() {
-        return channel;
-    }
-    public String getConnectToIRC() {return connectToIRC;}
+    public String getConnectToDiscord() {return connectToDiscord;}
     public String getEmailAddress() {return emailAddress;}
-    public String getEnableServicesController(){return enableServicesController;}
-    public String getNickservPass() {
-        if(nickservPass.length()==0){
-            return "nothing";
+    public String getDiscordPass() {
+        if(discordPass.length()==0){
+            return "guest";
         } else {
-            return nickservPass;
+            return discordPass;
         }
     }
     public String getIcecastMount() {
@@ -97,13 +87,7 @@ public class BotConfiguration {
     public String getSqlpass() {
         return sqlpass;
     }
-    public String getServerPassword() {
-        if(serverPassword.length()==0){
-            return "nothing";
-        } else {
-            return serverPassword;
-        }
-    }
+
     public String getAllowSQLRW() {
         return allowSQLRW;
     }
@@ -114,9 +98,18 @@ public class BotConfiguration {
         return enableInteractions;
     }
     public String getCommandPrefix() { return commandPrefix; }
+
+    public String getExtPort() {
+        return extPort;
+    }
+
+    public String getExtAddr() {
+        return extAddr;
+    }
+
     /*
-    Config Loader.
-    */
+        Config Loader.
+        */
     public void initConfig(Logger log) throws IOException {
         String[] testMount;
         Properties cfg = new Properties();
@@ -131,8 +124,6 @@ public class BotConfiguration {
                 System.exit(1);
             }
         }
-        botname = cfg.getProperty("botname", "Karren-sama");
-        hostname = cfg.getProperty("hostname", "0.0.0.0");
         sqlhost = cfg.getProperty("sqlhost", "0.0.0.0");
         sqlport = cfg.getProperty("sqlport", "3306");
         sqluser = cfg.getProperty("sqluser", "changeme");
@@ -143,18 +134,17 @@ public class BotConfiguration {
         icecastHost = cfg.getProperty("icecastHost", "0.0.0.0");
         icecastPort = cfg.getProperty("icecastPort", "8000");
         icecastMount = cfg.getProperty("icecastMount", "changeme.ogg");
-        nickservPass = cfg.getProperty("nickservPass", "changeme");
-        channel = cfg.getProperty("channel", "#changeme");
+        discordPass = cfg.getProperty("nickservPass", "changeme");
+        streamAnnounceChannel = cfg.getProperty("streamAnnounceChannel", "0");
         allowSQLRW = cfg.getProperty("allowSQLReadWrite", "true");
-        serverPassword = cfg.getProperty("serverPassword", "changeme");
         enableInteractions = cfg.getProperty("enableInteractionSystem", "true");
         enableListencast = cfg.getProperty("enableListencastSystem", "true");
         commandPrefix = cfg.getProperty("commandPrefix", ".");
-        connectToIRC = cfg.getProperty("connectToIRC", "true");
+        connectToDiscord = cfg.getProperty("connectToDiscord", "true");
         emailAddress = cfg.getProperty("EmailAddress", "changethis@emailaddress.bad");
         emailPassword = cfg.getProperty("EmailAddressPassword", "hackme");
-        smtpServer = cfg.getProperty("SmtpServerAddress", "changemetoo.bad");
-        enableServicesController = cfg.getProperty("EnableServiceController", "true");
+        extAddr = cfg.getProperty("ExtenderListenAddress", "127.0.0.1");
+        extPort = cfg.getProperty("ExtenderListenPort", "8281");
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
             log.warn("Updating configuration file!");
             mkNewConfig(log);
@@ -170,8 +160,6 @@ public class BotConfiguration {
         Properties cfg = new Properties();
         String comment = "Karren-sama IRC bot properties file.";
         cfg.setProperty("karrenVersion", versionMarker);
-        cfg.setProperty("botname", botname);
-        cfg.setProperty("hostname", hostname);
         cfg.setProperty("sqlhost", sqlhost);
         cfg.setProperty("sqlport", sqlport);
         cfg.setProperty("sqluser", sqluser);
@@ -182,18 +170,17 @@ public class BotConfiguration {
         cfg.setProperty("icecastHost", icecastHost);
         cfg.setProperty("icecastPort", icecastPort);
         cfg.setProperty("icecastMount", icecastMount);
-        cfg.setProperty("nickservPass", nickservPass);
-        cfg.setProperty("channel", channel);
+        cfg.setProperty("nickservPass", discordPass);
+        cfg.setProperty("streamAnnounceChannel", streamAnnounceChannel);
         cfg.setProperty("allowSQLReadWrite", allowSQLRW);
-        cfg.setProperty("serverPassword", serverPassword);
         cfg.setProperty("enableInteractionSystem", enableInteractions);
         cfg.setProperty("enableListencastSystem", enableListencast);
         cfg.setProperty("commandPrefix", commandPrefix);
-        cfg.setProperty("connectToIRC", connectToIRC);
+        cfg.setProperty("connectToDiscord", connectToDiscord);
         cfg.setProperty("EmailAddress", emailAddress);
         cfg.setProperty("EmailAddressPassword", emailPassword);
-        cfg.setProperty("SmtpServerAddress", smtpServer);
-        cfg.setProperty("EnableServicesController", enableServicesController);
+        cfg.setProperty("ExtenderListenPort", extPort);
+        cfg.setProperty("ExtenderListenAddress", extAddr);
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
         log.info("Your configuration file has been generated/updated!");
         System.exit(0);

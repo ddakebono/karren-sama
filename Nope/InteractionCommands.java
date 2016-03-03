@@ -7,64 +7,67 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Interactions;
-import org.frostbite.karren.KarrenBot;
-import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.MessageEvent;
+import org.frostbite.karren.Karren;
+import sx.blah.discord.api.DiscordException;
+import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.MissingPermissionsException;
+import sx.blah.discord.handle.IListener;
+import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.util.HTTP429Exception;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-public class InteractionCommands extends ListenerAdapter<PircBotX> {
-    public void onMessage(MessageEvent<PircBotX> event){
-        String msg = event.getMessage();
+public class InteractionCommands implements IListener<MessageReceivedEvent>{
+    public void handle(MessageReceivedEvent event){
+        String msg = event.getMessage().getContent();
         String returned = "";
         String[] tags;
         boolean hasBotTag = false;
         String[] data = new String[1];
-        KarrenBot bot = (KarrenBot)event.getBot();
+        IDiscordClient bot = event.getClient();
         ArrayList<Object> resultData = new ArrayList<>();
-        if(bot.getBotConf().getEnableInteractions().equalsIgnoreCase("true")){
-            for(Interactions check : bot.getInteractions()){
+        if(Karren.bot.getBotConf().getEnableInteractions().equalsIgnoreCase("true")){
+            for(Interactions check : Karren.bot.getInteractions()){
                 returned = check.handleMessage(event);
                 if(returned.length()>0){
                     tags = check.getTags();
                     for(String tag : tags){
                         switch (tag.toLowerCase()){
                             case "name":
-                                returned = returned.replace("%name", event.getUser().getNick());
+                                returned = returned.replace("%name", event.getMessage().getAuthor().getName());
                                 break;
                             case "depart":
-                                data[0] = event.getUser().getNick();
+                                data[0] = event.getMessage().getAuthor().getName();
                                 try {
-                                    resultData.addAll(bot.getSql().getUserData(event.getUser().getNick()));
+                                    resultData.addAll(Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getName()));
                                     if((boolean)resultData.get(1)){
-                                        returned = "Wait " + event.getUser().getNick() + ", you left earlier...well fine, good bye again.";
+                                        returned = "Wait " + event.getMessage().getAuthor().getName() + ", you left earlier...well fine, good bye again.";
                                     }
-                                    bot.getSql().userOperation("part", data);
+                                    Karren.bot.getSql().userOperation("part", data);
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
                                 break;
                             case "song":
-                                returned = returned.replace("%song", bot.getListenCast().getSong().getSongName());
+                                returned = returned.replace("%song", Karren.bot.getListenCast().getSong().getSongName());
                                 break;
                             case "version":
-                                returned = returned.replace("%version", bot.getBotConf().getVersionMarker());
+                                returned = returned.replace("%version", Karren.bot.getBotConf().getVersionMarker());
                                 break;
                             case "songtime":
-                                returned = returned.replace("%songtime", bot.getListenCast().getMinSecFormattedString(bot.getListenCast().getSongCurTime()));
+                                returned = returned.replace("%songtime", Karren.bot.getListenCast().getMinSecFormattedString(Karren.bot.getListenCast().getSongCurTime()));
                                 break;
                             case "songdur":
-                                returned = returned.replace("%songdur", bot.getListenCast().getMinSecFormattedString(bot.getListenCast().getSong().getLastSongDuration()));
+                                returned = returned.replace("%songdur", Karren.bot.getListenCast().getMinSecFormattedString(Karren.bot.getListenCast().getSong().getLastSongDuration()));
                                 break;
                             case "dj":
-                                returned = returned.replace("%dj", bot.getListenCast().getIceDJ());
+                                returned = returned.replace("%dj", Karren.bot.getListenCast().getIceDJ());
                                 break;
                             case "random":
-                                String[] tempArray = event.getMessage().split(":");
+                                String[] tempArray = event.getMessage().getContent().split(":");
                                 if(tempArray.length==2){
                                     returned = returned.replace("%result", randomList(tempArray[1]));
                                 } else {
@@ -75,32 +78,45 @@ public class InteractionCommands extends ListenerAdapter<PircBotX> {
                                 hasBotTag = true;
                                 break;
                             case "return":
-                                data[0] = event.getUser().getNick();
+                                data[0] = event.getMessage().getAuthor().getName();
                                 try {
-                                    resultData.addAll(bot.getSql().getUserData(event.getUser().getNick()));
-                                    bot.getSql().userOperation("return", data);
+                                    resultData.addAll(Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getName()));
+                                    Karren.bot.getSql().userOperation("return", data);
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
                                 if((boolean)resultData.get(1)){
                                     returned = returned.replace("%away", calcAway((long)resultData.get(2)));
                                 } else {
-                                    returned = "Hey," + event.getUser().getNick() + " are you new? Be sure to say good bye to me when you leave!";
+                                    returned = "Hey," + event.getMessage().getAuthor().getName() + " are you new? Be sure to say good bye to me when you leave!";
                                 }
                                 break;
                             default:
-                                bot.getLog().error("Please check the Interactions file, a tag that does not exist is being used!");
+                                Karren.bot.getLog().error("Please check the Interactions file, a tag that does not exist is being used!");
                         }
                     }
                     break;
                 }
             }
-            if(hasBotTag && msg.toLowerCase().contains(bot.getBotConf().getBotname().toLowerCase()))
-                event.getChannel().send().message(returned);
-            else if(msg.toLowerCase().contains(bot.getBotConf().getBotname().toLowerCase()) && returned.length()==0)
-                event.respond("It's not like I wanted to answer anyways....baka. (Use \"" + bot.getBotConf().getCommandPrefix() + "help interactions\" to view all usable interactions)");
+            if(hasBotTag && msg.toLowerCase().contains(Karren.bot.getBotConf().getBotname().toLowerCase()))
+                try {
+                    event.getMessage().getChannel().sendMessage(returned);
+                } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                    e.printStackTrace();
+                }
+            else if(msg.toLowerCase().contains(Karren.bot.getBotConf().getBotname().toLowerCase()) && returned.length()==0) {
+                try {
+                    event.getMessage().getChannel().sendMessage("It's not like I wanted to answer anyways....baka. (Use \"" + Karren.bot.getBotConf().getCommandPrefix() + "help interactions\" to view all usable interactions)");
+                } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                    e.printStackTrace();
+                }
+            }
             else if(returned.length()>0 && !hasBotTag)
-                event.getChannel().send().message(returned);
+                try {
+                    event.getMessage().getChannel().sendMessage(returned);
+                } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                    e.printStackTrace();
+                }
 
         }
     }

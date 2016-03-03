@@ -6,7 +6,6 @@
 
 package org.frostbite.karren.listencast;
 
-import com.google.common.collect.ImmutableSortedSet;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -17,17 +16,16 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.frostbite.karren.BotConfiguration;
-import org.frostbite.karren.KarrenBot;
-import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.slf4j.Logger;
+import org.frostbite.karren.Karren;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import sx.blah.discord.api.DiscordException;
+import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.MissingPermissionsException;
+import sx.blah.discord.util.HTTP429Exception;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,40 +34,29 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class ListenCast extends Thread{
-	private KarrenBot bot;
-    private String icecastHost;
-    private String icecastPort;
-    private String icecastMount;
+	private IDiscordClient bot;
     private boolean nowPlaying = true;
     private String iceDJ;
     private String lastDJ = "";
     private String lastStreamTitle = "";
     private String iceStreamTitle;
     private int iceListeners = 0;
-    private Channel announceChannel;
     private String iceMaxListeners;
     private String artist;
     private String title;
     private Song currentSong;
     private boolean doUpdate;
 	private boolean killListencast;
-    private Logger log;
-	public ListenCast(PircBotX bot, BotConfiguration botConf) {
-        if(bot instanceof KarrenBot)
-		    this.bot = (KarrenBot)bot;
-        icecastHost = botConf.getIcecastHost();
-        icecastPort = botConf.getIcecastPort();
-        icecastMount = botConf.getIcecastMount();
-        log = this.bot.getLog();
+	public ListenCast(IDiscordClient bot) {
+        this.bot = bot;
     }
+
 	public void run(){
         Song songTemp;
         killListencast = false;
-        announceChannel = bot.getUserBot().getChannels().first();
         while(!killListencast) {
             doUpdate = true;
             try {
@@ -83,14 +70,16 @@ public class ListenCast extends Thread{
                 }
             } catch (IOException e) {
                 songTemp = new Song("Off-air");
-                log.info("Stream seems to have shutdown.");
+                iceDJ = "";
+                Karren.log.info("Stream seems to have shutdown.");
                 doUpdate = false;
             } catch (StringIndexOutOfBoundsException | SQLException | ParserConfigurationException | SAXException e1) {
                 songTemp = new Song("Error encountered when parsing song info!");
-                log.error("Bad info in song data, couldn't parse song title!");
+                Karren.log.error("Bad info in song data, couldn't parse song title!");
                 doUpdate = false;
             }
-            if(iceDJ.equalsIgnoreCase("")){
+
+            if(iceDJ != null && iceDJ.equalsIgnoreCase("")){
                 songTemp = new Song("Off-air");
                 doUpdate = false;
             }
@@ -99,9 +88,9 @@ public class ListenCast extends Thread{
                 currentSong = songTemp;
                 if(lastSong != null) {
                     lastSong.songEnded();
-                    log.debug("The last song played for " + lastSong.getSongDuration());
+                    Karren.log.debug("The last song played for " + lastSong.getSongDuration());
                     try {
-                        bot.getSql().updateSongData(lastSong);
+                        Karren.bot.getSql().updateSongData(lastSong);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -116,14 +105,14 @@ public class ListenCast extends Thread{
                 e.printStackTrace();
             }
         }
-        log.info("Listencast Thread Terminated!");
+        Karren.log.info("Listencast Thread Terminated!");
 	}
 	private void onSongChange(){
         try {
             if(doUpdate)
-                bot.getSql().updateRadioDatabase(currentSong);
+                Karren.bot.getSql().updateRadioDatabase(currentSong);
             if(!lastDJ.equalsIgnoreCase(iceDJ) || !lastStreamTitle.equalsIgnoreCase(iceStreamTitle)){
-                bot.getSql().updateDJActivity(iceDJ, iceStreamTitle);
+                Karren.bot.getSql().updateDJActivity(iceDJ, iceStreamTitle);
                 lastDJ=iceDJ;
                 lastStreamTitle=iceStreamTitle;
             }
@@ -135,29 +124,33 @@ public class ListenCast extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        log.debug("Song \"" + currentSong.getSongName() + "\" duration lock: " + Boolean.toString(currentSong.isDurationLocked()));
-        if(nowPlaying){
-			bot.sendIRC().message(bot.getBotConf().getChannel(), getNowPlayingStr());
+        Karren.log.debug("Song \"" + currentSong.getSongName() + "\" duration lock: " + Boolean.toString(currentSong.isDurationLocked()));
+        if(nowPlaying && Boolean.parseBoolean(Karren.conf.getConnectToDiscord())){
             try {
-                alertFaves();
-            } catch (IOException | SQLException e) {
+                bot.getChannelByID(Karren.conf.getStreamAnnounceChannel()).sendMessage(getNowPlayingStr());
+            } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
                 e.printStackTrace();
             }
+            //try {
+                //alertFaves();
+           // } catch (IOException | SQLException e) {
+           //     e.printStackTrace();
+           // }
         }
 	}
-    private void alertFaves() throws IOException, SQLException{
-        ArrayList<Object> returned;
-        returned = bot.getSql().getUserFaves(currentSong);
-        ImmutableSortedSet<User> chanUsers = announceChannel.getUsers();
-        for(User user : chanUsers){
-            if(returned.contains(user.getNick())){
-                user.send().message(currentSong.getSongName() + " has started playing!");
-            }
-        }
-    }
+    //private void alertFaves() throws IOException, SQLException{
+    //    ArrayList<Object> returned;
+    //    returned = bot.getSql().getUserFaves(currentSong);
+    //    List<GroupUser> chanUsers = announceChannel.getConnectedClients();
+    //    for(GroupUser user : chanUsers){
+    //        if(returned.contains(user.getUser().getUsername())){
+    //            user.getUser().getGroup().
+    //        }
+    //    }
+    //}
     public String getNowPlayingStr(){
         if(!currentSong.getSongName().equalsIgnoreCase("off-air"))
-            return "Now playing: \"" + currentSong.getSongName() + "\" (" + getMinSecFormattedString(currentSong.getLastSongDuration()) + ") On Redirect Radio ("+ getIceStreamTitle() +"). Listeners: " + getIceListeners() + "/" + getIceMaxListeners() + ". This song was last played: " + currentSong.getLastPlayed() + ". Faves: " + currentSong.getFavCount() + ". Plays: " + currentSong.getPlayCount();
+            return "```Now Playing on " + iceStreamTitle + ":\n\"" + currentSong.getSongName() + "\"\nListeners: " + iceListeners + "/" + iceMaxListeners + " | Last Played: " + currentSong.getLastPlayed() + " | Faves: " + currentSong.getFavCount() + " | Plays " + currentSong.getPlayCount() + "```";
         else
             return "No Source connected, the stream is offline.";
     }
@@ -166,9 +159,9 @@ public class ListenCast extends Thread{
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		CredentialsProvider clientCreds = new BasicCredentialsProvider();
-		clientCreds.setCredentials(new AuthScope(new HttpHost(icecastHost, Integer.parseInt(icecastPort))), new UsernamePasswordCredentials(bot.getBotConf().getIcecastAdminUsername(), bot.getBotConf().getIcecastAdminPass()));
+		clientCreds.setCredentials(new AuthScope(new HttpHost(Karren.conf.getIcecastHost(), Integer.parseInt(Karren.conf.getIcecastPort()))), new UsernamePasswordCredentials(Karren.conf.getIcecastAdminUsername(), Karren.conf.getIcecastAdminPass()));
         try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(clientCreds).build()) {
-            HttpGet httpGet = new HttpGet("http://" + icecastHost + ":" + icecastPort + "/admin/stats.xml");
+            HttpGet httpGet = new HttpGet("http://" + Karren.conf.getIcecastHost() + ":" + Karren.conf.getIcecastPort() + "/admin/stats.xml");
             try (CloseableHttpResponse result = httpClient.execute(httpGet)) {
                 HttpEntity entity = result.getEntity();
                 Document stats = dBuilder.parse(entity.getContent());
@@ -177,7 +170,7 @@ public class ListenCast extends Thread{
                     Node sourceData = sources.item(i);
                     if (sourceData.getNodeType() == Node.ELEMENT_NODE) {
                         Element data = (Element) sourceData;
-                        if (data.getAttribute("mount").equalsIgnoreCase("/" + icecastMount) && data.getElementsByTagName("server_url").item(0) !=null) {
+                        if (data.getAttribute("mount").equalsIgnoreCase("/" + Karren.conf.getIcecastMount()) && data.getElementsByTagName("server_url").item(0) !=null) {
                             onair = true;
                             iceDJ = data.getElementsByTagName("server_description").item(0).getTextContent();
                             iceListeners = Integer.parseInt(data.getElementsByTagName("listeners").item(0).getTextContent());
@@ -197,7 +190,7 @@ public class ListenCast extends Thread{
                 }
             } catch (NullPointerException e) {
                 e.printStackTrace();
-                log.debug("NPE Occurred at XML processing. Raw Title Line " + title + " Raw Artist Line " + artist);
+                Karren.log.debug("NPE Occurred at XML processing. Raw Title Line " + title + " Raw Artist Line " + artist);
             }
         }
 		if(!onair){
