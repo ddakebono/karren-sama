@@ -6,32 +6,34 @@
 
 package org.frostbite.karren.listeners;
 
-import org.frostbite.karren.KarrenBot;
-import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.MessageEvent;
+import org.frostbite.karren.Karren;
+import sx.blah.discord.api.DiscordException;
+import sx.blah.discord.api.MissingPermissionsException;
+import sx.blah.discord.handle.IListener;
+import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.util.HTTP429Exception;
 
-public class HueCommand extends ListenerAdapter<PircBotX>{
+public class HueCommand implements IListener<MessageReceivedEvent>{
     private static int hueCount = 0;
-	public void onMessage(MessageEvent<PircBotX> event) throws Exception{
-		KarrenBot bot = (KarrenBot)event.getBot();
+	public void handle(MessageReceivedEvent event) {
 		String cmd = "Hue";
-		String message = event.getMessage();
+		String message = event.getMessage().getContent();
 		if(message.toLowerCase().startsWith(cmd.toLowerCase())){
-			event.getChannel().send().message("Hue");
+			try {
+				event.getMessage().getChannel().sendMessage("Hue");
+			} catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+				e.printStackTrace();
+			}
 			hueCount++;
 			if(hueCount >= 3){
-				if(event.getChannel().isOp(bot.getUserBot())){
-					event.getChannel().send().kick(event.getUser(), "Hue hue hue!");
-					event.getChannel().send().message("Wow, " + event.getUser().getNick() + " just got #rekt.");
-					bot.getLog().info("Karren-sama has kicked " + event.getUser().getNick() + "For Overhue");
-				} else {
-					event.respond("You're lucky this time, I don't have permission to kick you right now...");
-					bot.getLog().error("Couldn't kick " + event.getUser().getNick() + " because permission are missing!");
-				}
+				try {
+                    event.getMessage().getChannel().sendMessage("You're lucky this time, I don't have permission to kick you right now...");
+                } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                    e.printStackTrace();
+                }
+				Karren.log.error("Couldn't kick " + event.getMessage().getAuthor().getName() + " because permission are missing!");
 				hueCount = 0;
 			}
 		}
 	}
-
 }

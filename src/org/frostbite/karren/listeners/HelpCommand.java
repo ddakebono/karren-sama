@@ -1,21 +1,33 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Interactions;
-import org.frostbite.karren.KarrenBot;
-import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.MessageEvent;
+import org.frostbite.karren.Karren;
+import sx.blah.discord.api.DiscordException;
+import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.MissingPermissionsException;
+import sx.blah.discord.handle.IListener;
+import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.util.HTTP429Exception;
+import sx.blah.discord.util.MessageBuilder;
 
-public class HelpCommand extends ListenerAdapter<PircBotX>{
-    public void onMessage(MessageEvent event){
-        KarrenBot bot = (KarrenBot)event.getBot();
-        String[] msgSplit = event.getMessage().split(" ");
-        if(msgSplit[0].equalsIgnoreCase(bot.getBotConf().getCommandPrefix() + "help")){
+public class HelpCommand implements IListener<MessageReceivedEvent>{
+    public void handle(MessageReceivedEvent event){
+        IDiscordClient bot = event.getClient();
+        String[] msgSplit = event.getMessage().getContent().split(" ");
+        if(msgSplit[0].equalsIgnoreCase(Karren.conf.getCommandPrefix() + "help")){
             if(msgSplit.length>1) {
                 switch (msgSplit[1]) {
                     case "interactions":
-                        for (Interactions help : bot.getInteractions()) {
-                            event.getUser().send().message("Interaction " + help.getIdentifier() + ", activators: " + help.getActivatorsToString() + ", tags: " + help.getTagsToString() + ", printout template: " + help.getResponseTemplate());
+                        MessageBuilder helpMsg = new MessageBuilder(bot);
+                        try {
+                            helpMsg.withChannel(event.getClient().getOrCreatePMChannel(event.getMessage().getAuthor()));
+                            helpMsg.withContent("```\n");
+                            for (Interactions help : Karren.bot.getInteractions()) {
+                                helpMsg.appendContent("Interaction " + help.getIdentifier() + ", activators: " + help.getActivatorsToString() + ", tags: " + help.getTagsToString() + ", printout template: " + help.getResponseTemplate() + "\n");
+                            }
+                            helpMsg.appendContent("```").send();
+                        } catch (DiscordException | HTTP429Exception | MissingPermissionsException e) {
+                            e.printStackTrace();
                         }
                         break;
                     default:
@@ -26,19 +38,23 @@ public class HelpCommand extends ListenerAdapter<PircBotX>{
             }
         }
     }
-    public void printBasic(MessageEvent event, KarrenBot bot){
-        event.getUser().send().message(event.getBot().getNick() + " bot commands. (All commands are proceded by a " + bot.getBotConf().getCommandPrefix() + " (Ex. " + bot.getBotConf().getCommandPrefix() + "help))");
-        event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "help command - Prints out this message. Use " + bot.getBotConf().getCommandPrefix() + "help interactions to list all interactions.");
-        event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "isgay command - Sends a message to the server calling whatever follows .isgay gay(Ex. .isgay Seth)");
-        event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "echo command - Replies to you with an echo of whatever follows the command. (Ex. .echo Stuff)");
-        if (event.getChannel().isOp(event.getUser()) || event.getChannel().hasVoice(event.getUser()) || event.getChannel().isOwner(event.getUser())) {
-            event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "topic command - Sets the MOTD section of the topic with whatever follows the command.");
-            event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "kill command - Kills the bot.");
-            event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "npswitch command - Enables or disables the automatic now playing announcements.");
-            event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "reloadint command - Triggers a refresh of the interactions system, reloading all interactions from the Interactions.txt");
-            event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "reloadserv command - Triggers a refresh of the service controller system, reloads all monitored services from Services.txt");
-            event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "services [start, stop, restart] [Service name] command - Starts, stops, or restarts target service. (EX. " + bot.getBotConf().getCommandPrefix() + "services start SpaceEng)");
-            event.getUser().send().message(bot.getBotConf().getCommandPrefix() + "recover-nick command - Attempts to change to the nick that the bot should have.");
+    public void printBasic(MessageReceivedEvent event, IDiscordClient bot){
+        try {
+            MessageBuilder helpMsg = new MessageBuilder(bot);
+            helpMsg.withChannel(bot.getOrCreatePMChannel(event.getMessage().getAuthor()));
+            helpMsg.withContent("```\n");
+            helpMsg.appendContent(event.getClient().getOurUser().getName() + " bot commands. (All commands are proceded by a " + Karren.conf.getCommandPrefix() + " (Ex. " + Karren.conf.getCommandPrefix() + "help))\n");
+            helpMsg.appendContent(Karren.conf.getCommandPrefix() + "help command - Prints out this message. Use " + Karren.conf.getCommandPrefix() + "help interactions to list all interactions.\n");
+            helpMsg.appendContent(Karren.conf.getCommandPrefix() + "isgay command - Sends a message to the server calling whatever follows .isgay gay(Ex. .isgay Seth)\n");
+            helpMsg.appendContent(Karren.conf.getCommandPrefix() + "echo command - Replies to you with an echo of whatever follows the command. (Ex. .echo Stuff)\n");
+            helpMsg.appendContent(Karren.conf.getCommandPrefix() + "topic command - Sets the MOTD section of the topic with whatever follows the command.\n");
+            helpMsg.appendContent(Karren.conf.getCommandPrefix() + "kill command - Kills the bot.\n");
+            helpMsg.appendContent(Karren.conf.getCommandPrefix() + "npswitch command - Enables or disables the automatic now playing announcements.\n");
+            helpMsg.appendContent(Karren.conf.getCommandPrefix() + "reloadint command - Triggers a refresh of the interactions system, reloading all interactions from the Interactions.txt\n");
+            helpMsg.appendContent(Karren.conf.getCommandPrefix() + "reloadserv command - Triggers a refresh of the service controller system, reloads all monitored services from Services.txt\n");
+            helpMsg.appendContent("```").send();
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

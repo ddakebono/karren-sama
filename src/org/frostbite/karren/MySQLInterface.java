@@ -1,7 +1,6 @@
 package org.frostbite.karren;
 
 import org.frostbite.karren.listencast.Song;
-import org.slf4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,20 +16,18 @@ public class MySQLInterface {
     private boolean search;
     private boolean pstNeeded;
     private String overrideDB;
-    private Logger log;
     private boolean rwEnabled;
     private ArrayList<String> sqlPayload = new ArrayList<>();
     /*
     CONSTRUCTORS
      */
-    public MySQLInterface(BotConfiguration botConf, Logger log){
-        sqldb = botConf.getSqldb();
-        sqlhost = botConf.getSqlhost();
-        sqlpass = botConf.getSqlpass();
-        sqlport = Integer.parseInt(botConf.getSqlport());
-        sqluser = botConf.getSqluser();
-        rwEnabled = Boolean.parseBoolean(botConf.getAllowSQLRW());
-        this.log = log;
+    public MySQLInterface(){
+        sqldb = Karren.conf.getSqldb();
+        sqlhost = Karren.conf.getSqlhost();
+        sqlpass = Karren.conf.getSqlpass();
+        sqlport = Integer.parseInt(Karren.conf.getSqlport());
+        sqluser = Karren.conf.getSqluser();
+        rwEnabled = Boolean.parseBoolean(Karren.conf.getAllowSQLRW());
     }
     /*
     UTILITY OPERATIONS
@@ -55,7 +52,7 @@ public class MySQLInterface {
             }
         } catch(SQLException e) {
             e.printStackTrace();
-            log.error("Error in SQL Operation:", e);
+            Karren.log.error("Error in SQL Operation:", e);
         }
         if(savedUsers.size() > 0){
             for(String curUser : savedUsers){
@@ -226,7 +223,7 @@ public class MySQLInterface {
             resetSQL();
             if (lastsong.getLastSongDuration() == lastsong.getSongDuration() && lastsong.getLastSongDuration() > 0) {
                 query = "UPDATE songdb SET songduration=?, DurationLock=1 WHERE id=?";
-                log.debug("Setting \"" + lastsong.getSongName() + "\" duration lock to true");
+                Karren.log.debug("Setting \"" + lastsong.getSongName() + "\" duration lock to true");
             } else {
                 query = "UPDATE songdb SET songduration=? WHERE id=?";
             }
@@ -302,39 +299,42 @@ public class MySQLInterface {
                 pstNeeded = true;
                 executeQuery();
             }
-            log.info("Now playing: " + song.getSongName() + ":" + song.getSongID() + ":" + song.getPlayCount());
+            Karren.log.info("Now playing: " + song.getSongName() + ":" + song.getSongID() + ":" + song.getPlayCount());
         }
     }
     /*
     SQL OPERATIONS
      */
     public ArrayList<Object> executeQuery() throws SQLException {
-        String targetDB = sqldb;
-        ArrayList<Object> result = new ArrayList<>();
-        if(overrideDB != null)
-            targetDB = overrideDB;
-        Connection run = DriverManager.getConnection("jdbc:mysql://" + sqlhost + ":" + sqlport + "/" + targetDB + "?useUnicode=true&characterEncoding=UTF-8", sqluser, sqlpass);
-        PreparedStatement pst;
-        ResultSet rs;
-        pst = run.prepareStatement(query);
-        if(pstNeeded){
-            for(int i=0; i<sqlPayload.size(); i++){
-                pst.setString(i+1, sqlPayload.get(i));
-            }
-        }
-        if(search){
-            rs = pst.executeQuery();
-            ResultSetMetaData md = rs.getMetaData();
-            int cCount = md.getColumnCount();
-            while(rs.next()){
-                for(int i=1; i<=cCount; i++){
-                    result.add(rs.getObject(i));
+        if(Boolean.parseBoolean(Karren.conf.getAllowSQLRW())) {
+            String targetDB = sqldb;
+            ArrayList<Object> result = new ArrayList<>();
+            if (overrideDB != null)
+                targetDB = overrideDB;
+            Connection run = DriverManager.getConnection("jdbc:mysql://" + sqlhost + ":" + sqlport + "/" + targetDB + "?useUnicode=true&characterEncoding=UTF-8", sqluser, sqlpass);
+            PreparedStatement pst;
+            ResultSet rs;
+            pst = run.prepareStatement(query);
+            if (pstNeeded) {
+                for (int i = 0; i < sqlPayload.size(); i++) {
+                    pst.setString(i + 1, sqlPayload.get(i));
                 }
             }
+            if (search) {
+                rs = pst.executeQuery();
+                ResultSetMetaData md = rs.getMetaData();
+                int cCount = md.getColumnCount();
+                while (rs.next()) {
+                    for (int i = 1; i <= cCount; i++) {
+                        result.add(rs.getObject(i));
+                    }
+                }
+            }
+            if (!search)
+                pst.execute();
+            run.close();
+            return result;
         }
-        if(!search)
-            pst.execute();
-        run.close();
-        return result;
+        return null;
     }
 }

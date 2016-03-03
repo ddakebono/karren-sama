@@ -6,22 +6,27 @@
 
 package org.frostbite.karren.listeners;
 
-import org.frostbite.karren.KarrenBot;
-import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.MessageEvent;
+import org.frostbite.karren.Karren;
+import sx.blah.discord.api.DiscordException;
+import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.MissingPermissionsException;
+import sx.blah.discord.handle.IListener;
+import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IRole;
+import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.HTTP429Exception;
 
 import java.sql.SQLException;
 import java.util.regex.Pattern;
 
-public class MiscCommands extends ListenerAdapter<PircBotX>{
-	public void onMessage(MessageEvent<PircBotX> event){
+public class MiscCommands implements IListener<MessageReceivedEvent> {
+	public void handle(MessageReceivedEvent event){
 		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "reloadserv", "recover-nick"};
-		String message = event.getMessage();
+		String message = event.getMessage().getContent();
 		String cmd = "";
-        KarrenBot bot = (KarrenBot)event.getBot();
-		if(message.startsWith(bot.getBotConf().getCommandPrefix())){
-			message = message.replaceFirst(Pattern.quote(bot.getBotConf().getCommandPrefix()), "").trim();
+        IDiscordClient bot = event.getClient();
+		if(message.startsWith(Karren.conf.getCommandPrefix())){
+			message = message.replaceFirst(Pattern.quote(Karren.conf.getCommandPrefix()), "").trim();
 			for(String check : cmds){
 				if(message.toLowerCase().startsWith(check)){
 					cmd = check;
@@ -30,56 +35,93 @@ public class MiscCommands extends ListenerAdapter<PircBotX>{
 			}
 			switch(cmd) {
                 case "echo":
-                    event.respond(message.trim());
+                    try {
+                        event.getMessage().getChannel().sendMessage(message.trim());
+                    } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "isgay":
-                    event.getChannel().send().message("Wow, " + message.trim() + " is so fucking gaaaaaaaaay!");
+                    try {
+                        event.getMessage().getChannel().sendMessage("Wow, " + message.trim() + " is so fucking gaaaaaaaaay!");
+                    } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case "fave":
-                    if(bot.getListenCast().getSong().getSongID()!=0) {
-                        event.getUser().send().message(bot.getListenCast().getSong().getSongName() + " added to your favorites!");
+                    if(Karren.bot.getListenCast().getSong().getSongID()!=0) {
                         try {
-                            bot.getSql().addFave(event.getUser().getNick(), bot.getListenCast().getSong());
+                            bot.getOrCreatePMChannel(event.getMessage().getAuthor()).sendMessage(Karren.bot.getListenCast().getSong().getSongName() + " added to your favorites!");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            Karren.bot.getSql().addFave(event.getMessage().getAuthor().getID(), Karren.bot.getListenCast().getSong());
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
                     } else {
-                        event.getUser().send().message("You can't fave something that isn't playing!");
+                        try {
+                            bot.getOrCreatePMChannel(event.getMessage().getAuthor()).sendMessage("You can't fave something when noone is streaming!");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
                 case "reloadint":
-                    if(bot.getBotConf().getEnableInteractions().equalsIgnoreCase("true")) {
-                        if (event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())) {
-                            bot.getLog().info("Interactions system reload triggered by " + event.getUser().getNick());
-                            bot.reloadInteractions();
+                    if(Karren.conf.getEnableInteractions().equalsIgnoreCase("true")) {
+                        if (isAdmin(event.getMessage().getAuthor(), bot)) {
+                            Karren.log.info("Interactions system reload triggered by " + event.getMessage().getAuthor().getName());
+                            Karren.bot.reloadInteractions();
                         } else {
-                            event.respond("You do not have the permissions to use this...(Not Operator)");
+                            try {
+                                event.getMessage().getChannel().sendMessage("You do not have the permission to use this... (Not Admin)");
+                            } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                                e.printStackTrace();
+                            }
                         }
                     } else {
-                        event.respond("Interactions system disabled by configuration.");
+                        try {
+                            event.getMessage().getChannel().sendMessage("Interations system disabled by configuration");
+                        } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
 
                 case "npswitch":
-                    if (event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())) {
-                        if (bot.getListenCast().enableNP()) {
-                            event.getChannel().send().message("Automagic now playing has been activated!");
+                    if (isAdmin(event.getMessage().getAuthor(), bot)) {
+                        if (Karren.bot.getListenCast().enableNP()) {
+                            try {
+                                event.getMessage().getChannel().sendMessage("Automagic now playing has been activated!");
+                            } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                                e.printStackTrace();
+                            }
                         } else {
-                            event.getChannel().send().message("Automagic now playing has been deactivated...");
+                            try {
+                                event.getMessage().getChannel().sendMessage("Automagic now playing has been deactivated...");
+                            } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                                e.printStackTrace();
+                            }
                         }
                     } else {
-                        event.respond("You do not have the permissions to change this...(Not Operator)");
-                    }
-                    break;
-                case "recover-nick":
-                    if(event.getChannel().isOp(event.getUser()) || event.getChannel().isOwner(event.getUser())){
-                        if(!bot.recoverNick())
-                            event.respond("I already have the nick I was told to have, if you want to change it check the configuration.");
-                    } else {
-                        event.respond("You do not have the permissions required to use this... (Operator/Owner required)");
+                        try {
+                            event.getMessage().getChannel().sendMessage("You do not have the permissions to change this... (Not Admin)");
+                        } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
 			}
 		}
 	}
+    boolean isAdmin(IUser user, IDiscordClient bot){
+        boolean result = false;
+        for(IRole role : user.getRolesForGuild(bot.getGuildByID(Karren.conf.getGuildId()))){
+            if(role.getName().equals("Admins")){
+                result = true;
+            }
+        }
+        return result;
+    }
 }

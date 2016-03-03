@@ -61,7 +61,12 @@ public class Song {
     }
     public String getSongName(){return songName;}
     public long getLastPlayedRaw(){return lastPlayed;}
-    public String getLastPlayed(){return getDateTimeFromEpoch(lastPlayed);}
+    public String getLastPlayed(){
+        if(lastPlayed == 0)
+            return "Never";
+        else
+            return getDateTimeFromEpoch(lastPlayed);
+    }
     public int getPlayCount(){return playCount;}
     public int getFavCount(){return favCount;}
     public int getSongID(){return songID;}

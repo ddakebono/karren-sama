@@ -6,26 +6,39 @@
 
 package org.frostbite.karren.listeners;
 
-import org.frostbite.karren.KarrenBot;
-import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.MessageEvent;
+import org.frostbite.karren.Karren;
+import sx.blah.discord.api.DiscordException;
+import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.MissingPermissionsException;
+import sx.blah.discord.handle.IListener;
+import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IRole;
+import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.HTTP429Exception;
 
-public class KillCommand extends ListenerAdapter<PircBotX>{
-	public void onMessage(MessageEvent<PircBotX> event){
-		String message = event.getMessage();
-		KarrenBot bot = (KarrenBot)event.getBot();
-        boolean restart = true;
-        String cmd = bot.getBotConf().getCommandPrefix() + "kill";
-        String cmd2 = bot.getBotConf().getCommandPrefix() + "restart";
-		if((event.getChannel().isOp(event.getUser())||event.getChannel().isOwner(event.getUser())) && (message.toLowerCase().startsWith(cmd)||message.toLowerCase().startsWith(cmd2))){
-            if(message.toLowerCase().startsWith(cmd)){
-                restart = false;
-            }
-            bot.killBot(bot, event.getUser().getNick(), restart);
+public class KillCommand implements IListener<MessageReceivedEvent> {
+	public void handle(MessageReceivedEvent event){
+		String message = event.getMessage().getContent();
+		IDiscordClient bot = event.getClient();
+        String cmd = Karren.conf.getCommandPrefix() + "kill";
+		if((isAdmin(event.getMessage().getAuthor(), bot)) && message.toLowerCase().startsWith(cmd)){
+            Karren.bot.killBot(event.getMessage().getAuthor().getName());
         } else {
-			if(!event.getChannel().isOp(event.getUser()) && message.startsWith(cmd))
-				event.respond("You can't tell me what to do! (Not Operator)");
-		}
+			if(!isAdmin(event.getMessage().getAuthor(), bot) && message.startsWith(cmd))
+                try {
+                    event.getMessage().getChannel().sendMessage("You can't tell me what to do! (Not Operator)");
+                } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                    e.printStackTrace();
+                }
+        }
 	}
+    boolean isAdmin(IUser user, IDiscordClient bot){
+        boolean result = false;
+        for(IRole role : user.getRolesForGuild(bot.getGuildByID(Karren.conf.getGuildId()))){
+            if(role.getName().equals("Admins")){
+                result = true;
+            }
+        }
+        return result;
+    }
 }
