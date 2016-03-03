@@ -27,6 +27,7 @@ public class BotConfiguration {
     private String icecastMount;
     private String discordPass;
     private String streamAnnounceChannel;
+    private String guildId;
     private String allowSQLRW;
     private String enableListencast;
     private String enableInteractions;
@@ -36,10 +37,15 @@ public class BotConfiguration {
     private String emailPassword;
     private String extPort;
     private String extAddr;
-    private final String versionMarker = "2.0-DISCORD";
+    private final String versionMarker = "2.0-DISCORDTesting";
     /*
     Config Getters
      */
+
+    public String getGuildId() {
+        return guildId;
+    }
+
     public String getEmailPassword(){return emailPassword;}
     public String getSqlhost() {
         return sqlhost;
@@ -145,6 +151,7 @@ public class BotConfiguration {
         emailPassword = cfg.getProperty("EmailAddressPassword", "hackme");
         extAddr = cfg.getProperty("ExtenderListenAddress", "127.0.0.1");
         extPort = cfg.getProperty("ExtenderListenPort", "8281");
+        guildId = cfg.getProperty("GuildID", "0");
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
             log.warn("Updating configuration file!");
             mkNewConfig(log);
@@ -181,6 +188,7 @@ public class BotConfiguration {
         cfg.setProperty("EmailAddressPassword", emailPassword);
         cfg.setProperty("ExtenderListenPort", extPort);
         cfg.setProperty("ExtenderListenAddress", extAddr);
+        cfg.setProperty("GuildID", guildId);
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
         log.info("Your configuration file has been generated/updated!");
         System.exit(0);

@@ -29,7 +29,7 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
         String[] data = new String[1];
         IDiscordClient bot = event.getClient();
         ArrayList<Object> resultData = new ArrayList<>();
-        if(Karren.bot.getBotConf().getEnableInteractions().equalsIgnoreCase("true")){
+        if(Karren.conf.getEnableInteractions().equalsIgnoreCase("true")){
             for(Interactions check : Karren.bot.getInteractions()){
                 returned = check.handleMessage(event);
                 if(returned.length()>0){
@@ -55,7 +55,7 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
                                 returned = returned.replace("%song", Karren.bot.getListenCast().getSong().getSongName());
                                 break;
                             case "version":
-                                returned = returned.replace("%version", Karren.bot.getBotConf().getVersionMarker());
+                                returned = returned.replace("%version", Karren.conf.getVersionMarker());
                                 break;
                             case "songtime":
                                 returned = returned.replace("%songtime", Karren.bot.getListenCast().getMinSecFormattedString(Karren.bot.getListenCast().getSongCurTime()));
@@ -92,21 +92,21 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
                                 }
                                 break;
                             default:
-                                Karren.bot.getLog().error("Please check the Interactions file, a tag that does not exist is being used!");
+                                Karren.log.error("Please check the Interactions file, a tag that does not exist is being used!");
                         }
                     }
                     break;
                 }
             }
-            if(hasBotTag && msg.toLowerCase().contains(Karren.bot.getBotConf().getBotname().toLowerCase()))
+            if(hasBotTag && msg.toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase()))
                 try {
                     event.getMessage().getChannel().sendMessage(returned);
                 } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
                     e.printStackTrace();
                 }
-            else if(msg.toLowerCase().contains(Karren.bot.getBotConf().getBotname().toLowerCase()) && returned.length()==0) {
+            else if(msg.toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase()) && returned.length()==0) {
                 try {
-                    event.getMessage().getChannel().sendMessage("It's not like I wanted to answer anyways....baka. (Use \"" + Karren.bot.getBotConf().getCommandPrefix() + "help interactions\" to view all usable interactions)");
+                    event.getMessage().getChannel().sendMessage("It's not like I wanted to answer anyways....baka. (Use \"" + Karren.conf.getCommandPrefix() + "help interactions\" to view all usable interactions)");
                 } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
                     e.printStackTrace();
                 }

@@ -115,8 +115,13 @@ public class ListenCast extends Thread{
                 Karren.bot.getSql().updateDJActivity(iceDJ, iceStreamTitle);
                 lastDJ=iceDJ;
                 lastStreamTitle=iceStreamTitle;
+                if(iceDJ!=null&&iceDJ.length()>0)
+                    bot.getChannelByID(Karren.conf.getStreamAnnounceChannel()).changeTopic("Stream is LIVE. Current DJ is " + lastDJ + " and the current show is " + lastStreamTitle);
+                else
+                    bot.getChannelByID(Karren.conf.getStreamAnnounceChannel()).changeTopic("Stream is off air.");
+
             }
-        } catch (SQLException e) {
+        } catch (SQLException | DiscordException | MissingPermissionsException | HTTP429Exception e) {
             e.printStackTrace();
         }
         try {

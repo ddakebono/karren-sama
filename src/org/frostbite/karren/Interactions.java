@@ -52,7 +52,7 @@ public class Interactions {
     public String getTagsToString(){
         String result = "";
         for (String tag : tags) {
-            result += tag;
+            result += tag + " ";
         }
         return result;
     }
