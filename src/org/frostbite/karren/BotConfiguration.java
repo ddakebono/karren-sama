@@ -124,7 +124,7 @@ public class BotConfiguration {
             cfg.load(new FileInputStream("conf/bot.prop"));
         } else {
             boolean conf = new File("conf").mkdirs();
-            if(!conf) {
+            if(!conf && !new File("conf").isDirectory()) {
                 log.error("CONFIGURATION FOLDER COULD NOT BE CREATED!");
                 log.error("Shutting down bot due to error.");
                 System.exit(1);

@@ -1,33 +1,70 @@
-karren-sama - Master Branch
-===========
+Karren-sama Discord Bot
+==========================
 
-Repo for the Karren-sama IRC bot as seen on the Redirect Gaming IRC
+Description
+-----------
 
-Hey look at that, I got a POM to work, we maven now.
+This is my Discord bot I build using the Discord4J library, it's very much tied in with a site I run so It's prolly not to useful for everybody.
+There is still some very messy files as I've just started bringing it over to discord, as it used to be an IRC bot.
 
-Uses PircBotX for the core IRC functions.
+Features
+--------
 
-Usage:
+There isn't too many and functionality may change suddenly but here we go.
+* Listening in on multiple servers, just invite it.
+* Icecast now playing integration
+* Interaction half assed scripting thing, it's bad, I'll be making it better soon.
+* Pointless commands that just give dumb responses.
 
-    Upon compilation and start up the bot will generate it's configuration file @ conf/bot.prop then exit, set the config and restart it.
-    With the Interaction system as it sits it will not create the interactions file, manually do so. (conf/Interactions.txt)
-        Interaction template is Interaction:[Identifier]:[Trigger words Ex: hi,hello,hey]:[Response template Ex:Hello %name]:[Tags for interaction Ex:Name]:[Confidence setting(This governs how many triggers need to be found before a choice is made)]
-        You can have as many interactions as you want.
-    Import .SQL to database of your choice.
-        I will be compiling a SQL script to build it's database once I get this branch good and stable, maybe Maven at the same time.
-    After this point the bot should be operational.
+Usage
+-----
 
-Working:
+Don't bother
 
-    Now playing - WORKING!
-    User interaction system(New) - Appears to be fully working.
-    SQL interaction - Stable at the current point.
-    User away/return tracking - WORKING!
+But if you really want to it does work, somewhat.
 
-Latest Changes:
-    
-    Added the ability for the bot to tell how long a song is and give feedback on it.
-    New logging system, actually outputs to a file now.
-    Songs played are now logged.
-    We maven now.
-    
+Once the bot has run once it will give you an empty config file something like this.
+
+>sqluser=changeme
+>allowSQLReadWrite=true
+>enableInteractionSystem=true
+>sqlpass=changeme
+>streamAnnounceChannel=0
+>sqlport=3306
+>sqldb=changeme
+>nickservPass=changeme
+>EmailAddressPassword=hackme
+>icecastAdminUsername=changeme
+>icecastMount=changeme.ogg
+>sqlhost=0.0.0.0
+>ExtenderListenAddress=127.0.0.1
+>enableListencastSystem=true
+>ExtenderListenPort=8281
+>icecastPort=8000
+>EmailAddress=changethis@emailaddress.bad
+>GuildID=0
+>commandPrefix=.
+>connectToDiscord=true
+>icecastHost=0.0.0.0
+>icecastAdminPass=changeme
+>karrenVersion=2.0-DISCORDTesting
+
+Change it to fit your needs, also I would recommend turning off SQL as I haven't released my tables that power it.
+Now playing will work properly without an SQL, you just lose play counts, faves and last played data.
+GuildID is the ID of your general channel on your discord.
+StreamAnnounceChannel is the channel you want to get spammed by now playing information.
+EmailAddress is the one the bot will use to sign in.
+
+Interactions
+------------
+
+Don't bother with this until I redo it.
+
+
+
+Licence
+-------
+
+All of my code is licenced under the MIT licence
+<a href="http://opensource.org/licenses/MIT">http://opensource.org/licenses/MIT</a>
+
