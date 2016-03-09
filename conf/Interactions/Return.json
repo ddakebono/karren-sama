@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "Hello %name, you have been away for %away.",
+    "Hey there %name, haven't seen you for %away",
+    "What kept you so long %name, last I saw you was %away ago"
+  ],
+  "tags": [
+    "bot",
+    "return",
+    "name"
+  ],
+  "triggers": [
+    "hello",
+    "hi",
+    "hey",
+    "yo",
+    "ohio",
+    "ohaiyo"
+  ],
+  "helptext": "Tell me when your back and get a nice welcome back message with the total time you were away."
+}

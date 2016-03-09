@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "I'm currently on version %version"
+  ],
+  "tags": [
+    "bot",
+    "version"
+  ],
+  "triggers": [
+    "version"
+  ],
+  "helptext": "Ask me my version and I'll respond."
+}

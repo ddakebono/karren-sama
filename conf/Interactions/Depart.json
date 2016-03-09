@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "See you later %name!",
+    "Goodbye %name!",
+    "Come back soon %name!"
+  ],
+  "tags": [
+    "bot",
+    "depart",
+    "name"
+  ],
+  "triggers": [
+    "bye",
+    "goodbye",
+    "cya",
+    "later",
+    "goodnight",
+    "good-bye",
+    "sayonara"
+  ],
+  "helptext": "Tell me when you leave and I'll keep track of your away time, maybe tell people about it too"
+}

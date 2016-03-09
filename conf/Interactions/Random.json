@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "I choose %result",
+    "I pick %result",
+    "I drew %result",
+    "I selected %result"
+  ],
+  "tags": [
+    "bot",
+    "random"
+  ],
+  "triggers": [
+    "choose",
+    "take",
+    "pick",
+    "select",
+    "draw"
+  ],
+  "helptext": "Give me a list and I'll pick a random one. Like this \"Karren-sama choose one: 1,2,3\""
+}

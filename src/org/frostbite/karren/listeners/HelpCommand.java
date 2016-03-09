@@ -23,7 +23,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent>{
                             helpMsg.withChannel(event.getClient().getOrCreatePMChannel(event.getMessage().getAuthor()));
                             helpMsg.withContent("```\n");
                             for (Interactions help : Karren.bot.getInteractions()) {
-                                helpMsg.appendContent("Interaction " + help.getIdentifier() + ", activators: " + help.getActivatorsToString() + ", tags: " + help.getTagsToString() + ", printout template: " + help.getResponseTemplate() + "\n");
+                                helpMsg.appendContent( help.getIdentifier() + " : " + help.getHelptext() + "\n");
                             }
                             helpMsg.appendContent("```").send();
                         } catch (DiscordException | HTTP429Exception | MissingPermissionsException e) {

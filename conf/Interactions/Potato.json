@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "Hey %name, you are a potato!"
+  ],
+  "tags": [
+    "bot",
+    "name"
+  ],
+  "triggers": [
+    "potato",
+    "potatoes"
+  ],
+  "helptext": "You are a potato"
+}

@@ -65,7 +65,7 @@ public class MySQLInterface {
     }
     public void makeUser(String nick){
         resetSQL();
-        query = "INSERT INTO users (ircuserid, user, botpart, timepart, linkCode) VALUES (null, ?, false, 0, null)";
+        query = "INSERT INTO users (ircuserid, user, botpart, timepart) VALUES (null, ?, false, 0)";
         sqlPayload.add(nick);
         try {
             search = false;
@@ -100,7 +100,7 @@ public class MySQLInterface {
         resetSQL();
         switch(mod.toLowerCase()){
             case "return":
-                if((Boolean)userData.get(1)){
+                if(Boolean.parseBoolean(String.valueOf(userData.get(2)))){
                     query = "UPDATE users SET botpart=false WHERE user= ?";
                     sqlPayload.add(args[0]);
                     search = false;
@@ -109,7 +109,7 @@ public class MySQLInterface {
                 }
                 break;
             case "part":
-                if(!((Boolean)userData.get(1))){
+                if(!(Boolean.parseBoolean(String.valueOf(userData.get(2))))){
                     query = "UPDATE users SET botpart=true, timepart= ? WHERE user= ?";
                     sqlPayload.add(String.valueOf(date.getTime()));
                     sqlPayload.add(args[0]);
@@ -152,7 +152,7 @@ public class MySQLInterface {
         ArrayList<Object> returned = executeQuery();
         if(returned.size()==0){
             resetSQL();
-            query = "INSERT INTO UserFaves(ID, User, SongID) VALUES (null, ?, ?)";
+            query = "INSERT INTO userfaves(ID, User, SongID) VALUES (null, ?, ?)";
             sqlPayload.add(user);
             sqlPayload.add(String.valueOf(song.getSongID()));
             search = false;

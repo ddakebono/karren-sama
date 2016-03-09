@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "confidence": 2,
+  "templates": [
+    "The current DJ is %dj",
+    "%dj is currently live on the stream."
+  ],
+  "tags": [
+    "bot",
+    "dj"
+  ],
+  "triggers": [
+    "what",
+    "dj",
+    "this",
+    "who",
+    "streaming",
+    "live",
+    "radio"
+  ],
+  "helptext": "Ask me about the current DJ if the stream is up, I'll respond."
+}

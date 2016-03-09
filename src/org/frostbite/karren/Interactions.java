@@ -8,46 +8,53 @@ package org.frostbite.karren;
 
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Random;
 
 public class Interactions {
-    private ArrayList<String> activator = new ArrayList<>();
-    private String identifier = "";
+    private String[] triggers;
     private String[] tags;
-    private String responseTemplate = "";
-    private int confidenceAmount;
-    public Interactions(String identifier, String[] tags, String responseTemplate, String[] activators, int confidenceAmount){
+    private String[] templates;
+    private boolean enabled;
+    private String helptext;
+    private String identifier;
+    private int confidence;
+
+    public Interactions(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
+        this(identifier ,tags, new String[]{templates}, triggers, confidence, enabled, helptext);
+    }
+
+    public Interactions(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this.identifier = identifier;
         this.tags = tags;
-        this.responseTemplate = responseTemplate;
-        this.confidenceAmount = confidenceAmount;
-        Collections.addAll(this.activator, activators);
-    }
-    public void addActivator(String activator){
-        this.activator.add(activator.trim().toLowerCase());
+        this.templates = templates;
+        this.confidence = confidence;
+        this.triggers = triggers;
+        this.enabled = enabled;
+        this.helptext = helptext;
     }
     /*
     handleMessage checks which interaction type the message is and runs the respective functions.
      */
     public String handleMessage(MessageReceivedEvent event){
+        Random rng = new Random();
         String result = "";
-        int confidence = 0;
-        if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix())) {
-            String[] tokenizedMessage = event.getMessage().getContent().split("\\s+");
-            for (String check : activator) {
-                for (String check2 : tokenizedMessage) {
-                    if (check2.trim().toLowerCase().matches(check + "\\W?")) {
-                        confidence++;
+        if(enabled) {
+            int confidence = 0;
+            if (!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix())) {
+                String[] tokenizedMessage = event.getMessage().getContent().split("\\s+");
+                for (String check : triggers) {
+                    for (String check2 : tokenizedMessage) {
+                        if (check2.trim().toLowerCase().matches(check + "\\W?")) {
+                            confidence++;
+                        }
                     }
                 }
             }
+            if (confidence >= this.confidence)
+                result = templates[rng.nextInt(templates.length)];
         }
-        if(confidence>=confidenceAmount)
-            result = responseTemplate;
         return result;
     }
-    public String getIdentifier(){return identifier;}
     public String[] getTags(){return tags;}
     public String getTagsToString(){
         String result = "";
@@ -56,19 +63,20 @@ public class Interactions {
         }
         return result;
     }
-    public String getResponseTemplate(){return responseTemplate;}
-    public String[] getActivator(){
-        String[] result = new String[activator.size()];
-        for(int i=0; i<result.length; i++){
-            result[i] = activator.get(i);
-        }
-        return result;
+    public String[] getTemplates(){return templates;}
+    public String[] getTriggers(){
+        return triggers;
     }
     public String getActivatorsToString(){
         String result = "";
-        for (String anActivator : activator) {
+        for (String anActivator : triggers) {
             result += anActivator + " ";
         }
         return result;
     }
+    public void setIdentifier(String identifier){
+        this.identifier = identifier;
+    }
+    public String getHelptext(){return helptext;}
+    public String getIdentifier(){return identifier;}
 }

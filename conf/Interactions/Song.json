@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "confidence": 2,
+  "templates": [
+    "Yo %name, the current song is \"%song\"",
+    "The current song is \"%song\"",
+    "\"%song\" is currently playing"
+  ],
+  "tags": [
+    "bot",
+    "song",
+    "name"
+  ],
+  "triggers": [
+    "what",
+    "song",
+    "this",
+    "what's",
+    "playing",
+    "title",
+    "music"
+  ],
+  "helptext": "Ask me about the current song, I'll respond."
+}

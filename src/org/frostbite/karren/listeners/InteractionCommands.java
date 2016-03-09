@@ -27,7 +27,6 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
         String[] tags;
         boolean hasBotTag = false;
         String[] data = new String[1];
-        IDiscordClient bot = event.getClient();
         ArrayList<Object> resultData = new ArrayList<>();
         if(Karren.conf.getEnableInteractions().equalsIgnoreCase("true")){
             for(Interactions check : Karren.bot.getInteractions()){
@@ -36,14 +35,20 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
                     tags = check.getTags();
                     for(String tag : tags){
                         switch (tag.toLowerCase()){
+                            case "echo":
+                                try {
+                                    event.getMessage().getChannel().sendMessage(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix() + "echo", "").trim());
+                                } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                                    e.printStackTrace();
+                                }
                             case "name":
                                 returned = returned.replace("%name", event.getMessage().getAuthor().getName());
                                 break;
                             case "depart":
-                                data[0] = event.getMessage().getAuthor().getName();
+                                data[0] = event.getMessage().getAuthor().getID();
                                 try {
-                                    resultData.addAll(Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getName()));
-                                    if((boolean)resultData.get(1)){
+                                    resultData.addAll(Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getID()));
+                                    if(Boolean.parseBoolean(String.valueOf(resultData.get(2)))){
                                         returned = "Wait " + event.getMessage().getAuthor().getName() + ", you left earlier...well fine, good bye again.";
                                     }
                                     Karren.bot.getSql().userOperation("part", data);
@@ -78,15 +83,15 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
                                 hasBotTag = true;
                                 break;
                             case "return":
-                                data[0] = event.getMessage().getAuthor().getName();
+                                data[0] = event.getMessage().getAuthor().getID();
                                 try {
-                                    resultData.addAll(Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getName()));
+                                    resultData.addAll(Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getID()));
                                     Karren.bot.getSql().userOperation("return", data);
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
-                                if((boolean)resultData.get(1)){
-                                    returned = returned.replace("%away", calcAway((long)resultData.get(2)));
+                                if(Boolean.parseBoolean(String.valueOf(resultData.get(2)))){
+                                    returned = returned.replace("%away", calcAway((long)resultData.get(3)));
                                 } else {
                                     returned = "Hey," + event.getMessage().getAuthor().getName() + " are you new? Be sure to say good bye to me when you leave!";
                                 }

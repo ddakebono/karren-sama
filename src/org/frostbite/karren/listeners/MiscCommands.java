@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class MiscCommands implements IListener<MessageReceivedEvent> {
 	public void handle(MessageReceivedEvent event){
-		String[] cmds = {"echo", "isgay", "npswitch", "reloadint", "fave", "reloadserv", "recover-nick"};
+		String[] cmds = {"isgay", "npswitch", "reloadint", "fave", "reloadserv", "recover-nick"};
 		String message = event.getMessage().getContent();
 		String cmd = "";
         IDiscordClient bot = event.getClient();
@@ -34,13 +34,6 @@ public class MiscCommands implements IListener<MessageReceivedEvent> {
 				}
 			}
 			switch(cmd) {
-                case "echo":
-                    try {
-                        event.getMessage().getChannel().sendMessage(message.trim());
-                    } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
-                        e.printStackTrace();
-                    }
-                    break;
                 case "isgay":
                     try {
                         event.getMessage().getChannel().sendMessage("Wow, " + message.trim() + " is so fucking gaaaaaaaaay!");

@@ -34,6 +34,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class ListenCast extends Thread{
@@ -130,29 +131,30 @@ public class ListenCast extends Thread{
             e.printStackTrace();
         }
         Karren.log.debug("Song \"" + currentSong.getSongName() + "\" duration lock: " + Boolean.toString(currentSong.isDurationLocked()));
-        if(nowPlaying && Boolean.parseBoolean(Karren.conf.getConnectToDiscord())){
+        if(nowPlaying && Boolean.parseBoolean(Karren.conf.getConnectToDiscord()) && Boolean.parseBoolean(Karren.conf.getEnableListencast())){
             try {
                 bot.getChannelByID(Karren.conf.getStreamAnnounceChannel()).sendMessage(getNowPlayingStr());
             } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
                 e.printStackTrace();
             }
-            //try {
-                //alertFaves();
-           // } catch (IOException | SQLException e) {
-           //     e.printStackTrace();
-           // }
+            try {
+                alertFaves();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 	}
-    //private void alertFaves() throws IOException, SQLException{
-    //    ArrayList<Object> returned;
-    //    returned = bot.getSql().getUserFaves(currentSong);
-    //    List<GroupUser> chanUsers = announceChannel.getConnectedClients();
-    //    for(GroupUser user : chanUsers){
-    //        if(returned.contains(user.getUser().getUsername())){
-    //            user.getUser().getGroup().
-    //        }
-    //    }
-    //}
+    private void alertFaves() throws SQLException {
+        ArrayList<Object> returned;
+        returned = Karren.bot.getSql().getUserFaves(currentSong);
+        for(Object user : returned){
+            try {
+                Karren.bot.getClient().getOrCreatePMChannel(Karren.bot.getClient().getUserByID(user.toString())).sendMessage(currentSong.getSongName() + " has started playing!");
+            } catch (DiscordException | HTTP429Exception | MissingPermissionsException e) {
+                e.printStackTrace();
+            }
+        }
+}
     public String getNowPlayingStr(){
         if(!currentSong.getSongName().equalsIgnoreCase("off-air"))
             return "```Now Playing on " + iceStreamTitle + ":\n\"" + currentSong.getSongName() + "\"\nListeners: " + iceListeners + "/" + iceMaxListeners + " | Last Played: " + currentSong.getLastPlayed() + " | Faves: " + currentSong.getFavCount() + " | Plays " + currentSong.getPlayCount() + "```";
@@ -205,7 +207,11 @@ public class ListenCast extends Thread{
     public void kill(){
         killListencast = true;
     }
-    public String getIceDJ(){return iceDJ;}
+    public String getIceDJ(){
+        if(iceDJ.length()>0)
+            return iceDJ;
+        return "Nobody";
+    }
     public Song getSong(){return currentSong;}
     public String getIceStreamTitle(){return iceStreamTitle;}
     public String getIceMaxListeners(){return iceMaxListeners;}
