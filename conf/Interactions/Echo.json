@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "%echo"
+  ],
+  "tags": [
+    "echo",
+    "prefixed"
+  ],
+  "triggers": [
+    "echo"
+  ],
+  "helptext": "Echoes the input message."
+}

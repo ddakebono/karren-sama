@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class MiscCommands implements IListener<MessageReceivedEvent> {
 	public void handle(MessageReceivedEvent event){
-		String[] cmds = {"isgay", "npswitch", "reloadint", "fave", "reloadserv", "recover-nick"};
+		String[] cmds = {"npswitch", "reloadint"};
 		String message = event.getMessage().getContent();
 		String cmd = "";
         IDiscordClient bot = event.getClient();
@@ -34,33 +34,6 @@ public class MiscCommands implements IListener<MessageReceivedEvent> {
 				}
 			}
 			switch(cmd) {
-                case "isgay":
-                    try {
-                        event.getMessage().getChannel().sendMessage("Wow, " + message.trim() + " is so fucking gaaaaaaaaay!");
-                    } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                case "fave":
-                    if(Karren.bot.getListenCast().getSong().getSongID()!=0) {
-                        try {
-                            bot.getOrCreatePMChannel(event.getMessage().getAuthor()).sendMessage(Karren.bot.getListenCast().getSong().getSongName() + " added to your favorites!");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            Karren.bot.getSql().addFave(event.getMessage().getAuthor().getID(), Karren.bot.getListenCast().getSong());
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        try {
-                            bot.getOrCreatePMChannel(event.getMessage().getAuthor()).sendMessage("You can't fave something when noone is streaming!");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    break;
                 case "reloadint":
                     if(Karren.conf.getEnableInteractions().equalsIgnoreCase("true")) {
                         if (isAdmin(event.getMessage().getAuthor(), bot)) {

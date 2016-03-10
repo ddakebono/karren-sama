@@ -23,24 +23,23 @@ import java.util.Random;
 public class InteractionCommands implements IListener<MessageReceivedEvent>{
     public void handle(MessageReceivedEvent event){
         String msg = event.getMessage().getContent();
-        String returned = "";
+        String returned = null;
         String[] tags;
         boolean hasBotTag = false;
+        boolean privateMessage = false;
         String[] data = new String[1];
         ArrayList<Object> resultData = new ArrayList<>();
         if(Karren.conf.getEnableInteractions().equalsIgnoreCase("true")){
             for(Interactions check : Karren.bot.getInteractions()){
                 returned = check.handleMessage(event);
-                if(returned.length()>0){
+                if(returned!=null){
                     tags = check.getTags();
                     for(String tag : tags){
                         switch (tag.toLowerCase()){
                             case "echo":
-                                try {
-                                    event.getMessage().getChannel().sendMessage(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix() + "echo", "").trim());
-                                } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
-                                    e.printStackTrace();
-                                }
+                                //Echo is limited by this code, only single trigger command will work (Ex. .echo Test)
+                                returned = returned.replace("%echo", event.getMessage().getContent().replace(check.getTriggers()[0], "").trim());
+                                break;
                             case "name":
                                 returned = returned.replace("%name", event.getMessage().getAuthor().getName());
                                 break;
@@ -54,6 +53,17 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
                                     Karren.bot.getSql().userOperation("part", data);
                                 } catch (SQLException e) {
                                     e.printStackTrace();
+                                }
+                                break;
+                            case "fave":
+                                if(Karren.bot.getListenCast().getSong().getSongID()!=0) {
+                                    try {
+                                        Karren.bot.getSql().addFave(event.getMessage().getAuthor().getID(), Karren.bot.getListenCast().getSong());
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    returned = check.getRandomTemplatesFail();
                                 }
                                 break;
                             case "song":
@@ -82,6 +92,9 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
                             case "bot":
                                 hasBotTag = true;
                                 break;
+                            case "pm":
+                                privateMessage = true;
+                                break;
                             case "return":
                                 data[0] = event.getMessage().getAuthor().getID();
                                 try {
@@ -105,20 +118,26 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
             }
             if(hasBotTag && msg.toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase()))
                 try {
-                    event.getMessage().getChannel().sendMessage(returned);
+                    if(!privateMessage)
+                        event.getMessage().getChannel().sendMessage(returned);
+                    else
+                        Karren.bot.getClient().getOrCreatePMChannel(event.getMessage().getAuthor()).sendMessage(returned);
                 } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
                     e.printStackTrace();
                 }
-            else if(msg.toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase()) && returned.length()==0) {
+            else if(msg.toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase()) && returned==null) {
                 try {
                     event.getMessage().getChannel().sendMessage("It's not like I wanted to answer anyways....baka. (Use \"" + Karren.conf.getCommandPrefix() + "help interactions\" to view all usable interactions)");
                 } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
                     e.printStackTrace();
                 }
             }
-            else if(returned.length()>0 && !hasBotTag)
+            else if(returned!=null && !hasBotTag)
                 try {
-                    event.getMessage().getChannel().sendMessage(returned);
+                    if(!privateMessage)
+                        event.getMessage().getChannel().sendMessage(returned);
+                    else
+                        Karren.bot.getClient().getOrCreatePMChannel(event.getMessage().getAuthor()).sendMessage(returned);
                 } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
                     e.printStackTrace();
                 }
