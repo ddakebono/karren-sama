@@ -13,6 +13,8 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.MissingPermissionsException;
 import sx.blah.discord.handle.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IRole;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.HTTP429Exception;
 
 import java.sql.SQLException;
@@ -68,6 +70,25 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
                                 break;
                             case "song":
                                 returned = returned.replace("%song", Karren.bot.getListenCast().getSong().getSongName());
+                                break;
+                            case "interaction-reload":
+                                if(hasRole(event.getMessage().getAuthor(), Karren.bot.getClient(), check.getPermissionLevel())){
+                                    Karren.log.info("Interactions system reload triggered by " + event.getMessage().getAuthor().getName());
+                                    Karren.bot.reloadInteractions();
+                                } else {
+                                    returned = check.getRandomTemplatesPermError();
+                                }
+                                break;
+                            case "nowplaying-toggle":
+                                if(hasRole(event.getMessage().getAuthor(), Karren.bot.getClient(), check.getPermissionLevel())){
+                                    if(Karren.bot.getListenCast().enableNP()){
+                                        returned = returned.replace("%npstatus", "activated");
+                                    } else {
+                                        returned = returned.replace("%npstatus", "deactivated");
+                                    }
+                                } else {
+                                    returned = check.getRandomTemplatesPermError();
+                                }
                                 break;
                             case "version":
                                 returned = returned.replace("%version", Karren.conf.getVersionMarker());
@@ -152,6 +173,16 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
         int random = new Random().nextInt(choiceSet.length);
         choice = choiceSet[random].trim();
         return choice;
+    }
+
+    boolean hasRole(IUser user, IDiscordClient bot, String roleName){
+        boolean result = false;
+        for(IRole role : user.getRolesForGuild(bot.getGuildByID(Karren.conf.getGuildId()))){
+            if(role.getName().equals(roleName)){
+                result = true;
+            }
+        }
+        return result;
     }
 
     public static String calcAway(long leaveDate){

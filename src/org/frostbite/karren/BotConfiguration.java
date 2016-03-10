@@ -30,6 +30,7 @@ public class BotConfiguration {
     private String guildId;
     private String allowSQLRW;
     private String enableListencast;
+    private String listencastAnnounce;
     private String enableInteractions;
     private String commandPrefix;
     private String emailAddress;
@@ -37,13 +38,17 @@ public class BotConfiguration {
     private String emailPassword;
     private String extPort;
     private String extAddr;
-    private final String versionMarker = "2.0-DISCORDTesting";
+    private final String versionMarker = "2.0-DISCORD";
     /*
     Config Getters
      */
 
     public String getGuildId() {
         return guildId;
+    }
+
+    public String getListencastAnnounce() {
+        return listencastAnnounce;
     }
 
     public String getEmailPassword(){return emailPassword;}
@@ -152,6 +157,7 @@ public class BotConfiguration {
         extAddr = cfg.getProperty("ExtenderListenAddress", "127.0.0.1");
         extPort = cfg.getProperty("ExtenderListenPort", "8281");
         guildId = cfg.getProperty("GuildID", "0");
+        listencastAnnounce = cfg.getProperty("ListencastAnnounce", "true");
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
             log.warn("Updating configuration file!");
             mkNewConfig(log);
@@ -189,6 +195,7 @@ public class BotConfiguration {
         cfg.setProperty("ExtenderListenPort", extPort);
         cfg.setProperty("ExtenderListenAddress", extAddr);
         cfg.setProperty("GuildID", guildId);
+        cfg.setProperty("ListencastAnnounce", listencastAnnounce);
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
         log.info("Your configuration file has been generated/updated!");
         System.exit(0);

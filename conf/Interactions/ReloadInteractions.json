@@ -1,0 +1,20 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "permissionLevel": "Admins",
+  "templates": [
+    "Interactions reloaded."
+  ],
+  "templatesPermError": [
+    "You don't have permission to use this... (Not admin)",
+    "You're gonna need the admin role to use this..."
+  ],
+  "tags": [
+    "interaction-reload",
+    "prefixed"
+  ],
+  "triggers": [
+    "reloadint"
+  ],
+  "helptext": "Reloads interactions system"
+}

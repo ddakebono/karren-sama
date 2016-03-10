@@ -26,7 +26,7 @@ public class KillCommand implements IListener<MessageReceivedEvent> {
         } else {
 			if(!isAdmin(event.getMessage().getAuthor(), bot) && message.startsWith(cmd))
                 try {
-                    event.getMessage().getChannel().sendMessage("You can't tell me what to do! (Not Operator)");
+                    event.getMessage().getChannel().sendMessage("You can't tell me what to do! (Not Admin)");
                 } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
                     e.printStackTrace();
                 }

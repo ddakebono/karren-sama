@@ -120,15 +120,6 @@ public class MySQLInterface {
                 break;
         }
     }
-    public void userLink(String uid, String linkCode) throws SQLException {
-        resetSQL();
-        query = "UPDATE Users SET linkCode=? WHERE ID=?";
-        sqlPayload.add(linkCode);
-        sqlPayload.add(uid);
-        search = false;
-        pstNeeded = true;
-        executeQuery();
-    }
     /*
     RADIO OPERATIONS
      */
@@ -168,35 +159,6 @@ public class MySQLInterface {
         } else {
             return false;
         }
-    }
-    public ArrayList<Song> getOldSongDataFromDB() throws SQLException {
-        ArrayList<Song> songs = new ArrayList<>();
-        resetSQL();
-        query = "SELECT * FROM songdb_old";
-        search = true;
-        pstNeeded = false;
-        ArrayList<Object> result = executeQuery();
-        int songCount = result.size()/7;
-        for(int i=0; i<songCount; i++){
-            songs.add(new Song((String)result.get(1+(7*(i))),(int)result.get(3+(7*(i))),(int)result.get(4+(7*(i))),(boolean)result.get(6+(7*(i))),(String)result.get(2+(7*(i))), (long)result.get(5+(7*(i)))));
-        }
-        return songs;
-    }
-    public void insertSongData(Song song) throws SQLException {
-        resetSQL();
-        int durLock = 0;
-        if(song.isDurationLocked())
-            durLock = 1;
-        query = "INSERT INTO songdb (ID, SongTitle, LPTime, PlayCount, FavCount, SongDuration, DurationLock) VALUES (null, ?, ?, ?, ?, ?, ?)";
-        sqlPayload.add(song.getSongName());
-        sqlPayload.add(String.valueOf(song.getLastPlayedRaw()));
-        sqlPayload.add(String.valueOf(song.getPlayCount()));
-        sqlPayload.add(String.valueOf(song.getFavCount()));
-        sqlPayload.add(String.valueOf(song.getLastSongDuration()));
-        sqlPayload.add(String.valueOf(durLock));
-        pstNeeded = true;
-        search = false;
-        executeQuery();
     }
     public void updateDJActivity(String curDJ, String streamName) throws SQLException {
         if(curDJ.length()==0){

@@ -21,16 +21,18 @@ public class Interactions {
     private int confidence;
     private String[] templatesFail;
     private String[] templatesPermError;
+    private String permissionLevel;
+
 
     public Interactions(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new String[]{templates}, triggers, confidence, enabled, helptext);
     }
 
     public Interactions(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
-        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null);
+        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "");
     }
 
-    public Interactions(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError){
+    public Interactions(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel){
         this.identifier = identifier;
         this.tags = tags;
         this.templates = templates;
@@ -38,12 +40,14 @@ public class Interactions {
         this.triggers = triggers;
         this.enabled = enabled;
         this.helptext = helptext;
+        this.templatesPermError = templatesPermError;
+        this.templatesFail = templatesFail;
+        this.permissionLevel = permissionLevel;
     }
     /*
     handleMessage checks which interaction type the message is and runs the respective functions.
      */
     public String handleMessage(MessageReceivedEvent event){
-        Random rng = new Random();
         String result = null;
         int confidence = 0;
         if(enabled) {
@@ -121,4 +125,6 @@ public class Interactions {
         else
             return "PERMISSION ERROR";
     }
+
+    public String getPermissionLevel(){return permissionLevel;}
 }

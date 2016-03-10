@@ -1,0 +1,20 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "permissionLevel": "Admins",
+  "templates": [
+    "Automagic now playing has been %npstatus."
+  ],
+  "templatesPermError": [
+    "You don't have permission to change this... (Not admin)",
+    "You're gonna need the admin role to change this..."
+  ],
+  "tags": [
+    "nowplaying-toggle",
+    "prefixed"
+  ],
+  "triggers": [
+    "npswitch"
+  ],
+  "helptext": "Enables or disabled now playing broadcasts"
+}

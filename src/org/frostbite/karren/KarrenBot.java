@@ -33,9 +33,7 @@ public class KarrenBot {
             ed.registerListener(new ConnectCommand());
             ed.registerListener(new HelpCommand());
             ed.registerListener(new InteractionCommands());
-            ed.registerListener(new HueCommand());
             ed.registerListener(new KillCommand());
-            ed.registerListener(new MiscCommands());
             try {
                 client.login();
             } catch (DiscordException e) {
@@ -103,6 +101,7 @@ public class KarrenBot {
         System.exit(0);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public File[] getFilesInFolders(File directory){
         ArrayList<File> files = new ArrayList<>();
         if(directory.isDirectory()){

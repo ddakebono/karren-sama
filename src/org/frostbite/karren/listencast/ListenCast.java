@@ -52,6 +52,7 @@ public class ListenCast extends Thread{
     private boolean doUpdate;
 	private boolean killListencast;
 	public ListenCast(IDiscordClient bot) {
+        nowPlaying = Boolean.parseBoolean(Karren.conf.getListencastAnnounce());
         this.bot = bot;
     }
 
