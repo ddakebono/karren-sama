@@ -38,7 +38,7 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
                         switch (tag.toLowerCase()){
                             case "echo":
                                 //Echo is limited by this code, only single trigger command will work (Ex. .echo Test)
-                                returned = returned.replace("%echo", event.getMessage().getContent().replace(check.getTriggers()[0], "").trim());
+                                returned = returned.replace("%echo", event.getMessage().getContent().replace( Karren.conf.getCommandPrefix() + check.getTriggers()[0], "").trim());
                                 break;
                             case "name":
                                 returned = returned.replace("%name", event.getMessage().getAuthor().getName());
