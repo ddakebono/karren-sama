@@ -109,8 +109,10 @@ public class InteractionCommands implements IListener<MessageReceivedEvent>{
                                     returned = "Hey," + event.getMessage().getAuthor().getName() + " are you new? Be sure to say good bye to me when you leave!";
                                 }
                                 break;
+                            case "prefixed":
+                                break;
                             default:
-                                Karren.log.error("Please check the Interactions file, a tag that does not exist is being used!");
+                                Karren.log.error("Please check the Interaction file for " + check.getIdentifier() + ", a tag that does not exist is being used!");
                         }
                     }
                     break;

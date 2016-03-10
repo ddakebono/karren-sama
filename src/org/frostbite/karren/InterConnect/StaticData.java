@@ -7,4 +7,10 @@ public class StaticData {
     public enum SystemType {
         WINDOWS, LINUX, OTHER
     }
+    public enum SendCommands {
+        COMMAND, RESTART, STOP, START, STATUS, KILLEXT, EXTSYSINFO
+    }
+    public enum RecvCommands{
+        JSON, BOOL, UNK
+    }
 }
