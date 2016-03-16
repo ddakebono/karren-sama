@@ -63,7 +63,7 @@ public class Interaction {
                 confidence = getConfidence(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
             if (confidence >= this.confidence)
                 result = getRandomTemplate(templates);
-            if(permissionLevel!=null && permissionLevel.length()>0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), Karren.bot.getClient(), permissionLevel)){
+            if(result!=null && permissionLevel!=null && permissionLevel.length()>0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), Karren.bot.getClient(), permissionLevel)){
                 result = getRandomTemplatesPermError();
             }
         }
