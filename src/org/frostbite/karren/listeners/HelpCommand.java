@@ -10,6 +10,7 @@
 
 package org.frostbite.karren.listeners;
 
+import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.Karren;
 import sx.blah.discord.api.DiscordException;
@@ -31,7 +32,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent>{
                 helpMsg.withChannel(event.getClient().getOrCreatePMChannel(event.getMessage().getAuthor()));
                 helpMsg.withContent("```\n");
                 for (Interaction help : Karren.bot.getInteractionManager().getInteractions()) {
-                    if(hasRole(event.getMessage().getAuthor(), event.getClient(), help.getPermissionLevel()))
+                    if(KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getClient(), help.getPermissionLevel()))
                         helpMsg.appendContent( help.getIdentifier() + " : " + help.getHelptext() + "\n");
                 }
                 helpMsg.appendContent("```").send();
@@ -39,18 +40,5 @@ public class HelpCommand implements IListener<MessageReceivedEvent>{
                 e.printStackTrace();
             }
         }
-    }
-
-    boolean hasRole(IUser user, IDiscordClient bot, String roleName){
-        boolean result = false;
-        if(roleName!=null) {
-            for (IRole role : user.getRolesForGuild(bot.getGuildByID(Karren.conf.getGuildId()))) {
-                if (role.getName().equals(roleName)) {
-                    result = true;
-                }
-            }
-            return result;
-        }
-        return true;
     }
 }

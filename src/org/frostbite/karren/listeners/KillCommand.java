@@ -11,6 +11,7 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Karren;
+import org.frostbite.karren.KarrenUtil;
 import sx.blah.discord.api.DiscordException;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.MissingPermissionsException;
@@ -25,10 +26,10 @@ public class KillCommand implements IListener<MessageReceivedEvent> {
 		String message = event.getMessage().getContent();
 		IDiscordClient bot = event.getClient();
         String cmd = Karren.conf.getCommandPrefix() + "kill";
-		if((isAdmin(event.getMessage().getAuthor(), bot)) && message.toLowerCase().startsWith(cmd)){
+		if((KarrenUtil.hasRole(event.getMessage().getAuthor(), bot, "Admins")) && message.toLowerCase().startsWith(cmd)){
             Karren.bot.killBot(event.getMessage().getAuthor().getName());
         } else {
-			if(!isAdmin(event.getMessage().getAuthor(), bot) && message.startsWith(cmd))
+			if(!KarrenUtil.hasRole(event.getMessage().getAuthor(), bot, "Admins") && message.startsWith(cmd))
                 try {
                     event.getMessage().getChannel().sendMessage("You can't tell me what to do! (Not Admin)");
                 } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
@@ -36,13 +37,4 @@ public class KillCommand implements IListener<MessageReceivedEvent> {
                 }
         }
 	}
-    boolean isAdmin(IUser user, IDiscordClient bot){
-        boolean result = false;
-        for(IRole role : user.getRolesForGuild(bot.getGuildByID(Karren.conf.getGuildId()))){
-            if(role.getName().equals("Admins")){
-                result = true;
-            }
-        }
-        return result;
-    }
 }
