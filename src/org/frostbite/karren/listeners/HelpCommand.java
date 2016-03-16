@@ -10,7 +10,7 @@
 
 package org.frostbite.karren.listeners;
 
-import org.frostbite.karren.Interactions;
+import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.Karren;
 import sx.blah.discord.api.DiscordException;
 import sx.blah.discord.api.IDiscordClient;
@@ -30,7 +30,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent>{
             try {
                 helpMsg.withChannel(event.getClient().getOrCreatePMChannel(event.getMessage().getAuthor()));
                 helpMsg.withContent("```\n");
-                for (Interactions help : Karren.bot.getInteractions()) {
+                for (Interaction help : Karren.bot.getInteractionManager().getInteractions()) {
                     if(hasRole(event.getMessage().getAuthor(), event.getClient(), help.getPermissionLevel()))
                         helpMsg.appendContent( help.getIdentifier() + " : " + help.getHelptext() + "\n");
                 }

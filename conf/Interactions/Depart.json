@@ -6,6 +6,9 @@
     "Goodbye %name!",
     "Come back soon %name!"
   ],
+  "templatesFail": [
+    "Wait %name, you left earlier... Well fine, good bye again."
+  ],
   "tags": [
     "bot",
     "depart",

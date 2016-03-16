@@ -8,14 +8,16 @@
  *
  */
 
-package org.frostbite.karren;
+package org.frostbite.karren.interactions;
 
+import org.frostbite.karren.Karren;
+import org.frostbite.karren.KarrenUtil;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 
 import java.util.Arrays;
 import java.util.Random;
 
-public class Interactions {
+public class Interaction {
     private String[] triggers;
     private String[] tags;
     private String[] templates;
@@ -28,15 +30,15 @@ public class Interactions {
     private String permissionLevel;
 
 
-    public Interactions(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
+    public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new String[]{templates}, triggers, confidence, enabled, helptext);
     }
 
-    public Interactions(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
+    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "");
     }
 
-    public Interactions(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel){
+    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel){
         this.identifier = identifier;
         this.tags = tags;
         this.templates = templates;
@@ -55,12 +57,15 @@ public class Interactions {
         String result = null;
         int confidence = 0;
         if(enabled) {
-            if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed"))
+            if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed") && ((Arrays.asList(tags).contains("bot") && event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase())) || !Arrays.asList(tags).contains("bot")))
                 confidence = getConfidence(event.getMessage().getContent());
             if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed"))
                 confidence = getConfidence(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
             if (confidence >= this.confidence)
                 result = getRandomTemplate(templates);
+            if(permissionLevel!=null && permissionLevel.length()>0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), Karren.bot.getClient(), permissionLevel)){
+                result = getRandomTemplatesPermError();
+            }
         }
         return result;
     }

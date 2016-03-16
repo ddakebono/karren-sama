@@ -6,6 +6,9 @@
     "Hey there %name, haven't seen you for %away",
     "What kept you so long %name, last I saw you was %away ago"
   ],
+  "templatesFail": [
+    "Hey %name, are you new? Be sure to say good bye to me when you leave!"
+  ],
   "tags": [
     "bot",
     "return",

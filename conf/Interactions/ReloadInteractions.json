@@ -10,7 +10,7 @@
     "You're gonna need the admin role to use this..."
   ],
   "tags": [
-    "interaction-reload",
+    "interactionreload",
     "prefixed"
   ],
   "triggers": [

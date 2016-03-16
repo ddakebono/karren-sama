@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import org.apache.commons.io.FilenameUtils;
 import org.frostbite.karren.InterConnect.InterConnectListener;
+import org.frostbite.karren.interactions.InteractionManager;
 import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listeners.*;
 import sx.blah.discord.api.DiscordException;
@@ -30,7 +31,7 @@ public class KarrenBot {
     MySQLInterface sql = new MySQLInterface();
     ListenCast lc;
     boolean extrasReady = false;
-    ArrayList<Interactions> interactions;
+    InteractionManager ic;
     InterConnectListener interConnectListener;
 
     public KarrenBot(IDiscordClient client){
@@ -56,35 +57,10 @@ public class KarrenBot {
         }
     }
 
-    private ArrayList<Interactions> loadInteractions(){
-        Gson gson = new Gson();
-        ArrayList<Interactions> result = new ArrayList<>();
-        File intDir = new File("conf/Interactions");
-        if(intDir.isDirectory()){
-            File[] intFiles = getFilesInFolders(intDir);
-            for(File file : intFiles){
-                try {
-                    Interactions tempInteraction = gson.fromJson(new FileReader(file), Interactions.class);
-                    tempInteraction.setIdentifier(FilenameUtils.removeExtension(file.getName()));
-                    result.add(tempInteraction);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-            return result;
-        } else {
-            Karren.log.info("No Interactions detected, interaction system unregistered.");
-            client.getDispatcher().unregisterListener(new InteractionCommands());
-            return result;
-        }
-    }
-
-    public void reloadInteractions(){
-        interactions = loadInteractions();
-    }
-
     public void initExtras(){
-        interactions = loadInteractions();
+        ic = new InteractionManager();
+        ic.loadTags();
+        ic.loadInteractions();
         lc = new ListenCast(client);
         interConnectListener = new InterConnectListener(Karren.log);
         extrasReady = true;
@@ -111,22 +87,6 @@ public class KarrenBot {
         System.exit(0);
     }
 
-    @SuppressWarnings("ConstantConditions")
-    public File[] getFilesInFolders(File directory){
-        ArrayList<File> files = new ArrayList<>();
-        if(directory.isDirectory()){
-            for(File file : directory.listFiles()){
-                if(file.isDirectory())
-                    Collections.addAll(files, getFilesInFolders(file));
-                else
-                    files.add(file);
-            }
-            return files.toArray(new File[files.size()]);
-        } else {
-            return files.toArray(new File[files.size()]);
-        }
-    }
-
     /*
     GETTERS
      */
@@ -135,9 +95,7 @@ public class KarrenBot {
         return sql;
     }
 
-    public ArrayList<Interactions> getInteractions(){
-        return interactions;
-    }
+    public InteractionManager getInteractionManager() {return ic;}
 
     public IDiscordClient getClient(){
         return client;
