@@ -21,6 +21,7 @@ public class Interaction {
     private String[] triggers;
     private String[] tags;
     private String[] templates;
+    private String[] voiceFiles;
     private boolean enabled;
     private String helptext;
     private String identifier;
@@ -28,7 +29,7 @@ public class Interaction {
     private String[] templatesFail;
     private String[] templatesPermError;
     private String permissionLevel;
-    private String overrideChannel;
+    private String channel;
 
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
@@ -36,10 +37,10 @@ public class Interaction {
     }
 
     public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
-        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "");
+        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "", null);
     }
 
-    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String overrideChannel){
+    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String channel, String[] voiceFiles){
         this.identifier = identifier;
         this.tags = tags;
         this.templates = templates;
@@ -50,7 +51,8 @@ public class Interaction {
         this.templatesPermError = templatesPermError;
         this.templatesFail = templatesFail;
         this.permissionLevel = permissionLevel;
-        this.overrideChannel = overrideChannel;
+        this.channel = channel;
+        this.voiceFiles = voiceFiles;
     }
     /*
     handleMessage checks which interaction type the message is and runs the respective functions.
@@ -115,8 +117,8 @@ public class Interaction {
     public String getHelptext(){return helptext;}
     public String getIdentifier(){return identifier;}
 
-    public String getOverrideChannel() {
-        return overrideChannel;
+    public String getChannel() {
+        return channel;
     }
 
     public String[] getTemplatesFail() {
@@ -139,6 +141,14 @@ public class Interaction {
             return getRandomTemplate(templatesPermError);
         else
             return "PERMISSION ERROR";
+    }
+
+    public String getRandomVoiceFile(){
+        if(voiceFiles!=null){
+            return "conf/" + getRandomTemplate(voiceFiles);
+        } else {
+            return "";
+        }
     }
 
     public String getPermissionLevel(){return permissionLevel;}

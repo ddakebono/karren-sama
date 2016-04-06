@@ -13,10 +13,7 @@ package org.frostbite.karren;
 import org.frostbite.karren.InterConnect.InterConnectListener;
 import org.frostbite.karren.interactions.InteractionManager;
 import org.frostbite.karren.listencast.ListenCast;
-import org.frostbite.karren.listeners.ConnectCommand;
-import org.frostbite.karren.listeners.HelpCommand;
-import org.frostbite.karren.listeners.InteractionCommands;
-import org.frostbite.karren.listeners.KillCommand;
+import org.frostbite.karren.listeners.*;
 import sx.blah.discord.api.EventDispatcher;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
@@ -41,6 +38,7 @@ public class KarrenBot {
             ed.registerListener(new HelpCommand());
             ed.registerListener(new InteractionCommands());
             ed.registerListener(new KillCommand());
+            ed.registerListener(new VoiceExitCommand());
             try {
                 client.login();
             } catch (DiscordException e) {

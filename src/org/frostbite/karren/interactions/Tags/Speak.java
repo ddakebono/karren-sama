@@ -14,13 +14,24 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IVoiceChannel;
+import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
 
-public class OverrideChannel implements Tag {
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class Speak implements Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        response.withChannel(Karren.bot.getClient().getChannelByID(interaction.getChannel()));
+        IVoiceChannel voice = Karren.bot.getClient().getVoiceChannelByID(interaction.getChannel());
+        voice.join();
+        try {
+            voice.getAudioChannel().queueFile(interaction.getRandomVoiceFile());
+        } catch (DiscordException e) {
+            e.printStackTrace();
+        }
         return msg;
     }
 }

@@ -49,6 +49,7 @@ public class InteractionManager {
         handlers.put("songtime", new SongTime());
         handlers.put("version", new Version());
         handlers.put("overridechannel", new OverrideChannel());
+        handlers.put("speak", new Speak());
     }
 
     public void loadInteractions(){
