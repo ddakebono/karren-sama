@@ -30,6 +30,7 @@ public class Interaction {
     private String[] templatesPermError;
     private String permissionLevel;
     private String channel;
+    private float voiceVolume;
 
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
@@ -37,10 +38,10 @@ public class Interaction {
     }
 
     public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
-        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "", null);
+        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "", null, 0.0f);
     }
 
-    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String channel, String[] voiceFiles){
+    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume){
         this.identifier = identifier;
         this.tags = tags;
         this.templates = templates;
@@ -53,6 +54,7 @@ public class Interaction {
         this.permissionLevel = permissionLevel;
         this.channel = channel;
         this.voiceFiles = voiceFiles;
+        this.voiceVolume = voiceVolume;
     }
     /*
     handleMessage checks which interaction type the message is and runs the respective functions.
@@ -149,6 +151,10 @@ public class Interaction {
         } else {
             return "";
         }
+    }
+
+    public float getVoiceVolume() {
+        return voiceVolume;
     }
 
     public String getPermissionLevel(){return permissionLevel;}

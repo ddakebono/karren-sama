@@ -50,6 +50,7 @@ public class InteractionManager {
         handlers.put("version", new Version());
         handlers.put("overridechannel", new OverrideChannel());
         handlers.put("speak", new Speak());
+        handlers.put("stopspeak", new StopSpeak());
     }
 
     public void loadInteractions(){

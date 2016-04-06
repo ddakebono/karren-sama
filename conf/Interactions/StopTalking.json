@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "permissionLevel": "Admins",
+  "templates": [
+    "Alright..."
+  ],
+  "tags": [
+    "bot",
+    "stopspeak"
+  ],
+  "triggers": [
+    "shutup",
+    "quiet",
+    "talking"
+  ],
+  "helptext": "Stop me from talking"
+}

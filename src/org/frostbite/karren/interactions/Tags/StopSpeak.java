@@ -10,7 +10,6 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
@@ -18,21 +17,15 @@ import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
 
-public class Speak implements Tag {
-
+public class StopSpeak implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        IVoiceChannel voice = Karren.bot.getClient().getVoiceChannelByID(interaction.getChannel());
-        try {
-            if(!voice.isConnected() || (voice.isConnected() && voice.getAudioChannel().getQueueSize()==0)) {
-                voice.join();
-                voice.getAudioChannel().setVolume(interaction.getVoiceVolume());
-                voice.getAudioChannel().queueFile(interaction.getRandomVoiceFile());
-            } else {
-                msg = interaction.getRandomTemplatesFail();
+        for(IVoiceChannel channel : event.getClient().getConnectedVoiceChannels()){
+            try {
+                channel.getAudioChannel().clearQueue();
+            } catch (DiscordException e) {
+                e.printStackTrace();
             }
-        } catch (DiscordException e) {
-            e.printStackTrace();
         }
         return msg;
     }

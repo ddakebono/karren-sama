@@ -1,0 +1,28 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "channel": "150411375292841985",
+  "voiceVolume": 0.5,
+  "templates": [
+    "Everyone needs more memes",
+    "Injecting memes directly into your ears.",
+    "Nice meme!",
+    "Top Kek!"
+  ],
+  "templatesFail": [
+    "Hold on, I'm already injecting memes.",
+    "Wait a minute, I already have some memes playing",
+    "Why can't I hold all these memes!"
+  ],
+  "tags": [
+    "speak",
+    "prefixed"
+  ],
+  "triggers": [
+    "meme"
+  ],
+  "voiceFiles": [
+    "cena.mp3"
+  ],
+  "helptext": "Adds much needed memes"
+}
