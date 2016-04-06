@@ -12,16 +12,18 @@ package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Karren;
 import sx.blah.discord.api.IListener;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
+import sx.blah.discord.handle.impl.events.GuildCreateEvent;
 
-public class ConnectCommand implements IListener<ReadyEvent> {
+public class ConnectCommand implements IListener<GuildCreateEvent> {
 
     @Override
-    public void handle(ReadyEvent event){
-        Karren.log.info("Starting threads!");
-        Karren.bot.initExtras();
-        if(!Karren.bot.startThreads()){
-            Karren.log.error("Problem occured while starting threads, threaded functions will not be available!");
+    public void handle(GuildCreateEvent event){
+        if(!Karren.bot.isExtrasReady()) {
+            Karren.log.info("Starting threads!");
+            Karren.bot.initExtras();
+            if (!Karren.bot.startThreads()) {
+                Karren.log.error("Problem occured while starting threads, threaded functions will not be available!");
+            }
         }
     }
 }

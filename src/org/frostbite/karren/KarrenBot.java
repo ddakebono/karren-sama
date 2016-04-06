@@ -100,4 +100,8 @@ public class KarrenBot {
     public ListenCast getListenCast(){
         return lc;
     }
+
+    public boolean isExtrasReady() {
+        return extrasReady;
+    }
 }
