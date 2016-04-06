@@ -12,14 +12,12 @@ package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
-import sx.blah.discord.api.DiscordException;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.MissingPermissionsException;
-import sx.blah.discord.handle.IListener;
+import sx.blah.discord.api.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
+import sx.blah.discord.util.MissingPermissionsException;
 
 public class KillCommand implements IListener<MessageReceivedEvent> {
 	public void handle(MessageReceivedEvent event){

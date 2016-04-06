@@ -13,17 +13,15 @@ package org.frostbite.karren.listeners;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.Karren;
-import sx.blah.discord.api.DiscordException;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.MissingPermissionsException;
-import sx.blah.discord.handle.IListener;
+import sx.blah.discord.api.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MessageBuilder;
+import sx.blah.discord.util.MissingPermissionsException;
 
-public class HelpCommand implements IListener<MessageReceivedEvent>{
+public class HelpCommand implements IListener<MessageReceivedEvent> {
     public void handle(MessageReceivedEvent event){
         IDiscordClient bot = event.getClient();
         if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix() + "help")){

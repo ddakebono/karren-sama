@@ -10,7 +10,7 @@
     "You're gonna need the admin role to change this..."
   ],
   "tags": [
-    "nowplaying-toggle",
+    "nowplayingtoggle",
     "prefixed"
   ],
   "triggers": [

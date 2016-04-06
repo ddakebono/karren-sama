@@ -13,7 +13,7 @@ package org.frostbite.karren;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.ClientBuilder;
-import sx.blah.discord.api.DiscordException;
+import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.api.IDiscordClient;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class Karren{
         //Build our discord client
         IDiscordClient client = null;
         try {
-            client = new ClientBuilder().withLogin(conf.getEmailAddress(), conf.getDiscordPass()).build();
+            client = new ClientBuilder().withToken(conf.getDiscordToken()).build();
         } catch (DiscordException e) {
             e.printStackTrace();
         }

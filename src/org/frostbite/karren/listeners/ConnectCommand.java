@@ -11,10 +11,10 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Karren;
-import sx.blah.discord.handle.IListener;
+import sx.blah.discord.api.IListener;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 
-public class ConnectCommand implements IListener<ReadyEvent>{
+public class ConnectCommand implements IListener<ReadyEvent> {
 
     @Override
     public void handle(ReadyEvent event){

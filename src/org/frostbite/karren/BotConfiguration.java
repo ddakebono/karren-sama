@@ -29,33 +29,31 @@ public class BotConfiguration {
     private String icecastHost;
     private String icecastPort;
     private String icecastMount;
-    private String discordPass;
     private String streamAnnounceChannel;
+    private String discordToken;
     private String guildId;
     private String allowSQLRW;
     private String enableListencast;
     private String listencastAnnounce;
     private String enableInteractions;
     private String commandPrefix;
-    private String emailAddress;
     private String connectToDiscord;
-    private String emailPassword;
     private String extPort;
     private String extAddr;
-    private final String versionMarker = "2.0-DISCORD";
+    private final String versionMarker = "2.1-DISCORD";
     /*
     Config Getters
      */
 
+    public String getDiscordToken() {
+        return discordToken;
+    }
     public String getGuildId() {
         return guildId;
     }
-
     public String getListencastAnnounce() {
         return listencastAnnounce;
     }
-
-    public String getEmailPassword(){return emailPassword;}
     public String getSqlhost() {
         return sqlhost;
     }
@@ -71,19 +69,10 @@ public class BotConfiguration {
     public String getVersionMarker() {
         return versionMarker;
     }
-
     public String getStreamAnnounceChannel() {
         return streamAnnounceChannel;
     }
     public String getConnectToDiscord() {return connectToDiscord;}
-    public String getEmailAddress() {return emailAddress;}
-    public String getDiscordPass() {
-        if(discordPass.length()==0){
-            return "guest";
-        } else {
-            return discordPass;
-        }
-    }
     public String getIcecastMount() {
         return icecastMount;
     }
@@ -102,7 +91,6 @@ public class BotConfiguration {
     public String getSqlpass() {
         return sqlpass;
     }
-
     public String getAllowSQLRW() {
         return allowSQLRW;
     }
@@ -113,11 +101,9 @@ public class BotConfiguration {
         return enableInteractions;
     }
     public String getCommandPrefix() { return commandPrefix; }
-
     public String getExtPort() {
         return extPort;
     }
-
     public String getExtAddr() {
         return extAddr;
     }
@@ -149,15 +135,13 @@ public class BotConfiguration {
         icecastHost = cfg.getProperty("icecastHost", "0.0.0.0");
         icecastPort = cfg.getProperty("icecastPort", "8000");
         icecastMount = cfg.getProperty("icecastMount", "changeme.ogg");
-        discordPass = cfg.getProperty("nickservPass", "changeme");
         streamAnnounceChannel = cfg.getProperty("streamAnnounceChannel", "0");
         allowSQLRW = cfg.getProperty("allowSQLReadWrite", "true");
         enableInteractions = cfg.getProperty("enableInteractionSystem", "true");
         enableListencast = cfg.getProperty("enableListencastSystem", "true");
         commandPrefix = cfg.getProperty("commandPrefix", ".");
         connectToDiscord = cfg.getProperty("connectToDiscord", "true");
-        emailAddress = cfg.getProperty("EmailAddress", "changethis@emailaddress.bad");
-        emailPassword = cfg.getProperty("EmailAddressPassword", "hackme");
+        discordToken = cfg.getProperty("BotAccountToken", "hackme");
         extAddr = cfg.getProperty("ExtenderListenAddress", "127.0.0.1");
         extPort = cfg.getProperty("ExtenderListenPort", "8281");
         guildId = cfg.getProperty("GuildID", "0");
@@ -187,15 +171,13 @@ public class BotConfiguration {
         cfg.setProperty("icecastHost", icecastHost);
         cfg.setProperty("icecastPort", icecastPort);
         cfg.setProperty("icecastMount", icecastMount);
-        cfg.setProperty("nickservPass", discordPass);
         cfg.setProperty("streamAnnounceChannel", streamAnnounceChannel);
         cfg.setProperty("allowSQLReadWrite", allowSQLRW);
         cfg.setProperty("enableInteractionSystem", enableInteractions);
         cfg.setProperty("enableListencastSystem", enableListencast);
         cfg.setProperty("commandPrefix", commandPrefix);
         cfg.setProperty("connectToDiscord", connectToDiscord);
-        cfg.setProperty("EmailAddress", emailAddress);
-        cfg.setProperty("EmailAddressPassword", emailPassword);
+        cfg.setProperty("BotAccountToken", discordToken);
         cfg.setProperty("ExtenderListenPort", extPort);
         cfg.setProperty("ExtenderListenAddress", extAddr);
         cfg.setProperty("GuildID", guildId);

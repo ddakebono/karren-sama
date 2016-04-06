@@ -17,8 +17,8 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Tags.*;
 import org.frostbite.karren.listeners.InteractionCommands;
-import sx.blah.discord.api.DiscordException;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MessageBuilder;
 
@@ -48,6 +48,7 @@ public class InteractionManager {
         handlers.put("song", new Song());
         handlers.put("songtime", new SongTime());
         handlers.put("version", new Version());
+        handlers.put("overridechannel", new OverrideChannel());
     }
 
     public void loadInteractions(){
