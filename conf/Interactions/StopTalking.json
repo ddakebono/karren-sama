@@ -5,6 +5,9 @@
   "templates": [
     "Alright..."
   ],
+  "templatesPermError": [
+    "You can't tell me what to do!"
+  ],
   "tags": [
     "bot",
     "stopspeak"
@@ -14,5 +17,5 @@
     "quiet",
     "talking"
   ],
-  "helptext": "Stop me from talking"
+  "helptext": "Stops me from talking"
 }

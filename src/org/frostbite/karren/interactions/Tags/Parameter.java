@@ -16,13 +16,18 @@ import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.util.MessageBuilder;
 
-public class Echo implements Tag {
+public class Parameter implements Tag {
+
+    //Currently the parameter tag only works with Prefixed interactions, use on non prefixed interactions isn't possible yet.
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(interaction.getParameter()!=null)
-            return msg.replace("%echo", interaction.getParameter());
-        else
-            return msg.replace("%echo", "");
+        for(String trigger : interaction.getTriggers()) {
+            if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix() + trigger)) {
+                interaction.setParameter(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix() + trigger, "").trim());
+                break;
+            }
+        }
+        return msg;
     }
 }

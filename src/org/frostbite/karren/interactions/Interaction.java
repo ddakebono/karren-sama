@@ -22,15 +22,17 @@ public class Interaction {
     private String[] tags;
     private String[] templates;
     private String[] voiceFiles;
-    private boolean enabled;
+    private boolean enabled = true;
     private String helptext;
     private String identifier;
-    private int confidence;
+    private int confidence = 0;
     private String[] templatesFail;
     private String[] templatesPermError;
     private String permissionLevel;
     private String channel;
-    private float voiceVolume;
+    private float voiceVolume = 0.1f;
+    private String parameter;
+    private boolean specialInteraction = false;
 
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
@@ -38,10 +40,11 @@ public class Interaction {
     }
 
     public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
-        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "", null, 0.0f);
+        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "", null, 0.0f, false);
     }
 
-    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume){
+    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction){
+        this.specialInteraction = specialInteraction;
         this.identifier = identifier;
         this.tags = tags;
         this.templates = templates;
@@ -132,23 +135,28 @@ public class Interaction {
     }
 
     public String getRandomTemplatesFail() {
-        if(templatesFail!=null)
+        if(templatesFail!=null) {
             return getRandomTemplate(templatesFail);
-        else
+        } else {
+            Karren.log.error("Interaction error, " + identifier + " uses failure templates but doesn't supply any!");
             return "ERROR";
+        }
     }
 
     public String getRandomTemplatesPermError() {
-        if(templatesPermError!=null)
+        if(templatesPermError!=null) {
             return getRandomTemplate(templatesPermError);
-        else
+        } else {
+            Karren.log.error("Interaction error, " + identifier + " uses permission error templates but doesn't supply any!");
             return "PERMISSION ERROR";
+        }
     }
 
     public String getRandomVoiceFile(){
         if(voiceFiles!=null){
             return "conf/" + getRandomTemplate(voiceFiles);
         } else {
+            Karren.log.error("Interaction error, " + identifier + " uses voice files but doesn't supply any!");
             return "";
         }
     }
@@ -158,4 +166,16 @@ public class Interaction {
     }
 
     public String getPermissionLevel(){return permissionLevel;}
+
+    public boolean isSpecialInteraction() {
+        return specialInteraction;
+    }
+
+    public String getParameter() {
+        return parameter;
+    }
+
+    public void setParameter(String parameter) {
+        this.parameter = parameter;
+    }
 }

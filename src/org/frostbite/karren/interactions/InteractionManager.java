@@ -51,6 +51,9 @@ public class InteractionManager {
         handlers.put("overridechannel", new OverrideChannel());
         handlers.put("speak", new Speak());
         handlers.put("stopspeak", new StopSpeak());
+        handlers.put("topic", new Topic());
+        handlers.put("parameter", new Parameter());
+        handlers.put("count", new Count());
     }
 
     public void loadInteractions(){
@@ -80,18 +83,23 @@ public class InteractionManager {
         for(Interaction check : interactions){
             returned = check.handleMessage(event);
             if(returned!=null){
+                Karren.log.debug("Interaction match for " + check.getIdentifier() + ", handling templates!");
                 result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getMessage().getChannel());
                 for(String tag : check.getTags()){
                     if(!tag.equalsIgnoreCase("pm")) {
                         Tag handler = handlers.get(tag.toLowerCase());
-                        if (handler != null)
+                        if (handler != null && returned!=null)
                             returned = handler.handleTemplate(returned, check, result, event);
-                        else if(!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed"))
+                        else if(!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && returned!=null)
                             Karren.log.error("Please check interaction " + check.getIdentifier() + " as the file contains invalid tags!");
                     }
                 }
-                result.withContent(returned);
-                break;
+                if(returned!=null)
+                    result.withContent(returned);
+                else
+                    result = null;
+                if(!check.isSpecialInteraction())
+                    break;
             }
         }
         return result;
@@ -103,6 +111,10 @@ public class InteractionManager {
 
     public void addHandler(String id, Tag tag){
         handlers.put(id.toLowerCase(), tag);
+    }
+
+    public Map<String, Tag> getHandlers() {
+        return handlers;
     }
 
     public ArrayList<Interaction> getInteractions(){return interactions;}

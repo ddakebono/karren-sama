@@ -5,6 +5,7 @@
     "%echo"
   ],
   "tags": [
+    "parameter",
     "echo",
     "prefixed"
   ],

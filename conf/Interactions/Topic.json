@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "Redirect Gaming Discord, enter .help to get some information on our bot. MOTD: %motd"
+  ],
+  "templatesFail": [
+    "You need to supply a new MOTD for me to be able to change the topic."
+  ],
+  "templatesPermError": [
+    "You don't have the necessary permissions to change the topic!"
+  ],
+  "tags": [
+    "parameter",
+    "topic",
+    "prefixed"
+  ],
+  "triggers": [
+    "topic"
+  ],
+  "helptext": "Changes the topic on the channel it was sent from."
+}

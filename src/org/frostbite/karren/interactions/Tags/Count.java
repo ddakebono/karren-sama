@@ -16,13 +16,25 @@ import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.util.MessageBuilder;
 
-public class Echo implements Tag {
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+
+public class Count implements Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(interaction.getParameter()!=null)
-            return msg.replace("%echo", interaction.getParameter());
-        else
-            return msg.replace("%echo", "");
+        ArrayList<Object> returned = null;
+        try {
+            returned = Karren.bot.getSql().modifyWordCount(interaction.getIdentifier().toLowerCase());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if(returned!=null) {
+            Timestamp time = (Timestamp) returned.get(3);
+            return msg.replace("%count", String.valueOf((long) returned.get(2))).replace("%since", time.toString());
+        } else {
+            return msg;
+        }
     }
 }

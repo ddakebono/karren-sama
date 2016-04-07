@@ -14,12 +14,18 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Depart implements Tag {
+
+    public HashMap<IUser, Boolean> departedUsers = new HashMap<>();
+
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         String[] data = {event.getMessage().getAuthor().getID()};
@@ -28,6 +34,8 @@ public class Depart implements Tag {
             resultData.addAll(Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getID()));
             if(Boolean.parseBoolean(String.valueOf(resultData.get(2)))){
                  msg = interaction.getRandomTemplatesFail();
+            } else {
+                departedUsers.put(event.getMessage().getAuthor(), true);
             }
             Karren.bot.getSql().userOperation("part", data);
         } catch (SQLException e) {

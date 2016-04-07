@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "specialInteraction": true,
+  "templates": [
+    "Fuck has been said %count times since %since"
+  ],
+  "tags": [
+    "count"
+  ],
+  "triggers": [
+    "fuck",
+    "fucking",
+    "fucker"
+  ],
+  "helptext": "Fuck counter"
+}

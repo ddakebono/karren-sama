@@ -86,6 +86,23 @@ public class MySQLInterface {
         }
     }
     /*
+    MISC OPERATIONS
+     */
+    public ArrayList<Object> modifyWordCount(String word) throws SQLException {
+        resetSQL();
+        query = "INSERT INTO word_counts (id, word, count, count_started) VALUES (null, ?, 1, ?) ON DUPLICATE KEY UPDATE count = count +1";
+        sqlPayload.add(word);
+        sqlPayload.add(new Timestamp(new Date().getTime()).toString());
+        pstNeeded = true;
+        executeQuery();
+        resetSQL();
+        query = "SELECT * FROM word_counts WHERE word= ?";
+        sqlPayload.add(word);
+        pstNeeded = true;
+        search = true;
+        return executeQuery();
+    }
+    /*
     USER OPERATIONS
      */
     public ArrayList<Object> getUserData(String nick) throws SQLException {
