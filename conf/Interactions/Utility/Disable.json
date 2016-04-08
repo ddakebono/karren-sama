@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "permissionLevel": "Admins",
+  "templates": [
+    "Interaction %echo has been disabled."
+  ],
+  "templatesPermError": [
+    "You don't have permission to disable this... (Not admin)"
+  ],
+  "templatesFail": [
+    "Could not find interaction %echo!"
+  ],
+  "tags": [
+    "parameter",
+    "prefixed",
+    "disableinteraction",
+    "echo"
+  ],
+  "triggers": [
+    "disable"
+  ],
+  "helptext": "Disables specified interaction"
+}

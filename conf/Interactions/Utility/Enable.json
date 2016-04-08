@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "permissionLevel": "Admins",
+  "templates": [
+    "Interaction %echo has been enabled."
+  ],
+  "templatesPermError": [
+    "You don't have permission to enable this... (Not admin)"
+  ],
+  "templatesFail": [
+    "Could not find interaction %echo!"
+  ],
+  "tags": [
+    "parameter",
+    "prefixed",
+    "enableinteraction",
+    "echo"
+  ],
+  "triggers": [
+    "enable"
+  ],
+  "helptext": "Enables specified interaction"
+}

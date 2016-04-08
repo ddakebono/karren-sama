@@ -10,26 +10,15 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.util.MessageBuilder;
 
-public class Parameter implements Tag {
-
-    //Currently the parameter tag only works with Prefixed interactions, use on non prefixed interactions isn't possible yet.
-
+public class Child implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        String message = event.getMessage().getContent();
-        for(String trigger : interaction.getTriggers()) {
-            if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix() + trigger)) {
-                message = message.replace(Karren.conf.getCommandPrefix() + trigger, "").trim();
-                break;
-            }
-        }
-        interaction.setParameter(message);
+        interaction.setEnabled(false);
         return msg;
     }
 }

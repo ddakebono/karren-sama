@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "confidence": 0,
+  "specialInteraction": true,
+  "templates": [
+    "%echo, who the fuck is that?"
+  ],
+  "tags": [
+    "parameter",
+    "child",
+    "echo"
+  ],
+  "triggers": [
+  ],
+  "helptext": "Knock Knock example response"
+}

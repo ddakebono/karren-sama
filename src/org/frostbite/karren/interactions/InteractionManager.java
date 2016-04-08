@@ -54,6 +54,10 @@ public class InteractionManager {
         handlers.put("topic", new Topic());
         handlers.put("parameter", new Parameter());
         handlers.put("count", new Count());
+        handlers.put("parent", new Parent());
+        handlers.put("child", new Child());
+        handlers.put("disableinteraction", new DisableInteraction());
+        handlers.put("enableinteraction", new EnableInteraction());
     }
 
     public void loadInteractions(){

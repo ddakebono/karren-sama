@@ -16,29 +16,18 @@ import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.util.MessageBuilder;
 
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-public class Count implements Tag {
-
+public class EnableInteraction implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        ArrayList<Object> returned = null;
-        try {
-            returned = Karren.bot.getSql().modifyWordCount(interaction.getIdentifier().toLowerCase());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if(returned!=null) {
-            if(((long)returned.get(2)%5)==0) {
-                Timestamp time = (Timestamp) returned.get(3);
-                return msg.replace("%count", String.valueOf((long) returned.get(2))).replace("%since", time.toString());
-            } else {
-                return null;
+        if(interaction.getParameter()!=null){
+            for(Interaction enable : Karren.bot.getInteractionManager().getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(interaction.getParameter())).collect(Collectors.toList())){
+                enable.setEnabled(true);
             }
         } else {
-            return msg;
+            msg = interaction.getRandomTemplatesFail();
         }
+        return msg;
     }
 }

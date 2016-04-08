@@ -33,6 +33,7 @@ public class Interaction {
     private float voiceVolume = 0.1f;
     private String parameter;
     private boolean specialInteraction = false;
+    private String[] childInteractions;
 
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
@@ -40,10 +41,10 @@ public class Interaction {
     }
 
     public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
-        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "", null, 0.0f, false);
+        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "", null, 0.0f, false, null);
     }
 
-    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction){
+    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction, String[] childInteractions){
         this.specialInteraction = specialInteraction;
         this.identifier = identifier;
         this.tags = tags;
@@ -58,6 +59,7 @@ public class Interaction {
         this.channel = channel;
         this.voiceFiles = voiceFiles;
         this.voiceVolume = voiceVolume;
+        this.childInteractions = childInteractions;
     }
     /*
     handleMessage checks which interaction type the message is and runs the respective functions.
@@ -161,6 +163,14 @@ public class Interaction {
         }
     }
 
+    public boolean isChild(){
+        for(String tag : tags){
+            if(tag.equalsIgnoreCase("child"))
+                return true;
+        }
+        return false;
+    }
+
     public float getVoiceVolume() {
         return voiceVolume;
     }
@@ -169,6 +179,18 @@ public class Interaction {
 
     public boolean isSpecialInteraction() {
         return specialInteraction;
+    }
+
+    public String[] getChildInteractions() {
+        return childInteractions;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getParameter() {
