@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "childInteractions": [
+    "KnockKnock2"
+  ],
+  "templates": [
+    "Who's there?"
+  ],
+  "tags": [
+    "bot",
+    "parent"
+  ],
+  "triggers": [
+    "knock"
+  ],
+  "helptext": "Knock Knock example"
+}
