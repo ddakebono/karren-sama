@@ -10,6 +10,9 @@
 
 package org.frostbite.karren;
 
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.ClientBuilder;
@@ -17,6 +20,9 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.api.IDiscordClient;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Karren{
 
@@ -54,6 +60,7 @@ public class Karren{
 		} catch(ClassNotFoundException e) {
 			log.error("Error While Loading:", e);
 		}
+
         //Fire up the watchdog, bot and the console command stuff.
         bot.initDiscord();
 	}

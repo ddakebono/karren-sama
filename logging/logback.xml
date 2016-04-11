@@ -11,6 +11,7 @@
         </encoder>
     </appender>
     <logger name="org.eclipse.jetty" level="WARN"/>
+    <logger name="org.jooq.Constants" level="WARN"/>
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="MAIN"/>

@@ -10,12 +10,17 @@
 
 package org.frostbite.karren.listencast;
 
+import org.frostbite.karren.Database.Models.tables.records.SongdbRecord;
+import org.frostbite.karren.Karren;
+
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.function.BooleanSupplier;
 
-public class Song {
+public class Song{
     private String songName;
     private long lastPlayed;
     private int playCount;
@@ -25,6 +30,7 @@ public class Song {
     private long songEndTime;
     private long lastSongDuration;
     private boolean isDurationLocked;
+    private SongdbRecord sqlSong;
 
     public Song(String songName){
         this.songName = songName;
@@ -39,48 +45,76 @@ public class Song {
         this.lastSongDuration = lastSongDuration;
         this.lastPlayed = getEpochTimeFromDateTime(lastPlayed);
     }
-    public void setFieldsFromSQL(ArrayList<Object> results){
-        lastPlayed = (Long)results.get(2);
-        playCount = (int)results.get(3);
-        favCount = (int)results.get(4);
-        lastSongDuration = Long.valueOf(results.get(5).toString());
-        isDurationLocked = (boolean)results.get(6);
+
+    void getFieldsFromSQL(){
+        sqlSong = Karren.bot.getSql().getSong(songName);
+        songID = sqlSong.getId();
+        lastPlayed = new Timestamp(new Date().getTime()).getTime();
+        playCount = sqlSong.getPlaycount();
+        favCount = sqlSong.getFavcount();
+        lastSongDuration = sqlSong.getSongduration();
+        isDurationLocked = Boolean.parseBoolean(sqlSong.getDurationlock().toString());
+        sqlSong.setLptime(lastPlayed);
+        sqlSong.update();
     }
-    public long getSongDuration(){
+
+    long getSongDuration(){
         long result = songEndTime-songStartTime;
         if(((result-lastSongDuration)>=-2000 && (result-lastSongDuration)<=2000) && !isDurationLocked)
             result = lastSongDuration;
         return result;
     }
-    public boolean isDurationLocked(){
+    public void addFave(){
+        favCount++;
+    }
+    boolean isDurationLocked(){
         return isDurationLocked;
     }
-    public void songEnded(){
+    void songEnded(){
         Date date = new Date();
         songEndTime = date.getTime();
+        if(sqlSong!=null) {
+            sqlSong.setPlaycount(playCount + 1);
+            if (!isDurationLocked || lastSongDuration == 0) {
+                if (lastSongDuration == getSongDuration() && lastSongDuration > 0) {
+                    sqlSong.setSongduration(getSongDuration());
+                    sqlSong.setDurationlock((byte) 1);
+                } else {
+                    sqlSong.setSongduration(getSongDuration());
+                }
+            }
+            sqlSong.setLptime(new Timestamp(new Date().getTime()).getTime());
+            sqlSong.setFavcount(favCount);
+            sqlSong.update();
+        }
     }
-    public long getSongStartTime(){return songStartTime;}
+    long getSongStartTime(){return songStartTime;}
     public void setSongID(int songID){
         this.songID = songID;
     }
     public String getSongName(){return songName;}
     public long getLastPlayedRaw(){return lastPlayed;}
-    public String getLastPlayed(){
+    String getLastPlayed(){
         if(lastPlayed == 0)
             return "Never";
         else
             return getDateTimeFromEpoch(lastPlayed);
     }
-    public int getPlayCount(){return playCount;}
-    public int getFavCount(){return favCount;}
+
+    public SongdbRecord getSqlSong() {
+        return sqlSong;
+    }
+
+    int getPlayCount(){return playCount;}
+    int getFavCount(){return favCount;}
     public int getSongID(){return songID;}
     public long getLastSongDuration(){return lastSongDuration;}
-    public String getDateTimeFromEpoch(Long epoch){
+    private String getDateTimeFromEpoch(Long epoch){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(epoch);
         return new SimpleDateFormat("MM-dd-yyyy @ HH:mm:ss").format(cal.getTime());
     }
-    public long getEpochTimeFromDateTime(String dateTime){
+    private long getEpochTimeFromDateTime(String dateTime){
         String[] dateTimeSplit = dateTime.split("@");
         String[] dateSplit = dateTimeSplit[0].split("-");
         String[] timeSplit = dateTimeSplit[1].split(":");

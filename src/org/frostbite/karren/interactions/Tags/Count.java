@@ -10,6 +10,7 @@
 
 package org.frostbite.karren.interactions.Tags;
 
+import org.frostbite.karren.Database.Models.tables.records.WordCountsRecord;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
@@ -24,16 +25,13 @@ public class Count implements Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        ArrayList<Object> returned = null;
-        try {
-            returned = Karren.bot.getSql().modifyWordCount(interaction.getIdentifier().toLowerCase());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if(returned!=null) {
-            if(((long)returned.get(2)%5)==0) {
-                Timestamp time = (Timestamp) returned.get(3);
-                return msg.replace("%count", String.valueOf((long) returned.get(2))).replace("%since", time.toString());
+        WordCountsRecord count = Karren.bot.getSql().getWordCount(interaction.getIdentifier());
+        if(count!=null) {
+            count.setCount(count.getCount()+1);
+            count.update();
+            if((count.getCount()%5)==0) {
+                Timestamp time = count.getCountStarted();
+                return msg.replace("%count", String.valueOf(count.getCount())).replace("%since", time.toString());
             } else {
                 return null;
             }

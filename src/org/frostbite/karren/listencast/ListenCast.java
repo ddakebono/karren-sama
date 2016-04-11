@@ -20,7 +20,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.frostbite.karren.Database.Models.tables.records.UserfavesRecord;
 import org.frostbite.karren.Karren;
+import org.jooq.Result;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -95,12 +97,6 @@ public class ListenCast extends Thread{
                 if(lastSong != null) {
                     lastSong.songEnded();
                     Karren.log.debug("The last song played for " + lastSong.getSongDuration());
-                    try {
-                        Karren.bot.getSql().updateSongData(lastSong);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-
                 }
                 onSongChange();
             }
@@ -116,7 +112,7 @@ public class ListenCast extends Thread{
 	private void onSongChange(){
         try {
             if(doUpdate)
-                Karren.bot.getSql().updateRadioDatabase(currentSong);
+                currentSong.getFieldsFromSQL();
             if(!lastDJ.equalsIgnoreCase(iceDJ) || !lastStreamTitle.equalsIgnoreCase(iceStreamTitle)){
                 Karren.bot.getSql().updateDJActivity(iceDJ, iceStreamTitle);
                 lastDJ=iceDJ;
@@ -127,7 +123,7 @@ public class ListenCast extends Thread{
                     bot.getChannelByID(Karren.conf.getStreamAnnounceChannel()).changeTopic("Stream is off air.");
 
             }
-        } catch (SQLException | DiscordException | MissingPermissionsException | HTTP429Exception e) {
+        } catch (DiscordException | MissingPermissionsException | HTTP429Exception e) {
             e.printStackTrace();
         }
         try {
@@ -150,17 +146,16 @@ public class ListenCast extends Thread{
         }
 	}
     private void alertFaves() throws SQLException {
-        ArrayList<Object> returned;
-        returned = Karren.bot.getSql().getUserFaves(currentSong);
-        for(Object user : returned){
+        Result<UserfavesRecord> returned = Karren.bot.getSql().getUserFaves(currentSong.getSongID());
+        for(UserfavesRecord user : returned){
             try {
-                Karren.bot.getClient().getOrCreatePMChannel(Karren.bot.getClient().getUserByID(user.toString())).sendMessage(currentSong.getSongName() + " has started playing!");
+                Karren.bot.getClient().getOrCreatePMChannel(Karren.bot.getClient().getUserByID(user.getUser())).sendMessage(currentSong.getSongName() + " has started playing!");
             } catch (DiscordException | HTTP429Exception | MissingPermissionsException e) {
                 e.printStackTrace();
             }
         }
 }
-    public String getNowPlayingStr(){
+    private String getNowPlayingStr(){
         if(!currentSong.getSongName().equalsIgnoreCase("off-air"))
             return "```Now Playing on " + iceStreamTitle + ":\n\"" + currentSong.getSongName() + "\"\nListeners: " + iceListeners + "/" + iceMaxListeners + " | Last Played: " + currentSong.getLastPlayed() + " | Faves: " + currentSong.getFavCount() + " | Plays " + currentSong.getPlayCount() + "```";
         else
@@ -221,7 +216,7 @@ public class ListenCast extends Thread{
     public String getIceStreamTitle(){return iceStreamTitle;}
     public String getIceMaxListeners(){return iceMaxListeners;}
     public int getIceListeners(){return iceListeners;}
-    public void writeToSongLog(Song curSong) throws IOException {
+    private void writeToSongLog(Song curSong) throws IOException {
         BufferedWriter songLog = new BufferedWriter(new FileWriter("logs/songs.log", true));
         if(curSong.getSongID() != 0) {
             songLog.append(curSong.getSongName()).append(":").append(String.valueOf(curSong.getSongID())).append("\n");

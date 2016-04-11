@@ -10,6 +10,8 @@
 
 package org.frostbite.karren;
 
+import com.mysql.jdbc.Connection;
+import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.InterConnect.InterConnectListener;
 import org.frostbite.karren.interactions.InteractionManager;
 import org.frostbite.karren.listencast.ListenCast;
@@ -20,18 +22,18 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
 
 public class KarrenBot {
-    IDiscordClient client;
-    MySQLInterface sql = new MySQLInterface();
-    ListenCast lc;
-    boolean extrasReady = false;
-    InteractionManager ic;
-    InterConnectListener interConnectListener;
+    private IDiscordClient client;
+    private MySQLInterface sql = new MySQLInterface();
+    private ListenCast lc;
+    private boolean extrasReady = false;
+    private InteractionManager ic;
+    private InterConnectListener interConnectListener;
 
     public KarrenBot(IDiscordClient client){
         this.client = client;
     }
 
-    public void initDiscord(){
+    void initDiscord(){
         if(Boolean.parseBoolean(Karren.conf.getConnectToDiscord())) {
             EventDispatcher ed = client.getDispatcher();
             ed.registerListener(new ConnectCommand());

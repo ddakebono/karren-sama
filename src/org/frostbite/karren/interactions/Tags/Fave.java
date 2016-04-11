@@ -22,11 +22,7 @@ public class Fave implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         if(Karren.bot.getListenCast().getSong().getSongID()!=0) {
-            try {
-                Karren.bot.getSql().addFave(event.getMessage().getAuthor().getID(), Karren.bot.getListenCast().getSong());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            Karren.bot.getSql().addUserFave(event.getMessage().getAuthor().getID(), Karren.bot.getListenCast().getSong());
         } else {
             msg = interaction.getRandomTemplatesFail();
         }

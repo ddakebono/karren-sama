@@ -10,6 +10,7 @@
 
 package org.frostbite.karren.interactions.Tags;
 
+import org.frostbite.karren.Database.Models.tables.records.UsersRecord;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
@@ -25,20 +26,15 @@ import java.util.HashMap;
 public class Return implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        String[] data = {event.getMessage().getAuthor().getID()};
-        ArrayList<Object> resultData = new ArrayList<>();
         HashMap<IUser, Boolean> departedUsers = ((Depart)Karren.bot.getInteractionManager().getHandlers().get("depart")).departedUsers;
         if(departedUsers.getOrDefault(event.getMessage().getAuthor(), true) || !interaction.isSpecialInteraction()) {
-            try {
-                resultData.addAll(Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getID()));
-                Karren.bot.getSql().userOperation("return", data);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            UsersRecord user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getID());
             if(departedUsers.putIfAbsent(event.getMessage().getAuthor(), false) != null)
                 departedUsers.put(event.getMessage().getAuthor(), false);
-            if (Boolean.parseBoolean(String.valueOf(resultData.get(2)))) {
-                return msg.replace("%away", KarrenUtil.calcAway((long) resultData.get(3)));
+            if (user.getBotpart()!=0) {
+                user.setBotpart((byte)0);
+                user.update();
+                return msg.replace("%away", KarrenUtil.calcAway(user.getTimepart()));
             } else {
                 if (interaction.isSpecialInteraction())
                     return null;

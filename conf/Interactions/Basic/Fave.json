@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "confidence": 2,
+  "confidence": 3,
   "templates": [
     "Added, \"%song\" to your favorites!",
     "\"%song\" added to your favorites!",

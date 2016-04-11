@@ -10,6 +10,7 @@
 
 package org.frostbite.karren.interactions.Tags;
 
+import org.frostbite.karren.Database.Models.tables.records.UsersRecord;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
@@ -18,29 +19,27 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public class Depart implements Tag {
 
-    public HashMap<IUser, Boolean> departedUsers = new HashMap<>();
+    HashMap<IUser, Boolean> departedUsers = new HashMap<>();
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        String[] data = {event.getMessage().getAuthor().getID()};
-        ArrayList<Object> resultData = new ArrayList<>();
-        try {
-            resultData.addAll(Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getID()));
-            if(Boolean.parseBoolean(String.valueOf(resultData.get(2)))){
-                 msg = interaction.getRandomTemplatesFail();
-            } else {
-                departedUsers.put(event.getMessage().getAuthor(), true);
-            }
-            Karren.bot.getSql().userOperation("part", data);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        UsersRecord user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getID());
+        if(user.getBotpart()!=0){
+            msg = interaction.getRandomTemplatesFail();
+        } else {
+            departedUsers.put(event.getMessage().getAuthor(), true);
         }
+        user.setBotpart((byte)1);
+        user.setTimepart(new Timestamp(new Date().getTime()).getTime());
+        user.update();
         return msg;
     }
 }
