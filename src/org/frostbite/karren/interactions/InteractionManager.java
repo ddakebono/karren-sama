@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InteractionManager {
-    ArrayList<Interaction> interactions;
-    Map<String, Tag> handlers;
+    private ArrayList<Interaction> interactions;
+    private Map<String, Tag> handlers;
 
     public void loadTags(){
         handlers = new HashMap<>();
@@ -53,11 +53,12 @@ public class InteractionManager {
         handlers.put("stopspeak", new StopSpeak());
         handlers.put("topic", new Topic());
         handlers.put("parameter", new Parameter());
-        handlers.put("count", new Count());
+        handlers.put("count5", new Count5());
         handlers.put("parent", new Parent());
         handlers.put("child", new Child());
         handlers.put("disableinteraction", new DisableInteraction());
         handlers.put("enableinteraction", new EnableInteraction());
+        handlers.put("count", new Count());
     }
 
     public void loadInteractions(){

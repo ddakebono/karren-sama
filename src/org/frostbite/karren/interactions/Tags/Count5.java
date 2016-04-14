@@ -17,17 +17,24 @@ import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.util.MessageBuilder;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
-public class Count implements Tag {
+public class Count5 implements Tag {
+
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         WordCountsRecord count = Karren.bot.getSql().getWordCount(interaction.getIdentifier());
         if(count!=null) {
             count.setCount(count.getCount()+1);
             count.update();
-            Timestamp time = count.getCountStarted();
-            return msg.replace("%count", String.valueOf(count.getCount())).replace("%since", time.toString());
+            if((count.getCount()%5)==0) {
+                Timestamp time = count.getCountStarted();
+                return msg.replace("%count", String.valueOf(count.getCount())).replace("%since", time.toString());
+            } else {
+                return null;
+            }
         } else {
             return msg;
         }
