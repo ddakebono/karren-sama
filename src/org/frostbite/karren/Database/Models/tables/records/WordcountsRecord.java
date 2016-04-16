@@ -11,8 +11,6 @@ package org.frostbite.karren.Database.Models.tables.records;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordcountsRecord extends org.jooq.impl.UpdatableRecordImpl<org.frostbite.karren.Database.Models.tables.records.WordcountsRecord> implements org.jooq.Record4<java.lang.Integer, java.lang.String, java.lang.Long, java.sql.Timestamp> {
 
-	private static final long serialVersionUID = 1368731475;
-
 	/**
 	 * Setter for <code>KarrenDB.WordCounts.WordID</code>.
 	 */
