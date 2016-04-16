@@ -11,100 +11,101 @@ package org.frostbite.karren.Database.Models.tables.records;
 @java.lang.SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SongdbRecord extends org.jooq.impl.UpdatableRecordImpl<org.frostbite.karren.Database.Models.tables.records.SongdbRecord> implements org.jooq.Record7<java.lang.Integer, java.lang.String, java.lang.Long, java.lang.Integer, java.lang.Integer, java.lang.Long, java.lang.Byte> {
 
+	private static final long serialVersionUID = 301720683;
 
 	/**
-	 * Setter for <code>database.songdb.ID</code>.
+	 * Setter for <code>KarrenDB.songdb.ID</code>.
 	 */
 	public void setId(java.lang.Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>database.songdb.ID</code>.
+	 * Getter for <code>KarrenDB.songdb.ID</code>.
 	 */
 	public java.lang.Integer getId() {
 		return (java.lang.Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>database.songdb.SongTitle</code>.
+	 * Setter for <code>KarrenDB.songdb.SongTitle</code>.
 	 */
 	public void setSongtitle(java.lang.String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>database.songdb.SongTitle</code>.
+	 * Getter for <code>KarrenDB.songdb.SongTitle</code>.
 	 */
 	public java.lang.String getSongtitle() {
 		return (java.lang.String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>database.songdb.LPTime</code>.
+	 * Setter for <code>KarrenDB.songdb.LPTime</code>.
 	 */
 	public void setLptime(java.lang.Long value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>database.songdb.LPTime</code>.
+	 * Getter for <code>KarrenDB.songdb.LPTime</code>.
 	 */
 	public java.lang.Long getLptime() {
 		return (java.lang.Long) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>database.songdb.PlayCount</code>.
+	 * Setter for <code>KarrenDB.songdb.PlayCount</code>.
 	 */
 	public void setPlaycount(java.lang.Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>database.songdb.PlayCount</code>.
+	 * Getter for <code>KarrenDB.songdb.PlayCount</code>.
 	 */
 	public java.lang.Integer getPlaycount() {
 		return (java.lang.Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>database.songdb.FavCount</code>.
+	 * Setter for <code>KarrenDB.songdb.FavCount</code>.
 	 */
 	public void setFavcount(java.lang.Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>database.songdb.FavCount</code>.
+	 * Getter for <code>KarrenDB.songdb.FavCount</code>.
 	 */
 	public java.lang.Integer getFavcount() {
 		return (java.lang.Integer) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>database.songdb.songduration</code>.
+	 * Setter for <code>KarrenDB.songdb.songduration</code>.
 	 */
 	public void setSongduration(java.lang.Long value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>database.songdb.songduration</code>.
+	 * Getter for <code>KarrenDB.songdb.songduration</code>.
 	 */
 	public java.lang.Long getSongduration() {
 		return (java.lang.Long) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>database.songdb.durationlock</code>.
+	 * Setter for <code>KarrenDB.songdb.durationlock</code>.
 	 */
 	public void setDurationlock(java.lang.Byte value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>database.songdb.durationlock</code>.
+	 * Getter for <code>KarrenDB.songdb.durationlock</code>.
 	 */
 	public java.lang.Byte getDurationlock() {
 		return (java.lang.Byte) getValue(6);
