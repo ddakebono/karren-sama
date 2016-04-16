@@ -10,7 +10,7 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import org.frostbite.karren.Database.Models.tables.records.UsersRecord;
+import org.frostbite.karren.Database.Models.tables.records.UserRecord;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
@@ -19,8 +19,6 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.MessageBuilder;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Return implements Tag {
@@ -28,13 +26,14 @@ public class Return implements Tag {
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         HashMap<IUser, Boolean> departedUsers = ((Depart)Karren.bot.getInteractionManager().getHandlers().get("depart")).departedUsers;
         if(departedUsers.getOrDefault(event.getMessage().getAuthor(), true) || !interaction.isSpecialInteraction()) {
-            UsersRecord user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getID());
+            UserRecord user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor());
             if(departedUsers.putIfAbsent(event.getMessage().getAuthor(), false) != null)
                 departedUsers.put(event.getMessage().getAuthor(), false);
-            if (user.getBotpart()!=0) {
-                user.setBotpart((byte)0);
+            if (user.getTimeleft()!=null) {
+                msg = msg.replace("%away", KarrenUtil.calcAway(user.getTimeleft().getTime()));
+                user.setTimeleft(null);
                 user.update();
-                return msg.replace("%away", KarrenUtil.calcAway(user.getTimepart()));
+                return msg;
             } else {
                 if (interaction.isSpecialInteraction())
                     return null;

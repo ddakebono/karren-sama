@@ -10,7 +10,7 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import org.frostbite.karren.Database.Models.tables.records.UsersRecord;
+import org.frostbite.karren.Database.Models.tables.records.UserRecord;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
@@ -18,12 +18,9 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.MessageBuilder;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class Depart implements Tag {
 
@@ -31,14 +28,13 @@ public class Depart implements Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        UsersRecord user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor().getID());
-        if(user.getBotpart()!=0){
+        UserRecord user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor());
+        if(user.getTimeleft()!=null){
             msg = interaction.getRandomTemplatesFail();
         } else {
             departedUsers.put(event.getMessage().getAuthor(), true);
         }
-        user.setBotpart((byte)1);
-        user.setTimepart(new Timestamp(new Date().getTime()).getTime());
+        user.setTimeleft(new Timestamp(new Date().getTime()));
         user.update();
         return msg;
     }

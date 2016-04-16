@@ -20,7 +20,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.frostbite.karren.Database.Models.tables.records.UserfavesRecord;
+import org.frostbite.karren.Database.Models.tables.records.FavoritesRecord;
 import org.frostbite.karren.Karren;
 import org.jooq.Result;
 import org.w3c.dom.Document;
@@ -40,7 +40,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class ListenCast extends Thread{
@@ -146,10 +145,10 @@ public class ListenCast extends Thread{
         }
 	}
     private void alertFaves() throws SQLException {
-        Result<UserfavesRecord> returned = Karren.bot.getSql().getUserFaves(currentSong.getSongID());
-        for(UserfavesRecord user : returned){
+        Result<FavoritesRecord> returned = Karren.bot.getSql().getUserFaves(currentSong.getSongID());
+        for(FavoritesRecord user : returned){
             try {
-                Karren.bot.getClient().getOrCreatePMChannel(Karren.bot.getClient().getUserByID(user.getUser())).sendMessage(currentSong.getSongName() + " has started playing!");
+                Karren.bot.getClient().getOrCreatePMChannel(Karren.bot.getClient().getUserByID(user.getUserid().toString())).sendMessage(currentSong.getSongName() + " has started playing!");
             } catch (DiscordException | HTTP429Exception | MissingPermissionsException e) {
                 e.printStackTrace();
             }

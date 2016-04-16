@@ -10,23 +10,22 @@
 
 package org.frostbite.karren.Database;
 
-import org.frostbite.karren.Database.Models.tables.*;
+import org.frostbite.karren.Database.Models.tables.Favorites;
+import org.frostbite.karren.Database.Models.tables.Songdb;
+import org.frostbite.karren.Database.Models.tables.User;
+import org.frostbite.karren.Database.Models.tables.Wordcounts;
+import org.frostbite.karren.Database.Models.tables.records.FavoritesRecord;
 import org.frostbite.karren.Database.Models.tables.records.SongdbRecord;
-import org.frostbite.karren.Database.Models.tables.records.UserfavesRecord;
-import org.frostbite.karren.Database.Models.tables.records.UsersRecord;
-import org.frostbite.karren.Database.Models.tables.records.WordCountsRecord;
+import org.frostbite.karren.Database.Models.tables.records.UserRecord;
+import org.frostbite.karren.Database.Models.tables.records.WordcountsRecord;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.listencast.Song;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-
+import sx.blah.discord.handle.obj.IUser;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.function.BooleanSupplier;
 
 public class MySQLInterface {
 
@@ -44,27 +43,26 @@ public class MySQLInterface {
         }
     }
 
-    public WordCountsRecord getWordCount(String word){
+    public WordcountsRecord getWordCount(String word){
         refreshSQLConnection();
-        sqlConn.insertInto(WordCounts.WORD_COUNTS).values(null, word, 1, new Timestamp(new Date().getTime())).onDuplicateKeyIgnore().execute();
-        return sqlConn.selectFrom(WordCounts.WORD_COUNTS).where(WordCounts.WORD_COUNTS.WORD.equalIgnoreCase(word)).fetchOne();
+        sqlConn.insertInto(Wordcounts.WORDCOUNTS).values(null, word, 1, null).onDuplicateKeyIgnore().execute();
+        return sqlConn.selectFrom(Wordcounts.WORDCOUNTS).where(Wordcounts.WORDCOUNTS.WORD.equalIgnoreCase(word)).fetchOne();
     }
 
-
-    public UsersRecord getUserData(String nick){
+    public UserRecord getUserData(IUser user){
         refreshSQLConnection();
-        sqlConn.insertInto(Users.USERS).values(null, nick, false, 0).onDuplicateKeyIgnore().execute();
-        return sqlConn.selectFrom(Users.USERS).where(Users.USERS.USER.equalIgnoreCase(nick)).fetchOne();
+        sqlConn.insertInto(User.USER).values(user.getID(), null, user.getName(), null, 0, null).onDuplicateKeyIgnore().execute();
+        return sqlConn.selectFrom(User.USER).where(User.USER.USERID.equalIgnoreCase(user.getID())).fetchOne();
     }
 
-    public Result<UserfavesRecord> getUserFaves(int songid){
+    public Result<FavoritesRecord> getUserFaves(int songid){
         refreshSQLConnection();
-        return sqlConn.selectFrom(Userfaves.USERFAVES).where(Userfaves.USERFAVES.SONGID.equal(songid)).fetch();
+        return sqlConn.selectFrom(Favorites.FAVORITES).where(Favorites.FAVORITES.SONGID.equal(songid)).fetch();
     }
 
     public void addUserFave(String userid, Song song){
         refreshSQLConnection();
-        sqlConn.insertInto(Userfaves.USERFAVES).values(null, userid, song.getSongID()).onDuplicateKeyIgnore().execute();
+        sqlConn.insertInto(Favorites.FAVORITES).values(null, userid, song.getSongID()).onDuplicateKeyIgnore().execute();
         song.addFave();
     }
 
@@ -76,9 +74,17 @@ public class MySQLInterface {
 
     public void updateDJActivity(String curDJ, String streamName){
         refreshSQLConnection();
-        sqlConn.update(RadioDj.RADIO_DJ).set(RadioDj.RADIO_DJ.ACTIVE, 0).execute();
-        if(curDJ!=null&&curDJ.length()>0) {
-            sqlConn.insertInto(RadioDj.RADIO_DJ).values(null, curDJ, curDJ, streamName, "default", 1).onDuplicateKeyUpdate().set(RadioDj.RADIO_DJ.ACTIVE, 1).set(RadioDj.RADIO_DJ.STREAMNAME, streamName).execute();
+        //Switch off all DJ active statuses
+        sqlConn.update(User.USER).set(User.USER.DJACTIVE, 0).execute();
+        IUser newDJ = Karren.bot.getClient().getUserByID(curDJ);
+        if(newDJ!=null) {
+            UserRecord userAccount = getUserData(newDJ);
+            userAccount.setDjactive(1);
+            userAccount.setDjstreamname(streamName);
+            userAccount.setDjname(newDJ.getName());
+            userAccount.update();
+        } else {
+            sqlConn.insertInto(User.USER).values(0, null, curDJ, "default", 1, "streamName").onDuplicateKeyUpdate().set(User.USER.DJNAME, curDJ).set(User.USER.DJSTREAMNAME, streamName).set(User.USER.DJACTIVE, 1).execute();
         }
     }
 }
