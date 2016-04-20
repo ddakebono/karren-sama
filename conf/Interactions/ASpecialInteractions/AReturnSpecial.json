@@ -7,6 +7,9 @@
     "Hey there %name, haven't seen you for %away",
     "What kept you so long %name, last I saw you was %away ago"
   ],
+  "templateFail": [
+    "Hey %name, %mention has been away for %away."
+  ],
   "tags": [
     "return",
     "name"

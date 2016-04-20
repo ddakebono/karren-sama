@@ -28,6 +28,7 @@ public class KarrenBot {
     private boolean extrasReady = false;
     private InteractionManager ic;
     private InterConnectListener interConnectListener;
+    private boolean isKill = false;
 
     public KarrenBot(IDiscordClient client){
         this.client = client;
@@ -41,6 +42,7 @@ public class KarrenBot {
             ed.registerListener(new InteractionCommands());
             ed.registerListener(new KillCommand());
             ed.registerListener(new VoiceExitCommand());
+            ed.registerListener(new DisconnectCommand());
             try {
                 client.login();
             } catch (DiscordException e) {
@@ -73,6 +75,7 @@ public class KarrenBot {
     }
 
     public void killBot(String killer){
+        isKill = true;
         lc.kill();
         try {
             client.logout();
@@ -86,6 +89,10 @@ public class KarrenBot {
     /*
     GETTERS
      */
+
+    public boolean isKill() {
+        return isKill;
+    }
 
     public MySQLInterface getSql(){
         return sql;

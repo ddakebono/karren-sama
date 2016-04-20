@@ -20,6 +20,7 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Return implements Tag {
     @Override
@@ -39,6 +40,16 @@ public class Return implements Tag {
                     return null;
                 else
                     return interaction.getRandomTemplatesFail();
+            }
+        } else {
+            boolean isDeparted = departedUsers.getOrDefault(event.getMessage().getMentions().get(0), false);
+            if(interaction.isSpecialInteraction() && isDeparted){
+                UserRecord mention = Karren.bot.getSql().getUserData(event.getMessage().getMentions().get(0));
+                msg = interaction.getRandomTemplatesFail();
+                msg = msg.replace("%name", event.getMessage().getAuthor().getName());
+                msg = msg.replace("%mention", event.getMessage().getMentions().get(0).getName());
+                msg = msg.replace("%away", KarrenUtil.calcAway(mention.getTimeleft().getTime()));
+                return msg;
             }
         }
         return null;

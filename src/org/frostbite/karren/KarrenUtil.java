@@ -72,7 +72,7 @@ public class KarrenUtil {
             days = hours/24;
             hours = hours-(days*24);
         }
-        backTime = days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds.";
+        backTime = days + " Days, " + hours + " Hours, " + minutes + " Minutes, and " + seconds + " Seconds";
         return backTime;
     }
 }
