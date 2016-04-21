@@ -29,12 +29,13 @@ public class KarrenBot {
     private InteractionManager ic;
     private InterConnectListener interConnectListener;
     private boolean isKill = false;
+    private boolean reconnectFailure = false;
 
     public KarrenBot(IDiscordClient client){
         this.client = client;
     }
 
-    void initDiscord(){
+    public void initDiscord(){
         if(Boolean.parseBoolean(Karren.conf.getConnectToDiscord())) {
             EventDispatcher ed = client.getDispatcher();
             ed.registerListener(new ConnectCommand());
@@ -56,18 +57,22 @@ public class KarrenBot {
     }
 
     public void initExtras(){
-        ic = new InteractionManager();
-        ic.loadTags();
-        ic.loadInteractions();
-        lc = new ListenCast(client);
-        interConnectListener = new InterConnectListener(Karren.log);
-        extrasReady = true;
+        if(!extrasReady) {
+            ic = new InteractionManager();
+            ic.loadTags();
+            ic.loadInteractions();
+            lc = new ListenCast(client);
+            interConnectListener = new InterConnectListener(Karren.log);
+            extrasReady = true;
+        }
     }
 
     public boolean startThreads(){
         if(extrasReady) {
-            lc.start();
-            interConnectListener.start();
+            if(!lc.isAlive())
+                lc.start();
+            if(!interConnectListener.isAlive())
+                interConnectListener.start();
             return true;
         } else {
             return false;
@@ -102,6 +107,18 @@ public class KarrenBot {
 
     public IDiscordClient getClient(){
         return client;
+    }
+
+    public boolean isReconnectFailure() {
+        return reconnectFailure;
+    }
+
+    public void setReconnectFailure(boolean reconnectFailure) {
+        this.reconnectFailure = reconnectFailure;
+    }
+
+    public void setClient(IDiscordClient client) {
+        this.client = client;
     }
 
     public ListenCast getListenCast(){

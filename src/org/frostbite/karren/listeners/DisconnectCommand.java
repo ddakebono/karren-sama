@@ -11,24 +11,29 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Karren;
+import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IListener;
 import sx.blah.discord.handle.impl.events.DiscordDisconnectedEvent;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
 
 public class DisconnectCommand implements IListener<DiscordDisconnectedEvent> {
+
     @Override
     public void handle(DiscordDisconnectedEvent discordDisconnectedEvent) {
-        if(!Karren.bot.isKill()){
+        if(!Karren.bot.isKill() && !Karren.bot.isReconnectFailure()){
+            Karren.bot.setReconnectFailure(true);
             try {
                 Karren.log.error("A websocket issue has occurred, attempting to reconnect to Discord...");
-                Karren.bot.getClient().logout();
-                Karren.bot.getClient().login();
-            } catch (HTTP429Exception | DiscordException e) {
+                Karren.bot.setClient(new ClientBuilder().withToken(Karren.conf.getDiscordToken()).build());
+                Karren.bot.initDiscord();
+            } catch (DiscordException e) {
                 Karren.log.error("An error occured while attempting to restart the Discord connection! Bot terminated!");
                 Karren.bot.killBot("Internal");
                 e.printStackTrace();
             }
+        } else {
+            Karren.log.error("Unable to reach Discord, please check configuration or check Discord's status!");
+            Karren.bot.killBot("Internal");
         }
     }
 }
