@@ -43,7 +43,7 @@ public class KarrenBot {
             ed.registerListener(new InteractionCommands());
             ed.registerListener(new KillCommand());
             ed.registerListener(new VoiceExitCommand());
-            ed.registerListener(new DisconnectCommand());
+            //ed.registerListener(new DisconnectCommand()); - This is broken as fuck
             try {
                 client.login();
             } catch (DiscordException e) {

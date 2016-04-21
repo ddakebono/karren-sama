@@ -42,14 +42,16 @@ public class Return implements Tag {
                     return interaction.getRandomTemplatesFail();
             }
         } else {
-            boolean isDeparted = departedUsers.getOrDefault(event.getMessage().getMentions().get(0), false);
-            if(interaction.isSpecialInteraction() && isDeparted){
-                UserRecord mention = Karren.bot.getSql().getUserData(event.getMessage().getMentions().get(0));
-                msg = interaction.getRandomTemplatesFail();
-                msg = msg.replace("%name", event.getMessage().getAuthor().getName());
-                msg = msg.replace("%mention", event.getMessage().getMentions().get(0).getName());
-                msg = msg.replace("%away", KarrenUtil.calcAway(mention.getTimeleft().getTime()));
-                return msg;
+            if(event.getMessage().getMentions().size()>0) {
+                boolean isDeparted = departedUsers.getOrDefault(event.getMessage().getMentions().get(0), false);
+                if (interaction.isSpecialInteraction() && isDeparted) {
+                    UserRecord mention = Karren.bot.getSql().getUserData(event.getMessage().getMentions().get(0));
+                    msg = interaction.getRandomTemplatesFail();
+                    msg = msg.replace("%name", event.getMessage().getAuthor().getName());
+                    msg = msg.replace("%mention", event.getMessage().getMentions().get(0).getName());
+                    msg = msg.replace("%away", KarrenUtil.calcAway(mention.getTimeleft().getTime()));
+                    return msg;
+                }
             }
         }
         return null;
