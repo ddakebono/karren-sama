@@ -21,19 +21,21 @@ public class DisconnectCommand implements IListener<DiscordDisconnectedEvent> {
     @Override
     public void handle(DiscordDisconnectedEvent discordDisconnectedEvent) {
         if(!Karren.bot.isKill() && !Karren.bot.isReconnectFailure()){
-            Karren.bot.setReconnectFailure(true);
-            try {
-                Karren.log.error("A websocket issue has occurred, attempting to reconnect to Discord...");
-                Karren.bot.setClient(new ClientBuilder().withToken(Karren.conf.getDiscordToken()).build());
-                Karren.bot.initDiscord();
-            } catch (DiscordException e) {
-                Karren.log.error("An error occured while attempting to restart the Discord connection! Bot terminated!");
+            if(!Karren.bot.isReconnectFailure()) {
+                Karren.bot.setReconnectFailure(true);
+                try {
+                    Karren.log.error("A websocket issue has occurred, attempting to reconnect to Discord...");
+                    Karren.bot.setClient(new ClientBuilder().withToken(Karren.conf.getDiscordToken()).build());
+                    Karren.bot.initDiscord();
+                } catch (DiscordException e) {
+                    Karren.log.error("An error occured while attempting to restart the Discord connection! Bot terminated!");
+                    Karren.bot.killBot("Internal");
+                    e.printStackTrace();
+                }
+            } else {
+                Karren.log.error("Unable to reach Discord, please check configuration or check Discord's status!");
                 Karren.bot.killBot("Internal");
-                e.printStackTrace();
             }
-        } else {
-            Karren.log.error("Unable to reach Discord, please check configuration or check Discord's status!");
-            Karren.bot.killBot("Internal");
         }
     }
 }

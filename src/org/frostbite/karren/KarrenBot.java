@@ -43,7 +43,7 @@ public class KarrenBot {
             ed.registerListener(new InteractionCommands());
             ed.registerListener(new KillCommand());
             ed.registerListener(new VoiceExitCommand());
-            //ed.registerListener(new DisconnectCommand()); - This is broken as fuck
+            ed.registerListener(new DisconnectCommand());
             try {
                 client.login();
             } catch (DiscordException e) {
@@ -82,10 +82,12 @@ public class KarrenBot {
     public void killBot(String killer){
         isKill = true;
         lc.kill();
-        try {
-            client.logout();
-        } catch (HTTP429Exception | DiscordException e) {
-            e.printStackTrace();
+        if(client.isReady()) {
+            try {
+                client.logout();
+            } catch (HTTP429Exception | DiscordException e) {
+                e.printStackTrace();
+            }
         }
         Karren.log.info("Bot has been killed by " + killer);
         System.exit(0);
