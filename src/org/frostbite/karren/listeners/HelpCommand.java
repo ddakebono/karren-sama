@@ -16,26 +16,60 @@ import org.frostbite.karren.Karren;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.obj.Message;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 public class HelpCommand implements IListener<MessageReceivedEvent> {
     public void handle(MessageReceivedEvent event){
         IDiscordClient bot = event.getClient();
         if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix() + "help")){
             MessageBuilder helpMsg = new MessageBuilder(bot);
-            try {
-                helpMsg.withChannel(event.getClient().getOrCreatePMChannel(event.getMessage().getAuthor()));
-                helpMsg.withContent("```\n");
-                for (Interaction help : Karren.bot.getInteractionManager().getInteractions()) {
-                    if(KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getClient(), help.getPermissionLevel()))
-                        helpMsg.appendContent( help.getIdentifier() + " : " + help.getHelptext() + "\n");
+            String moreInfo = event.getMessage().getContent().replace(Karren.conf.getCommandPrefix() + "help", "").trim();
+            if(moreInfo.length()==0) {
+                MessageBuilder prefixedHelpMsg = new MessageBuilder(bot);
+                try {
+                    helpMsg.withChannel(event.getClient().getOrCreatePMChannel(event.getMessage().getAuthor()));
+                    prefixedHelpMsg.withChannel(event.getClient().getOrCreatePMChannel(event.getMessage().getAuthor()));
+                    helpMsg.withContent("To view more information about a specific command enter " + Karren.conf.getCommandPrefix() + "help CommandName\nAll commands using sentence based triggers.\n");
+                    prefixedHelpMsg.withContent("All commands using the " + Karren.conf.getCommandPrefix() + " prefix.\n");
+                    for (Interaction help : Karren.bot.getInteractionManager().getInteractions()) {
+                        if (KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getClient(), help.getPermissionLevel())) {
+                            if (Arrays.asList(help.getTags()).contains("prefixed")) {
+                                prefixedHelpMsg.appendContent("__**" + help.getIdentifier() + "**__ | " + help.getHelptext() + " | Command: __" + Karren.conf.getCommandPrefix() + help.getTriggers()[0] + "__\n\n");
+                            } else {
+                                helpMsg.appendContent("__**" + help.getIdentifier() + "**__ | " + help.getHelptext() + "\n\n");
+                            }
+                        }
+                    }
+                    helpMsg.send();
+                    prefixedHelpMsg.send();
+
+                } catch (DiscordException | HTTP429Exception | MissingPermissionsException e) {
+                    e.printStackTrace();
                 }
-                helpMsg.appendContent("```").send();
-            } catch (DiscordException | HTTP429Exception | MissingPermissionsException e) {
-                e.printStackTrace();
+            } else {
+                Optional<Interaction> interaction = Karren.bot.getInteractionManager().getInteractions().stream().filter(i -> i.getIdentifier().equalsIgnoreCase(moreInfo)).findFirst();
+                if(interaction.isPresent()){
+                    Interaction helpInteraction = interaction.get();
+                    if(KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getClient(), helpInteraction.getPermissionLevel())) {
+                        try {
+                            helpMsg.withChannel(event.getClient().getOrCreatePMChannel(event.getMessage().getAuthor()));
+                            if (Arrays.asList(helpInteraction.getTags()).contains("prefixed"))
+                                helpMsg.withContent("__**" + helpInteraction.getIdentifier() + "**__\n**Command**: " + Karren.conf.getCommandPrefix() + helpInteraction.getTriggers()[0] + "\n**Sample Output**: " + helpInteraction.getRandomTemplates() + "\n**Help text**: " + helpInteraction.getHelptext());
+                            else
+                                helpMsg.withContent("__**" + helpInteraction.getIdentifier() + "**__\n**Triggers**: " + helpInteraction.getActivatorsToString() + "\n**Amount of triggers needed to trigger**: " + helpInteraction.getConfidence() + "\n**Sample Output**: " + helpInteraction.getRandomTemplates() + "\n**Help text**: " + helpInteraction.getHelptext());
+                            helpMsg.send();
+                        } catch (DiscordException | HTTP429Exception | MissingPermissionsException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         }
     }

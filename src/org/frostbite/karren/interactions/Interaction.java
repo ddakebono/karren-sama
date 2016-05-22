@@ -64,11 +64,11 @@ public class Interaction {
     /*
     handleMessage checks which interaction type the message is and runs the respective functions.
      */
-    public String handleMessage(MessageReceivedEvent event){
+    String handleMessage(MessageReceivedEvent event){
         String result = null;
         int confidence = 0;
         if(enabled) {
-            if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed") && ((Arrays.asList(tags).contains("bot") && event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase())) || !Arrays.asList(tags).contains("bot")))
+            if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed") && (!Arrays.asList(tags).contains("bot") || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase())))
                 confidence = getConfidence(event.getMessage().getContent());
             if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed"))
                 confidence = getConfidence(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
@@ -81,7 +81,7 @@ public class Interaction {
         return result;
     }
 
-    public int getConfidence(String message){
+    private int getConfidence(String message){
         int confidence = 0;
         String[] tokenizedMessage = message.split("\\s+");
         for (String check : triggers) {
@@ -94,7 +94,7 @@ public class Interaction {
         return confidence;
     }
 
-    public String getRandomTemplate(String[] templates) {
+    private String getRandomTemplate(String[] templates) {
         Random rng = new Random();
         return templates[rng.nextInt(templates.length)];
     }
@@ -118,7 +118,7 @@ public class Interaction {
         }
         return result;
     }
-    public void setIdentifier(String identifier){
+    void setIdentifier(String identifier){
         this.identifier = identifier;
     }
     public String getHelptext(){return helptext;}
@@ -141,6 +141,15 @@ public class Interaction {
             return getRandomTemplate(templatesFail);
         } else {
             Karren.log.error("Interaction error, " + identifier + " uses failure templates but doesn't supply any!");
+            return "ERROR";
+        }
+    }
+
+    public String getRandomTemplates() {
+        if(templates!=null) {
+            return getRandomTemplate(templates);
+        } else {
+            Karren.log.error("Interaction error, " + identifier + " uses templates but doesn't supply any!");
             return "ERROR";
         }
     }
@@ -199,5 +208,9 @@ public class Interaction {
 
     public void setParameter(String parameter) {
         this.parameter = parameter;
+    }
+
+    public int getConfidence() {
+        return confidence;
     }
 }
