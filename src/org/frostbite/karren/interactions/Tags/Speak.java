@@ -18,19 +18,22 @@ import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
 
+import java.util.Optional;
+
 public class Speak implements Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(event.getMessage().getAuthor().getVoiceChannel().isPresent() || interaction.getChannel()!=null) {
-            IVoiceChannel voice = event.getMessage().getAuthor().getVoiceChannel().get();
+        Optional<IVoiceChannel> voiceOpt = event.getMessage().getAuthor().getVoiceChannel();
+        if(voiceOpt.isPresent() || interaction.getChannel()!=null) {
+            IVoiceChannel voice = voiceOpt.get();
             if(interaction.getChannel()!=null)
                 voice = Karren.bot.getClient().getVoiceChannelByID(interaction.getChannel());
             try {
-                if (!voice.isConnected() || (voice.isConnected() && voice.getAudioChannel().getQueueSize() == 0)) {
+                if (!voice.isConnected() || (voice.isConnected() && voice.getGuild().getAudioChannel().getQueueSize() == 0)) {
                     voice.join();
-                    voice.getAudioChannel().setVolume(interaction.getVoiceVolume());
-                    voice.getAudioChannel().queueFile(interaction.getRandomVoiceFile());
+                    voice.getGuild().getAudioChannel().setVolume(interaction.getVoiceVolume());
+                    voice.getGuild().getAudioChannel().queueFile(interaction.getRandomVoiceFile());
                 } else {
                     msg = interaction.getRandomTemplatesFail();
                 }

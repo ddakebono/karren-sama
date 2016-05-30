@@ -24,7 +24,7 @@ public class VoiceExitCommand implements IListener<VoicePingEvent> {
         try {
             for (IVoiceChannel channel : voicePingEvent.getClient().getConnectedVoiceChannels()) {
                 try {
-                    if (channel.getAudioChannel().getQueueSize() == 0) {
+                    if (channel.getGuild().getAudioChannel().getQueueSize() == 0) {
                         channel.leave();
                     }
                 } catch (DiscordException e) {

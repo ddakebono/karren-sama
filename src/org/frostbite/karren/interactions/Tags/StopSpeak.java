@@ -22,7 +22,7 @@ public class StopSpeak implements Tag {
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         for(IVoiceChannel channel : event.getClient().getConnectedVoiceChannels()){
             try {
-                channel.getAudioChannel().clearQueue();
+                channel.getGuild().getAudioChannel().clearQueue();
             } catch (DiscordException e) {
                 e.printStackTrace();
             }
