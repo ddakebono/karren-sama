@@ -6,6 +6,12 @@
     "You are currently ranked %rank for %hero",
     "Hey %name, you're on rank %rank on %hero? Git gud."
   ],
+  "templatesFail": [
+    "That hero does not exist!"
+  ],
+  "templatesPermError": [
+    "You seemed to have entered invalid parameters."
+  ],
   "tags": [
     "prefixed",
     "parameter",
