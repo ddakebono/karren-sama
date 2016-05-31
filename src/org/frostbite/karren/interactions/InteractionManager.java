@@ -59,6 +59,7 @@ public class InteractionManager {
         handlers.put("disableinteraction", new DisableInteraction());
         handlers.put("enableinteraction", new EnableInteraction());
         handlers.put("count", new Count());
+        handlers.put("morank", new MORank());
     }
 
     public void loadInteractions(){

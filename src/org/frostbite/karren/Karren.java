@@ -40,6 +40,8 @@ public class Karren{
             e.printStackTrace();
         }
 
+        System.setProperty("http.agent", "KarrenSama/" + conf.getVersionMarker());
+
         //Build our discord client
         IDiscordClient client = null;
         try {

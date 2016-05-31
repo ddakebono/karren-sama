@@ -203,7 +203,9 @@ public class Interaction {
     }
 
     public String getParameter() {
-        return parameter;
+        String parameterLast = parameter;
+        this.parameter = "";
+        return parameterLast;
     }
 
     public void setParameter(String parameter) {

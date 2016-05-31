@@ -21,8 +21,10 @@ import java.util.stream.Collectors;
 public class EnableInteraction implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(interaction.getParameter()!=null){
-            for(Interaction enable : Karren.bot.getInteractionManager().getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(interaction.getParameter())).collect(Collectors.toList())){
+        String parameter = interaction.getParameter();
+        interaction.setParameter("");
+        if(parameter!=null){
+            for(Interaction enable : Karren.bot.getInteractionManager().getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(parameter)).collect(Collectors.toList())){
                 enable.setEnabled(true);
             }
         } else {

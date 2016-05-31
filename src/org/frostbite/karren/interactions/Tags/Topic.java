@@ -22,8 +22,10 @@ import sx.blah.discord.util.MissingPermissionsException;
 public class Topic implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(interaction.getParameter()!=null) {
-            msg = msg.replace("%motd", interaction.getParameter());
+        String parameter = interaction.getParameter();
+        interaction.setParameter("");
+        if(parameter!=null) {
+            msg = msg.replace("%motd", parameter);
             try {
                 event.getMessage().getChannel().changeTopic(msg);
             } catch (HTTP429Exception | DiscordException e) {
