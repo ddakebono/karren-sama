@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import org.frostbite.karren.interactions.Tags.TagObjects.HeroSearchResults;
-import org.frostbite.karren.interactions.Tags.TagObjects.MasterOverwatchHeroes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
@@ -24,8 +23,36 @@ import sx.blah.discord.util.MessageBuilder;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 
 public class MORank implements Tag {
+
+    HashMap<String, String> heroes = new HashMap<>();
+
+    public MORank(){
+        heroes.put("bastion", "15");
+        heroes.put("dva", "22");
+        heroes.put("genji", "21");
+        heroes.put("hanzo", "16");
+        heroes.put("junkrat", "2");
+        heroes.put("lucio", "3");
+        heroes.put("mccree", "6");
+        heroes.put("mei", "20");
+        heroes.put("mercy", "17");
+        heroes.put("pharah", "11");
+        heroes.put("reaper", "8");
+        heroes.put("reinhardt", "12");
+        heroes.put("roadhog", "1");
+        heroes.put("soldier76", "4");
+        heroes.put("symmetra", "13");
+        heroes.put("torbjorn", "14");
+        heroes.put("tracer", "7");
+        heroes.put("widowmaker", "9");
+        heroes.put("winston", "10");
+        heroes.put("zarya", "5");
+        heroes.put("zenyatta", "18");
+    }
+
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         String parameter = interaction.getParameter();
@@ -33,9 +60,16 @@ public class MORank implements Tag {
         String[] args = parameter.split(",");
         Gson gson = new Gson();
         try {
-            HeroSearchResults results = gson.fromJson(IOUtils.toString(new URL("https://masteroverwatch.com/leaderboards/pc/us/hero/ " + getHeroNumber(args[1]).getHeroNumber() + "/score/search?name=" + args[0].trim()).openStream()), HeroSearchResults.class);
+            HeroSearchResults results = gson.fromJson(IOUtils.toString(new URL("https://masteroverwatch.com/leaderboards/pc/us/hero/ " + heroes.getOrDefault(args[1].trim().toLowerCase(), "") + "/score/search?name=" + args[0].trim()).openStream()), HeroSearchResults.class);
             Document result = Jsoup.parse(StringEscapeUtils.unescapeJava(results.getSingleEntry()));
+            msg = msg.replace("%username", args[0].trim());
             msg = msg.replace("%rank", result.getElementsByClass("table-icon-rank").get(0).text());
+            msg = msg.replace("%totalscore", result.select("div.table-stats-score > strong").text());
+            msg = msg.replace("%winrate", result.getElementsByClass("table-stats-winrate").get(0).text());
+            msg = msg.replace("%kdr", result.select("div.table-stats-kda > strong").text());
+            msg = msg.replace("%timeplayed", result.getElementsByClass("table-stats-time").get(0).text());
+            msg = msg.replace("%multis", result.getElementsByClass("table-stats-standard").get(0).text());
+            msg = msg.replace("%medals", result.getElementsByClass("table-stats-standard").get(1).text());
             msg = msg.replace("%hero", args[1].trim());
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,54 +77,10 @@ public class MORank implements Tag {
             msg = interaction.getRandomTemplatesFail();
         } catch (ArrayIndexOutOfBoundsException e){
             msg = interaction.getRandomTemplatesPermError();
+        } catch (IllegalArgumentException e){
+            msg = "No results were returned. (Unranked)";
         }
         return msg;
-    }
-
-    private MasterOverwatchHeroes getHeroNumber(String hero){
-        switch(hero.trim().toLowerCase()){
-            case "bastion":
-                return MasterOverwatchHeroes.BASTION;
-            case "genji":
-                return MasterOverwatchHeroes.GENJI;
-            case "hanzo":
-                return MasterOverwatchHeroes.HANZO;
-            case "junkrat":
-                return MasterOverwatchHeroes.JUNKRAT;
-            case "lucio":
-                return MasterOverwatchHeroes.LUCIO;
-            case "mccree":
-                return MasterOverwatchHeroes.MCCREE;
-            case "mei":
-                return MasterOverwatchHeroes.MEI;
-            case "mercy":
-                return MasterOverwatchHeroes.MERCY;
-            case "pharah":
-                return MasterOverwatchHeroes.PHARAH;
-            case "reaper":
-                return MasterOverwatchHeroes.REAPER;
-            case "reinhardt":
-                return MasterOverwatchHeroes.REINHARDT;
-            case "roadhog":
-                return MasterOverwatchHeroes.ROADHOG;
-            case "soldier76":
-                return MasterOverwatchHeroes.SOLDIER76;
-            case "symmetra":
-                return MasterOverwatchHeroes.SYMMETRA;
-            case "torbjorn":
-                return MasterOverwatchHeroes.TORBJORN;
-            case "tracer":
-                return MasterOverwatchHeroes.TRACER;
-            case "widowmaker":
-                return MasterOverwatchHeroes.WIDOWMAKER;
-            case "winston":
-                return MasterOverwatchHeroes.WINSTON;
-            case "zarya":
-                return MasterOverwatchHeroes.ZARYA;
-            case "zenyatta":
-                return MasterOverwatchHeroes.ZENYATTA;
-        }
-        return null;
     }
 
 }
