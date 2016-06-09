@@ -203,9 +203,14 @@ public class Interaction {
     }
 
     public String getParameter() {
-        String parameterLast = parameter;
-        this.parameter = "";
-        return parameterLast;
+        if(this.parameter!=null && this.parameter.length()>0) {
+            String parameterLast = parameter;
+            if(this.getTagsToString().toLowerCase().contains("parameter"))
+                this.parameter = "";
+            return parameterLast;
+        } else {
+            return null;
+        }
     }
 
     public void setParameter(String parameter) {

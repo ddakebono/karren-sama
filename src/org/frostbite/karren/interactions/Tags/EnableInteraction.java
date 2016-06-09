@@ -22,7 +22,6 @@ public class EnableInteraction implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         String parameter = interaction.getParameter();
-        interaction.setParameter("");
         if(parameter!=null){
             for(Interaction enable : Karren.bot.getInteractionManager().getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(parameter)).collect(Collectors.toList())){
                 enable.setEnabled(true);

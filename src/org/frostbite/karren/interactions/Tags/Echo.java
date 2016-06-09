@@ -20,9 +20,8 @@ public class Echo implements Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(interaction.getParameter()!=null) {
-            String parameter = interaction.getParameter();
-            interaction.setParameter("");
+        String parameter = interaction.getParameter();
+        if(parameter!=null) {
             return msg.replace("%echo", parameter);
         }
         else

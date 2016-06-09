@@ -13,6 +13,7 @@ package org.frostbite.karren.interactions.Tags;
 import com.google.gson.Gson;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import org.frostbite.karren.interactions.Tags.TagObjects.HeroSearchResults;
@@ -60,7 +61,7 @@ public class MORank implements Tag {
         String[] args = parameter.split(",");
         Gson gson = new Gson();
         try {
-            HeroSearchResults results = gson.fromJson(IOUtils.toString(new URL("https://masteroverwatch.com/leaderboards/pc/us/hero/" + heroes.getOrDefault(args[1].trim().toLowerCase(), "") + "/role/overall/score/search?name=" + args[0].trim()).openStream()), HeroSearchResults.class);
+            HeroSearchResults results = gson.fromJson(IOUtils.toString(new URL("http://masteroverwatch.com/leaderboards/pc/us/hero/" + heroes.getOrDefault(args[1].trim().toLowerCase(), "") + "/role/overall/score/search?name=" + args[0].trim()).openStream()), HeroSearchResults.class);
             Document result = Jsoup.parse(StringEscapeUtils.unescapeJava(results.getSingleEntry()));
             msg = msg.replace("%username", args[0].trim());
             msg = msg.replace("%rank", result.getElementsByClass("table-icon-rank").get(0).text());
