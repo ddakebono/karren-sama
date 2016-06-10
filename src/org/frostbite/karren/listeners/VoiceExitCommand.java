@@ -10,8 +10,7 @@
 
 package org.frostbite.karren.listeners;
 
-import org.frostbite.karren.Karren;
-import sx.blah.discord.api.IListener;
+import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.VoicePingEvent;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.DiscordException;
