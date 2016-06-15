@@ -11,11 +11,9 @@
 package org.frostbite.karren.interactions.Tags.TagObjects;
 
 public class HeroSearchResults {
-    private String status;
     private String[] entries;
 
-    public HeroSearchResults(String status, String[] entries){
-        this.status = status;
+    public HeroSearchResults(String[] entries){
         this.entries = entries;
     }
 

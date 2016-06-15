@@ -97,7 +97,7 @@
         <dependency>
             <groupId>com.github.austinv11</groupId>
             <artifactId>Discord4j</artifactId>
-            <version>42414e0</version>
+            <version>35f085b</version>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>

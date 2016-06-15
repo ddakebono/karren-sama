@@ -10,14 +10,10 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
-import sx.blah.discord.util.MessageBuilder;
-import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.*;
 
 public class Topic implements Tag {
     @Override
@@ -27,7 +23,7 @@ public class Topic implements Tag {
             msg = msg.replace("%motd", parameter);
             try {
                 event.getMessage().getChannel().changeTopic(msg);
-            } catch (HTTP429Exception | DiscordException e) {
+            } catch (RateLimitException | DiscordException e) {
                 e.printStackTrace();
             } catch (MissingPermissionsException e) {
                 return "You'll need to give me more permissions so I can change the topic!";

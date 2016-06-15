@@ -18,8 +18,6 @@ import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Tags.*;
 import org.frostbite.karren.listeners.InteractionCommands;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.io.File;
@@ -83,7 +81,7 @@ public class InteractionManager {
         }
     }
 
-    public MessageBuilder handle(MessageReceivedEvent event) throws HTTP429Exception, DiscordException {
+    public MessageBuilder handle(MessageReceivedEvent event) {
         String returned;
         MessageBuilder result = null;
         for(Interaction check : interactions){
@@ -91,13 +89,15 @@ public class InteractionManager {
             if(returned!=null){
                 Karren.log.debug("Interaction match for " + check.getIdentifier() + ", handling templates!");
                 result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getMessage().getChannel());
-                for(String tag : check.getTags()){
-                    if(!tag.equalsIgnoreCase("pm")) {
-                        Tag handler = handlers.get(tag.toLowerCase());
-                        if (handler != null && returned!=null)
-                            returned = handler.handleTemplate(returned, check, result, event);
-                        else if(!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && returned!=null)
-                            Karren.log.error("Please check interaction " + check.getIdentifier() + " as the file contains invalid tags!");
+                if(!check.isPermBad()) {
+                    for (String tag : check.getTags()) {
+                        if (!tag.equalsIgnoreCase("pm")) {
+                            Tag handler = handlers.get(tag.toLowerCase());
+                            if (handler != null && returned != null)
+                                returned = handler.handleTemplate(returned, check, result, event);
+                            else if (!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && returned != null)
+                                Karren.log.error("Please check interaction " + check.getIdentifier() + " as the file contains invalid tags!");
+                        }
                     }
                 }
                 if(returned!=null)

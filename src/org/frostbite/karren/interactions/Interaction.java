@@ -34,6 +34,7 @@ public class Interaction {
     private String parameter;
     private boolean specialInteraction = false;
     private String[] childInteractions;
+    private boolean isPermBad = false;
 
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
@@ -76,6 +77,7 @@ public class Interaction {
                 result = getRandomTemplate(templates);
             if(result!=null && permissionLevel!=null && permissionLevel.length()>0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), Karren.bot.getClient(), permissionLevel)){
                 result = getRandomTemplatesPermError();
+                isPermBad = true;
             }
         }
         return result;
@@ -215,6 +217,10 @@ public class Interaction {
 
     public void setParameter(String parameter) {
         this.parameter = parameter;
+    }
+
+    public boolean isPermBad() {
+        return isPermBad;
     }
 
     public int getConfidence() {

@@ -13,7 +13,6 @@ package org.frostbite.karren.interactions.Tags;
 import com.google.gson.Gson;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import org.frostbite.karren.interactions.Tags.TagObjects.HeroSearchResults;

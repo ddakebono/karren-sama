@@ -10,7 +10,6 @@
 
 package org.frostbite.karren;
 
-import com.mysql.jdbc.Connection;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.InterConnect.InterConnectListener;
 import org.frostbite.karren.interactions.InteractionManager;
@@ -19,7 +18,7 @@ import org.frostbite.karren.listeners.*;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
+import sx.blah.discord.util.RateLimitException;
 
 public class KarrenBot {
     private IDiscordClient client;
@@ -29,7 +28,6 @@ public class KarrenBot {
     private InteractionManager ic;
     private InterConnectListener interConnectListener;
     private boolean isKill = false;
-    private boolean reconnectFailure = false;
 
     public KarrenBot(IDiscordClient client){
         this.client = client;
@@ -84,7 +82,7 @@ public class KarrenBot {
         if(client.isReady()) {
             try {
                 client.logout();
-            } catch (HTTP429Exception | DiscordException e) {
+            } catch (RateLimitException | DiscordException e) {
                 e.printStackTrace();
             }
         }
@@ -108,14 +106,6 @@ public class KarrenBot {
 
     public IDiscordClient getClient(){
         return client;
-    }
-
-    public boolean isReconnectFailure() {
-        return reconnectFailure;
-    }
-
-    public void setReconnectFailure(boolean reconnectFailure) {
-        this.reconnectFailure = reconnectFailure;
     }
 
     public void setClient(IDiscordClient client) {

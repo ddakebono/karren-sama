@@ -10,35 +10,36 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IVoiceChannel;
-import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
+import sx.blah.discord.util.audio.AudioPlayer;
 
-import java.util.Optional;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
 
 public class Speak implements Tag {
 
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        Optional<IVoiceChannel> voiceOpt = event.getMessage().getAuthor().getVoiceChannel();
-        if(voiceOpt.isPresent() || interaction.getChannel()!=null) {
-            IVoiceChannel voice = voiceOpt.get();
-            if(interaction.getChannel()!=null)
-                voice = Karren.bot.getClient().getVoiceChannelByID(interaction.getChannel());
-            try {
-                if (!voice.isConnected() || (voice.isConnected() && voice.getGuild().getAudioChannel().getQueueSize() == 0)) {
-                    voice.join();
-                    voice.getGuild().getAudioChannel().setVolume(interaction.getVoiceVolume());
-                    voice.getGuild().getAudioChannel().queueFile(interaction.getRandomVoiceFile());
-                } else {
-                    msg = interaction.getRandomTemplatesFail();
+
+
+    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event){
+        IVoiceChannel voiceChan = event.getMessage().getAuthor().getConnectedVoiceChannels().size()>0 ? event.getMessage().getAuthor().getConnectedVoiceChannels().get(0) : null;
+        if(voiceChan!=null){
+            AudioPlayer audio = AudioPlayer.getAudioPlayerForGuild(voiceChan.getGuild());
+            if(audio.playlistSize()==0) {
+                voiceChan.join();
+                audio.setVolume(interaction.getVoiceVolume());
+                try {
+                    audio.queue(new File(interaction.getRandomVoiceFile()));
+                } catch (IOException | UnsupportedAudioFileException e) {
+                    e.printStackTrace();
                 }
-            } catch (DiscordException e) {
-                e.printStackTrace();
+            } else {
+                msg = interaction.getRandomTemplatesFail();
             }
         }
         return msg;

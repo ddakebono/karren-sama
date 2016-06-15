@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class InterConnectListener extends Thread {
     Logger log;
-    ArrayList<Extender> extenders = new ArrayList<Extender>();
+    ArrayList<Extender> extenders = new ArrayList<>();
     boolean killServer = false;
 
     public InterConnectListener(Logger log){

@@ -30,8 +30,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,7 +39,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Date;
 
 public class ListenCast extends Thread{
@@ -80,7 +79,7 @@ public class ListenCast extends Thread{
                 iceDJ = "";
                 Karren.log.info("Stream seems to have shutdown.");
                 doUpdate = false;
-            } catch (StringIndexOutOfBoundsException | SQLException | ParserConfigurationException | SAXException e1) {
+            } catch (StringIndexOutOfBoundsException | ParserConfigurationException | SAXException e1) {
                 songTemp = new Song("Error encountered when parsing song info!");
                 Karren.log.error("Bad info in song data, couldn't parse song title!");
                 doUpdate = false;
@@ -121,7 +120,7 @@ public class ListenCast extends Thread{
                     bot.getChannelByID(Karren.conf.getStreamAnnounceChannel()).changeTopic("Stream is off air.");
 
             }
-        } catch (DiscordException | MissingPermissionsException | HTTP429Exception e) {
+        } catch (DiscordException | MissingPermissionsException | RateLimitException e) {
             e.printStackTrace();
         }
         try {
@@ -133,22 +132,18 @@ public class ListenCast extends Thread{
         if(nowPlaying && Boolean.parseBoolean(Karren.conf.getConnectToDiscord()) && Boolean.parseBoolean(Karren.conf.getEnableListencast())){
             try {
                 bot.getChannelByID(Karren.conf.getStreamAnnounceChannel()).sendMessage(getNowPlayingStr());
-            } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+            } catch (MissingPermissionsException | RateLimitException | DiscordException e) {
                 e.printStackTrace();
             }
-            try {
-                alertFaves();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            alertFaves();
         }
 	}
-    private void alertFaves() throws SQLException {
+    private void alertFaves() {
         Result<FavoritesRecord> returned = Karren.bot.getSql().getUserFaves(currentSong.getSongID());
         for(FavoritesRecord user : returned){
             try {
                 Karren.bot.getClient().getOrCreatePMChannel(Karren.bot.getClient().getUserByID(user.getUserid().toString())).sendMessage(currentSong.getSongName() + " has started playing!");
-            } catch (DiscordException | HTTP429Exception | MissingPermissionsException e) {
+            } catch (DiscordException | RateLimitException | MissingPermissionsException e) {
                 e.printStackTrace();
             }
         }
@@ -159,7 +154,7 @@ public class ListenCast extends Thread{
         else
             return "No Source connected, the stream is offline.";
     }
-	private void updateIcecastInfo() throws IOException, SQLException, ParserConfigurationException, IllegalStateException, SAXException {
+	private void updateIcecastInfo() throws IOException, ParserConfigurationException, IllegalStateException, SAXException {
         boolean onair = false;
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

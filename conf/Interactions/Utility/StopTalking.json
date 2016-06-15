@@ -1,12 +1,14 @@
 {
   "enabled": true,
   "confidence": 1,
-  "permissionLevel": "Admins",
   "templates": [
     "Alright..."
   ],
   "templatesPermError": [
     "You can't tell me what to do!"
+  ],
+  "templatesFail": [
+    "Wow, I'm not even talking..."
   ],
   "tags": [
     "bot",

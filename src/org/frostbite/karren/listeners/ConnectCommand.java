@@ -18,7 +18,6 @@ public class ConnectCommand implements IListener<GuildCreateEvent> {
 
     @Override
     public void handle(GuildCreateEvent event){
-        Karren.bot.setReconnectFailure(false);
         if(!Karren.bot.isExtrasReady()) {
             Karren.log.info("Starting threads!");
             Karren.bot.initExtras();

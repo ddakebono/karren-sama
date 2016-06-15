@@ -13,7 +13,7 @@ package org.frostbite.karren.listeners;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.VoicePingEvent;
 import sx.blah.discord.handle.obj.IVoiceChannel;
-import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.audio.AudioPlayer;
 
 import java.util.ConcurrentModificationException;
 
@@ -22,12 +22,8 @@ public class VoiceExitCommand implements IListener<VoicePingEvent> {
     public void handle(VoicePingEvent voicePingEvent) {
         try {
             for (IVoiceChannel channel : voicePingEvent.getClient().getConnectedVoiceChannels()) {
-                try {
-                    if (channel.getGuild().getAudioChannel().getQueueSize() == 0) {
-                        channel.leave();
-                    }
-                } catch (DiscordException e) {
-                    e.printStackTrace();
+                if(AudioPlayer.getAudioPlayerForGuild(channel.getGuild()).playlistSize()==0){
+                    channel.leave();
                 }
             }
         } catch (ConcurrentModificationException ignored){}

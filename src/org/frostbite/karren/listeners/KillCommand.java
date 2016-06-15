@@ -16,8 +16,8 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
 import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 public class KillCommand implements IListener<MessageReceivedEvent> {
 	public void handle(MessageReceivedEvent event){
@@ -30,7 +30,7 @@ public class KillCommand implements IListener<MessageReceivedEvent> {
 			if(!KarrenUtil.hasRole(event.getMessage().getAuthor(), bot, "Admins") && message.startsWith(cmd))
                 try {
                     event.getMessage().getChannel().sendMessage("You can't tell me what to do! (Not Admin)");
-                } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                } catch (MissingPermissionsException | RateLimitException | DiscordException e) {
                     e.printStackTrace();
                 }
         }

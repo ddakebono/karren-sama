@@ -16,10 +16,7 @@ import org.frostbite.karren.Karren;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
-import sx.blah.discord.util.MessageBuilder;
-import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.*;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -49,7 +46,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
                     helpMsg.send();
                     prefixedHelpMsg.send();
 
-                } catch (DiscordException | HTTP429Exception | MissingPermissionsException e) {
+                } catch (DiscordException | RateLimitException | MissingPermissionsException e) {
                     e.printStackTrace();
                 }
             } else {
@@ -64,7 +61,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
                             else
                                 helpMsg.withContent("__**" + helpInteraction.getIdentifier() + "**__\n**Triggers**: " + helpInteraction.getActivatorsToString() + "\n**Amount of triggers needed to trigger**: " + helpInteraction.getConfidence() + "\n**Sample Output**: " + helpInteraction.getRandomTemplates() + "\n**Help text**: " + helpInteraction.getHelptext());
                             helpMsg.send();
-                        } catch (DiscordException | HTTP429Exception | MissingPermissionsException e) {
+                        } catch (DiscordException | RateLimitException | MissingPermissionsException e) {
                             e.printStackTrace();
                         }
                     }

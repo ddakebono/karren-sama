@@ -13,30 +13,23 @@ package org.frostbite.karren.listeners;
 import org.frostbite.karren.Karren;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.HTTP429Exception;
-import sx.blah.discord.util.MessageBuilder;
-import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.*;
 
 public class InteractionCommands implements IListener<MessageReceivedEvent> {
     public void handle(MessageReceivedEvent event){
         if(Karren.conf.getEnableInteractions().equalsIgnoreCase("true")){
-            MessageBuilder response = null;
-            try {
-                response = Karren.bot.getInteractionManager().handle(event);
-            } catch (HTTP429Exception | DiscordException e) {
-                e.printStackTrace();
-            }
+            MessageBuilder response;
+            response = Karren.bot.getInteractionManager().handle(event);
             if(response!=null) {
                 try {
                     response.send();
-                } catch (HTTP429Exception | DiscordException | MissingPermissionsException e) {
+                } catch (RateLimitException | DiscordException | MissingPermissionsException e) {
                     e.printStackTrace();
                 }
             } else if(event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase())) {
                 try {
                     event.getMessage().getChannel().sendMessage("It's not like I wanted to answer anyways....baka. (Use \"" + Karren.conf.getCommandPrefix() + "help\" to view all usable interactions)");
-                } catch (MissingPermissionsException | HTTP429Exception | DiscordException e) {
+                } catch (MissingPermissionsException | RateLimitException | DiscordException e) {
                     e.printStackTrace();
                 }
             }

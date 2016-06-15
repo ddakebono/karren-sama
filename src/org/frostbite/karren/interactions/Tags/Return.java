@@ -20,7 +20,6 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class Return implements Tag {
     @Override
