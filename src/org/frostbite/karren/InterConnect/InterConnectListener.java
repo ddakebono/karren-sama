@@ -30,7 +30,7 @@ public class InterConnectListener extends Thread {
     public void run(){
         log.info("Starting up the extender socket server!");
         try{
-            ServerSocket server = new ServerSocket(Integer.parseInt(Karren.conf.getExtPort()), 1000, InetAddress.getByName(Karren.conf.getExtAddr()));
+            ServerSocket server = new ServerSocket(Karren.conf.getExtPort(), 1000, InetAddress.getByName(Karren.conf.getExtAddr()));
             while(!killServer){
                 log.info("Waiting for extender on port " + Karren.conf.getExtPort());
                 Extender newExtender = new Extender(null, null, server.accept(), log);

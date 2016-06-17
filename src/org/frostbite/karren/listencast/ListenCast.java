@@ -29,6 +29,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
@@ -39,7 +40,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListenCast extends Thread{
 	private IDiscordClient bot;
@@ -56,7 +60,7 @@ public class ListenCast extends Thread{
     private boolean doUpdate;
 	private boolean killListencast;
 	public ListenCast(IDiscordClient bot) {
-        nowPlaying = Boolean.parseBoolean(Karren.conf.getListencastAnnounce());
+        nowPlaying = Karren.conf.getListencastAnnounce();
         this.bot = bot;
     }
 
@@ -114,14 +118,18 @@ public class ListenCast extends Thread{
                 Karren.bot.getSql().updateDJActivity(iceDJ, iceStreamTitle);
                 lastDJ=iceDJ;
                 lastStreamTitle=iceStreamTitle;
-                if(iceDJ!=null&&iceDJ.length()>0)
-                    bot.getChannelByID(Karren.conf.getStreamAnnounceChannel()).changeTopic("Stream is LIVE. Current DJ is " + lastDJ + " and the current show is " + lastStreamTitle);
-                else
-                    bot.getChannelByID(Karren.conf.getStreamAnnounceChannel()).changeTopic("Stream is off air.");
+                for(IChannel chan : getRadioAnnounceChannels()) {
+                    if (iceDJ != null && iceDJ.length() > 0)
+                        chan.changeTopic("Stream is LIVE. Current DJ is " + lastDJ + " and the current show is " + lastStreamTitle);
+                    else
+                        chan.changeTopic("Stream is off air.");
+                }
 
             }
-        } catch (DiscordException | MissingPermissionsException | RateLimitException e) {
+        } catch (DiscordException | RateLimitException e) {
             e.printStackTrace();
+        } catch (MissingPermissionsException e) {
+            Karren.log.error("Missing permission in one of the radio announce channels, cannot update topic!");
         }
         try {
             writeToSongLog(currentSong);
@@ -129,15 +137,19 @@ public class ListenCast extends Thread{
             e.printStackTrace();
         }
         Karren.log.debug("Song \"" + currentSong.getSongName() + "\" duration lock: " + Boolean.toString(currentSong.isDurationLocked()));
-        if(nowPlaying && Boolean.parseBoolean(Karren.conf.getConnectToDiscord()) && Boolean.parseBoolean(Karren.conf.getEnableListencast())){
+        if(nowPlaying && Karren.conf.getConnectToDiscord() && Karren.conf.getEnableListencast()){
             try {
-                bot.getChannelByID(Karren.conf.getStreamAnnounceChannel()).sendMessage(getNowPlayingStr());
+                for(IChannel chan : getRadioAnnounceChannels())
+                    chan.sendMessage(getNowPlayingStr());
             } catch (MissingPermissionsException | RateLimitException | DiscordException e) {
                 e.printStackTrace();
             }
             alertFaves();
         }
 	}
+    private List<IChannel> getRadioAnnounceChannels(){
+        return bot.getChannels(false).stream().filter(c -> c.getName().equalsIgnoreCase("radio")).collect(Collectors.toList());
+    }
     private void alertFaves() {
         Result<FavoritesRecord> returned = Karren.bot.getSql().getUserFaves(currentSong.getSongID());
         for(FavoritesRecord user : returned){
@@ -159,7 +171,7 @@ public class ListenCast extends Thread{
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		CredentialsProvider clientCreds = new BasicCredentialsProvider();
-		clientCreds.setCredentials(new AuthScope(new HttpHost(Karren.conf.getIcecastHost(), Integer.parseInt(Karren.conf.getIcecastPort()))), new UsernamePasswordCredentials(Karren.conf.getIcecastAdminUsername(), Karren.conf.getIcecastAdminPass()));
+		clientCreds.setCredentials(new AuthScope(new HttpHost(Karren.conf.getIcecastHost(), Karren.conf.getIcecastPort())), new UsernamePasswordCredentials(Karren.conf.getIcecastAdminUsername(), Karren.conf.getIcecastAdminPass()));
         try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(clientCreds).build()) {
             HttpGet httpGet = new HttpGet("http://" + Karren.conf.getIcecastHost() + ":" + Karren.conf.getIcecastPort() + "/admin/stats.xml");
             try (CloseableHttpResponse result = httpClient.execute(httpGet)) {

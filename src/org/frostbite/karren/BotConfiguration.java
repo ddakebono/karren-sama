@@ -10,6 +10,7 @@
 
 package org.frostbite.karren;
 
+import org.frostbite.karren.interactions.Interaction;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -20,27 +21,26 @@ import java.util.Properties;
 
 public class BotConfiguration {
     private String sqlhost;
-    private String sqlport;
+    private int sqlport;
     private String sqluser;
     private String sqldb;
     private String sqlpass;
     private String icecastAdminUsername;
     private String icecastAdminPass;
     private String icecastHost;
-    private String icecastPort;
+    private int icecastPort;
     private String icecastMount;
-    private String streamAnnounceChannel;
     private String discordToken;
     private String guildId;
-    private String allowSQLRW;
-    private String enableListencast;
-    private String listencastAnnounce;
-    private String enableInteractions;
+    private boolean allowSQLRW;
+    private boolean enableListencast;
+    private boolean listencastAnnounce;
+    private boolean enableInteractions;
     private String commandPrefix;
-    private String connectToDiscord;
-    private String extPort;
+    private boolean connectToDiscord;
+    private int extPort;
     private String extAddr;
-    private final String versionMarker = "2.1-DISCORD";
+    private final String versionMarker = "3.0";
     /*
     Config Getters
      */
@@ -51,13 +51,13 @@ public class BotConfiguration {
     public String getGuildId() {
         return guildId;
     }
-    public String getListencastAnnounce() {
+    public boolean getListencastAnnounce() {
         return listencastAnnounce;
     }
     public String getSqlhost() {
         return sqlhost;
     }
-    public String getSqlport() {
+    public int getSqlport() {
         return sqlport;
     }
     public String getSqluser() {
@@ -69,14 +69,11 @@ public class BotConfiguration {
     public String getVersionMarker() {
         return versionMarker;
     }
-    public String getStreamAnnounceChannel() {
-        return streamAnnounceChannel;
-    }
-    public String getConnectToDiscord() {return connectToDiscord;}
+    public boolean getConnectToDiscord() {return connectToDiscord;}
     public String getIcecastMount() {
         return icecastMount;
     }
-    public String getIcecastPort() {
+    public int getIcecastPort() {
         return icecastPort;
     }
     public String getIcecastHost() {
@@ -91,17 +88,17 @@ public class BotConfiguration {
     public String getSqlpass() {
         return sqlpass;
     }
-    public String getAllowSQLRW() {
+    public boolean getAllowSQLRW() {
         return allowSQLRW;
     }
-    public String getEnableListencast() {
+    public boolean getEnableListencast() {
         return enableListencast;
     }
-    public String getEnableInteractions() {
+    public boolean getEnableInteractions() {
         return enableInteractions;
     }
     public String getCommandPrefix() { return commandPrefix; }
-    public String getExtPort() {
+    public int getExtPort() {
         return extPort;
     }
     public String getExtAddr() {
@@ -126,26 +123,25 @@ public class BotConfiguration {
             }
         }
         sqlhost = cfg.getProperty("sqlhost", "0.0.0.0");
-        sqlport = cfg.getProperty("sqlport", "3306");
+        sqlport = Integer.parseInt(cfg.getProperty("sqlport", "3306"));
         sqluser = cfg.getProperty("sqluser", "changeme");
         sqlpass = cfg.getProperty("sqlpass", "changeme");
         sqldb = cfg.getProperty("sqldb", "changeme");
         icecastAdminUsername = cfg.getProperty("icecastAdminUsername", "changeme");
         icecastAdminPass = cfg.getProperty("icecastAdminPass", "changeme");
         icecastHost = cfg.getProperty("icecastHost", "0.0.0.0");
-        icecastPort = cfg.getProperty("icecastPort", "8000");
+        icecastPort = Integer.parseInt(cfg.getProperty("icecastPort", "8000"));
         icecastMount = cfg.getProperty("icecastMount", "changeme.ogg");
-        streamAnnounceChannel = cfg.getProperty("streamAnnounceChannel", "0");
-        allowSQLRW = cfg.getProperty("allowSQLReadWrite", "true");
-        enableInteractions = cfg.getProperty("enableInteractionSystem", "true");
-        enableListencast = cfg.getProperty("enableListencastSystem", "true");
+        allowSQLRW = Boolean.parseBoolean(cfg.getProperty("allowSQLReadWrite", "true"));
+        enableInteractions = Boolean.parseBoolean(cfg.getProperty("enableInteractionSystem", "true"));
+        enableListencast = Boolean.parseBoolean(cfg.getProperty("enableListencastSystem", "true"));
         commandPrefix = cfg.getProperty("commandPrefix", ".");
-        connectToDiscord = cfg.getProperty("connectToDiscord", "true");
+        connectToDiscord = Boolean.parseBoolean(cfg.getProperty("connectToDiscord", "true"));
         discordToken = cfg.getProperty("BotAccountToken", "hackme");
         extAddr = cfg.getProperty("ExtenderListenAddress", "127.0.0.1");
-        extPort = cfg.getProperty("ExtenderListenPort", "8281");
+        extPort = Integer.parseInt(cfg.getProperty("ExtenderListenPort", "8281"));
         guildId = cfg.getProperty("GuildID", "0");
-        listencastAnnounce = cfg.getProperty("ListencastAnnounce", "true");
+        listencastAnnounce = Boolean.parseBoolean(cfg.getProperty("ListencastAnnounce", "true"));
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
             log.warn("Updating configuration file!");
             mkNewConfig(log);
@@ -162,26 +158,25 @@ public class BotConfiguration {
         String comment = "Karren-sama IRC bot properties file.";
         cfg.setProperty("karrenVersion", versionMarker);
         cfg.setProperty("sqlhost", sqlhost);
-        cfg.setProperty("sqlport", sqlport);
+        cfg.setProperty("sqlport", Integer.toString(sqlport));
         cfg.setProperty("sqluser", sqluser);
         cfg.setProperty("sqlpass", sqlpass);
         cfg.setProperty("sqldb", sqldb);
         cfg.setProperty("icecastAdminUsername", icecastAdminUsername);
         cfg.setProperty("icecastAdminPass", icecastAdminPass);
         cfg.setProperty("icecastHost", icecastHost);
-        cfg.setProperty("icecastPort", icecastPort);
+        cfg.setProperty("icecastPort", Integer.toString(icecastPort));
         cfg.setProperty("icecastMount", icecastMount);
-        cfg.setProperty("streamAnnounceChannel", streamAnnounceChannel);
-        cfg.setProperty("allowSQLReadWrite", allowSQLRW);
-        cfg.setProperty("enableInteractionSystem", enableInteractions);
-        cfg.setProperty("enableListencastSystem", enableListencast);
+        cfg.setProperty("allowSQLReadWrite", Boolean.toString(allowSQLRW));
+        cfg.setProperty("enableInteractionSystem", Boolean.toString(enableInteractions));
+        cfg.setProperty("enableListencastSystem", Boolean.toString(enableListencast));
         cfg.setProperty("commandPrefix", commandPrefix);
-        cfg.setProperty("connectToDiscord", connectToDiscord);
+        cfg.setProperty("connectToDiscord", Boolean.toString(connectToDiscord));
         cfg.setProperty("BotAccountToken", discordToken);
-        cfg.setProperty("ExtenderListenPort", extPort);
+        cfg.setProperty("ExtenderListenPort", Integer.toString(extPort));
         cfg.setProperty("ExtenderListenAddress", extAddr);
         cfg.setProperty("GuildID", guildId);
-        cfg.setProperty("ListencastAnnounce", listencastAnnounce);
+        cfg.setProperty("ListencastAnnounce", Boolean.toString(listencastAnnounce));
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
         log.info("Your configuration file has been generated/updated!");
         System.exit(0);

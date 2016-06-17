@@ -17,7 +17,7 @@ import sx.blah.discord.util.*;
 
 public class InteractionCommands implements IListener<MessageReceivedEvent> {
     public void handle(MessageReceivedEvent event){
-        if(Karren.conf.getEnableInteractions().equalsIgnoreCase("true")){
+        if(Karren.conf.getEnableInteractions()){
             MessageBuilder response;
             response = Karren.bot.getInteractionManager().handle(event);
             if(response!=null) {

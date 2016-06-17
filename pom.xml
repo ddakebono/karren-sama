@@ -15,7 +15,7 @@
     <groupId>org.frostbite</groupId>
     <artifactId>Karren-sama</artifactId>
     <packaging>jar</packaging>
-    <version>2.1-DISCORD</version>
+    <version>3.0</version>
 
     <repositories>
         <repository> <!-- This repo fixes issues with transitive dependencies -->
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>com.github.austinv11</groupId>
             <artifactId>Discord4j</artifactId>
-            <version>35f085b</version>
+            <version>dev-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>

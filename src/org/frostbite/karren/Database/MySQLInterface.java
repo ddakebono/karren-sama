@@ -36,55 +36,77 @@ public class MySQLInterface {
     }
 
     private void refreshSQLConnection(){
-        try {
-            this.sqlConn = DSL.using(DriverManager.getConnection("jdbc:mysql://" + Karren.conf.getSqlhost() + ":" + Karren.conf.getSqlport() + "/" + Karren.conf.getSqldb() + "?useUnicode=true&characterEncoding=UTF-8", Karren.conf.getSqluser(), Karren.conf.getSqlpass()), SQLDialect.MARIADB);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if(Karren.conf.getAllowSQLRW()) {
+            try {
+                this.sqlConn = DSL.using(DriverManager.getConnection("jdbc:mysql://" + Karren.conf.getSqlhost() + ":" + Karren.conf.getSqlport() + "/" + Karren.conf.getSqldb() + "?useUnicode=true&characterEncoding=UTF-8", Karren.conf.getSqluser(), Karren.conf.getSqlpass()), SQLDialect.MARIADB);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public WordcountsRecord getWordCount(String word){
-        refreshSQLConnection();
-        sqlConn.insertInto(Wordcounts.WORDCOUNTS).values(null, word, 1, null).onDuplicateKeyIgnore().execute();
-        return sqlConn.selectFrom(Wordcounts.WORDCOUNTS).where(Wordcounts.WORDCOUNTS.WORD.equalIgnoreCase(word)).fetchOne();
+        if(Karren.conf.getAllowSQLRW()) {
+            refreshSQLConnection();
+            sqlConn.insertInto(Wordcounts.WORDCOUNTS).values(null, word, 1, null).onDuplicateKeyIgnore().execute();
+            return sqlConn.selectFrom(Wordcounts.WORDCOUNTS).where(Wordcounts.WORDCOUNTS.WORD.equalIgnoreCase(word)).fetchOne();
+        } else {
+            return null;
+        }
     }
 
     public UserRecord getUserData(IUser user){
-        refreshSQLConnection();
-        sqlConn.insertInto(User.USER).values(user.getID(), null, user.getName(), null, 0, null).onDuplicateKeyIgnore().execute();
-        return sqlConn.selectFrom(User.USER).where(User.USER.USERID.equalIgnoreCase(user.getID())).fetchOne();
+        if(Karren.conf.getAllowSQLRW()) {
+            refreshSQLConnection();
+            sqlConn.insertInto(User.USER).values(user.getID(), null, user.getName(), null, 0, null).onDuplicateKeyIgnore().execute();
+            return sqlConn.selectFrom(User.USER).where(User.USER.USERID.equalIgnoreCase(user.getID())).fetchOne();
+        } else {
+            return null;
+        }
     }
 
     public Result<FavoritesRecord> getUserFaves(int songid){
-        refreshSQLConnection();
-        return sqlConn.selectFrom(Favorites.FAVORITES).where(Favorites.FAVORITES.SONGID.equal(songid)).fetch();
+        if(Karren.conf.getAllowSQLRW()) {
+            refreshSQLConnection();
+            return sqlConn.selectFrom(Favorites.FAVORITES).where(Favorites.FAVORITES.SONGID.equal(songid)).fetch();
+        } else {
+            return null;
+        }
     }
 
     public void addUserFave(String userid, Song song){
-        refreshSQLConnection();
-        sqlConn.insertInto(Favorites.FAVORITES).values(null, userid, song.getSongID()).onDuplicateKeyIgnore().execute();
-        song.addFave();
+        if(Karren.conf.getAllowSQLRW()) {
+            refreshSQLConnection();
+            sqlConn.insertInto(Favorites.FAVORITES).values(null, userid, song.getSongID()).onDuplicateKeyIgnore().execute();
+            song.addFave();
+        }
     }
 
     public SongdbRecord getSong(String name){
-        refreshSQLConnection();
-        sqlConn.insertInto(Songdb.SONGDB).values(null, name, 0, 0, 0, 0, false).onDuplicateKeyIgnore().execute();
-        return sqlConn.selectFrom(Songdb.SONGDB).where(Songdb.SONGDB.SONGTITLE.equal(name)).fetchOne();
+        if(Karren.conf.getAllowSQLRW()) {
+            refreshSQLConnection();
+            sqlConn.insertInto(Songdb.SONGDB).values(null, name, 0, 0, 0, 0, false).onDuplicateKeyIgnore().execute();
+            return sqlConn.selectFrom(Songdb.SONGDB).where(Songdb.SONGDB.SONGTITLE.equal(name)).fetchOne();
+        } else {
+            return null;
+        }
     }
 
     public void updateDJActivity(String curDJ, String streamName){
-        refreshSQLConnection();
-        //Switch off all DJ active statuses
-        sqlConn.update(User.USER).set(User.USER.DJACTIVE, 0).execute();
-        IUser newDJ = Karren.bot.getClient().getUserByID(curDJ);
-        if(newDJ!=null) {
-            UserRecord userAccount = getUserData(newDJ);
-            userAccount.setDjactive(1);
-            userAccount.setDjstreamname(streamName);
-            userAccount.setDjname(newDJ.getName());
-            userAccount.update();
-        } else {
-            sqlConn.insertInto(User.USER).values(0, null, curDJ, "default", 1, "streamName").onDuplicateKeyUpdate().set(User.USER.DJNAME, curDJ).set(User.USER.DJSTREAMNAME, streamName).set(User.USER.DJACTIVE, 1).execute();
+        if(Karren.conf.getAllowSQLRW()) {
+            refreshSQLConnection();
+            //Switch off all DJ active statuses
+            sqlConn.update(User.USER).set(User.USER.DJACTIVE, 0).execute();
+            IUser newDJ = Karren.bot.getClient().getUserByID(curDJ);
+            if (newDJ != null) {
+                UserRecord userAccount = getUserData(newDJ);
+                userAccount.setDjactive(1);
+                userAccount.setDjstreamname(streamName);
+                userAccount.setDjname(newDJ.getName());
+                userAccount.update();
+            } else {
+                sqlConn.insertInto(User.USER).values(0, null, curDJ, "default", 1, "streamName").onDuplicateKeyUpdate().set(User.USER.DJNAME, curDJ).set(User.USER.DJSTREAMNAME, streamName).set(User.USER.DJACTIVE, 1).execute();
+            }
         }
     }
 }

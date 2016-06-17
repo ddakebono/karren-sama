@@ -34,7 +34,7 @@ public class KarrenBot {
     }
 
     public void initDiscord(){
-        if(Boolean.parseBoolean(Karren.conf.getConnectToDiscord())) {
+        if(Karren.conf.getConnectToDiscord()) {
             EventDispatcher ed = client.getDispatcher();
             ed.registerListener(new ConnectCommand());
             ed.registerListener(new HelpCommand());
