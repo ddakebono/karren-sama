@@ -3,21 +3,21 @@
   "confidence": 1,
   "permissionLevel": "Admins",
   "templates": [
-    "Interaction %interaction has been disabled."
+    "Status set to %param"
   ],
   "templatesPermError": [
     "You don't have permission to disable this... (Not admin)"
   ],
   "templatesFail": [
-    "Could not find interaction!"
+    "Status set to nothing"
   ],
   "tags": [
     "parameter",
     "prefixed",
-    "disableinteraction"
+    "setstatus"
   ],
   "triggers": [
-    "disable"
+    "status"
   ],
   "helptext": "Disables specified interaction"
 }

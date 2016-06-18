@@ -21,6 +21,7 @@ import org.jsoup.nodes.Document;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.util.MessageBuilder;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -71,10 +72,10 @@ public class MORank implements Tag {
             msg = msg.replace("%multis", result.getElementsByClass("table-stats-standard").get(0).text());
             msg = msg.replace("%medals", result.getElementsByClass("table-stats-standard").get(1).text());
             msg = msg.replace("%hero", args[1].trim());
+        } catch (FileNotFoundException | NullPointerException e){
+            msg = interaction.getRandomTemplatesFail();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NullPointerException e){
-            msg = interaction.getRandomTemplatesFail();
         } catch (ArrayIndexOutOfBoundsException e){
             msg = interaction.getRandomTemplatesPermError();
         } catch (IllegalArgumentException e){

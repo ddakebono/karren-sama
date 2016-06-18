@@ -10,25 +10,22 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.util.MessageBuilder;
 
-import java.util.stream.Collectors;
-
-public class EnableInteraction implements Tag {
+public class SetStatus implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        String parameter = interaction.getParameter();
-        if(parameter!=null){
-            msg = msg.replace("%interaction", parameter);
-            for(Interaction enable : Karren.bot.getInteractionManager().getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(parameter)).collect(Collectors.toList())){
-                enable.setEnabled(true);
-            }
+        String param = interaction.getParameter();
+        if(param!=null){
+            msg = msg.replace("%param", param);
+            event.getClient().changeStatus(Status.game(param));
         } else {
             msg = interaction.getRandomTemplatesFail();
+            event.getClient().changeStatus(Status.empty());
         }
         return msg;
     }

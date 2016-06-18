@@ -24,6 +24,7 @@ public class DisableInteraction implements Tag {
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         String parameter = interaction.getParameter();
         if(parameter!=null){
+            msg = msg.replace("%interaction", parameter);
             for(Interaction disable : Karren.bot.getInteractionManager().getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(parameter)).collect(Collectors.toList())){
                 disable.setEnabled(false);
             }
