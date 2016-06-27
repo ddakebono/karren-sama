@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "voiceVolume": 0.2,
+  "templates": [
+    "Blame %name if this sounds like shit.",
+    "Here's some random youtube thing!"
+  ],
+  "templatesFail": [
+    "It seems that the URL given isn't valid!"
+  ],
+  "tags": [
+    "parameter",
+    "youtubedl",
+    "speak",
+    "prefixed",
+    "name"
+  ],
+  "triggers": [
+    "yt",
+    "youtube"
+  ],
+  "helptext": "Downloads and plays audio shit from youtube!"
+}

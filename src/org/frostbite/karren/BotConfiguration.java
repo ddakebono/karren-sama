@@ -10,7 +10,6 @@
 
 package org.frostbite.karren;
 
-import org.frostbite.karren.interactions.Interaction;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -40,6 +39,7 @@ public class BotConfiguration {
     private boolean connectToDiscord;
     private int extPort;
     private String extAddr;
+    private String youtubeDLBinary = null;
     private final String versionMarker = "3.0";
     /*
     Config Getters
@@ -105,9 +105,17 @@ public class BotConfiguration {
         return extAddr;
     }
 
+    public String getYoutubeDLBinary() {
+        return youtubeDLBinary;
+    }
+
+    public void setYoutubeDLBinary(String youtubeDLBinary) {
+        this.youtubeDLBinary = youtubeDLBinary;
+    }
+
     /*
-        Config Loader.
-        */
+                Config Loader.
+                */
     public void initConfig(Logger log) throws IOException {
         String[] testMount;
         Properties cfg = new Properties();

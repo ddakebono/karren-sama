@@ -24,6 +24,12 @@ Compiling
 This bot was developed using Java 8, so make sure you have the latest Java 8 SDK installed.
 I have a handy maven file included that will resolve all the dependencies and get you a usable jar.
 
+Dependencies
+------------
+
+To use this bot you will need the Java 8 runtime.
+If you wish to have Youtube playback in the voice channels you also need Youtube-dl and ffmpeg.
+
 
 Usage
 -----

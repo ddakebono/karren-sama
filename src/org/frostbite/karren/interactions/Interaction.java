@@ -35,7 +35,21 @@ public class Interaction {
     private boolean specialInteraction = false;
     private String[] childInteractions;
     private boolean isPermBad = false;
+    private String youtubeCacheFile = "";
 
+    public String getYoutubeCacheFile() {
+        String temp = youtubeCacheFile;
+        youtubeCacheFile = "";
+        return temp;
+    }
+
+    public boolean hasYoutubeFile(){
+        return youtubeCacheFile.length()>0;
+    }
+
+    public void setYoutubeCacheFile(String youtubeCacheFile) {
+        this.youtubeCacheFile = youtubeCacheFile;
+    }
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new String[]{templates}, triggers, confidence, enabled, helptext);

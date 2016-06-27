@@ -59,6 +59,7 @@ public class InteractionManager {
         handlers.put("count", new Count());
         handlers.put("morank", new MORank());
         handlers.put("setstatus", new SetStatus());
+        handlers.put("youtubedl", new YoutubeDL());
     }
 
     public void loadInteractions(){

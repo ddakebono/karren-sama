@@ -35,7 +35,11 @@ public class Speak implements Tag {
                 try {
                     voiceChan.join();
                     audio.setVolume(interaction.getVoiceVolume());
-                    audio.queue(new File(interaction.getRandomVoiceFile()));
+                    if(interaction.hasYoutubeFile()){
+                        audio.queue(new File("cache/" + interaction.getYoutubeCacheFile() + ".mp3"));
+                    } else {
+                        audio.queue(new File(interaction.getRandomVoiceFile()));
+                    }
                 } catch (IOException | UnsupportedAudioFileException e) {
                     e.printStackTrace();
                 } catch (MissingPermissionsException e) {
