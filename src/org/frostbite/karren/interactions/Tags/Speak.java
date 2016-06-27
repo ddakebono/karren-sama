@@ -15,6 +15,7 @@ import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.MessageBuilder;
+import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.audio.AudioPlayer;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -31,12 +32,14 @@ public class Speak implements Tag {
         if(voiceChan!=null){
             AudioPlayer audio = AudioPlayer.getAudioPlayerForGuild(voiceChan.getGuild());
             if(audio.playlistSize()==0) {
-                voiceChan.join();
-                audio.setVolume(interaction.getVoiceVolume());
                 try {
+                    voiceChan.join();
+                    audio.setVolume(interaction.getVoiceVolume());
                     audio.queue(new File(interaction.getRandomVoiceFile()));
                 } catch (IOException | UnsupportedAudioFileException e) {
                     e.printStackTrace();
+                } catch (MissingPermissionsException e) {
+                    msg = "I don't have permission to enter the voice channel!";
                 }
             } else {
                 msg = interaction.getRandomTemplatesFail();
