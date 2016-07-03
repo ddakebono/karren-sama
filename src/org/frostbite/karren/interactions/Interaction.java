@@ -35,16 +35,16 @@ public class Interaction {
     private boolean specialInteraction = false;
     private String[] childInteractions;
     private boolean isPermBad = false;
-    private String youtubeCacheFile = "";
+    private String youtubeCacheFile;
 
     public String getYoutubeCacheFile() {
         String temp = youtubeCacheFile;
-        youtubeCacheFile = "";
+        youtubeCacheFile = null;
         return temp;
     }
 
     public boolean hasYoutubeFile(){
-        return youtubeCacheFile.length()>0;
+        return youtubeCacheFile!=null;
     }
 
     public void setYoutubeCacheFile(String youtubeCacheFile) {

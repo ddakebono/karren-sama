@@ -43,11 +43,13 @@ public class YoutubeDL implements Tag {
     private String getIDFromLink(String link){
         String pattern = "(?<=watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
 
-        Pattern compiledPattern = Pattern.compile(pattern);
-        Matcher matcher = compiledPattern.matcher(link);
+        if(link!=null) {
+            Pattern compiledPattern = Pattern.compile(pattern);
+            Matcher matcher = compiledPattern.matcher(link);
 
-        if(matcher.find()){
-            return matcher.group();
+            if (matcher.find()) {
+                return matcher.group();
+            }
         }
 
         return null;
