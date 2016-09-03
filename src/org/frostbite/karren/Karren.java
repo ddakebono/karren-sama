@@ -43,7 +43,7 @@ public class Karren{
         //Build our discord client
         IDiscordClient client = null;
         try {
-            client = new ClientBuilder().withToken(conf.getDiscordToken()).withReconnects().build();
+            client = new ClientBuilder().withToken(conf.getDiscordToken()).build();
         } catch (DiscordException e) {
             e.printStackTrace();
         }

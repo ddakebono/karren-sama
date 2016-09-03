@@ -22,7 +22,7 @@ public class VoiceExitCommand implements IListener<VoicePingEvent> {
     public void handle(VoicePingEvent voicePingEvent) {
         try {
             for (IVoiceChannel channel : voicePingEvent.getClient().getConnectedVoiceChannels()) {
-                if(AudioPlayer.getAudioPlayerForGuild(channel.getGuild()).playlistSize()==0){
+                if(AudioPlayer.getAudioPlayerForGuild(channel.getGuild()).getPlaylistSize()==0){
                     channel.leave();
                 }
             }

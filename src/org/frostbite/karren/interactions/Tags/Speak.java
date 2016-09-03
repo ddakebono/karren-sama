@@ -31,7 +31,7 @@ public class Speak implements Tag {
         IVoiceChannel voiceChan = event.getMessage().getAuthor().getConnectedVoiceChannels().size()>0 ? event.getMessage().getAuthor().getConnectedVoiceChannels().get(0) : null;
         if(voiceChan!=null){
             AudioPlayer audio = AudioPlayer.getAudioPlayerForGuild(voiceChan.getGuild());
-            if(audio.playlistSize()==0) {
+            if(audio.getPlaylistSize()==0) {
                 try {
                     voiceChan.join();
                     audio.setVolume(interaction.getVoiceVolume());

@@ -23,7 +23,7 @@ public class StopSpeak implements Tag {
         IVoiceChannel voiceChan = event.getMessage().getAuthor().getConnectedVoiceChannels().size()>0 ? event.getMessage().getAuthor().getConnectedVoiceChannels().get(0) : null;
         if(voiceChan!=null) {
             AudioPlayer audio = AudioPlayer.getAudioPlayerForGuild(voiceChan.getGuild());
-            if (audio.playlistSize() > 0) {
+            if (audio.getPlaylistSize() > 0) {
                 audio.clean();
             } else {
                 msg = interaction.getRandomTemplatesFail();

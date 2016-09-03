@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "**%username** is **level %level** with **%playtime-quick** logged in quickplay and **%playtime-comp** in competitive."
+  ],
+  "templatesFail": [
+    "I couldn't find anyone with that ID."
+  ],
+  "tags": [
+    "prefixed",
+    "parameter",
+    "overwatchuapi",
+    "name"
+  ],
+  "triggers": [
+    "owl",
+    "overwatchlevel"
+  ],
+  "helptext": "Pull some relevant data from the Overwatch UAPI"
+}
