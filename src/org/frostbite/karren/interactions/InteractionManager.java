@@ -62,6 +62,7 @@ public class InteractionManager {
         handlers.put("youtubedl", new YoutubeDL());
         handlers.put("overwatchhero", new OverwatchUAPIHero());
         handlers.put("overwatchallheroes", new OverwatchUAPIAllHeroes());
+        handlers.put("deletemsg", new DeleteMessage());
     }
 
     public void loadInteractions(){
