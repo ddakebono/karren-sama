@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "**%username** has **%timeplayed** on **%hero**. They've delivered **%damage**, killing **%kills players**. They've died **%deaths** times."
+  ],
+  "templatesFail": [
+    "You seem to have missed a parameter, please include both ID and hero separated with a comma."
+  ],
+  "templatesPermError": [
+    "I can't find that ID"
+  ],
+  "tags": [
+    "prefixed",
+    "parameter",
+    "overwatchhero"
+  ],
+  "triggers": [
+    "owh",
+    "overwatchhero"
+  ],
+  "helptext": "Pull some relevant data from the Overwatch UAPI"
+}

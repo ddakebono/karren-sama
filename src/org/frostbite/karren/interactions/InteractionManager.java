@@ -57,9 +57,11 @@ public class InteractionManager {
         handlers.put("disableinteraction", new DisableInteraction());
         handlers.put("enableinteraction", new EnableInteraction());
         handlers.put("count", new Count());
-        handlers.put("overwatchuapi", new OverwatchUAPI());
+        handlers.put("overwatchprofile", new OverwatchUAPIProfile());
         handlers.put("setstatus", new SetStatus());
         handlers.put("youtubedl", new YoutubeDL());
+        handlers.put("overwatchhero", new OverwatchUAPIHero());
+        handlers.put("overwatchallheroes", new OverwatchUAPIAllHeroes());
     }
 
     public void loadInteractions(){

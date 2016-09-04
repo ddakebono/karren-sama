@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "**%username's** most played heroes are: **%hero0** with **%timeplayed0**, **%hero1** with **%timeplayed1**, and **%hero2** with **%timeplayed2**"
+  ],
+  "templatesFail": [
+    "You seem to have missed a parameter, please include both ID and hero separated with a comma."
+  ],
+  "templatesPermError": [
+    "I can't find that ID"
+  ],
+  "tags": [
+    "prefixed",
+    "parameter",
+    "overwatchallheroes"
+  ],
+  "triggers": [
+    "owah",
+    "overwatchallheroes"
+  ],
+  "helptext": "Pull some relevant data from the Overwatch UAPI"
+}

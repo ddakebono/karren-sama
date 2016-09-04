@@ -27,13 +27,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
-public class OverwatchUAPI implements Tag {
+public class OverwatchUAPIProfile implements Tag {
 
     final TrustManager[] trustAllCertificates = new TrustManager[] {
             new X509TrustManager() {
@@ -54,19 +53,15 @@ public class OverwatchUAPI implements Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        SSLContext sc = null;
+        SSLContext sc;
+        String parameter = interaction.getParameter();
+        parameter = parameter.replace("#", "-");
+        JsonParser gson = new JsonParser();
         try {
             sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCertificates, new SecureRandom());
-        } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        String parameter = interaction.getParameter();
-        JsonParser gson = new JsonParser();
-        try {
             HttpsURLConnection profileRequest = (HttpsURLConnection)new URL("https://api.lootbox.eu/pc/us/" + parameter + "/profile").openConnection();
-            if(sc != null)
-                profileRequest.setSSLSocketFactory(sc.getSocketFactory());
+            profileRequest.setSSLSocketFactory(sc.getSocketFactory());
             profileRequest.connect();
             JsonObject profile = gson.parse(new InputStreamReader((InputStream)profileRequest.getContent())).getAsJsonObject().getAsJsonObject("data");
             if(profile==null)
@@ -90,28 +85,9 @@ public class OverwatchUAPI implements Tag {
                 msg = msg.replace("%rank", "0");
         } catch (IOException e) {
             msg = interaction.getRandomTemplatesFail();
-        }
-        /*try {
-            HeroSearchResults results = gson.fromJson(IOUtils.toString(new URL("http://masteroverwatch.com/leaderboards/pc/us/hero/" + heroes.getOrDefault(args[1].trim().toLowerCase(), "") + "/role/overall/score/search?name=" + args[0].trim()).openStream()), HeroSearchResults.class);
-            Document result = Jsoup.parse(StringEscapeUtils.unescapeJava(results.getSingleEntry()));
-            msg = msg.replace("%username", args[0].trim());
-            msg = msg.replace("%rank", result.getElementsByClass("table-icon-rank").get(0).text());
-            msg = msg.replace("%totalscore", result.select("div.table-stats-score > strong").text());
-            msg = msg.replace("%winrate", result.getElementsByClass("table-stats-winrate").get(0).text());
-            msg = msg.replace("%kdr", result.select("div.table-stats-kda > strong").text());
-            msg = msg.replace("%timeplayed", result.getElementsByClass("table-stats-time").get(0).text());
-            msg = msg.replace("%multis", result.getElementsByClass("table-stats-standard").get(0).text());
-            msg = msg.replace("%medals", result.getElementsByClass("table-stats-standard").get(1).text());
-            msg = msg.replace("%hero", args[1].trim());
-        } catch (FileNotFoundException | NullPointerException e){
-            msg = interaction.getRandomTemplatesFail();
-        } catch (IOException e) {
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException e){
-            msg = interaction.getRandomTemplatesPermError();
-        } catch (IllegalArgumentException e){
-            msg = "No results were returned. (Unranked)";
-        }*/
+        }
         return msg;
     }
 
