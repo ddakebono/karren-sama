@@ -66,15 +66,20 @@ public class OverwatchUAPIProfile implements Tag {
             JsonObject profile = gson.parse(new InputStreamReader((InputStream)profileRequest.getContent())).getAsJsonObject().getAsJsonObject("data");
             if(profile==null)
                 throw new IOException();
+            int wins = 0;
             JsonObject quickplay = profile.getAsJsonObject("games").getAsJsonObject("quick");
             JsonObject competitive = profile.getAsJsonObject("games").getAsJsonObject("competitive");
             JsonObject playtime = profile.getAsJsonObject("playtime");
             JsonObject competitiveInfo = profile.getAsJsonObject("competitive");
             msg = msg.replace("%username", profile.get("username").getAsString());
             msg = msg.replace("%level", profile.get("level").getAsString());
-            msg = msg.replace("%gameswon", String.valueOf(quickplay.get("wins").getAsInt() + competitive.get("wins").getAsInt()));
+            if(quickplay.get("wins")!=null)
+                wins+=quickplay.get("wins").getAsInt();
+            if(competitive.get("wins")!=null)
+                wins+=competitive.get("wins").getAsInt();
+            msg = msg.replace("%gameswon", String.valueOf(wins));
             if(quickplay.has("played") && competitive.has("played"))
-                msg = msg.replace("%winrate", String.valueOf(((quickplay.get("wins").getAsFloat() + competitive.get("wins").getAsFloat()) / (quickplay.get("played").getAsFloat() + competitive.get("played").getAsFloat()))*100));
+                msg = msg.replace("%winrate", String.valueOf((wins / (quickplay.get("played").getAsFloat() + competitive.get("played").getAsFloat()))*100));
             else
                 msg = msg.replace("%winrate", "Unknown");
             msg = msg.replace("%playtime-quick", playtime.get("quick").getAsString());
