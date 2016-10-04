@@ -3,22 +3,22 @@
   "confidence": 1,
   "voiceVolume": 0.2,
   "templates": [
-    "Blame %name if this sounds like shit.",
-    "Here's some random youtube thing!"
+    "Hey, is this thing on?"
   ],
   "templatesFail": [
     "It seems that the URL given isn't valid!"
   ],
+  "templatesPermError":[
+    "Resumed playback"
+  ],
   "tags": [
     "parameter",
-    "youtubedl",
-    "speak",
+    "d4jplay",
     "prefixed",
     "name"
   ],
   "triggers": [
-    "yt",
-    "youtube"
+    "play"
   ],
-  "helptext": "Downloads and plays audio shit from youtube!"
+  "helptext": "Downloads and plays audio shit from the internet!"
 }

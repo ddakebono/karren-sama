@@ -8,26 +8,27 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags;
+package org.frostbite.karren.interactions.Tags.D4JPlayer;
 
+import net.dv8tion.d4j.player.MusicPlayer;
+import net.dv8tion.jda.player.source.AudioSource;
+import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.MessageBuilder;
-import sx.blah.discord.util.audio.AudioPlayer;
 
-public class StopSpeak implements Tag {
+public class D4JList implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        IVoiceChannel voiceChan = event.getMessage().getAuthor().getConnectedVoiceChannels().size()>0 ? event.getMessage().getAuthor().getConnectedVoiceChannels().get(0) : null;
-        if(voiceChan!=null) {
-            AudioPlayer audio = AudioPlayer.getAudioPlayerForGuild(voiceChan.getGuild());
-            if (audio.getPlaylistSize() > 0) {
-                audio.clean();
-            } else {
-                msg = interaction.getRandomTemplatesFail();
+        if(Karren.bot.getClient().getConnectedVoiceChannels().size()>0){
+            MusicPlayer player = (MusicPlayer)event.getMessage().getGuild().getAudioManager().getAudioProvider();
+            String list = "";
+            for(AudioSource source : player.getAudioQueue()){
+                list += source.getInfo().getTitle() + "\n";
             }
+            list = list.substring(0, list.length()-2);
+            msg = msg.replace("%nplist", list);
         }
         return msg;
     }

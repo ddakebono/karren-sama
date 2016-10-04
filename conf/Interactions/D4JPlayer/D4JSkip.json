@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "voiceVolume": 0.2,
+  "templates": [
+    "Skipping to next in queue"
+  ],
+  "templatesFail": [
+    "It seems that the URL given isn't valid!"
+  ],
+  "tags": [
+    "d4jskip",
+    "prefixed"
+  ],
+  "triggers": [
+    "skip"
+  ],
+  "helptext": "Skips current song in queue"
+}

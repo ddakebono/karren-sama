@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "The current song playing is: %d4jtitle"
+  ],
+  "tags": [
+    "d4jnowplaying",
+    "prefixed"
+  ],
+  "triggers": [
+    "np"
+  ],
+  "helptext": "Lists current song title"
+}

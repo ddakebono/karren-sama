@@ -16,6 +16,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Tags.*;
+import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
 import org.frostbite.karren.listeners.InteractionCommands;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.util.MessageBuilder;
@@ -47,8 +48,6 @@ public class InteractionManager {
         handlers.put("songtime", new SongTime());
         handlers.put("version", new Version());
         handlers.put("overridechannel", new OverrideChannel());
-        handlers.put("speak", new Speak());
-        handlers.put("stopspeak", new StopSpeak());
         handlers.put("topic", new Topic());
         handlers.put("parameter", new Parameter());
         handlers.put("count5", new Count5());
@@ -59,10 +58,15 @@ public class InteractionManager {
         handlers.put("count", new Count());
         handlers.put("overwatchprofile", new OverwatchUAPIProfile());
         handlers.put("setstatus", new SetStatus());
-        handlers.put("youtubedl", new YoutubeDL());
         handlers.put("overwatchhero", new OverwatchUAPIHero());
         handlers.put("overwatchallheroes", new OverwatchUAPIAllHeroes());
         handlers.put("deletemsg", new DeleteMessage());
+        handlers.put("d4jplay", new D4JPlay());
+        handlers.put("d4jlist", new D4JList());
+        handlers.put("d4jnowplaying", new D4JNowPlaying());
+        handlers.put("d4jshuffle", new D4JShuffle());
+        handlers.put("d4jskip", new D4JSkip());
+        handlers.put("d4jstop", new D4JStop());
     }
 
     public void loadInteractions(){

@@ -229,6 +229,10 @@ public class Interaction {
         }
     }
 
+    public boolean hasParameter(){
+        return this.parameter!=null && this.parameter.length()>0;
+    }
+
     public void setParameter(String parameter) {
         this.parameter = parameter;
     }

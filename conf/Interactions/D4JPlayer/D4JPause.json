@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "voiceVolume": 0.2,
+  "templates": [
+    "Paused playback"
+  ],
+  "templatesFail": [
+    "It seems that the URL given isn't valid!"
+  ],
+  "tags": [
+    "d4jplay",
+    "prefixed"
+  ],
+  "triggers": [
+    "pause"
+  ],
+  "helptext": "Pauses music playback"
+}

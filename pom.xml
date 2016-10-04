@@ -100,6 +100,11 @@
             <version>dev-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>d4j-player</artifactId>
+            <version>0.2.2_22</version>
+        </dependency>
+        <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
             <version>3.7.3</version>

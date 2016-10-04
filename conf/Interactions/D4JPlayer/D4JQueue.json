@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "The current playlist is: ```%nplist```"
+  ],
+  "tags": [
+    "d4jlist",
+    "prefixed",
+    "pm"
+  ],
+  "triggers": [
+    "list"
+  ],
+  "helptext": "Lists current playlist"
+}

@@ -10,6 +10,7 @@
 
 package org.frostbite.karren;
 
+import net.dv8tion.d4j.player.MusicPlayer;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.InterConnect.InterConnectListener;
 import org.frostbite.karren.interactions.InteractionManager;
@@ -40,7 +41,7 @@ public class KarrenBot {
             ed.registerListener(new HelpCommand());
             ed.registerListener(new InteractionCommands());
             ed.registerListener(new KillCommand());
-            ed.registerListener(new VoiceExitCommand());
+            //ed.registerListener(new VoiceExitCommand());
             try {
                 client.login();
             } catch (DiscordException e) {
@@ -119,4 +120,5 @@ public class KarrenBot {
     public boolean isExtrasReady() {
         return extrasReady;
     }
+
 }
