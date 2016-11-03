@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "Repeat is now %bool"
+  ],
+  "tags": [
+    "d4jrepeat",
+    "prefixed"
+  ],
+  "triggers": [
+    "repeat"
+  ],
+  "helptext": "Enable/disable repeat on D4JPlayer"
+}

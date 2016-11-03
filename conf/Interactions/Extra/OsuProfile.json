@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "**%username (Lvl %level)** is rank **#%rank** with a total score of **%score**"
+  ],
+  "templatesFail": [
+    "I can't seem to find someone with that name, please make sure you typed it correctly!"
+  ],
+  "templatesPermError": [
+    "I can't find that ID"
+  ],
+  "tags": [
+    "prefixed",
+    "parameter",
+    "osugetuser"
+  ],
+  "triggers": [
+    "osu"
+  ],
+  "helptext": "Pull some relevant data from the osu! api"
+}
