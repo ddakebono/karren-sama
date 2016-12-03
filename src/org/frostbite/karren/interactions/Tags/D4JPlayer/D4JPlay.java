@@ -32,7 +32,7 @@ public class D4JPlay implements Tag{
         }
         Karren.log.debug("Loaded provider");
         if(interaction.hasParameter()){
-            Playlist pls = Playlist.getPlaylist(interaction.getParameter());
+            Playlist pls = Playlist.getPlaylist(interaction.getParameter(), event.getMessage().getGuild().getID());
             List<AudioSource> sources = new LinkedList<>(pls.getSources());
             if(sources.size()>1){
                 Karren.log.debug("Found playlist with size " + sources.size());

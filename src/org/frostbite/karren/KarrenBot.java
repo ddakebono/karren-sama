@@ -44,7 +44,7 @@ public class KarrenBot {
             //ed.registerListener(new VoiceExitCommand());
             try {
                 client.login();
-            } catch (DiscordException e) {
+            } catch (DiscordException | RateLimitException e) {
                 e.printStackTrace();
             }
         } else {
@@ -83,7 +83,7 @@ public class KarrenBot {
         if(client.isReady()) {
             try {
                 client.logout();
-            } catch (RateLimitException | DiscordException e) {
+            } catch (DiscordException e) {
                 e.printStackTrace();
             }
         }
