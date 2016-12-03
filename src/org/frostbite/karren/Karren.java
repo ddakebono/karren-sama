@@ -61,36 +61,6 @@ public class Karren{
 			log.error("Error While Loading:", e);
 		}
 
-        //Find the youtube-dl binary for fun stuff
-        log.info("Searching for Youtube-dl binary...");
-        ProcessBuilder ytdlCheck = new ProcessBuilder();
-        Process ytdlProcess = null;
-        if(SystemUtils.IS_OS_WINDOWS)
-            ytdlCheck = ytdlCheck.command("youtube-dl.exe");
-        else
-            ytdlCheck = ytdlCheck.command("youtube-dl");
-        try {
-            ytdlProcess = ytdlCheck.start();
-            ytdlProcess.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(ytdlProcess!=null && ytdlProcess.exitValue()==2){
-            conf.setYoutubeDLBinary(ytdlCheck.command().get(0));
-            File cacheDir = new File("cache");
-            if(cacheDir.exists() && cacheDir.isDirectory()){
-                try {
-                    FileUtils.cleanDirectory(cacheDir);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            log.info("Youtube-dl binary found, enabling support.");
-            log.debug(ytdlCheck.command().get(0));
-        } else {
-            log.info("Youtube-dl binary not found, support unavailable.");
-        }
-
         //Fire up the watchdog, bot and the console command stuff.
         bot.initDiscord();
 	}

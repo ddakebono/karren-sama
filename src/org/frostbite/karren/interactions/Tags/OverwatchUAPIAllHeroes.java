@@ -62,7 +62,7 @@ public class OverwatchUAPIAllHeroes implements Tag {
         try {
             sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCertificates, new SecureRandom());
-            HttpsURLConnection heroRequest = (HttpsURLConnection) new URL("https://api.lootbox.eu/pc/us/" + parameter + "/quick-play/heroes").openConnection();
+            HttpsURLConnection heroRequest = (HttpsURLConnection) new URL("https://api.lootbox.eu/pc/us/" + parameter + "/quickplay/heroes").openConnection();
             heroRequest.setSSLSocketFactory(sc.getSocketFactory());
             heroRequest.connect();
             heroResponseObject[] heroes = gson.fromJson(new InputStreamReader((InputStream)heroRequest.getContent()), heroResponseObject[].class);
@@ -72,6 +72,7 @@ public class OverwatchUAPIAllHeroes implements Tag {
                 msg = msg.replace("%timeplayed" + i, heroes[i].playtime);
             }
         } catch (NoSuchAlgorithmException | IOException | KeyManagementException e) {
+            e.printStackTrace();
             msg = interaction.getRandomTemplatesPermError();
         }
         return msg;

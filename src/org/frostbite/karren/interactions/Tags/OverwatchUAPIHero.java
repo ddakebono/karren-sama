@@ -63,7 +63,7 @@ public class OverwatchUAPIHero implements Tag {
             sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCertificates, new SecureRandom());
             if(params.length>1) {
-                HttpsURLConnection heroRequest = (HttpsURLConnection) new URL("https://api.lootbox.eu/pc/us/" + params[0] + "/quick-play/hero/" + StringUtils.capitalize(params[1]) + "/").openConnection();
+                HttpsURLConnection heroRequest = (HttpsURLConnection) new URL("https://api.lootbox.eu/pc/us/" + params[0] + "/quickplay/hero/" + StringUtils.capitalize(params[1]) + "/").openConnection();
                 heroRequest.setSSLSocketFactory(sc.getSocketFactory());
                 heroRequest.connect();
                 JsonObject hero = gson.parse(new InputStreamReader((InputStream)heroRequest.getContent())).getAsJsonObject().getAsJsonObject(StringUtils.capitalize(params[1]));
@@ -71,6 +71,7 @@ public class OverwatchUAPIHero implements Tag {
                 msg = msg.replace("%timeplayed", hero.get("TimePlayed").getAsString());
                 msg = msg.replace("%hero", params[1]);
                 msg = msg.replace("%damage", hero.get("DamageDone").getAsString());
+                msg = msg.replace("%totalhealing", hero.get("HealingDone").getAsString());
                 msg = msg.replace("%kills", hero.get("Eliminations").getAsString());
                 msg = msg.replace("%deaths", hero.get("Deaths").getAsString());
             } else {
