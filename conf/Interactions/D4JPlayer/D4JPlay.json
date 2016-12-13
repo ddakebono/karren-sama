@@ -18,7 +18,8 @@
     "name"
   ],
   "triggers": [
-    "play"
+    "play",
+    "yt"
   ],
   "helptext": "Downloads and plays audio shit from the internet!"
 }

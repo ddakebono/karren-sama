@@ -16,6 +16,8 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Interaction {
     private String[] triggers;
@@ -85,8 +87,14 @@ public class Interaction {
         if(enabled) {
             if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed") && (!Arrays.asList(tags).contains("bot") || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase())))
                 confidence = getConfidence(event.getMessage().getContent());
-            if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed"))
-                confidence = getConfidence(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
+            if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed")){
+                //Get only word follow prefix
+                Pattern prefixedPattern = Pattern.compile("\\s+");
+                String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
+                if(regex.length>0){
+                    confidence = getConfidence(regex[0]);
+                }
+            }
             if (confidence >= this.confidence)
                 result = getRandomTemplate(templates);
             if(result!=null && permissionLevel!=null && permissionLevel.length()>0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), Karren.bot.getClient(), permissionLevel)){
