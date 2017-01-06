@@ -18,7 +18,7 @@ import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Tags.*;
 import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
 import org.frostbite.karren.listeners.InteractionCommands;
-import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.io.File;
@@ -68,6 +68,7 @@ public class InteractionManager {
         handlers.put("d4jskip", new D4JSkip());
         handlers.put("d4jstop", new D4JStop());
         handlers.put("osugetuser", new OsuGetUser());
+        handlers.put("usetts", new TextToSpeach());
     }
 
     public void loadInteractions(){

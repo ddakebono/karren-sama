@@ -12,11 +12,10 @@ package org.frostbite.karren.interactions;
 
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
-import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Interaction {
@@ -37,21 +36,6 @@ public class Interaction {
     private boolean specialInteraction = false;
     private String[] childInteractions;
     private boolean isPermBad = false;
-    private String youtubeCacheFile;
-
-    public String getYoutubeCacheFile() {
-        String temp = youtubeCacheFile;
-        youtubeCacheFile = null;
-        return temp;
-    }
-
-    public boolean hasYoutubeFile(){
-        return youtubeCacheFile!=null;
-    }
-
-    public void setYoutubeCacheFile(String youtubeCacheFile) {
-        this.youtubeCacheFile = youtubeCacheFile;
-    }
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new String[]{templates}, triggers, confidence, enabled, helptext);

@@ -15,7 +15,7 @@ import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.Karren;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.*;
 
 import java.util.Arrays;
