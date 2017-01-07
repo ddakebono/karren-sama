@@ -16,7 +16,6 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.InterConnect.InterConnectListener;
-import org.frostbite.karren.interactions.InteractionManager;
 import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listeners.*;
 import sx.blah.discord.api.events.EventDispatcher;
@@ -33,7 +32,7 @@ public class KarrenBot {
     private MySQLInterface sql = new MySQLInterface();
     private ListenCast lc;
     private boolean extrasReady = false;
-    private InteractionManager ic;
+    private GuildManager ic;
     private InterConnectListener interConnectListener;
     private boolean isKill = false;
     private Map<String, GuildMusicManager> gms;
@@ -72,9 +71,9 @@ public class KarrenBot {
 
     public void initExtras(){
         if(!extrasReady) {
-            ic = new InteractionManager();
+            ic = new GuildManager();
             ic.loadTags();
-            ic.loadInteractions();
+            ic.loadDefaultInteractions();
             lc = new ListenCast(client);
             interConnectListener = new InterConnectListener(Karren.log);
             extrasReady = true;
@@ -119,7 +118,7 @@ public class KarrenBot {
         return sql;
     }
 
-    public InteractionManager getInteractionManager() {return ic;}
+    public GuildManager getInteractionManager() {return ic;}
 
     public IDiscordClient getClient(){
         return client;

@@ -69,7 +69,7 @@ public class Interaction {
         String result = null;
         int confidence = 0;
         if(enabled) {
-            if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed") && (!Arrays.asList(tags).contains("bot") || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase())))
+            if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed") && (!Arrays.asList(tags).contains("bot") || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getNicknameForGuild(event.getGuild()).orElse(Karren.bot.getClient().getOurUser().getName()).toLowerCase())))
                 confidence = getConfidence(event.getMessage().getContent());
             if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed")){
                 //Get only word follow prefix
@@ -126,7 +126,7 @@ public class Interaction {
         }
         return result;
     }
-    void setIdentifier(String identifier){
+    public void setIdentifier(String identifier){
         this.identifier = identifier;
     }
     public String getHelptext(){return helptext;}

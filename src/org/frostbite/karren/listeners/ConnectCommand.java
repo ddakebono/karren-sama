@@ -12,7 +12,6 @@ package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Karren;
 import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.GuildCreateEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 
 public class ConnectCommand implements IListener<ReadyEvent>{

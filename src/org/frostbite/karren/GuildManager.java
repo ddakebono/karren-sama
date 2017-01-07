@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Owen Bennett.
+ * Copyright (c) 2017 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -8,18 +8,18 @@
  *
  */
 
-package org.frostbite.karren.interactions;
+package org.frostbite.karren;
 
 
 import com.google.gson.Gson;
 import org.apache.commons.io.FilenameUtils;
-import org.frostbite.karren.Karren;
-import org.frostbite.karren.KarrenUtil;
+import org.frostbite.karren.interactions.Interaction;
+import org.frostbite.karren.interactions.InteractionProcessor;
+import org.frostbite.karren.interactions.Tag;
 import org.frostbite.karren.interactions.Tags.*;
 import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
 import org.frostbite.karren.listeners.InteractionCommands;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.util.MessageBuilder;
+import sx.blah.discord.handle.obj.IGuild;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,9 +28,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InteractionManager {
-    private ArrayList<Interaction> interactions;
+public class GuildManager {
+
     private Map<String, Tag> handlers;
+    private Map<String, InteractionProcessor> registeredGuilds = new HashMap<>();
+    //Default processor handles private message interactions
+    private InteractionProcessor defaultProcessor;
+    private ArrayList<Interaction> defaultInteractions;
 
     public void loadTags(){
         handlers = new HashMap<>();
@@ -51,8 +55,6 @@ public class InteractionManager {
         handlers.put("topic", new Topic());
         handlers.put("parameter", new Parameter());
         handlers.put("count5", new Count5());
-        handlers.put("parent", new Parent());
-        handlers.put("child", new Child());
         handlers.put("disableinteraction", new DisableInteraction());
         handlers.put("enableinteraction", new EnableInteraction());
         handlers.put("count", new Count());
@@ -68,12 +70,12 @@ public class InteractionManager {
         handlers.put("d4jskip", new D4JSkip());
         handlers.put("d4jstop", new D4JStop());
         handlers.put("osugetuser", new OsuGetUser());
-        handlers.put("usetts", new TextToSpeach());
+
     }
 
-    public void loadInteractions(){
+    public void loadDefaultInteractions(){
         Gson gson = new Gson();
-        interactions = new ArrayList<>();
+        defaultInteractions = new ArrayList<>();
         File intDir = new File("conf/Interactions");
         if(intDir.isDirectory()){
             File[] intFiles = KarrenUtil.getFilesInFolders(intDir);
@@ -81,45 +83,17 @@ public class InteractionManager {
                 try {
                     Interaction tempInteraction = gson.fromJson(new FileReader(file), Interaction.class);
                     tempInteraction.setIdentifier(FilenameUtils.removeExtension(file.getName()));
-                    interactions.add(tempInteraction);
+                    defaultInteractions.add(tempInteraction);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
             }
+            //Initialize default processor
+            defaultProcessor = new InteractionProcessor(null, defaultInteractions);
         } else {
             Karren.log.info("No Interaction detected, interaction system unregistered.");
             Karren.bot.getClient().getDispatcher().unregisterListener(new InteractionCommands());
         }
-    }
-
-    public MessageBuilder handle(MessageReceivedEvent event) {
-        String returned;
-        MessageBuilder result = null;
-        for(Interaction check : interactions){
-            returned = check.handleMessage(event);
-            if(returned!=null){
-                Karren.log.debug("Interaction match for " + check.getIdentifier() + ", handling templates!");
-                result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getMessage().getChannel());
-                if(!check.isPermBad()) {
-                    for (String tag : check.getTags()) {
-                        if (!tag.equalsIgnoreCase("pm")) {
-                            Tag handler = handlers.get(tag.toLowerCase());
-                            if (handler != null && returned != null)
-                                returned = handler.handleTemplate(returned, check, result, event);
-                            else if (!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && returned != null)
-                                Karren.log.error("Please check interaction " + check.getIdentifier() + " as the file contains invalid tags!");
-                        }
-                    }
-                }
-                if(returned!=null)
-                    result.withContent(returned);
-                else
-                    result = null;
-                if(!check.isSpecialInteraction())
-                    break;
-            }
-        }
-        return result;
     }
 
     public void removeHandler(String id){
@@ -134,6 +108,8 @@ public class InteractionManager {
         return handlers;
     }
 
-    public ArrayList<Interaction> getInteractions(){return interactions;}
+    public InteractionProcessor getInteractionProcessor(IGuild guild){
+        return defaultProcessor;
+    }
 
 }

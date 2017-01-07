@@ -34,7 +34,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
                     prefixedHelpMsg.withChannel(event.getClient().getOrCreatePMChannel(event.getMessage().getAuthor()));
                     helpMsg.withContent("To view more information about a specific command enter " + Karren.conf.getCommandPrefix() + "help CommandName\nAll commands using sentence based triggers.\n");
                     prefixedHelpMsg.withContent("All commands using the " + Karren.conf.getCommandPrefix() + " prefix.\n");
-                    for (Interaction help : Karren.bot.getInteractionManager().getInteractions()) {
+                    for (Interaction help : Karren.bot.getInteractionManager().getInteractionProcessor(event.getMessage().getGuild()).getInteractions()) {
                         if (KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getClient(), help.getPermissionLevel())) {
                             if (Arrays.asList(help.getTags()).contains("prefixed")) {
                                 prefixedHelpMsg.appendContent("__**" + help.getIdentifier() + "**__ | " + help.getHelptext() + " | Command: __" + Karren.conf.getCommandPrefix() + help.getTriggers()[0] + "__\n\n");
@@ -50,7 +50,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
                     e.printStackTrace();
                 }
             } else {
-                Optional<Interaction> interaction = Karren.bot.getInteractionManager().getInteractions().stream().filter(i -> i.getIdentifier().equalsIgnoreCase(moreInfo)).findFirst();
+                Optional<Interaction> interaction = Karren.bot.getInteractionManager().getInteractionProcessor(event.getMessage().getGuild()).getInteractions().stream().filter(i -> i.getIdentifier().equalsIgnoreCase(moreInfo)).findFirst();
                 if(interaction.isPresent()){
                     Interaction helpInteraction = interaction.get();
                     if(KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getClient(), helpInteraction.getPermissionLevel())) {
@@ -70,3 +70,4 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
         }
     }
 }
+
