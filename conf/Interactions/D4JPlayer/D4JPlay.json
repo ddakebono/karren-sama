@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "confidence": 1,
-  "voiceVolume": 0.2,
+  "voiceVolume": 20,
   "templates": [
     "Hey, is this thing on?"
   ],

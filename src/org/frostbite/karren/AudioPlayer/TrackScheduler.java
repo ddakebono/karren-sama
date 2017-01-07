@@ -78,6 +78,7 @@ public class TrackScheduler extends AudioEventAdapter {
             player.startTrack(queue.poll(), false);
         }
         if(queue.size()==0 && player.getPlayingTrack()==null){
+            player.destroy();
             guild.getConnectedVoiceChannel().leave();
         }
     }

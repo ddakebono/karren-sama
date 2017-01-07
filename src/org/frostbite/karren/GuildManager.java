@@ -70,6 +70,7 @@ public class GuildManager {
         handlers.put("d4jskip", new D4JSkip());
         handlers.put("d4jstop", new D4JStop());
         handlers.put("osugetuser", new OsuGetUser());
+        handlers.put("usetts", new TextToSpeach());
 
     }
 

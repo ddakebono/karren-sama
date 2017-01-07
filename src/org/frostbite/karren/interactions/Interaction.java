@@ -175,8 +175,7 @@ public class Interaction {
         if(voiceFiles!=null){
             return "conf/" + getRandomTemplate(voiceFiles);
         } else {
-            Karren.log.error("Interaction error, " + identifier + " uses voice files but doesn't supply any!");
-            return "";
+            return null;
         }
     }
 
