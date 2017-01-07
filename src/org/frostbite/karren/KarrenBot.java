@@ -10,7 +10,10 @@
 
 package org.frostbite.karren;
 
-import net.dv8tion.d4j.player.MusicPlayer;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.InterConnect.InterConnectListener;
 import org.frostbite.karren.interactions.InteractionManager;
@@ -18,8 +21,12 @@ import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listeners.*;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class KarrenBot {
     private IDiscordClient client;
@@ -29,18 +36,27 @@ public class KarrenBot {
     private InteractionManager ic;
     private InterConnectListener interConnectListener;
     private boolean isKill = false;
+    private Map<String, GuildMusicManager> gms;
+    private AudioPlayerManager pm = new DefaultAudioPlayerManager();
 
     public KarrenBot(IDiscordClient client){
         this.client = client;
     }
 
     public void initDiscord(){
+        //Init lavaplayer
+        Karren.log.info("Starting up Lavaplayer...");
+        gms = new HashMap<>();
+        AudioSourceManagers.registerRemoteSources(pm);
+        AudioSourceManagers.registerLocalSource(pm);
+        //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
             EventDispatcher ed = client.getDispatcher();
             ed.registerListener(new ConnectCommand());
             ed.registerListener(new HelpCommand());
             ed.registerListener(new InteractionCommands());
             ed.registerListener(new KillCommand());
+            ed.registerListener(new GuildCreateListener());
             //ed.registerListener(new VoiceExitCommand());
             try {
                 client.login();
@@ -121,4 +137,16 @@ public class KarrenBot {
         return extrasReady;
     }
 
+    public GuildMusicManager getGuildMusicManager(IGuild guild){
+        return gms.get(guild.getID());
+    }
+
+    public GuildMusicManager createGuildMusicManager(IGuild guild){
+        gms.put(guild.getID(), new GuildMusicManager(pm, guild));
+        return gms.get(guild.getID());
+    }
+
+    public AudioPlayerManager getPm() {
+        return pm;
+    }
 }

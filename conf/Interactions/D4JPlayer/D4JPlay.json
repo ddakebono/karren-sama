@@ -6,10 +6,10 @@
     "Hey, is this thing on?"
   ],
   "templatesFail": [
-    "It seems that the URL given isn't valid!"
+    "Something's wrong with that URL, can you give me another one?"
   ],
   "templatesPermError":[
-    "Resumed playback"
+    "I can't seem to use the file from the link you gave."
   ],
   "tags": [
     "parameter",

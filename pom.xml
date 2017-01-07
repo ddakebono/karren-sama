@@ -26,6 +26,11 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>sedmelluq</id>
+            <name>sedmelluq</name>
+            <url>http://maven.sedmelluq.com/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -100,9 +105,9 @@
             <version>dev-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>net.dv8tion</groupId>
-            <artifactId>d4j-player</artifactId>
-            <version>0.2.3_25</version>
+            <groupId>com.sedmelluq</groupId>
+            <artifactId>lavaplayer</artifactId>
+            <version>1.1.36</version>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
