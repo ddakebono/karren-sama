@@ -17,7 +17,8 @@ public class D4JPlay implements Tag{
         String voiceFile = interaction.getRandomVoiceFile();
         if(interaction.hasParameter() || voiceFile != null){
             AudioResultHandler arh = new AudioResultHandler(event, interaction, gm, msg);
-            gm.player.setVolume(Math.round(interaction.getVoiceVolume()));
+            if(gm.scheduler.getQueue().size()==0)
+                gm.player.setVolume(Math.round(interaction.getVoiceVolume()));
             if(voiceFile != null){
                 Karren.bot.getPm().loadItemOrdered(gm, voiceFile, arh);
             } else {

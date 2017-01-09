@@ -37,7 +37,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
                     for (Interaction help : Karren.bot.getInteractionManager().getInteractionProcessor(event.getMessage().getGuild()).getInteractions()) {
                         if (KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getClient(), help.getPermissionLevel())) {
                             if (Arrays.asList(help.getTags()).contains("prefixed")) {
-                                prefixedHelpMsg.appendContent("__**" + help.getIdentifier() + "**__ | " + help.getHelptext() + " | Command: __" + Karren.conf.getCommandPrefix() + help.getTriggers()[0] + "__\n\n");
+                                prefixedHelpMsg.appendContent("__**" + help.getIdentifier() + "**__ | " + help.getHelptext() + "\n\n");
                             } else {
                                 helpMsg.appendContent("__**" + help.getIdentifier() + "**__ | " + help.getHelptext() + "\n\n");
                             }

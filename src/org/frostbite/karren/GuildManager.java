@@ -71,7 +71,8 @@ public class GuildManager {
         handlers.put("d4jstop", new D4JStop());
         handlers.put("osugetuser", new OsuGetUser());
         handlers.put("usetts", new TextToSpeach());
-
+        handlers.put("volume", new D4JVolume());
+        handlers.put("d4jrepeat", new D4JRepeat());
     }
 
     public void loadDefaultInteractions(){

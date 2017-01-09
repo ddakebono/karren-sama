@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "Volume changed to %volume"
+  ],
+  "tags": [
+    "parameter",
+    "volume",
+    "prefixed"
+  ],
+  "triggers": [
+    "volume"
+  ],
+  "helptext": "Change the volume for playback"
+}
