@@ -23,6 +23,9 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     Interaction interaction;
     GuildMusicManager gm;
     String msg;
+    boolean isPlaylist = false;
+    int trackCount = 0;
+    AudioTrack queuedTrack = null;
 
     boolean failed = false;
 
@@ -37,11 +40,14 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     public void trackLoaded(AudioTrack audioTrack) {
         connectToVoiceChannel(event);
         gm.scheduler.queue(audioTrack);
+        queuedTrack = audioTrack;
     }
 
     @Override
     public void playlistLoaded(AudioPlaylist audioPlaylist) {
         connectToVoiceChannel(event);
+        isPlaylist = true;
+        trackCount = audioPlaylist.getTracks().size();
         for (AudioTrack track : audioPlaylist.getTracks()) {
             gm.scheduler.queue(track);
         }
@@ -73,6 +79,18 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
     public String getMsg() {
         return msg;
+    }
+
+    public boolean isPlaylist() {
+        return isPlaylist;
+    }
+
+    public int getTrackCount() {
+        return trackCount;
+    }
+
+    public AudioTrack getQueuedTrack() {
+        return queuedTrack;
     }
 
     public boolean isFailed() {

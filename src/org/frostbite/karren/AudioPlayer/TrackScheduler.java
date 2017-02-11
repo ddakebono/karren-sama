@@ -14,7 +14,11 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
@@ -30,6 +34,7 @@ public class TrackScheduler extends AudioEventAdapter {
     private boolean isShuffle = false;
     private AudioTrack lastTrack = null;
     private IGuild guild;
+    private IChannel announceChannel;
 
     /**
      * @param player The audio player this scheduler uses
@@ -60,6 +65,7 @@ public class TrackScheduler extends AudioEventAdapter {
     public void nextTrack(boolean ended) {
         // Start the next track, regardless of if something is already playing or not. In case queue was empty, we are
         // giving null to startTrack, which is a valid argument and will simply stop the player
+        AudioTrack newSong = null;
         if(ended) {
             if (isRepeat || isShuffle) {
                 if(isRepeat) {
@@ -67,19 +73,27 @@ public class TrackScheduler extends AudioEventAdapter {
                 } else {
                     Random rng = new Random();
                     Object[] songs = queue.toArray();
-                    AudioTrack shuffledSong = (AudioTrack) songs[rng.nextInt(songs.length)];
-                    queue.remove(shuffledSong);
-                    player.startTrack(shuffledSong, false);
+                    newSong = (AudioTrack) songs[rng.nextInt(songs.length)];
+                    queue.remove(newSong);
+                    player.startTrack(newSong, false);
                 }
             } else {
-                player.startTrack(queue.poll(), false);
+                newSong = queue.poll();
+                player.startTrack(newSong, false);
             }
         } else {
-            player.startTrack(queue.poll(), false);
+            newSong = queue.poll();
+            player.startTrack(newSong, false);
         }
         if(queue.size()==0 && player.getPlayingTrack()==null){
             player.destroy();
             guild.getConnectedVoiceChannel().leave();
+        } else {
+            try {
+                announceChannel.sendMessage("Starting playback of \"" + newSong.getInfo().title + "\"");
+            } catch (DiscordException | RateLimitException | MissingPermissionsException e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -102,6 +116,10 @@ public class TrackScheduler extends AudioEventAdapter {
         }
     }
 
+    public boolean isPlaying(){
+        return player.getPlayingTrack() != null && !player.isPaused();
+    }
+
     public boolean isRepeat() {
         return isRepeat;
     }
@@ -116,5 +134,15 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public void setShuffle(boolean shuffle) {
         isShuffle = shuffle;
+    }
+
+    public IGuild getGuild(){return guild;}
+
+    public IChannel getAnnounceChannel() {
+        return announceChannel;
+    }
+
+    public void setAnnounceChannel(IChannel announceChannel) {
+        this.announceChannel = announceChannel;
     }
 }

@@ -23,6 +23,6 @@ public class D4JSkip implements Tag {
         if(Karren.bot.getClient().getConnectedVoiceChannels().size()>0){
             Karren.bot.getGuildMusicManager(event.getGuild()).scheduler.nextTrack(false);
         }
-        return msg;
+        return null;
     }
 }
