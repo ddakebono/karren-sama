@@ -39,9 +39,9 @@ public class BotConfiguration {
     private boolean connectToDiscord;
     private int extPort;
     private String extAddr;
-    private String youtubeDLBinary = null;
-    private final String versionMarker = "3.1";
+    private final String versionMarker = "3.2";
     private String osuAPIKey;
+    private String googleAPIKey;
     /*
     Config Getters
      */
@@ -106,14 +106,9 @@ public class BotConfiguration {
         return extAddr;
     }
     public String getOsuAPIKey() {return osuAPIKey;}
-    public String getYoutubeDLBinary() {
-        return youtubeDLBinary;
+    public String getGoogleAPIKey() {
+        return googleAPIKey;
     }
-
-    public void setYoutubeDLBinary(String youtubeDLBinary) {
-        this.youtubeDLBinary = youtubeDLBinary;
-    }
-
     /*
                 Config Loader.
                 */
@@ -151,6 +146,7 @@ public class BotConfiguration {
         extPort = Integer.parseInt(cfg.getProperty("ExtenderListenPort", "8281"));
         guildId = cfg.getProperty("GuildID", "0");
         osuAPIKey = cfg.getProperty("osuAPIKey", "");
+        googleAPIKey = cfg.getProperty("googleAPIKey", "");
         listencastAnnounce = Boolean.parseBoolean(cfg.getProperty("ListencastAnnounce", "true"));
         if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
             log.warn("Updating configuration file!");
@@ -187,6 +183,7 @@ public class BotConfiguration {
         cfg.setProperty("ExtenderListenAddress", extAddr);
         cfg.setProperty("GuildID", guildId);
         cfg.setProperty("osuAPIKey", osuAPIKey);
+        cfg.setProperty("googleAPIKey", googleAPIKey);
         cfg.setProperty("ListencastAnnounce", Boolean.toString(listencastAnnounce));
         cfg.store(new FileOutputStream("conf/bot.prop"), comment);
         log.info("Your configuration file has been generated/updated!");

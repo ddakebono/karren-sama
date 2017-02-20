@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "voiceVolume": 20,
+  "templates": [
+    "Found \"%title\", added to queue."
+  ],
+  "templatesFail": [
+    "No results were returned from that search..."
+  ],
+  "tags": [
+    "parameter",
+    "d4jsearch",
+    "d4jplay",
+    "prefixed"
+  ],
+  "triggers": [
+    "yts"
+  ],
+  "helptext": "Downloads and plays audio shit from the internet!"
+}
