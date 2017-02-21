@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "voiceVolume": 20,
+  "templates": [
+    "Found \"%title\", added to queue."
+  ],
+  "templatesFail": [
+    "No results were returned from that search..."
+  ],
+  "tags": [
+    "parameter",
+    "d4jsearch",
+    "feelinglucky",
+    "d4jplay",
+    "prefixed"
+  ],
+  "triggers": [
+    "ytfl",
+    "feelinglucky"
+  ],
+  "helptext": "This command searches youtube for the specified video and plays the first result."
+}

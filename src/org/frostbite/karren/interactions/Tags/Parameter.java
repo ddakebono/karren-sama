@@ -23,10 +23,12 @@ public class Parameter implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         String message = event.getMessage().getContent();
-        for(String trigger : interaction.getTriggers()) {
-            if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix() + trigger)) {
-                message = message.replace(Karren.conf.getCommandPrefix() + trigger, "").trim();
-                break;
+        if(interaction.getTriggers()!=null) {
+            for (String trigger : interaction.getTriggers()) {
+                if (event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix() + trigger)) {
+                    message = message.replace(Karren.conf.getCommandPrefix() + trigger, "").trim();
+                    break;
+                }
             }
         }
         interaction.setParameter(message);

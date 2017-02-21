@@ -3,7 +3,7 @@
   "confidence": 1,
   "voiceVolume": 20,
   "templates": [
-    "Found \"%title\", added to queue."
+    "```Here's the results, please respond with the number of the video you want, or respond with c to cancel:%results```"
   ],
   "templatesFail": [
     "No results were returned from that search..."
@@ -11,11 +11,10 @@
   "tags": [
     "parameter",
     "d4jsearch",
-    "d4jplay",
     "prefixed"
   ],
   "triggers": [
     "yts"
   ],
-  "helptext": "Downloads and plays audio shit from the internet!"
+  "helptext": "This command searches youtube for the specified title, then displays 3 options to choose for playback."
 }

@@ -13,9 +13,9 @@ package org.frostbite.karren.interactions;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IUser;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Interaction {
@@ -36,6 +36,9 @@ public class Interaction {
     private boolean specialInteraction = false;
     private String[] childInteractions;
     private boolean isPermBad = false;
+    private int usageCount = -1;
+    private ArrayList<String> allowedUsers = new ArrayList<>();
+    private boolean stopProcessing = false;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new String[]{templates}, triggers, confidence, enabled, helptext);
@@ -43,6 +46,12 @@ public class Interaction {
 
     public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "", null, 0.0f, false, null);
+    }
+
+    public Interaction(String identifier, String[] tags, String[] templates, String[] templatesFail, int usageCount, String userID, float voiceVolume){
+        this(identifier, tags, templates, null, 0, true, "", templatesFail, null, "", "", null, voiceVolume, false, null);
+        this.usageCount = usageCount;
+        this.allowedUsers.add(userID);
     }
 
     public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction, String[] childInteractions){
@@ -69,33 +78,41 @@ public class Interaction {
         String result = null;
         int confidence = 0;
         if(enabled) {
-            if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed") && (!Arrays.asList(tags).contains("bot") || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getNicknameForGuild(event.getGuild()).orElse(Karren.bot.getClient().getOurUser().getName()).toLowerCase())))
-                confidence = getConfidence(event.getMessage().getContent());
-            if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed")){
-                //Get only word follow prefix
-                Pattern prefixedPattern = Pattern.compile("\\s+");
-                String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
-                if(regex.length>0){
-                    confidence = getConfidence(regex[0]);
+            if (isAllowedUser(event.getAuthor())) {
+                if (!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed") && (!Arrays.asList(tags).contains("bot") || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getNicknameForGuild(event.getGuild()).orElse(Karren.bot.getClient().getOurUser().getName()).toLowerCase())))
+                    confidence = getConfidence(event.getMessage().getContent());
+                if (event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed")) {
+                    //Get only word follow prefix
+                    Pattern prefixedPattern = Pattern.compile("\\s+");
+                    String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
+                    if (regex.length > 0) {
+                        confidence = getConfidence(regex[0]);
+                    }
                 }
-            }
-            if (confidence >= this.confidence)
-                result = getRandomTemplate(templates);
-            if(result!=null && permissionLevel!=null && permissionLevel.length()>0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), Karren.bot.getClient(), permissionLevel)){
-                result = getRandomTemplatesPermError();
-                isPermBad = true;
+                if (confidence >= this.confidence)
+                    result = getRandomTemplate(templates);
+                if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), Karren.bot.getClient(), permissionLevel)) {
+                    result = getRandomTemplatesPermError();
+                    isPermBad = true;
+                }
             }
         }
         return result;
     }
 
+    private boolean isAllowedUser(IUser user) {
+        return allowedUsers == null || allowedUsers.isEmpty() || allowedUsers.contains(user.getID());
+    }
+
     private int getConfidence(String message){
         int confidence = 0;
         String[] tokenizedMessage = message.split("\\s+");
-        for (String check : triggers) {
-            for (String check2 : tokenizedMessage) {
-                if (check2.trim().toLowerCase().matches(check + "\\W?")) {
-                    confidence++;
+        if(triggers!=null) {
+            for (String check : triggers) {
+                for (String check2 : tokenizedMessage) {
+                    if (check2.trim().toLowerCase().matches(check + "\\W?")) {
+                        confidence++;
+                    }
                 }
             }
         }
@@ -234,5 +251,22 @@ public class Interaction {
 
     public int getConfidence() {
         return confidence;
+    }
+
+    public void addUsageCount(){
+        usageCount++;
+    }
+
+    public boolean interactionUsed() {
+        this.usageCount--;
+        return this.usageCount == 0;
+    }
+
+    public boolean isStopProcessing() {
+        return stopProcessing;
+    }
+
+    public void stopProcessing() {
+        this.stopProcessing = true;
     }
 }

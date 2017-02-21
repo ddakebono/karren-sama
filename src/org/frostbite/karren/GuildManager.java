@@ -74,6 +74,7 @@ public class GuildManager {
         handlers.put("volume", new D4JVolume());
         handlers.put("d4jrepeat", new D4JRepeat());
         handlers.put("d4jsearch", new D4JSearch());
+        handlers.put("d4jselect", new D4JSelect());
     }
 
     public void loadDefaultInteractions(){

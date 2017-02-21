@@ -49,14 +49,16 @@ public class InteractionProcessor {
                 result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getMessage().getChannel());
                 if(!check.isPermBad()) {
                     for (String tag : check.getTags()) {
-                        if (!tag.equalsIgnoreCase("pm")) {
+                        if (!tag.equalsIgnoreCase("pm") && !check.isStopProcessing()) {
                             Tag handler = Karren.bot.getInteractionManager().getHandlers().get(tag.toLowerCase());
                             if (handler != null && returned != null)
                                 returned = handler.handleTemplate(returned, check, result, event);
-                            else if (!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && returned != null)
+                            else if (!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && !tag.equalsIgnoreCase("feelinglucky") && returned != null)
                                 Karren.log.error("Please check interaction " + check.getIdentifier() + " as the file contains invalid tags!");
                         }
                     }
+                    if(check.interactionUsed())
+                        Karren.bot.getInteractionManager().getInteractionProcessor(event.getGuild()).getInteractions().remove(check);
                 }
                 if(returned!=null)
                     result.withContent(returned);
