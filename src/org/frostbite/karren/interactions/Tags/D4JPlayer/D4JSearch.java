@@ -34,7 +34,7 @@ public class D4JSearch implements Tag {
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         if(interaction.hasParameter()){
             String searchText = interaction.getParameter().replaceAll(" ", "+");
-            String searchUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=3&order=rating&q=" + searchText + "&key=" + Karren.conf.getGoogleAPIKey();
+            String searchUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=3&q=" + searchText + "&key=" + Karren.conf.getGoogleAPIKey();
             Document doc = null;
             try {
                 doc = Jsoup.connect(searchUrl).timeout(10*1000).ignoreContentType(true).get();
