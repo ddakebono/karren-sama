@@ -66,14 +66,19 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     }
 
     public void connectToVoiceChannel(MessageReceivedEvent event){
-        if(!event.getMessage().getAuthor().getConnectedVoiceChannels().get(0).isConnected()){
-            if(event.getMessage().getAuthor().getConnectedVoiceChannels().size()>0){
-                try {
-                    event.getMessage().getAuthor().getConnectedVoiceChannels().get(0).join();
-                } catch (MissingPermissionsException e) {
-                    e.printStackTrace();
+        if(event.getMessage().getAuthor().getConnectedVoiceChannels().size()>0) {
+            if (!event.getMessage().getAuthor().getConnectedVoiceChannels().get(0).isConnected()) {
+                if (event.getMessage().getAuthor().getConnectedVoiceChannels().size() > 0) {
+                    try {
+                        event.getMessage().getAuthor().getConnectedVoiceChannels().get(0).join();
+                    } catch (MissingPermissionsException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+        } else {
+            failed = true;
+            msg = "Hold on a sec, you're not in a voice channel!";
         }
     }
 

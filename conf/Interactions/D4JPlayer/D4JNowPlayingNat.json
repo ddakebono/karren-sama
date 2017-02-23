@@ -1,20 +1,26 @@
 {
   "enabled": true,
-  "confidence": 1,
+  "confidence": 3,
   "templates": [
-    "The current song playing is: \"%d4jtitle\" (%position/%duration)"
+    "The song currently playing is: \"%d4jtitle\" (%position/%duration)"
   ],
   "templatesFail": [
     "Nothing is playing!",
     "There's nothing being played right now"
   ],
   "tags": [
+    "bot",
     "d4jnowplaying",
-    "d4jnowplayingtime",
-    "prefixed"
+    "d4jnowplayingtime"
   ],
   "triggers": [
-    "np"
+    "what",
+    "song",
+    "this",
+    "what's",
+    "playing",
+    "title",
+    "music"
   ],
   "helptext": "Lists current song title"
 }

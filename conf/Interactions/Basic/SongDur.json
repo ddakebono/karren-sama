@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "confidence": 3,
   "templates": [
     "%name, The current song has been playing for %songtime out of %songdur.",

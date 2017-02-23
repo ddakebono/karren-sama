@@ -238,19 +238,4 @@ public class ListenCast extends Thread{
         result = date.getTime() - currentSong.getSongStartTime();
         return result;
     }
-    public String getMinSecFormattedString(long time){
-        String result;
-        long seconds = time/1000;
-        long minutes = 0;
-        if(seconds/60>=1) {
-            minutes = seconds / 60;
-            seconds = seconds - (minutes*60);
-        }
-        if(time!=0 && seconds<10) {
-            result = minutes + ":" + "0" + seconds;
-        } else {
-            result = minutes + ":" + seconds;
-        }
-        return result;
-    }
 }

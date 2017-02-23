@@ -19,8 +19,10 @@ import sx.blah.discord.util.MessageBuilder;
 public class D4JNowPlaying implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(Karren.bot.getClient().getConnectedVoiceChannels().size()>0){
+        if(Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack()!=null){
             msg = msg.replace("%d4jtitle", Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack().getInfo().title);
+        } else {
+            msg = interaction.getRandomTemplatesFail();
         }
         return msg;
     }

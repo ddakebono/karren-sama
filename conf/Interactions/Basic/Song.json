@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "confidence": 3,
   "templates": [
     "Yo %name, the current song is \"%song\"",
