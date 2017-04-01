@@ -13,7 +13,6 @@ package org.frostbite.karren.interactions.Tags;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Status;
 import sx.blah.discord.util.MessageBuilder;
 
 public class SetStatus implements Tag {
@@ -22,10 +21,10 @@ public class SetStatus implements Tag {
         String param = interaction.getParameter();
         if(param!=null){
             msg = msg.replace("%param", param);
-            event.getClient().changeStatus(Status.game(param));
+            event.getClient().online(param);
         } else {
             msg = interaction.getRandomTemplatesFail();
-            event.getClient().changeStatus(Status.empty());
+            event.getClient().online();
         }
         return msg;
     }

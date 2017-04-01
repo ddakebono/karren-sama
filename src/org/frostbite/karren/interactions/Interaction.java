@@ -79,7 +79,7 @@ public class Interaction {
         int confidence = 0;
         if(enabled) {
             if (isAllowedUser(event.getAuthor())) {
-                if (!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed") && (!Arrays.asList(tags).contains("bot") || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getNicknameForGuild(event.getGuild()).orElse(Karren.bot.getClient().getOurUser().getName()).toLowerCase())))
+                if (!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed") && (!Arrays.asList(tags).contains("bot") || (event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getNicknameForGuild(event.getGuild())) || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName()))))
                     confidence = getConfidence(event.getMessage().getContent());
                 if (event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed")) {
                     //Get only word follow prefix
@@ -126,22 +126,22 @@ public class Interaction {
 
     public String[] getTags(){return tags;}
     public String getTagsToString(){
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (String tag : tags) {
-            result += tag + " ";
+            result.append(tag).append(" ");
         }
-        return result;
+        return result.toString();
     }
     public String[] getTemplates(){return templates;}
     public String[] getTriggers(){
         return triggers;
     }
     public String getActivatorsToString(){
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (String anActivator : triggers) {
-            result += anActivator + " ";
+            result.append(anActivator).append(" ");
         }
-        return result;
+        return result.toString();
     }
     public void setIdentifier(String identifier){
         this.identifier = identifier;
