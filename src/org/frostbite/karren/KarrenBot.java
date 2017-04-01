@@ -15,11 +15,12 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
-import org.frostbite.karren.InterConnect.InterConnectListener;
+import org.frostbite.karren.InstantReplay.InstantReplayManager;
 import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listeners.*;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.audio.IAudioReceiver;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
@@ -33,9 +34,9 @@ public class KarrenBot {
     private ListenCast lc;
     private boolean extrasReady = false;
     private GuildManager ic;
-    private InterConnectListener interConnectListener;
     private boolean isKill = false;
     private Map<String, GuildMusicManager> gms;
+    private InstantReplayManager irm;
     private AudioPlayerManager pm = new DefaultAudioPlayerManager();
 
     public KarrenBot(IDiscordClient client){
@@ -48,6 +49,7 @@ public class KarrenBot {
         gms = new HashMap<>();
         AudioSourceManagers.registerRemoteSources(pm);
         AudioSourceManagers.registerLocalSource(pm);
+
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
             EventDispatcher ed = client.getDispatcher();
@@ -75,7 +77,7 @@ public class KarrenBot {
             ic.loadTags();
             ic.loadDefaultInteractions();
             lc = new ListenCast(client);
-            interConnectListener = new InterConnectListener(Karren.log);
+            irm = new InstantReplayManager();
             extrasReady = true;
         }
     }
@@ -84,8 +86,6 @@ public class KarrenBot {
         if(extrasReady) {
             if(!lc.isAlive())
                 lc.start();
-            if(!interConnectListener.isAlive())
-                interConnectListener.start();
             return true;
         } else {
             return false;
@@ -147,5 +147,9 @@ public class KarrenBot {
 
     public AudioPlayerManager getPm() {
         return pm;
+    }
+
+    public InstantReplayManager getIrm() {
+        return irm;
     }
 }
