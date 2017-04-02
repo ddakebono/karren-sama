@@ -10,10 +10,8 @@
 
 package org.frostbite.karren.InstantReplay;
 
-import sx.blah.discord.handle.audio.impl.AudioManager;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IVoiceChannel;
-import sx.blah.discord.util.audio.AudioPlayer;
 
 public class InstantReplay extends Thread {
     private IGuild guild;
@@ -29,7 +27,9 @@ public class InstantReplay extends Thread {
     @Override
     public void run(){
         channel.join();
+        guild.getAudioManager().subscribeReceiver(new AudioReceiver(this));
         while(keepAlive){
+
         }
         channel.leave();
     }

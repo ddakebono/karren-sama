@@ -18,6 +18,8 @@ import org.frostbite.karren.interactions.InteractionProcessor;
 import org.frostbite.karren.interactions.Tag;
 import org.frostbite.karren.interactions.Tags.*;
 import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
+import org.frostbite.karren.interactions.Tags.InstantReplay.StartListening;
+import org.frostbite.karren.interactions.Tags.InstantReplay.StopListening;
 import org.frostbite.karren.listeners.InteractionCommands;
 import sx.blah.discord.handle.obj.IGuild;
 
@@ -27,6 +29,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Handler;
 
 public class GuildManager {
 
@@ -76,6 +79,8 @@ public class GuildManager {
         handlers.put("d4jsearch", new D4JSearch());
         handlers.put("d4jselect", new D4JSelect());
         handlers.put("d4jnowplayingtime", new D4JNowPlayingTime());
+        handlers.put("irstop", new StopListening());
+        handlers.put("irstart", new StartListening());
     }
 
     public void loadDefaultInteractions(){

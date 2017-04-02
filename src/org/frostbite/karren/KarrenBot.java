@@ -20,7 +20,7 @@ import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listeners.*;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.audio.IAudioReceiver;
+import sx.blah.discord.handle.audio.impl.AudioManager;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
@@ -49,7 +49,6 @@ public class KarrenBot {
         gms = new HashMap<>();
         AudioSourceManagers.registerRemoteSources(pm);
         AudioSourceManagers.registerLocalSource(pm);
-
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
             EventDispatcher ed = client.getDispatcher();

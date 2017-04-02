@@ -10,14 +10,24 @@
 
 package org.frostbite.karren.InstantReplay;
 
+import org.frostbite.karren.Karren;
 import sx.blah.discord.handle.audio.AudioEncodingType;
 import sx.blah.discord.handle.audio.IAudioReceiver;
 import sx.blah.discord.handle.obj.IUser;
 
 public class AudioReceiver implements IAudioReceiver {
+
+    private InstantReplay ir;
+
+    public AudioReceiver(InstantReplay ir){
+        this.ir = ir;
+    }
+
     @Override
     public void receive(byte[] bytes, IUser iUser) {
-
+        if(!iUser.isBot()){
+            Karren.log.debug("Incoming audio frame from " + iUser.getName() + " Size: " + bytes.length);
+        }
     }
 
     @Override
