@@ -30,7 +30,6 @@ public class BotConfiguration {
     private int icecastPort;
     private String icecastMount;
     private String discordToken;
-    private String guildId;
     private boolean allowSQLRW;
     private boolean enableListencast;
     private boolean listencastAnnounce;
@@ -48,9 +47,6 @@ public class BotConfiguration {
 
     public String getDiscordToken() {
         return discordToken;
-    }
-    public String getGuildId() {
-        return guildId;
     }
     public boolean getListencastAnnounce() {
         return listencastAnnounce;
@@ -144,7 +140,6 @@ public class BotConfiguration {
         discordToken = cfg.getProperty("BotAccountToken", "hackme");
         extAddr = cfg.getProperty("ExtenderListenAddress", "127.0.0.1");
         extPort = Integer.parseInt(cfg.getProperty("ExtenderListenPort", "8281"));
-        guildId = cfg.getProperty("GuildID", "0");
         osuAPIKey = cfg.getProperty("osuAPIKey", "");
         googleAPIKey = cfg.getProperty("googleAPIKey", "");
         listencastAnnounce = Boolean.parseBoolean(cfg.getProperty("ListencastAnnounce", "true"));
@@ -181,7 +176,6 @@ public class BotConfiguration {
         cfg.setProperty("BotAccountToken", discordToken);
         cfg.setProperty("ExtenderListenPort", Integer.toString(extPort));
         cfg.setProperty("ExtenderListenAddress", extAddr);
-        cfg.setProperty("GuildID", guildId);
         cfg.setProperty("osuAPIKey", osuAPIKey);
         cfg.setProperty("googleAPIKey", googleAPIKey);
         cfg.setProperty("ListencastAnnounce", Boolean.toString(listencastAnnounce));

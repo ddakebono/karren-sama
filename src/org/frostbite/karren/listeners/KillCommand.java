@@ -22,13 +22,12 @@ import sx.blah.discord.util.RateLimitException;
 public class KillCommand implements IListener<MessageReceivedEvent> {
 	public void handle(MessageReceivedEvent event){
 		String message = event.getMessage().getContent();
-		IDiscordClient bot = event.getClient();
         String cmd = Karren.conf.getCommandPrefix() + "kill";
         if(message.toLowerCase().startsWith(cmd)) {
-            if (KarrenUtil.hasRole(event.getMessage().getAuthor(), bot, "Admins")) {
+            if (KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), "Admins")) {
                 Karren.bot.killBot(event.getMessage().getAuthor().getName());
             } else {
-                if (!KarrenUtil.hasRole(event.getMessage().getAuthor(), bot, "Admins") && message.startsWith(cmd))
+                if (!KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), "Admins") && message.startsWith(cmd))
                     try {
                         event.getMessage().getChannel().sendMessage("You can't tell me what to do! (Not Admin)");
                     } catch (MissingPermissionsException | RateLimitException | DiscordException e) {

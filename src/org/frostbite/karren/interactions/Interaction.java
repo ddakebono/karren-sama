@@ -91,7 +91,7 @@ public class Interaction {
                 }
                 if (confidence >= this.confidence)
                     result = getRandomTemplate(templates);
-                if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), Karren.bot.getClient(), permissionLevel)) {
+                if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), permissionLevel)) {
                     result = getRandomTemplatesPermError();
                     isPermBad = true;
                 }

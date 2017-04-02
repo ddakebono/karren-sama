@@ -13,28 +13,22 @@ package org.frostbite.karren.InstantReplay;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 
-public class InstantReplay extends Thread {
+public class InstantReplay {
     private IGuild guild;
     private IVoiceChannel channel;
-    private boolean keepAlive = true;
 
     public InstantReplay(IGuild guild, IVoiceChannel channel){
         this.guild = guild;
         this.channel = channel;
-        run();
     }
 
-    @Override
-    public void run(){
+    public void startListening(){
         channel.join();
         guild.getAudioManager().subscribeReceiver(new AudioReceiver(this));
-        while(keepAlive){
-
-        }
-        channel.leave();
     }
 
     public void stopListening(){
-        keepAlive = false;
+        guild.getAudioManager().unsubscribeReceiver(new AudioReceiver(this));
+        channel.leave();
     }
 }
