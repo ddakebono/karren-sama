@@ -25,9 +25,9 @@ public class AudioReceiver implements IAudioReceiver {
 
     @Override
     public void receive(byte[] bytes, IUser iUser) {
-        if(!iUser.isBot()){
+        //if(!iUser.isBot()){
             Karren.log.debug("Incoming audio frame from " + iUser.getName() + " Size: " + bytes.length);
-        }
+        //}
     }
 
     @Override

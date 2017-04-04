@@ -37,20 +37,6 @@ public class KarrenUtil {
         }
     }
 
-    /*public static boolean hasRole(IUser user, IDiscordClient bot, String roleName) {
-        boolean result = false;
-        if (roleName!=null) {
-            for (IRole role : user.getRolesForGuild(bot.getGuildByID(Karren.conf.getGuildId()))) {
-                if (role.getName().equals(roleName)) {
-                    result = true;
-                }
-            }
-        } else {
-            result = true;
-        }
-        return result;
-    }*/
-
     public static boolean hasRole(IUser user, IGuild guild, String roleName) {
         return guild == null || roleName == null || user.getRolesForGuild(guild).stream().anyMatch(x -> x.getName().equals(roleName));
     }

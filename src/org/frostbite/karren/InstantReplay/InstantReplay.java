@@ -13,9 +13,13 @@ package org.frostbite.karren.InstantReplay;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 
+import java.util.HashMap;
+
 public class InstantReplay {
     private IGuild guild;
     private IVoiceChannel channel;
+    private AudioReceiver receiver;
+    private HashMap<String, Byte[]> userAudioFrames;
 
     public InstantReplay(IGuild guild, IVoiceChannel channel){
         this.guild = guild;
@@ -24,11 +28,15 @@ public class InstantReplay {
 
     public void startListening(){
         channel.join();
-        guild.getAudioManager().subscribeReceiver(new AudioReceiver(this));
+        receiver = new AudioReceiver(this);
+        guild.getAudioManager().subscribeReceiver(receiver);
     }
 
     public void stopListening(){
-        guild.getAudioManager().unsubscribeReceiver(new AudioReceiver(this));
-        channel.leave();
+        if(receiver!=null) {
+            guild.getAudioManager().unsubscribeReceiver(receiver);
+            receiver = null;
+            channel.leave();
+        }
     }
 }
