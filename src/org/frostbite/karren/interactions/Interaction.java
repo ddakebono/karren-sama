@@ -10,9 +10,11 @@
 
 package org.frostbite.karren.interactions;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
 
 import java.util.*;
@@ -39,6 +41,7 @@ public class Interaction {
     private int usageCount = -1;
     private ArrayList<String> allowedUsers = new ArrayList<>();
     private boolean stopProcessing = false;
+    private int confidenceChecked = 0;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new String[]{templates}, triggers, confidence, enabled, helptext);
@@ -76,26 +79,33 @@ public class Interaction {
      */
     String handleMessage(MessageReceivedEvent event){
         String result = null;
-        int confidence = 0;
-        if(enabled) {
-            if (isAllowedUser(event.getAuthor())) {
-                if (!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed") && (!Arrays.asList(tags).contains("bot") || (event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getNicknameForGuild(event.getGuild())) || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName()))))
-                    confidence = getConfidence(event.getMessage().getContent());
-                if (event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed")) {
-                    //Get only word follow prefix
-                    Pattern prefixedPattern = Pattern.compile("\\s+");
-                    String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
-                    if (regex.length > 0) {
-                        confidence = getConfidence(regex[0]);
+        confidenceChecked = 0;
+        try {
+            if (enabled) {
+                if (isAllowedUser(event.getAuthor())) {
+                    //if (!Arrays.asList(tags).contains("bot") || (event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getNicknameForGuild(event.getGuild())) || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName()))))
+                    if (event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed")) {
+                        //Get only word follow prefix
+                        Pattern prefixedPattern = Pattern.compile("\\s+");
+                        String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
+                        if (regex.length > 0) {
+                            confidenceChecked = getConfidence(regex[0], true, event.getGuild());
+                        }
+                    }
+                    if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed")) {
+                        confidenceChecked = getConfidence(event.getMessage().getContent(), false, event.getGuild());
+                    }
+                    if (confidenceChecked >= this.confidence)
+                        result = getRandomTemplate(templates);
+                    if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), permissionLevel)) {
+                        result = getRandomTemplatesPermError();
+                        isPermBad = true;
                     }
                 }
-                if (confidence >= this.confidence)
-                    result = getRandomTemplate(templates);
-                if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), permissionLevel)) {
-                    result = getRandomTemplatesPermError();
-                    isPermBad = true;
-                }
             }
+        } catch (NullPointerException e){
+            Karren.log.error("An error has occured with interaction " + this.identifier);
+            e.printStackTrace();
         }
         return result;
     }
@@ -104,8 +114,13 @@ public class Interaction {
         return allowedUsers == null || allowedUsers.isEmpty() || allowedUsers.contains(user.getID());
     }
 
-    private int getConfidence(String message){
+    private int getConfidence(String message, boolean prefixed, IGuild guild){
         int confidence = 0;
+        if(!prefixed){
+            //Add getNicknameForGuild once it's fixed and doesn't return a null
+            if(Arrays.asList(tags).contains("bot") && !message.toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase()))
+                return 0;
+        }
         String[] tokenizedMessage = message.split("\\s+");
         if(triggers!=null) {
             for (String check : triggers) {
@@ -268,5 +283,9 @@ public class Interaction {
 
     public void stopProcessing() {
         this.stopProcessing = true;
+    }
+
+    public int getConfidenceChecked() {
+        return confidenceChecked;
     }
 }

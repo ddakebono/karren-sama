@@ -45,7 +45,7 @@ public class InteractionProcessor {
         for(Interaction check : interactions){
             returned = check.handleMessage(event);
             if(returned!=null){
-                Karren.log.debug("Interaction match for " + check.getIdentifier() + ", handling templates!");
+                Karren.log.debug("Interaction match for " + check.getIdentifier() + ", handling templates! (Confidence: " + check.getConfidenceChecked() + ")");
                 result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getMessage().getChannel());
                 if(!check.isPermBad()) {
                     for (String tag : check.getTags()) {
