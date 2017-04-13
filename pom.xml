@@ -147,7 +147,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>lib/</outputDirectory>
+                            <outputDirectory>${project.basedir}/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -165,7 +165,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
                 <configuration>
-					<outputDirectory>/</outputDirectory>
+					<outputDirectory>${project.basedir}/</outputDirectory>
                     <archive>
                         <index>true</index>
                         <manifest>
