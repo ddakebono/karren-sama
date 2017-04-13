@@ -147,7 +147,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <outputDirectory>lib/</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -165,6 +165,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
                 <configuration>
+					<outputDirectory>/</outputDirectory>
                     <archive>
                         <index>true</index>
                         <manifest>
