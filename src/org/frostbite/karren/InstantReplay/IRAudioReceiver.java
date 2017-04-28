@@ -15,18 +15,20 @@ import sx.blah.discord.handle.audio.AudioEncodingType;
 import sx.blah.discord.handle.audio.IAudioReceiver;
 import sx.blah.discord.handle.obj.IUser;
 
-public class AudioReceiver implements IAudioReceiver {
+public class IRAudioReceiver implements IAudioReceiver {
 
     private InstantReplay ir;
 
-    public AudioReceiver(InstantReplay ir){
+    public IRAudioReceiver(InstantReplay ir){
         this.ir = ir;
     }
 
     @Override
-    public void receive(byte[] bytes, IUser iUser) {
+    public void receive(byte[] bytes, IUser iUser, char sequence, int timestamp) {
         //if(!iUser.isBot()){
             Karren.log.debug("Incoming audio frame from " + iUser.getName() + " Size: " + bytes.length);
+            if(iUser.getName().equalsIgnoreCase("DDAkebono"))
+                ir.writeUserAudioFrame(new AudioFrame(bytes, iUser, sequence, timestamp));
         //}
     }
 
@@ -35,3 +37,18 @@ public class AudioReceiver implements IAudioReceiver {
         return AudioEncodingType.OPUS;
     }
 }
+
+class AudioFrame{
+    byte[] audioData;
+    IUser user;
+    char sequence;
+    int timestamp;
+
+    public AudioFrame(byte[] audioData, IUser user, char sequence, int timestamp) {
+        this.audioData = audioData;
+        this.user = user;
+        this.sequence = sequence;
+        this.timestamp = timestamp;
+    }
+}
+
