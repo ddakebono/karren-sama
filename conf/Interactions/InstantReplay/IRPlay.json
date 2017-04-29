@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "Playing back stored voice data for %username"
+  ],
+  "templatesFail": [
+    "You need to use an @ mention to tell me who to play back!"
+  ],
+  "tags": [
+    "mentioned",
+    "prefixed",
+    "irplay"
+  ],
+  "triggers": [
+    "ir-play"
+  ],
+  "helptext": "Plays back instant replay data for mentioned user."
+}

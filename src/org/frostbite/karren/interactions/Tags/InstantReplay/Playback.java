@@ -23,7 +23,11 @@ public class Playback implements Tag {
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         InstantReplay ir = Karren.bot.getIrm().getInstantReplay(event.getGuild(), event.getAuthor());
         if(interaction.getMentionedUsers().size()>0 && event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel().equals(ir.getChannel())){
+            ir.getLockedUsers().add(interaction.getMentionedUsers().get(0).getStringID());
+            msg = msg.replace("%username", interaction.getMentionedUsers().get(0).getStringID());
             event.getGuild().getAudioManager().setAudioProvider(new IRAudioProvider(ir, interaction.getMentionedUsers().get(0)));
+        } else {
+            msg = interaction.getRandomTemplatesFail();
         }
         return msg;
     }

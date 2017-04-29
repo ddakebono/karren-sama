@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "Stopping Instant Replay"
+  ],
+  "tags": [
+    "parameter",
+    "prefixed",
+    "irstop"
+  ],
+  "triggers": [
+    "ir-stop"
+  ],
+  "helptext": "Stops Instant replay from listening"
+}

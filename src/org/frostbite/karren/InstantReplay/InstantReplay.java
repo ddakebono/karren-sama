@@ -16,6 +16,7 @@ import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -24,6 +25,7 @@ public class InstantReplay {
     private IVoiceChannel channel;
     private IRAudioReceiver receiver;
     private HashMap<Long, LinkedList<AudioFrame>> usersAudioFrames = new HashMap<>();
+    private ArrayList<String> lockedUsers = new ArrayList<>();
 
     public InstantReplay(IGuild guild, IVoiceChannel channel){
         this.guild = guild;
@@ -31,10 +33,14 @@ public class InstantReplay {
     }
 
     public void writeUserAudioFrame(AudioFrame frame){
-        LinkedList<AudioFrame> audioFrames = usersAudioFrames.getOrDefault(frame.user.getLongID(), new LinkedList<>());
-        audioFrames.add(frame);
-        if(!usersAudioFrames.containsKey(frame.user.getLongID()))
-            usersAudioFrames.put(frame.user.getLongID(), audioFrames);
+        if(!lockedUsers.contains(frame.user.getStringID())) {
+            LinkedList<AudioFrame> audioFrames = usersAudioFrames.getOrDefault(frame.user.getLongID(), new LinkedList<>());
+            audioFrames.add(frame);
+            if (audioFrames.size() > 1500)
+                audioFrames.removeFirst();
+            if (!usersAudioFrames.containsKey(frame.user.getLongID()))
+                usersAudioFrames.put(frame.user.getLongID(), audioFrames);
+        }
     }
 
     public void startListening(){
@@ -53,6 +59,7 @@ public class InstantReplay {
         } else {
             //Kill provider and return control to lavaplayer
             guild.getAudioManager().setAudioProvider(new AudioProvider(Karren.bot.getGuildMusicManager(guild).player));
+            lockedUsers.remove(playback.getStringID());
         }
         return data;
     }
@@ -69,6 +76,10 @@ public class InstantReplay {
 
     public IVoiceChannel getChannel() {
         return channel;
+    }
+
+    public ArrayList<String> getLockedUsers() {
+        return lockedUsers;
     }
 
     public LinkedList<AudioFrame> getList(IUser user){

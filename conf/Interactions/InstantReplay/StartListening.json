@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "Starting up Instant Replay"
+  ],
+  "tags": [
+    "parameter",
+    "prefixed",
+    "irstart"
+  ],
+  "triggers": [
+    "ir-start"
+  ],
+  "helptext": "Start up the instant replay listener"
+}
