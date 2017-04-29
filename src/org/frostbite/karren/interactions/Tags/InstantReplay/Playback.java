@@ -10,6 +10,8 @@
 
 package org.frostbite.karren.interactions.Tags.InstantReplay;
 
+import org.frostbite.karren.InstantReplay.IRAudioProvider;
+import org.frostbite.karren.InstantReplay.InstantReplay;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
@@ -19,6 +21,10 @@ import sx.blah.discord.util.MessageBuilder;
 public class Playback implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+        InstantReplay ir = Karren.bot.getIrm().getInstantReplay(event.getGuild(), event.getAuthor());
+        if(interaction.getMentionedUsers().size()>0 && event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel().equals(ir.getChannel())){
+            event.getGuild().getAudioManager().setAudioProvider(new IRAudioProvider(ir, interaction.getMentionedUsers().get(0)));
+        }
         return msg;
     }
 }

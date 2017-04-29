@@ -11,7 +11,6 @@
 package org.frostbite.karren.interactions.Tags.D4JPlayer;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
@@ -22,12 +21,12 @@ public class D4JList implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         if(Karren.bot.getClient().getConnectedVoiceChannels().size()>0){
-            String list = "";
+            StringBuilder list = new StringBuilder();
             for(AudioTrack source : (AudioTrack[])Karren.bot.getGuildMusicManager(event.getGuild()).scheduler.getQueue().toArray()){
-                list += source.getInfo().title + "\n";
+                list.append(source.getInfo().title).append("\n");
             }
-            list = list.substring(0, list.length()-2);
-            msg = msg.replace("%nplist", list);
+            list = new StringBuilder(list.substring(0, list.length() - 2));
+            msg = msg.replace("%nplist", list.toString());
         }
         return msg;
     }

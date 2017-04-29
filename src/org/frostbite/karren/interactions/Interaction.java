@@ -10,7 +10,6 @@
 
 package org.frostbite.karren.interactions;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -36,28 +35,29 @@ public class Interaction {
     private float voiceVolume = 0.1f;
     private String parameter;
     private boolean specialInteraction = false;
-    private String[] childInteractions;
     private boolean isPermBad = false;
     private int usageCount = -1;
     private ArrayList<String> allowedUsers = new ArrayList<>();
     private boolean stopProcessing = false;
     private int confidenceChecked = 0;
+    private List<IUser> mentionedUsers = new LinkedList<>();
+    private boolean lock = false;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new String[]{templates}, triggers, confidence, enabled, helptext);
     }
 
     public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
-        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "", null, 0.0f, false, null);
+        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "", null, 0.0f, false);
     }
 
     public Interaction(String identifier, String[] tags, String[] templates, String[] templatesFail, int usageCount, String userID, float voiceVolume){
-        this(identifier, tags, templates, null, 0, true, "", templatesFail, null, "", "", null, voiceVolume, false, null);
+        this(identifier, tags, templates, null, 0, true, "", templatesFail, null, "", "", null, voiceVolume, false);
         this.usageCount = usageCount;
         this.allowedUsers.add(userID);
     }
 
-    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction, String[] childInteractions){
+    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction){
         this.specialInteraction = specialInteraction;
         this.identifier = identifier;
         this.tags = tags;
@@ -72,46 +72,56 @@ public class Interaction {
         this.channel = channel;
         this.voiceFiles = voiceFiles;
         this.voiceVolume = voiceVolume;
-        this.childInteractions = childInteractions;
     }
     /*
     handleMessage checks which interaction type the message is and runs the respective functions.
      */
     String handleMessage(MessageReceivedEvent event){
         String result = null;
-        confidenceChecked = 0;
-        try {
-            if (enabled) {
-                if (isAllowedUser(event.getAuthor())) {
-                    //if (!Arrays.asList(tags).contains("bot") || (event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getNicknameForGuild(event.getGuild())) || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName()))))
-                    if (event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed")) {
-                        //Get only word follow prefix
-                        Pattern prefixedPattern = Pattern.compile("\\s+");
-                        String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
-                        if (regex.length > 0) {
-                            confidenceChecked = getConfidence(regex[0], true, event.getGuild());
+        if(!lock) {
+            cleanupInteraction();
+            confidenceChecked = 0;
+            try {
+                if (enabled) {
+                    if (isAllowedUser(event.getAuthor())) {
+                        //if (!Arrays.asList(tags).contains("bot") || (event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getNicknameForGuild(event.getGuild())) || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName()))))
+                        if (event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed")) {
+                            //Get only word follow prefix
+                            Pattern prefixedPattern = Pattern.compile("\\s+");
+                            String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
+                            if (regex.length > 0) {
+                                confidenceChecked = getConfidence(regex[0], true, event.getGuild());
+                            }
+                        }
+                        if (!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed")) {
+                            confidenceChecked = getConfidence(event.getMessage().getContent(), false, event.getGuild());
+                        }
+                        if (confidenceChecked >= this.confidence)
+                            result = getRandomTemplate(templates);
+                        if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), permissionLevel)) {
+                            result = getRandomTemplatesPermError();
+                            isPermBad = true;
                         }
                     }
-                    if(!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed")) {
-                        confidenceChecked = getConfidence(event.getMessage().getContent(), false, event.getGuild());
-                    }
-                    if (confidenceChecked >= this.confidence)
-                        result = getRandomTemplate(templates);
-                    if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), permissionLevel)) {
-                        result = getRandomTemplatesPermError();
-                        isPermBad = true;
-                    }
                 }
+            } catch (NullPointerException e) {
+                Karren.log.error("An error has occured with interaction " + this.identifier);
+                e.printStackTrace();
             }
-        } catch (NullPointerException e){
-            Karren.log.error("An error has occured with interaction " + this.identifier);
-            e.printStackTrace();
         }
         return result;
     }
 
+    private void cleanupInteraction(){
+        if(mentionedUsers==null)
+            mentionedUsers = new LinkedList<>();
+        mentionedUsers.clear();
+        confidenceChecked = 0;
+        parameter = null;
+    }
+
     private boolean isAllowedUser(IUser user) {
-        return allowedUsers == null || allowedUsers.isEmpty() || allowedUsers.contains(user.getID());
+        return allowedUsers == null || allowedUsers.isEmpty() || allowedUsers.contains(user.getStringID());
     }
 
     private int getConfidence(String message, boolean prefixed, IGuild guild){
@@ -211,14 +221,6 @@ public class Interaction {
         }
     }
 
-    public boolean isChild(){
-        for(String tag : tags){
-            if(tag.equalsIgnoreCase("child"))
-                return true;
-        }
-        return false;
-    }
-
     public float getVoiceVolume() {
         return voiceVolume;
     }
@@ -227,10 +229,6 @@ public class Interaction {
 
     public boolean isSpecialInteraction() {
         return specialInteraction;
-    }
-
-    public String[] getChildInteractions() {
-        return childInteractions;
     }
 
     public boolean isEnabled() {
@@ -287,5 +285,17 @@ public class Interaction {
 
     public int getConfidenceChecked() {
         return confidenceChecked;
+    }
+
+    public List<IUser> getMentionedUsers() {
+        return mentionedUsers;
+    }
+
+    public boolean isLock() {
+        return lock;
+    }
+
+    public void setLock(boolean lock) {
+        this.lock = lock;
     }
 }

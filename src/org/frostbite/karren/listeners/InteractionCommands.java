@@ -11,6 +11,7 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Karren;
+import org.frostbite.karren.interactions.InteractionProcessor;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.*;
@@ -19,18 +20,21 @@ public class InteractionCommands implements IListener<MessageReceivedEvent> {
     public void handle(MessageReceivedEvent event){
         if(Karren.conf.getEnableInteractions()){
             MessageBuilder response;
-            response = Karren.bot.getInteractionManager().getInteractionProcessor(event.getGuild()).handle(event);
-            if(response!=null) {
-                try {
-                    response.send();
-                } catch (RateLimitException | DiscordException | MissingPermissionsException e) {
-                    e.printStackTrace();
-                }
-            } else if(event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase())) {
-                try {
-                    event.getMessage().getChannel().sendMessage("It's not like I wanted to answer anyways....baka. (Use \"" + Karren.conf.getCommandPrefix() + "help\" to view all usable interactions)");
-                } catch (MissingPermissionsException | RateLimitException | DiscordException e) {
-                    e.printStackTrace();
+            InteractionProcessor ip = Karren.bot.getInteractionManager().getInteractionProcessor(event.getGuild());
+            if(ip!=null) {
+                response = ip.handle(event);
+                if (response != null) {
+                    try {
+                        response.send();
+                    } catch (RateLimitException | DiscordException | MissingPermissionsException e) {
+                        e.printStackTrace();
+                    }
+                } else if (event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase())) {
+                    try {
+                        event.getMessage().getChannel().sendMessage("It's not like I wanted to answer anyways....baka. (Use \"" + Karren.conf.getCommandPrefix() + "help\" to view all usable interactions)");
+                    } catch (MissingPermissionsException | RateLimitException | DiscordException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

@@ -20,7 +20,6 @@ import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listeners.*;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.audio.impl.AudioManager;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
@@ -136,12 +135,12 @@ public class KarrenBot {
     }
 
     public GuildMusicManager getGuildMusicManager(IGuild guild){
-        return gms.get(guild.getID());
+        return gms.get(guild.getStringID());
     }
 
     public GuildMusicManager createGuildMusicManager(IGuild guild){
-        gms.put(guild.getID(), new GuildMusicManager(pm, guild));
-        return gms.get(guild.getID());
+        gms.put(guild.getStringID(), new GuildMusicManager(pm, guild));
+        return gms.get(guild.getStringID());
     }
 
     public AudioPlayerManager getPm() {

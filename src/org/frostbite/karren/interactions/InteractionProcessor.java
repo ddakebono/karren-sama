@@ -36,7 +36,10 @@ public class InteractionProcessor {
     public void loadAndUpdateDatabase(){
         interactions = new ArrayList<>();
         interactions.addAll(defaultInteractions);
-        Karren.log.info("Default interaction processor initialized!");
+        if(guild!=null)
+            Karren.log.info("Interaction Processor for " + guild.getName() + " ready!");
+        else
+            Karren.log.info("Default interaction processor initialized!");
     }
 
     public MessageBuilder handle(MessageReceivedEvent event) {
@@ -45,6 +48,7 @@ public class InteractionProcessor {
         for(Interaction check : interactions){
             returned = check.handleMessage(event);
             if(returned!=null){
+                check.setLock(true);
                 Karren.log.debug("Interaction match for " + check.getIdentifier() + ", handling templates! (Confidence: " + check.getConfidenceChecked() + ")");
                 result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getMessage().getChannel());
                 if(!check.isPermBad()) {
@@ -60,12 +64,14 @@ public class InteractionProcessor {
                     if(check.interactionUsed())
                         Karren.bot.getInteractionManager().getInteractionProcessor(event.getGuild()).getInteractions().remove(check);
                 }
+                check.setLock(false);
                 if(returned!=null)
                     result.withContent(returned);
                 else
                     result = null;
                 if(!check.isSpecialInteraction())
                     break;
+
             }
         }
         return result;

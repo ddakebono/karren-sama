@@ -10,11 +10,8 @@
 
 package org.frostbite.karren;
 
-import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;

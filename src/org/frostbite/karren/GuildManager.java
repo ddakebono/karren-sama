@@ -18,6 +18,7 @@ import org.frostbite.karren.interactions.InteractionProcessor;
 import org.frostbite.karren.interactions.Tag;
 import org.frostbite.karren.interactions.Tags.*;
 import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
+import org.frostbite.karren.interactions.Tags.InstantReplay.Playback;
 import org.frostbite.karren.interactions.Tags.InstantReplay.StartListening;
 import org.frostbite.karren.interactions.Tags.InstantReplay.StopListening;
 import org.frostbite.karren.listeners.InteractionCommands;
@@ -29,7 +30,6 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Handler;
 
 public class GuildManager {
 
@@ -38,6 +38,7 @@ public class GuildManager {
     //Default processor handles private message interactions
     private InteractionProcessor defaultProcessor;
     private ArrayList<Interaction> defaultInteractions;
+    private boolean lock = false;
 
     public void loadTags(){
         handlers = new HashMap<>();
@@ -81,9 +82,14 @@ public class GuildManager {
         handlers.put("d4jnowplayingtime", new D4JNowPlayingTime());
         handlers.put("irstop", new StopListening());
         handlers.put("irstart", new StartListening());
+        handlers.put("mentioned", new MentionedUsers());
+        handlers.put("irplay", new Playback());
     }
 
     public void loadDefaultInteractions(){
+        lock = true;
+        if(registeredGuilds.size()>0)
+            registeredGuilds.clear();
         Gson gson = new Gson();
         defaultInteractions = new ArrayList<>();
         File intDir = new File("conf/Interactions");
@@ -104,6 +110,7 @@ public class GuildManager {
             Karren.log.info("No Interaction detected, interaction system unregistered.");
             Karren.bot.getClient().getDispatcher().unregisterListener(new InteractionCommands());
         }
+        lock = false;
     }
 
     public void removeHandler(String id){
@@ -119,7 +126,13 @@ public class GuildManager {
     }
 
     public InteractionProcessor getInteractionProcessor(IGuild guild){
-        return defaultProcessor;
+        if(!lock) {
+            if (!registeredGuilds.containsKey(guild.getStringID()))
+                registeredGuilds.put(guild.getStringID(), new InteractionProcessor(guild, defaultInteractions));
+            return registeredGuilds.getOrDefault(guild.getStringID(), defaultProcessor);
+        } else {
+            return null;
+        }
     }
 
 }

@@ -24,16 +24,16 @@ public class InstantReplayManager {
     */
     public InstantReplay getInstantReplay(IGuild guild, IUser user){
         if(user.getVoiceStateForGuild(guild).getChannel()!=null) {
-            if (!guildReplays.containsKey(guild.getID())) {
-                guildReplays.put(guild.getID(), new InstantReplay(guild, user.getVoiceStateForGuild(guild).getChannel()));
+            if (!guildReplays.containsKey(guild.getStringID())) {
+                guildReplays.put(guild.getStringID(), new InstantReplay(guild, user.getVoiceStateForGuild(guild).getChannel()));
             }
-            return guildReplays.get(guild.getID());
+            return guildReplays.get(guild.getStringID());
         }
         return null;
     }
 
     public void stopInstantReplay(IGuild guild){
-        guildReplays.get(guild.getID()).stopListening();
-        guildReplays.remove(guild.getID());
+        guildReplays.get(guild.getStringID()).stopListening();
+        guildReplays.remove(guild.getStringID());
     }
 }

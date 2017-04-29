@@ -12,20 +12,23 @@ package org.frostbite.karren.InstantReplay;
 
 import sx.blah.discord.handle.audio.AudioEncodingType;
 import sx.blah.discord.handle.audio.IAudioProvider;
+import sx.blah.discord.handle.obj.IUser;
 
 public class IRAudioProvider implements IAudioProvider {
 
     private final InstantReplay ir;
     private AudioFrame lastFrame;
+    private IUser user;
 
-    public IRAudioProvider(InstantReplay ir) {
+    public IRAudioProvider(InstantReplay ir, IUser user) {
         this.ir = ir;
+        this.user = user;
     }
 
     @Override
     public boolean isReady() {
         if(lastFrame == null){
-            lastFrame = ir.getSingleFrame();
+            lastFrame = ir.getSingleFrame(user);
         }
         return lastFrame != null;
     }
@@ -33,10 +36,11 @@ public class IRAudioProvider implements IAudioProvider {
     @Override
     public byte[] provide() {
         if (lastFrame == null) {
-            lastFrame = ir.getSingleFrame();
+            lastFrame = ir.getSingleFrame(user);
         }
 
         byte[] data = lastFrame != null ? lastFrame.audioData : null;
+        //Temp patch to kill playback after list empties
         lastFrame = null;
         return data;
     }

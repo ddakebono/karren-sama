@@ -27,13 +27,13 @@ public class D4JSelect implements Tag {
         } catch (NumberFormatException ignored){}
         if(selection>0 && selection<=3) {
             D4JSearch search = (D4JSearch) Karren.bot.getInteractionManager().getHandlers().get("d4jsearch");
-            JSONArray resultArray = search.getResultArray(event.getAuthor().getID());
+            JSONArray resultArray = search.getResultArray(event.getAuthor().getStringID());
             interaction.setParameter(resultArray.getJSONObject(selection - 1).getJSONObject("id").getString("videoId"));
             msg = msg.replace("%title", resultArray.getJSONObject(selection - 1).getJSONObject("snippet").getString("title"));
         } else if(param.trim().equalsIgnoreCase("c")){
             msg = "Alright, I've deleted the results.";
             D4JSearch search = (D4JSearch) Karren.bot.getInteractionManager().getHandlers().get("d4jsearch");
-            search.getResultArray(event.getAuthor().getID());
+            search.getResultArray(event.getAuthor().getStringID());
             interaction.stopProcessing();
         } else {
             msg = interaction.getRandomTemplatesFail();

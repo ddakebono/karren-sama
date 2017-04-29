@@ -33,14 +33,12 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -154,7 +152,7 @@ public class ListenCast extends Thread{
         Result<FavoritesRecord> returned = Karren.bot.getSql().getUserFaves(currentSong.getSongID());
         for(FavoritesRecord user : returned){
             try {
-                Karren.bot.getClient().getOrCreatePMChannel(Karren.bot.getClient().getUserByID(user.getUserid().toString())).sendMessage(currentSong.getSongName() + " has started playing!");
+                Karren.bot.getClient().getOrCreatePMChannel(Karren.bot.getClient().getUserByID(user.getUserid())).sendMessage(currentSong.getSongName() + " has started playing!");
             } catch (DiscordException | RateLimitException | MissingPermissionsException e) {
                 e.printStackTrace();
             }

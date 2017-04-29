@@ -10,18 +10,20 @@
 
 package org.frostbite.karren.InstantReplay;
 
+import org.frostbite.karren.AudioPlayer.AudioProvider;
 import org.frostbite.karren.Karren;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class InstantReplay {
     private IGuild guild;
     private IVoiceChannel channel;
     private IRAudioReceiver receiver;
-    private IRAudioProvider provider;
-    private LinkedList<AudioFrame> audioFrames = new LinkedList<>();
+    private HashMap<Long, LinkedList<AudioFrame>> usersAudioFrames = new HashMap<>();
 
     public InstantReplay(IGuild guild, IVoiceChannel channel){
         this.guild = guild;
@@ -29,20 +31,29 @@ public class InstantReplay {
     }
 
     public void writeUserAudioFrame(AudioFrame frame){
+        LinkedList<AudioFrame> audioFrames = usersAudioFrames.getOrDefault(frame.user.getLongID(), new LinkedList<>());
         audioFrames.add(frame);
+        if(!usersAudioFrames.containsKey(frame.user.getLongID()))
+            usersAudioFrames.put(frame.user.getLongID(), audioFrames);
     }
 
     public void startListening(){
         channel.join();
         receiver = new IRAudioReceiver(this);
-        provider = new IRAudioProvider(this);
         guild.getAudioManager().subscribeReceiver(receiver);
-        guild.getAudioManager().setAudioProvider(provider);
     }
 
-    public AudioFrame getSingleFrame(){
-        AudioFrame data = audioFrames.getFirst();
-        audioFrames.removeFirst();
+    public AudioFrame getSingleFrame(IUser playback){
+        AudioFrame data = null;
+        LinkedList<AudioFrame> audioFrames = usersAudioFrames.getOrDefault(playback.getLongID(), null);
+        if(audioFrames!=null && !audioFrames.isEmpty()) {
+            data = audioFrames.getFirst();
+            audioFrames.removeFirst();
+            Karren.log.debug("List has " + audioFrames.size() + " remaining frames");
+        } else {
+            //Kill provider and return control to lavaplayer
+            guild.getAudioManager().setAudioProvider(new AudioProvider(Karren.bot.getGuildMusicManager(guild).player));
+        }
         return data;
     }
 
@@ -52,6 +63,15 @@ public class InstantReplay {
             guild.getAudioManager().setAudioProvider(Karren.bot.getGuildMusicManager(guild).getAudioProvider());
             receiver = null;
             channel.leave();
+            usersAudioFrames.clear();
         }
+    }
+
+    public IVoiceChannel getChannel() {
+        return channel;
+    }
+
+    public LinkedList<AudioFrame> getList(IUser user){
+        return usersAudioFrames.get(user.getLongID());
     }
 }

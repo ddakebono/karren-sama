@@ -58,8 +58,8 @@ public class MySQLInterface {
     public UserRecord getUserData(IUser user){
         if(Karren.conf.getAllowSQLRW()) {
             refreshSQLConnection();
-            sqlConn.insertInto(User.USER).values(user.getID(), null, user.getName(), null, 0, null).onDuplicateKeyIgnore().execute();
-            return sqlConn.selectFrom(User.USER).where(User.USER.USERID.equalIgnoreCase(user.getID())).fetchOne();
+            sqlConn.insertInto(User.USER).values(user.getStringID(), null, user.getName(), null, 0, null).onDuplicateKeyIgnore().execute();
+            return sqlConn.selectFrom(User.USER).where(User.USER.USERID.equalIgnoreCase(user.getStringID())).fetchOne();
         } else {
             return null;
         }
@@ -97,7 +97,7 @@ public class MySQLInterface {
             refreshSQLConnection();
             //Switch off all DJ active statuses
             sqlConn.update(User.USER).set(User.USER.DJACTIVE, 0).execute();
-            IUser newDJ = Karren.bot.getClient().getUserByID(curDJ);
+            IUser newDJ = Karren.bot.getClient().getUserByID(Long.getLong(curDJ));
             if (newDJ != null) {
                 UserRecord userAccount = getUserData(newDJ);
                 userAccount.setDjactive(1);

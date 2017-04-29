@@ -20,7 +20,7 @@ public class OverrideChannel implements Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        response.withChannel(Karren.bot.getClient().getChannelByID(interaction.getChannel()));
+        response.withChannel(Karren.bot.getClient().getChannelByID(Long.getLong(interaction.getChannel())));
         return msg;
     }
 }
