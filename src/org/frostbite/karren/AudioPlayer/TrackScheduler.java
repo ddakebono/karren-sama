@@ -14,6 +14,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import org.frostbite.karren.Karren;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.DiscordException;
@@ -87,7 +88,8 @@ public class TrackScheduler extends AudioEventAdapter {
         }
         if(queue.size()==0 && player.getPlayingTrack()==null){
             player.destroy();
-            guild.getConnectedVoiceChannel().leave();
+            if(!Karren.bot.getIrm().getInstantReplayForGuild(guild).isRunning())
+                guild.getConnectedVoiceChannel().leave();
         } else {
             try {
                 announceChannel.sendMessage("Starting playback of \"" + newSong.getInfo().title + "\"");
@@ -104,7 +106,8 @@ public class TrackScheduler extends AudioEventAdapter {
     public void stopQueue(){
         player.stopTrack();
         queue.clear();
-        guild.getConnectedVoiceChannel().leave();
+        if(!Karren.bot.getIrm().getInstantReplayForGuild(guild).isRunning())
+            guild.getConnectedVoiceChannel().leave();
     }
 
     @Override

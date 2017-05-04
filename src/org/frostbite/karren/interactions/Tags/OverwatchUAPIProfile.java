@@ -58,34 +58,34 @@ public class OverwatchUAPIProfile implements Tag {
         try {
             sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCertificates, new SecureRandom());
-            HttpsURLConnection profileRequest = (HttpsURLConnection)new URL("https://api.lootbox.eu/pc/us/" + parameter + "/profile").openConnection();
+            //https://owapi.net/api/v3/u/DDAkebono-1984/blob
+            HttpsURLConnection profileRequest = (HttpsURLConnection)new URL("https://owapi.net/api/v3/u/" + parameter + "/blob").openConnection();
             profileRequest.setSSLSocketFactory(sc.getSocketFactory());
             profileRequest.connect();
-            JsonObject profile = gson.parse(new InputStreamReader((InputStream)profileRequest.getContent())).getAsJsonObject().getAsJsonObject("data");
+            JsonObject profile = gson.parse(new InputStreamReader((InputStream)profileRequest.getContent())).getAsJsonObject().getAsJsonObject("us");
             if(profile==null)
                 throw new IOException();
             int wins = 0;
-            JsonObject quickplay = profile.getAsJsonObject("games").getAsJsonObject("quick");
-            JsonObject competitive = profile.getAsJsonObject("games").getAsJsonObject("competitive");
-            JsonObject playtime = profile.getAsJsonObject("playtime");
-            JsonObject competitiveInfo = profile.getAsJsonObject("competitive");
-            msg = msg.replace("%username", profile.get("username").getAsString());
-            msg = msg.replace("%level", profile.get("level").getAsString());
-            if(quickplay.get("wins")!=null)
-                wins+=quickplay.get("wins").getAsInt();
-            if(competitive.get("wins")!=null)
-                wins+=competitive.get("wins").getAsInt();
+            JsonObject quickplay = profile.getAsJsonObject("stats").getAsJsonObject("quickplay");
+            JsonObject competitive = profile.getAsJsonObject("stats").getAsJsonObject("competitive");
+            JsonObject playtime = profile.getAsJsonObject("heroes").getAsJsonObject("playtime");
+            msg = msg.replace("%username", parameter);
+            msg = msg.replace("%level", Integer.toString(quickplay.getAsJsonObject("overall_stats").get("level").getAsInt() + (quickplay.getAsJsonObject("overall_stats").get("prestige").getAsInt()*100)));
+            if(quickplay.getAsJsonObject("overall_stats").get("wins")!=null)
+                wins+=quickplay.getAsJsonObject("overall_stats").get("wins").getAsInt();
+            if(competitive.getAsJsonObject("overall_stats").get("wins")!=null)
+                wins+=competitive.getAsJsonObject("overall_stats").get("wins").getAsInt();
             msg = msg.replace("%gameswon", String.valueOf(wins));
             if(quickplay.has("played") && competitive.has("played"))
-                msg = msg.replace("%winrate", String.valueOf((wins / (quickplay.get("played").getAsFloat() + competitive.get("played").getAsFloat()))*100));
+                msg = msg.replace("%winrate", String.valueOf((wins / (quickplay.getAsJsonObject("overall_stats").get("games").getAsFloat() + competitive.getAsJsonObject("overall_stats").get("games").getAsFloat()))*100));
             else
                 msg = msg.replace("%winrate", "Unknown");
-            msg = msg.replace("%playtime-quick", playtime.get("quick").getAsString());
-            msg = msg.replace("%playtime-comp", playtime.get("competitive").getAsString());
-            if(!competitiveInfo.get("rank").isJsonNull())
+            //msg = msg.replace("%playtime-quick", playtime.get("quick").getAsString());
+            //msg = msg.replace("%playtime-comp", playtime.get("competitive").getAsString());
+            /*if(!competitiveInfo.get("rank").isJsonNull())
                 msg = msg.replace("%rank", competitiveInfo.get("rank").getAsString());
             else
-                msg = msg.replace("%rank", "0");
+                msg = msg.replace("%rank", "0");*/
         } catch (IOException e) {
             msg = interaction.getRandomTemplatesFail();
         } catch (NoSuchAlgorithmException | KeyManagementException e) {

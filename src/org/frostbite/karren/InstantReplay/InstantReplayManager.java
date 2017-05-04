@@ -32,6 +32,12 @@ public class InstantReplayManager {
         return null;
     }
 
+    public InstantReplay getInstantReplayForGuild(IGuild guild){
+        if(!guildReplays.containsKey(guild.getStringID()))
+            return guildReplays.get(guild.getStringID());
+        return null;
+    }
+
     public void stopInstantReplay(IGuild guild){
         guildReplays.get(guild.getStringID()).stopListening();
         guildReplays.remove(guild.getStringID());

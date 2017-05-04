@@ -74,6 +74,10 @@ public class InstantReplay {
         }
     }
 
+    public boolean isRunning(){
+        return receiver!=null;
+    }
+
     public IVoiceChannel getChannel() {
         return channel;
     }

@@ -126,13 +126,15 @@ public class GuildManager {
     }
 
     public InteractionProcessor getInteractionProcessor(IGuild guild){
-        if(!lock) {
-            if (!registeredGuilds.containsKey(guild.getStringID()))
-                registeredGuilds.put(guild.getStringID(), new InteractionProcessor(guild, defaultInteractions));
-            return registeredGuilds.getOrDefault(guild.getStringID(), defaultProcessor);
-        } else {
-            return null;
+        if(!lock){
+            if(guild!=null){
+                if (!registeredGuilds.containsKey(guild.getStringID()))
+                    registeredGuilds.put(guild.getStringID(), new InteractionProcessor(guild, defaultInteractions));
+                return registeredGuilds.getOrDefault(guild.getStringID(), defaultProcessor);
+            } else {
+                return defaultProcessor;
+            }
         }
+        return null;
     }
-
 }
