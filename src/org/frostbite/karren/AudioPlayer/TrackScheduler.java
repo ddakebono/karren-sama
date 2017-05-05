@@ -88,9 +88,12 @@ public class TrackScheduler extends AudioEventAdapter {
         }
         if(queue.size()==0 && player.getPlayingTrack()==null){
             player.destroy();
-            if(Karren.bot.getIrm().getInstantReplayForGuild(guild)!=null)
-                if(!Karren.bot.getIrm().getInstantReplayForGuild(guild).isRunning())
+            if(Karren.bot.getIrm().getInstantReplayForGuild(guild)!=null) {
+                if (!Karren.bot.getIrm().getInstantReplayForGuild(guild).isRunning())
                     guild.getConnectedVoiceChannel().leave();
+            } else {
+                guild.getConnectedVoiceChannel().leave();
+            }
         } else {
             try {
                 announceChannel.sendMessage("Starting playback of \"" + newSong.getInfo().title + "\"");
@@ -107,9 +110,12 @@ public class TrackScheduler extends AudioEventAdapter {
     public void stopQueue(){
         player.stopTrack();
         queue.clear();
-        if(Karren.bot.getIrm().getInstantReplayForGuild(guild)!=null)
-            if(!Karren.bot.getIrm().getInstantReplayForGuild(guild).isRunning())
+        if(Karren.bot.getIrm().getInstantReplayForGuild(guild)!=null) {
+            if (!Karren.bot.getIrm().getInstantReplayForGuild(guild).isRunning())
                 guild.getConnectedVoiceChannel().leave();
+        } else {
+            guild.getConnectedVoiceChannel().leave();
+        }
     }
 
     @Override
