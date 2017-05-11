@@ -36,8 +36,6 @@ public class BotConfiguration {
     private boolean enableInteractions;
     private String commandPrefix;
     private boolean connectToDiscord;
-    private int extPort;
-    private String extAddr;
     private final String versionMarker = "3.2";
     private String osuAPIKey;
     private String googleAPIKey;
@@ -95,12 +93,6 @@ public class BotConfiguration {
         return enableInteractions;
     }
     public String getCommandPrefix() { return commandPrefix; }
-    public int getExtPort() {
-        return extPort;
-    }
-    public String getExtAddr() {
-        return extAddr;
-    }
     public String getOsuAPIKey() {return osuAPIKey;}
     public String getGoogleAPIKey() {
         return googleAPIKey;
@@ -138,8 +130,6 @@ public class BotConfiguration {
         commandPrefix = cfg.getProperty("commandPrefix", ".");
         connectToDiscord = Boolean.parseBoolean(cfg.getProperty("connectToDiscord", "true"));
         discordToken = cfg.getProperty("BotAccountToken", "hackme");
-        extAddr = cfg.getProperty("ExtenderListenAddress", "127.0.0.1");
-        extPort = Integer.parseInt(cfg.getProperty("ExtenderListenPort", "8281"));
         osuAPIKey = cfg.getProperty("osuAPIKey", "");
         googleAPIKey = cfg.getProperty("googleAPIKey", "");
         listencastAnnounce = Boolean.parseBoolean(cfg.getProperty("ListencastAnnounce", "true"));
@@ -174,8 +164,6 @@ public class BotConfiguration {
         cfg.setProperty("commandPrefix", commandPrefix);
         cfg.setProperty("connectToDiscord", Boolean.toString(connectToDiscord));
         cfg.setProperty("BotAccountToken", discordToken);
-        cfg.setProperty("ExtenderListenPort", Integer.toString(extPort));
-        cfg.setProperty("ExtenderListenAddress", extAddr);
         cfg.setProperty("osuAPIKey", osuAPIKey);
         cfg.setProperty("googleAPIKey", googleAPIKey);
         cfg.setProperty("ListencastAnnounce", Boolean.toString(listencastAnnounce));
