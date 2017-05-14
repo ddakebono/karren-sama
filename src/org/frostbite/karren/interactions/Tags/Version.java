@@ -19,6 +19,6 @@ import sx.blah.discord.util.MessageBuilder;
 public class Version implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        return msg.replace("%version", Karren.conf.getVersionMarker());
+        return msg.replace("%version", Karren.botVersion);
     }
 }

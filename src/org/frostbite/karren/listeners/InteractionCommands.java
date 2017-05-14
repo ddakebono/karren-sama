@@ -36,6 +36,8 @@ public class InteractionCommands implements IListener<MessageReceivedEvent> {
                         e.printStackTrace();
                     }
                 }
+            } else {
+                event.getChannel().sendMessage("Please stand by, the interaction processor is still initializing...");
             }
         }
     }

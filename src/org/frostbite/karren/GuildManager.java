@@ -13,6 +13,7 @@ package org.frostbite.karren;
 
 import com.google.gson.Gson;
 import org.apache.commons.io.FilenameUtils;
+import org.frostbite.karren.Database.Models.tables.records.GuildRecord;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.InteractionProcessor;
 import org.frostbite.karren.interactions.Tag;
@@ -35,6 +36,7 @@ public class GuildManager {
 
     private Map<String, Tag> handlers;
     private Map<String, InteractionProcessor> registeredGuilds = new HashMap<>();
+    private Map<String, String> guildCommandPrefixes = new HashMap<>();
     //Default processor handles private message interactions
     private InteractionProcessor defaultProcessor;
     private ArrayList<Interaction> defaultInteractions;
@@ -84,6 +86,7 @@ public class GuildManager {
         handlers.put("irstart", new StartListening());
         handlers.put("mentioned", new MentionedUsers());
         handlers.put("irplay", new Playback());
+        handlers.put("setfilter", new SetFilter());
     }
 
     public void loadDefaultInteractions(){
@@ -123,6 +126,12 @@ public class GuildManager {
 
     public Map<String, Tag> getHandlers() {
         return handlers;
+    }
+
+    public void registerGuild(IGuild guild){
+        Karren.log.info("Retrieving guild " + guild.getName() + " from database...");
+        GuildRecord dbGuild = Karren.bot.getSql().getGuild(guild);
+        guildCommandPrefixes.put(guild.getStringID(), dbGuild.getCommandprefix());
     }
 
     public InteractionProcessor getInteractionProcessor(IGuild guild){

@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "permissionLevel": "Admins",
+  "templates": [
+    "Command block has been %setting for %user"
+  ],
+  "templatesFail": [
+    "You can't set yourself to be ignored!"
+  ],
+  "templatesPermError": [
+    "You don't have permission to change this... (Not admin)"
+  ],
+  "tags": [
+    "prefixed",
+    "mentioned",
+    "setfilter"
+  ],
+  "triggers": [
+    "filter"
+  ],
+  "helptext": "Sets if a user is ignored by the bot"
+}

@@ -22,19 +22,37 @@ public class Karren{
 
     public static KarrenBot bot;
     public static Logger log;
-    public static BotConfiguration conf;
+    public static BotConfiguration confOld;
+    public static JsonConfig conf;
+    public static final String botVersion = "4.0-Alpha";
+    public static final String confVersion = "1.0";
 
 	public static void main(String[] args){
         log = LoggerFactory.getLogger(Karren.class);
         //Configs
-        conf = new BotConfiguration();
+        confOld = new BotConfiguration();
         try {
-            conf.initConfig(log);
+            confOld.initConfig(log);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        System.setProperty("http.agent", "KarrenSama/" + conf.getVersionMarker());
+        //New config stuff
+        conf = new JsonConfig(confVersion);
+        conf.loadConfig();
+        if(confOld.isDoesExist()){
+            conf.importFromOldConf(confOld);
+            conf.saveConfig();
+            System.exit(0);
+        }
+        if(conf.checkUpdate(false) || !conf.isSet()){
+            Karren.log.info("Please check the configuration file at conf/bot.json and set your required settings.");
+            System.exit(0);
+        }
+
+
+
+        System.setProperty("http.agent", "KarrenSama/" + botVersion);
 
 
         //Build our discord client
@@ -48,17 +66,7 @@ public class Karren{
         //Setup the objects we need.
         bot = new KarrenBot(client);
 
-		//Try and load the JDBC MySQL Driver
-		try{
-			log.info("Karren-sama version " + conf.getVersionMarker() + " is now starting!");
-            log.debug("Trying to load MySQL Driver...");
-			Class.forName("com.mysql.jdbc.Driver");
-            log.debug("Loaded driver!");
-		} catch(ClassNotFoundException e) {
-			log.error("Error While Loading:", e);
-		}
-
-        //Fire up the watchdog, bot and the console command stuff.
+        //Pass execution to main bot class.
         bot.initDiscord();
 	}
 }

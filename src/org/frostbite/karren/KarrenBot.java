@@ -56,7 +56,6 @@ public class KarrenBot {
             ed.registerListener(new InteractionCommands());
             ed.registerListener(new KillCommand());
             ed.registerListener(new GuildCreateListener());
-            //ed.registerListener(new VoiceExitCommand());
             try {
                 client.login();
             } catch (DiscordException | RateLimitException e) {

@@ -22,6 +22,7 @@ public class InteractionProcessor {
     private ArrayList<Interaction> interactions;
     private ArrayList<Interaction> defaultInteractions = null;
     private IGuild guild; //CAN BE NULL
+    private String commandPrefix;
 
     public InteractionProcessor(IGuild guild){
         this(guild, null);
@@ -30,6 +31,7 @@ public class InteractionProcessor {
     public InteractionProcessor(IGuild guild, ArrayList<Interaction> defaultInteractions){
         this.guild = guild;
         this.defaultInteractions = defaultInteractions;
+        commandPrefix = Karren.conf.getCommandPrefix();
         loadAndUpdateDatabase();
     }
 

@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+@Deprecated
 public class BotConfiguration {
     private String sqlhost;
     private int sqlport;
@@ -39,6 +40,7 @@ public class BotConfiguration {
     private final String versionMarker = "3.2";
     private String osuAPIKey;
     private String googleAPIKey;
+    private boolean doesExist = false;
     /*
     Config Getters
      */
@@ -97,22 +99,23 @@ public class BotConfiguration {
     public String getGoogleAPIKey() {
         return googleAPIKey;
     }
+
+    public boolean isDoesExist() {
+        return doesExist;
+    }
+
     /*
-                Config Loader.
-                */
+                    Config Loader.
+                    */
     public void initConfig(Logger log) throws IOException {
         String[] testMount;
         Properties cfg = new Properties();
         File check = new File("conf/bot.prop");
+        FileInputStream things = null;
         if(check.isFile()){
-            cfg.load(new FileInputStream("conf/bot.prop"));
-        } else {
-            boolean conf = new File("conf").mkdirs();
-            if(!conf && !new File("conf").isDirectory()) {
-                log.error("CONFIGURATION FOLDER COULD NOT BE CREATED!");
-                log.error("Shutting down bot due to error.");
-                System.exit(1);
-            }
+            doesExist = true;
+            things = new FileInputStream("conf/bot.prop");
+            cfg.load(things);
         }
         sqlhost = cfg.getProperty("sqlhost", "0.0.0.0");
         sqlport = Integer.parseInt(cfg.getProperty("sqlport", "3306"));
@@ -133,43 +136,13 @@ public class BotConfiguration {
         osuAPIKey = cfg.getProperty("osuAPIKey", "");
         googleAPIKey = cfg.getProperty("googleAPIKey", "");
         listencastAnnounce = Boolean.parseBoolean(cfg.getProperty("ListencastAnnounce", "true"));
-        if(!cfg.getProperty("karrenVersion", "0").equalsIgnoreCase(versionMarker)){
-            log.warn("Updating configuration file!");
-            mkNewConfig(log);
-        }
         testMount = icecastMount.split("\\.");
         if(testMount.length>2)
             log.error("icecastMount should only have one . in it. (EX. stream.ogg)");
         else if(testMount[1].equalsIgnoreCase("mp3"))
             log.info("If you're using mp3 encoding on your stream you may have issues with Unicode characters in song metadata.");
-
-    }
-    public void mkNewConfig(Logger log) throws IOException {
-        Properties cfg = new Properties();
-        String comment = "Karren-sama IRC bot properties file.";
-        cfg.setProperty("karrenVersion", versionMarker);
-        cfg.setProperty("sqlhost", sqlhost);
-        cfg.setProperty("sqlport", Integer.toString(sqlport));
-        cfg.setProperty("sqluser", sqluser);
-        cfg.setProperty("sqlpass", sqlpass);
-        cfg.setProperty("sqldb", sqldb);
-        cfg.setProperty("icecastAdminUsername", icecastAdminUsername);
-        cfg.setProperty("icecastAdminPass", icecastAdminPass);
-        cfg.setProperty("icecastHost", icecastHost);
-        cfg.setProperty("icecastPort", Integer.toString(icecastPort));
-        cfg.setProperty("icecastMount", icecastMount);
-        cfg.setProperty("allowSQLReadWrite", Boolean.toString(allowSQLRW));
-        cfg.setProperty("enableInteractionSystem", Boolean.toString(enableInteractions));
-        cfg.setProperty("enableListencastSystem", Boolean.toString(enableListencast));
-        cfg.setProperty("commandPrefix", commandPrefix);
-        cfg.setProperty("connectToDiscord", Boolean.toString(connectToDiscord));
-        cfg.setProperty("BotAccountToken", discordToken);
-        cfg.setProperty("osuAPIKey", osuAPIKey);
-        cfg.setProperty("googleAPIKey", googleAPIKey);
-        cfg.setProperty("ListencastAnnounce", Boolean.toString(listencastAnnounce));
-        cfg.store(new FileOutputStream("conf/bot.prop"), comment);
-        log.info("Your configuration file has been generated/updated!");
-        System.exit(0);
+        if(things!=null)
+            things.close();
     }
 }
 
