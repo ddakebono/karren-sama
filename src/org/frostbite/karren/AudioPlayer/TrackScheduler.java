@@ -12,6 +12,7 @@ package org.frostbite.karren.AudioPlayer;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import org.frostbite.karren.Karren;
@@ -96,6 +97,7 @@ public class TrackScheduler extends AudioEventAdapter {
             }
         } else {
             try {
+                assert newSong != null;
                 announceChannel.sendMessage("Starting playback of \"" + newSong.getInfo().title + "\"");
             } catch (DiscordException | RateLimitException | MissingPermissionsException e){
                 e.printStackTrace();
@@ -125,6 +127,25 @@ public class TrackScheduler extends AudioEventAdapter {
             lastTrack = track;
             nextTrack(true);
         }
+
+        if(endReason == AudioTrackEndReason.STOPPED){
+            announceChannel.sendMessage("Stopped playback");
+        }
+    }
+
+    @Override
+    public void onPlayerPause(AudioPlayer player) {
+        announceChannel.sendMessage("Playback has been paused");
+    }
+
+    @Override
+    public void onPlayerResume(AudioPlayer player) {
+        announceChannel.sendMessage("Playback has been resumed!");
+    }
+
+    @Override
+    public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception){
+        announceChannel.sendMessage("Playback error: " + exception.getLocalizedMessage());
     }
 
     public boolean isPlaying(){
