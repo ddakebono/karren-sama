@@ -10,19 +10,20 @@
 
 package org.frostbite.karren.interactions;
 
+import org.frostbite.karren.Database.Models.tables.records.UserRecord;
 import org.frostbite.karren.Karren;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class InteractionProcessor {
 
     private ArrayList<Interaction> interactions;
     private ArrayList<Interaction> defaultInteractions = null;
     private IGuild guild; //CAN BE NULL
-    private String commandPrefix;
 
     public InteractionProcessor(IGuild guild){
         this(guild, null);
@@ -31,7 +32,6 @@ public class InteractionProcessor {
     public InteractionProcessor(IGuild guild, ArrayList<Interaction> defaultInteractions){
         this.guild = guild;
         this.defaultInteractions = defaultInteractions;
-        commandPrefix = Karren.conf.getCommandPrefix();
         loadAndUpdateDatabase();
     }
 
@@ -56,7 +56,7 @@ public class InteractionProcessor {
                 if(!check.isPermBad()) {
                     for (String tag : check.getTags()) {
                         if (!tag.equalsIgnoreCase("pm") && !check.isStopProcessing()) {
-                            Tag handler = Karren.bot.getInteractionManager().getHandlers().get(tag.toLowerCase());
+                            Tag handler = Karren.bot.getGuildManager().getHandlers().get(tag.toLowerCase());
                             if (handler != null && returned != null)
                                 returned = handler.handleTemplate(returned, check, result, event);
                             else if (!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && !tag.equalsIgnoreCase("feelinglucky") && returned != null)
@@ -64,7 +64,7 @@ public class InteractionProcessor {
                         }
                     }
                     if(check.interactionUsed())
-                        Karren.bot.getInteractionManager().getInteractionProcessor(event.getGuild()).getInteractions().remove(check);
+                        Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().remove(check);
                 }
                 check.setLock(false);
                 if(returned!=null)

@@ -25,15 +25,15 @@ import java.util.Optional;
 public class HelpCommand implements IListener<MessageReceivedEvent> {
     public void handle(MessageReceivedEvent event){
         IDiscordClient bot = event.getClient();
-        if(event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix() + "help")){
+        if(event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "help")){
             MessageBuilder helpMsg = new MessageBuilder(bot);
             ArrayList<MessageBuilder> messages = new ArrayList<>();
-            String moreInfo = event.getMessage().getContent().replace(Karren.conf.getCommandPrefix() + "help", "").trim();
+            String moreInfo = event.getMessage().getContent().replace(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "help", "").trim();
             if(moreInfo.length()==0) {
                 try {
                     helpMsg.withChannel(event.getAuthor().getOrCreatePMChannel());
-                    helpMsg.withContent("To view more information about a specific command enter " + Karren.conf.getCommandPrefix() + "help CommandName\n");
-                    for (Interaction help : Karren.bot.getInteractionManager().getInteractionProcessor(event.getMessage().getGuild()).getInteractions()) {
+                    helpMsg.withContent("To view more information about a specific command enter " + Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "help CommandName\n");
+                    for (Interaction help : Karren.bot.getGuildManager().getInteractionProcessor(event.getMessage().getGuild()).getInteractions()) {
                         if (KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), help.getPermissionLevel())) {
                             String helpData;
                             if (Arrays.asList(help.getTags()).contains("prefixed")) {
@@ -55,7 +55,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
                     e.printStackTrace();
                 }
             } else {
-                Optional<Interaction> interaction = Karren.bot.getInteractionManager().getInteractionProcessor(event.getMessage().getGuild()).getInteractions().stream().filter(i -> i.getIdentifier().equalsIgnoreCase(moreInfo)).findFirst();
+                Optional<Interaction> interaction = Karren.bot.getGuildManager().getInteractionProcessor(event.getMessage().getGuild()).getInteractions().stream().filter(i -> i.getIdentifier().equalsIgnoreCase(moreInfo)).findFirst();
                 if(interaction.isPresent()){
                     Interaction helpInteraction = interaction.get();
                     if(KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), helpInteraction.getPermissionLevel())) {

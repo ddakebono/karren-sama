@@ -25,7 +25,7 @@ public class DisableInteraction implements Tag {
         String parameter = interaction.getParameter();
         if(parameter!=null){
             msg = msg.replace("%interaction", parameter);
-            for(Interaction disable : Karren.bot.getInteractionManager().getInteractionProcessor(event.getGuild()).getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(parameter)).collect(Collectors.toList())){
+            for(Interaction disable : Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(parameter)).collect(Collectors.toList())){
                 disable.setEnabled(false);
             }
         } else {

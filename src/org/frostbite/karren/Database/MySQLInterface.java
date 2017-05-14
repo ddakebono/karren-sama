@@ -23,10 +23,16 @@ import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MySQLInterface {
 
     private DSLContext sqlConn;
+    //Database object cache
+    private Map<String, GuildRecord> dbGuildCache = new HashMap<>();
+    private Map<String, UserRecord> dbUserCache = new HashMap<>();
+    private Map<String, WordcountsRecord> dbWordcountCache = new HashMap<>();
 
     public MySQLInterface(){
         refreshSQLConnection();
@@ -44,9 +50,15 @@ public class MySQLInterface {
 
     public GuildRecord getGuild(IGuild guild){
         if(Karren.conf.getAllowSQLRW()){
-            refreshSQLConnection();
-            sqlConn.insertInto(Guild.GUILD).values(guild.getStringID(), guild.getOwner().getName(), guild.getName()).onDuplicateKeyIgnore().execute();
-            return sqlConn.selectFrom(Guild.GUILD).where(Guild.GUILD.GUILDID.eq(guild.getStringID())).fetchOne();
+            if(!dbGuildCache.containsKey(guild.getStringID())) {
+                refreshSQLConnection();
+                sqlConn.insertInto(Guild.GUILD).values(guild.getStringID(), guild.getOwner().getName(), guild.getName(), null).onDuplicateKeyIgnore().execute();
+                GuildRecord dbGuild = sqlConn.selectFrom(Guild.GUILD).where(Guild.GUILD.GUILDID.eq(guild.getStringID())).fetchOne();
+                dbGuildCache.put(guild.getStringID(), dbGuild);
+                return dbGuild;
+            } else {
+                return dbGuildCache.get(guild.getStringID());
+            }
         }
         return null;
     }
@@ -174,18 +186,30 @@ public class MySQLInterface {
 
     public WordcountsRecord getWordCount(String word){
         if(Karren.conf.getAllowSQLRW()) {
-            refreshSQLConnection();
-            sqlConn.insertInto(Wordcounts.WORDCOUNTS).values(null, word, 1, null).onDuplicateKeyIgnore().execute();
-            return sqlConn.selectFrom(Wordcounts.WORDCOUNTS).where(Wordcounts.WORDCOUNTS.WORD.equalIgnoreCase(word)).fetchOne();
+            if(!dbWordcountCache.containsKey(word)) {
+                refreshSQLConnection();
+                sqlConn.insertInto(Wordcounts.WORDCOUNTS).values(null, word, 1, null).onDuplicateKeyIgnore().execute();
+                WordcountsRecord dbWordcount = sqlConn.selectFrom(Wordcounts.WORDCOUNTS).where(Wordcounts.WORDCOUNTS.WORD.equalIgnoreCase(word)).fetchOne();
+                dbWordcountCache.put(word, dbWordcount);
+                return dbWordcount;
+            } else {
+                return dbWordcountCache.get(word);
+            }
         }
         return null;
     }
 
     public UserRecord getUserData(IUser user){
         if(Karren.conf.getAllowSQLRW()) {
-            refreshSQLConnection();
-            sqlConn.insertInto(User.USER).values(user.getStringID(), null, user.getName(), null, 0, null).onDuplicateKeyIgnore().execute();
-            return sqlConn.selectFrom(User.USER).where(User.USER.USERID.equalIgnoreCase(user.getStringID())).fetchOne();
+            if(!dbUserCache.containsKey(user.getStringID())) {
+                refreshSQLConnection();
+                sqlConn.insertInto(User.USER).values(user.getStringID(), null, user.getName(), null, 0, null, 0).onDuplicateKeyIgnore().execute();
+                UserRecord dbUser = sqlConn.selectFrom(User.USER).where(User.USER.USERID.equalIgnoreCase(user.getStringID())).fetchOne();
+                dbUserCache.put(user.getStringID(), dbUser);
+                return dbUser;
+            } else {
+                return dbUserCache.get(user.getStringID());
+            }
         }
         return null;
     }

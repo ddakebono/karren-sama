@@ -24,7 +24,7 @@ public class EnableInteraction implements Tag {
         String parameter = interaction.getParameter();
         if(parameter!=null){
             msg = msg.replace("%interaction", parameter);
-            for(Interaction enable : Karren.bot.getInteractionManager().getInteractionProcessor(event.getGuild()).getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(parameter)).collect(Collectors.toList())){
+            for(Interaction enable : Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(parameter)).collect(Collectors.toList())){
                 enable.setEnabled(true);
             }
         } else {

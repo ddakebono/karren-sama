@@ -20,6 +20,6 @@ public class GuildCreateListener implements IListener<GuildCreateEvent> {
     public void handle(GuildCreateEvent guildCreateEvent) {
         GuildMusicManager gm = Karren.bot.createGuildMusicManager(guildCreateEvent.getGuild());
         guildCreateEvent.getGuild().getAudioManager().setAudioProvider(gm.getAudioProvider());
-        Karren.log.info("Created GuildMusicManager for guild " + guildCreateEvent.getGuild().getName());
+        Karren.log.info("Guild " + guildCreateEvent.getGuild().getName() + " has been registered with the database, and a GuildMusicManager has been spawned.");
     }
 }

@@ -1,7 +1,6 @@
 {
   "enabled": true,
   "confidence": 1,
-  "permissionLevel": "Admins",
   "templates": [
     "Alright..."
   ],

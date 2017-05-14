@@ -84,16 +84,15 @@ public class Interaction {
             try {
                 if (enabled) {
                     if (isAllowedUser(event.getAuthor())) {
-                        //if (!Arrays.asList(tags).contains("bot") || (event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getNicknameForGuild(event.getGuild())) || event.getMessage().getContent().toLowerCase().contains(Karren.bot.getClient().getOurUser().getName()))))
-                        if (event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && Arrays.asList(tags).contains("prefixed")) {
+                        if (event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild())) && Arrays.asList(tags).contains("prefixed")) {
                             //Get only word follow prefix
                             Pattern prefixedPattern = Pattern.compile("\\s+");
-                            String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.conf.getCommandPrefix(), ""));
+                            String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()), ""));
                             if (regex.length > 0) {
                                 confidenceChecked = getConfidence(regex[0], true, event.getGuild());
                             }
                         }
-                        if (!event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix()) && !Arrays.asList(tags).contains("prefixed")) {
+                        if (!event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild())) && !Arrays.asList(tags).contains("prefixed")) {
                             confidenceChecked = getConfidence(event.getMessage().getContent(), false, event.getGuild());
                         }
                         if (confidenceChecked >= this.confidence)

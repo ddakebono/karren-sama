@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "confidence": 1,
-  "permissionLevel": "Admins",
+  "permissionLevel": "bot-manager",
   "templates": [
     "Interaction %interaction has been disabled."
   ],

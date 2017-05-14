@@ -25,8 +25,8 @@ public class Parameter implements Tag {
         String message = event.getMessage().getContent();
         if(interaction.getTriggers()!=null) {
             for (String trigger : interaction.getTriggers()) {
-                if (event.getMessage().getContent().startsWith(Karren.conf.getCommandPrefix() + trigger)) {
-                    message = message.replace(Karren.conf.getCommandPrefix() + trigger, "").trim();
+                if (event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + trigger)) {
+                    message = message.replace(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + trigger, "").trim();
                     break;
                 }
             }

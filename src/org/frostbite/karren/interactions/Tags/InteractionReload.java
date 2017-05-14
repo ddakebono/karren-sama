@@ -20,7 +20,7 @@ public class InteractionReload implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         Karren.log.info("Interaction system reload triggered by " + event.getMessage().getAuthor().getName());
-        Karren.bot.getInteractionManager().loadDefaultInteractions();
+        Karren.bot.getGuildManager().loadDefaultInteractions();
         return msg;
     }
 }

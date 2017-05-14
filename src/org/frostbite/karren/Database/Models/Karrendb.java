@@ -34,6 +34,7 @@ import org.frostbite.karren.Database.Models.tables.Interactionvoicefile;
 import org.frostbite.karren.Database.Models.tables.Songdb;
 import org.frostbite.karren.Database.Models.tables.User;
 import org.frostbite.karren.Database.Models.tables.Wordcounts;
+import org.frostbite.karren.Karren;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
@@ -62,7 +63,7 @@ public class Karrendb extends SchemaImpl {
 	 * No further instances allowed
 	 */
 	private Karrendb() {
-		super("KarrenDB");
+		super(Karren.conf.getSqldb());
 	}
 
 	@Override

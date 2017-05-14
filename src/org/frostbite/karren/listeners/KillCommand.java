@@ -21,7 +21,7 @@ import sx.blah.discord.util.RateLimitException;
 public class KillCommand implements IListener<MessageReceivedEvent> {
 	public void handle(MessageReceivedEvent event){
 		String message = event.getMessage().getContent();
-        String cmd = Karren.conf.getCommandPrefix() + "kill";
+        String cmd = Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "kill";
         if(message.toLowerCase().startsWith(cmd)) {
             if (KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), "Admins")) {
                 Karren.bot.killBot(event.getMessage().getAuthor().getName());

@@ -3,21 +3,21 @@
   "confidence": 1,
   "permissionLevel": "bot-manager",
   "templates": [
-    "Command block has been %setting for %user"
+    "Command prefix has been set to %prefix"
   ],
   "templatesFail": [
-    "You can't set yourself to be ignored!"
+    "You need to give me a new command prefix!"
   ],
   "templatesPermError": [
     "You don't have permission to change this... (Not admin)"
   ],
   "tags": [
     "prefixed",
-    "mentioned",
-    "setfilter"
+    "parameter",
+    "setprefix"
   ],
   "triggers": [
-    "filter"
+    "prefix"
   ],
-  "helptext": "Sets if a user is ignored by the bot"
+  "helptext": "Sets command prefix for a guild"
 }

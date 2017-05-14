@@ -61,6 +61,7 @@ public class KarrenBot {
             } catch (DiscordException | RateLimitException e) {
                 e.printStackTrace();
             }
+            initExtras();
         } else {
             Karren.log.info("Running in test mode, not connected to Discord.");
             initExtras();
@@ -115,7 +116,7 @@ public class KarrenBot {
         return sql;
     }
 
-    public GuildManager getInteractionManager() {return ic;}
+    public GuildManager getGuildManager() {return ic;}
 
     public IDiscordClient getClient(){
         return client;
