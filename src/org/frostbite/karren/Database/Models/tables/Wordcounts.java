@@ -71,11 +71,6 @@ public class Wordcounts extends TableImpl<WordcountsRecord> {
 	public final TableField<WordcountsRecord, Timestamp> COUNTSTARTED = createField("CountStarted", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>KarrenDB.WordCounts.GuildID</code>.
-	 */
-	public final TableField<WordcountsRecord, String> GUILDID = createField("GuildID", org.jooq.impl.SQLDataType.VARCHAR.length(25).nullable(false), this, "");
-
-	/**
 	 * Create a <code>KarrenDB.WordCounts</code> table reference
 	 */
 	public Wordcounts() {
