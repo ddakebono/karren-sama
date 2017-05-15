@@ -175,6 +175,6 @@ public class Keys {
 		public static final ForeignKey<InteractiontagHasInteractionRecord, InteractionRecord> FK_INTERACTIONTAG_HAS_INTERACTION_INTERACTION1 = createForeignKey(Keys.KEY_INTERACTION_PRIMARY, InteractiontagHasInteraction.INTERACTIONTAG_HAS_INTERACTION, InteractiontagHasInteraction.INTERACTIONTAG_HAS_INTERACTION.INTERACTIONID);
 		public static final ForeignKey<InteractiontriggersRecord, InteractionRecord> FK_INTERACTIONTRIGGERS_INTERACTION1 = createForeignKey(Keys.KEY_INTERACTION_PRIMARY, Interactiontriggers.INTERACTIONTRIGGERS, Interactiontriggers.INTERACTIONTRIGGERS.INTERACTIONID);
 		public static final ForeignKey<InteractionvoicefileRecord, InteractionRecord> FK_INTERACTIONVOICEFILE_INTERACTION1 = createForeignKey(Keys.KEY_INTERACTION_PRIMARY, Interactionvoicefile.INTERACTIONVOICEFILE, Interactionvoicefile.INTERACTIONVOICEFILE.INTERACTIONID);
-		public static final ForeignKey<WordcountsRecord, GuildRecord> FK_WORDCOUNTS_GUILD1 = createForeignKey(Keys.KEY_GUILD_PRIMARY, Wordcounts.WORDCOUNTS, Wordcounts.WORDCOUNTS.GUILDID);
+		public static final ForeignKey<WordcountsRecord, GuildRecord> FK_WORDCOUNTS_GUILD1 = createForeignKey(Keys.KEY_GUILD_PRIMARY, Wordcounts.WORDCOUNTS);
 	}
 }
