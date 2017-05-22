@@ -12,6 +12,8 @@ package org.frostbite.karren.interactions.Tags;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -29,8 +31,13 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.text.DecimalFormat;
+import java.util.Arrays;
 
 public class OverwatchUAPIProfile implements Tag {
+
+    final String[] heroes = {"reinhardt", "tracer", "zenyatta", "junkrat", "mccree", "winston", "orisa", "hanzo", "pharah", "roadhog", "zarya", "torbjorn", "mercy", "soldier76", "ana", "widowmaker", "genji", "reaper", "mei", "bastion", "symmetra", "dva", "sombra", "lucio"};
+    DecimalFormat df =new DecimalFormat("#.##");
 
     final TrustManager[] trustAllCertificates = new TrustManager[] {
             new X509TrustManager() {
@@ -67,25 +74,20 @@ public class OverwatchUAPIProfile implements Tag {
                 throw new IOException();
             int wins = 0;
             JsonObject quickplay = profile.getAsJsonObject("stats").getAsJsonObject("quickplay");
-            JsonObject competitive = profile.getAsJsonObject("stats").getAsJsonObject("competitive");
             JsonObject playtime = profile.getAsJsonObject("heroes").getAsJsonObject("playtime");
             msg = msg.replace("%username", parameter);
             msg = msg.replace("%level", Integer.toString(quickplay.getAsJsonObject("overall_stats").get("level").getAsInt() + (quickplay.getAsJsonObject("overall_stats").get("prestige").getAsInt()*100)));
-            if(quickplay.getAsJsonObject("overall_stats").get("wins")!=null)
-                wins+=quickplay.getAsJsonObject("overall_stats").get("wins").getAsInt();
-            if(competitive.getAsJsonObject("overall_stats").get("wins")!=null)
-                wins+=competitive.getAsJsonObject("overall_stats").get("wins").getAsInt();
-            msg = msg.replace("%gameswon", String.valueOf(wins));
-            if(quickplay.has("played") && competitive.has("played"))
-                msg = msg.replace("%winrate", String.valueOf((wins / (quickplay.getAsJsonObject("overall_stats").get("games").getAsFloat() + competitive.getAsJsonObject("overall_stats").get("games").getAsFloat()))*100));
-            else
-                msg = msg.replace("%winrate", "Unknown");
-            //msg = msg.replace("%playtime-quick", playtime.get("quick").getAsString());
-            //msg = msg.replace("%playtime-comp", playtime.get("competitive").getAsString());
-            /*if(!competitiveInfo.get("rank").isJsonNull())
-                msg = msg.replace("%rank", competitiveInfo.get("rank").getAsString());
-            else
-                msg = msg.replace("%rank", "0");*/
+            msg = msg.replace("%winrate", quickplay.getAsJsonObject("overall_stats").get("win_rate").getAsString());
+            msg = msg.replace("%gameswon", String.valueOf(quickplay.getAsJsonObject("overall_stats").get("games").getAsInt()-quickplay.getAsJsonObject("overall_stats").get("losses").getAsInt()));
+            double timeRanked = 0.0;
+            double timeQuick = 0.0;
+            for(String hero : heroes)
+                timeRanked += playtime.getAsJsonObject("competitive").get(hero).getAsDouble();
+            for(String hero : heroes)
+                timeQuick += playtime.getAsJsonObject("quickplay").get(hero).getAsDouble();
+            msg = msg.replace("%playtime-quick", df.format(timeQuick));
+            msg = msg.replace("%playtime-comp", df.format(timeRanked));
+            msg = msg.replace("%rank", quickplay.getAsJsonObject("overall_stats").get("comprank").getAsString());
         } catch (IOException e) {
             msg = interaction.getRandomTemplatesFail();
         } catch (NoSuchAlgorithmException | KeyManagementException e) {

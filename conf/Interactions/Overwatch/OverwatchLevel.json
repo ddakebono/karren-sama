@@ -2,7 +2,7 @@
   "enabled": true,
   "confidence": 1,
   "templates": [
-    "**%username** is **level %level** with **%playtime-quick** logged in quickplay and **%playtime-comp** in competitive."
+    "**%username** is **level %level** with **%playtime-quick hours** logged in quickplay and **%playtime-comp hours** in competitive."
   ],
   "templatesFail": [
     "I couldn't find anyone with that ID."
