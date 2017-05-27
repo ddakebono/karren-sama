@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Interactiontag extends TableImpl<InteractiontagRecord> {
 
-	private static final long serialVersionUID = -1316111297;
+	private static final long serialVersionUID = 1967769531;
 
 	/**
 	 * The reference instance of <code>KarrenDB.InteractionTag</code>

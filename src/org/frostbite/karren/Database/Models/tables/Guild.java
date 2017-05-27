@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Guild extends TableImpl<GuildRecord> {
 
-	private static final long serialVersionUID = -1640298498;
+	private static final long serialVersionUID = -644607496;
 
 	/**
 	 * The reference instance of <code>KarrenDB.Guild</code>
@@ -66,6 +66,11 @@ public class Guild extends TableImpl<GuildRecord> {
 	 * The column <code>KarrenDB.Guild.CommandPrefix</code>.
 	 */
 	public final TableField<GuildRecord, String> COMMANDPREFIX = createField("CommandPrefix", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "");
+
+	/**
+	 * The column <code>KarrenDB.Guild.RollDifficulty</code>.
+	 */
+	public final TableField<GuildRecord, Integer> ROLLDIFFICULTY = createField("RollDifficulty", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
 	 * Create a <code>KarrenDB.Guild</code> table reference

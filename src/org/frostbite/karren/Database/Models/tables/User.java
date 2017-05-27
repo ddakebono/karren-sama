@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-	private static final long serialVersionUID = -661746356;
+	private static final long serialVersionUID = -1605983247;
 
 	/**
 	 * The reference instance of <code>KarrenDB.User</code>
@@ -82,6 +82,11 @@ public class User extends TableImpl<UserRecord> {
 	 * The column <code>KarrenDB.User.IgnoreCommands</code>.
 	 */
 	public final TableField<UserRecord, Byte> IGNORECOMMANDS = createField("IgnoreCommands", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "");
+
+	/**
+	 * The column <code>KarrenDB.User.RoleTimeout</code>.
+	 */
+	public final TableField<UserRecord, Timestamp> ROLETIMEOUT = createField("RoleTimeout", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
 
 	/**
 	 * Create a <code>KarrenDB.User</code> table reference

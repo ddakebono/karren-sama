@@ -14,7 +14,6 @@ import org.frostbite.karren.Database.Models.Karrendb;
 import org.frostbite.karren.Database.Models.Keys;
 import org.frostbite.karren.Database.Models.tables.records.WordcountsRecord;
 import org.jooq.Field;
-import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Wordcounts extends TableImpl<WordcountsRecord> {
 
-	private static final long serialVersionUID = -885521043;
+	private static final long serialVersionUID = 1347996619;
 
 	/**
 	 * The reference instance of <code>KarrenDB.WordCounts</code>
@@ -114,14 +113,6 @@ public class Wordcounts extends TableImpl<WordcountsRecord> {
 	@Override
 	public List<UniqueKey<WordcountsRecord>> getKeys() {
 		return Arrays.<UniqueKey<WordcountsRecord>>asList(Keys.KEY_WORDCOUNTS_PRIMARY, Keys.KEY_WORDCOUNTS_WORD);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<ForeignKey<WordcountsRecord, ?>> getReferences() {
-		return Arrays.<ForeignKey<WordcountsRecord, ?>>asList(Keys.FK_WORDCOUNTS_GUILD1);
 	}
 
 	/**

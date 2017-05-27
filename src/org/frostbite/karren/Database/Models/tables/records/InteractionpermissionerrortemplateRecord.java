@@ -26,7 +26,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InteractionpermissionerrortemplateRecord extends UpdatableRecordImpl<InteractionpermissionerrortemplateRecord> implements Record3<Integer, Integer, Integer> {
 
-	private static final long serialVersionUID = 922864420;
+	private static final long serialVersionUID = 799325800;
 
 	/**
 	 * Setter for <code>KarrenDB.InteractionPermissionErrorTemplate.PermErrorID</code>.

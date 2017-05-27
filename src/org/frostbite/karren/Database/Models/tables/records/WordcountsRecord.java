@@ -9,7 +9,10 @@ import java.sql.Timestamp;
 import javax.annotation.Generated;
 
 import org.frostbite.karren.Database.Models.tables.Wordcounts;
-import org.jooq.*;
+import org.jooq.Field;
+import org.jooq.Record1;
+import org.jooq.Record4;
+import org.jooq.Row4;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -26,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordcountsRecord extends UpdatableRecordImpl<WordcountsRecord> implements Record4<Integer, String, Long, Timestamp> {
 
-	private static final long serialVersionUID = 1627998658;
+	private static final long serialVersionUID = 599399094;
 
 	/**
 	 * Setter for <code>KarrenDB.WordCounts.WordID</code>.
@@ -97,7 +100,7 @@ public class WordcountsRecord extends UpdatableRecordImpl<WordcountsRecord> impl
 	}
 
 	// -------------------------------------------------------------------------
-	// Record5 type implementation
+	// Record4 type implementation
 	// -------------------------------------------------------------------------
 
 	/**

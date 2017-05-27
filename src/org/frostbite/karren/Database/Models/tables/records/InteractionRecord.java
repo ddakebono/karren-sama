@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InteractionRecord extends UpdatableRecordImpl<InteractionRecord> implements Record11<Integer, String, String, Integer, String, String, String, Double, Byte, Byte, String> {
 
-	private static final long serialVersionUID = -1418402057;
+	private static final long serialVersionUID = -83459269;
 
 	/**
 	 * Setter for <code>KarrenDB.Interaction.InteractionID</code>.

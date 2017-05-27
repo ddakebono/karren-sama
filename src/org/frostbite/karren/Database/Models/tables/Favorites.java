@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Favorites extends TableImpl<FavoritesRecord> {
 
-	private static final long serialVersionUID = 537033646;
+	private static final long serialVersionUID = 1795391154;
 
 	/**
 	 * The reference instance of <code>KarrenDB.Favorites</code>

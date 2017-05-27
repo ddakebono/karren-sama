@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Interactionvoicefile extends TableImpl<InteractionvoicefileRecord> {
 
-	private static final long serialVersionUID = -757522562;
+	private static final long serialVersionUID = -558484862;
 
 	/**
 	 * The reference instance of <code>KarrenDB.InteractionVoiceFile</code>

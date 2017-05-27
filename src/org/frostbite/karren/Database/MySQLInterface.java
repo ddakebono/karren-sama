@@ -52,7 +52,7 @@ public class MySQLInterface {
         if(Karren.conf.getAllowSQLRW()){
             if(!dbGuildCache.containsKey(guild.getStringID())) {
                 refreshSQLConnection();
-                sqlConn.insertInto(Guild.GUILD).values(guild.getStringID(), guild.getOwner().getName(), guild.getName(), null).onDuplicateKeyIgnore().execute();
+                sqlConn.insertInto(Guild.GUILD).values(guild.getStringID(), guild.getOwner().getName(), guild.getName(), null, null).onDuplicateKeyIgnore().execute();
                 GuildRecord dbGuild = sqlConn.selectFrom(Guild.GUILD).where(Guild.GUILD.GUILDID.eq(guild.getStringID())).fetchOne();
                 dbGuildCache.put(guild.getStringID(), dbGuild);
                 return dbGuild;
@@ -203,7 +203,7 @@ public class MySQLInterface {
         if(Karren.conf.getAllowSQLRW()) {
             if(!dbUserCache.containsKey(user.getStringID())) {
                 refreshSQLConnection();
-                sqlConn.insertInto(User.USER).values(user.getStringID(), null, user.getName(), null, 0, null, 0).onDuplicateKeyIgnore().execute();
+                sqlConn.insertInto(User.USER).values(user.getStringID(), null, user.getName(), null, 0, null, 0, null).onDuplicateKeyIgnore().execute();
                 UserRecord dbUser = sqlConn.selectFrom(User.USER).where(User.USER.USERID.equalIgnoreCase(user.getStringID())).fetchOne();
                 dbUserCache.put(user.getStringID(), dbUser);
                 return dbUser;

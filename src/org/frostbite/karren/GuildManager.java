@@ -87,6 +87,7 @@ public class GuildManager {
         handlers.put("irplay", new Playback());
         handlers.put("setfilter", new SetFilter());
         handlers.put("setprefix", new SetPrefix());
+        handlers.put("roleroll", new RoleRoll());
     }
 
     public void loadDefaultInteractions(){

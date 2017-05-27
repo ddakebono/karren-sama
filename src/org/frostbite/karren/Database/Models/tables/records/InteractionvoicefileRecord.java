@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InteractionvoicefileRecord extends UpdatableRecordImpl<InteractionvoicefileRecord> implements Record3<Integer, String, Integer> {
 
-	private static final long serialVersionUID = 468594983;
+	private static final long serialVersionUID = 185665123;
 
 	/**
 	 * Setter for <code>KarrenDB.InteractionVoiceFile.VoiceFileID</code>.

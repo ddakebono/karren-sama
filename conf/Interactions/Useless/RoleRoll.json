@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "templates": [
+    "Congrats! You've cleared the DC and have acquired the role **%rngrole** enjoy!"
+  ],
+  "templatesFail": [
+    "Looks like you didn't clear the DC, better luck next time.",
+    "Better luck next time."
+  ],
+  "templatesPermError": [
+    "You still need to wait before you can roll again!"
+  ],
+  "tags": [
+    "prefixed",
+    "roleroll"
+  ],
+  "triggers": [
+    "roll",
+    "lotto",
+    "gibcolor"
+  ],
+  "helptext": "Try and roll for a coloured role"
+}

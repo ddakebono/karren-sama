@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Interactiontriggers extends TableImpl<InteractiontriggersRecord> {
 
-	private static final long serialVersionUID = -1949683033;
+	private static final long serialVersionUID = 1864909739;
 
 	/**
 	 * The reference instance of <code>KarrenDB.InteractionTriggers</code>

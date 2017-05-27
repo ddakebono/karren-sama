@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FavoritesRecord extends UpdatableRecordImpl<FavoritesRecord> implements Record3<Integer, Integer, Long> {
 
-	private static final long serialVersionUID = 419547727;
+	private static final long serialVersionUID = -368101237;
 
 	/**
 	 * Setter for <code>KarrenDB.Favorites.FaveID</code>.

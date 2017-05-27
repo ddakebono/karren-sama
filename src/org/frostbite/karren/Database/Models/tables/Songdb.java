@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Songdb extends TableImpl<SongdbRecord> {
 
-	private static final long serialVersionUID = -1678099446;
+	private static final long serialVersionUID = 711998086;
 
 	/**
 	 * The reference instance of <code>KarrenDB.songdb</code>

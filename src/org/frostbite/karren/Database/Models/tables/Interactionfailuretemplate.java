@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Interactionfailuretemplate extends TableImpl<InteractionfailuretemplateRecord> {
 
-	private static final long serialVersionUID = 1670053491;
+	private static final long serialVersionUID = -871276681;
 
 	/**
 	 * The reference instance of <code>KarrenDB.InteractionFailureTemplate</code>

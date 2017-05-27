@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SongdbRecord extends UpdatableRecordImpl<SongdbRecord> implements Record7<Integer, String, Long, Integer, Integer, Long, Byte> {
 
-	private static final long serialVersionUID = 949294023;
+	private static final long serialVersionUID = 220997891;
 
 	/**
 	 * Setter for <code>KarrenDB.songdb.ID</code>.
