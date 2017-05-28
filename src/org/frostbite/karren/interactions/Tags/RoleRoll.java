@@ -19,6 +19,7 @@ import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Random;
 
@@ -46,7 +47,10 @@ public class RoleRoll implements Tag {
             dbUser.update();
         } else {
             msg = interaction.getRandomTemplatesPermError();
+
         }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM @ HH:mm");
+        msg = msg.replace("%timeremaining", dateFormat.format(dbUser.getRoletimeout()));
         return msg;
     }
 }
