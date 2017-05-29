@@ -41,7 +41,7 @@ public class MySQLInterface {
     private void refreshSQLConnection(){
         if(Karren.conf.getAllowSQLRW()) {
             try {
-                this.sqlConn = DSL.using(DriverManager.getConnection("jdbc:mysql://" + Karren.conf.getSqlhost() + ":" + Karren.conf.getSqlport() + "/" + Karren.conf.getSqldb() + "?useUnicode=true&characterEncoding=UTF-8", Karren.conf.getSqluser(), Karren.conf.getSqlpass()), SQLDialect.MARIADB);
+                this.sqlConn = DSL.using(DriverManager.getConnection("jdbc:mysql://" + Karren.conf.getSqlhost() + ":" + Karren.conf.getSqlport() + "/" + Karren.conf.getSqldb() + "?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10", Karren.conf.getSqluser(), Karren.conf.getSqlpass()), SQLDialect.MARIADB);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -57,6 +57,7 @@ public class MySQLInterface {
                 dbGuildCache.put(guild.getStringID(), dbGuild);
                 return dbGuild;
             } else {
+                refreshSQLConnection();
                 return dbGuildCache.get(guild.getStringID());
             }
         }
@@ -193,6 +194,7 @@ public class MySQLInterface {
                 dbWordcountCache.put(word, dbWordcount);
                 return dbWordcount;
             } else {
+                refreshSQLConnection();
                 return dbWordcountCache.get(word);
             }
         }
@@ -208,6 +210,7 @@ public class MySQLInterface {
                 dbUserCache.put(user.getStringID(), dbUser);
                 return dbUser;
             } else {
+                refreshSQLConnection();
                 return dbUserCache.get(user.getStringID());
             }
         }
