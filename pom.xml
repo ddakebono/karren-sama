@@ -110,15 +110,15 @@
             <version>1.2.36</version>
         </dependency>
         <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq</artifactId>
-            <version>3.7.3</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.6.2</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.knowm</groupId>
+            <artifactId>yank</artifactId>
+            <version>3.3.0</version>
         </dependency>
     </dependencies>
 

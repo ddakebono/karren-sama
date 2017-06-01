@@ -11,47 +11,25 @@
 package org.frostbite.karren.Database;
 
 import org.frostbite.karren.Database.Models.tables.*;
-import org.frostbite.karren.Database.Models.tables.Interaction;
 import org.frostbite.karren.Database.Models.tables.records.*;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.listencast.Song;
-import org.jooq.DSLContext;
-import org.jooq.Result;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MySQLInterface {
 
-    private DSLContext sqlConn;
     //Database object cache
     private Map<String, GuildRecord> dbGuildCache = new HashMap<>();
     private Map<String, UserRecord> dbUserCache = new HashMap<>();
     private Map<String, WordcountsRecord> dbWordcountCache = new HashMap<>();
 
-    public MySQLInterface(){
-        refreshSQLConnection();
-    }
-
-    private void refreshSQLConnection(){
-        if(Karren.conf.getAllowSQLRW()) {
-            try {
-                this.sqlConn = DSL.using(DriverManager.getConnection("jdbc:mysql://" + Karren.conf.getSqlhost() + ":" + Karren.conf.getSqlport() + "/" + Karren.conf.getSqldb() + "?useUnicode=true&characterEncoding=UTF-8", Karren.conf.getSqluser(), Karren.conf.getSqlpass()), SQLDialect.MARIADB);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public GuildRecord getGuild(IGuild guild){
         if(Karren.conf.getAllowSQLRW()){
             if(!dbGuildCache.containsKey(guild.getStringID())) {
-                refreshSQLConnection();
                 sqlConn.insertInto(Guild.GUILD).values(guild.getStringID(), guild.getOwner().getName(), guild.getName(), null, null).onDuplicateKeyIgnore().execute();
                 GuildRecord dbGuild = sqlConn.selectFrom(Guild.GUILD).where(Guild.GUILD.GUILDID.eq(guild.getStringID())).fetchOne();
                 dbGuildCache.put(guild.getStringID(), dbGuild);

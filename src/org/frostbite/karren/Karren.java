@@ -10,6 +10,7 @@
 
 package org.frostbite.karren;
 
+import org.knowm.yank.Yank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.ClientBuilder;
@@ -17,6 +18,7 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
 
 import java.io.IOException;
+import java.util.Properties;
 
 public class Karren{
 
@@ -49,6 +51,8 @@ public class Karren{
             Karren.log.info("Please check the configuration file at conf/bot.json and set your required settings.");
             System.exit(0);
         }
+
+        //New Database stuff
 
 
 
