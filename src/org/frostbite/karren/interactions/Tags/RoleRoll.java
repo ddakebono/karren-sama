@@ -28,30 +28,33 @@ public class RoleRoll implements Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor());
-        if(dbGuildUser.getRollTimeout()==null || new Timestamp(System.currentTimeMillis()).after(dbGuildUser.getRollTimeout())) {
-            java.util.Random rng = new Random();
-            int roll = rng.nextInt(100);
-            if (roll >= (Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty()>=0 ? Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() : 95)) {
-                List<IRole> rollRoles = new LinkedList<>();
-                for (IRole role : event.getGuild().getRoles())
-                    if (role.getName().contains("lotto-"))
-                        rollRoles.add(role);
-                IRole rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
-                event.getAuthor().addRole(rngRole);
-                msg = msg.replace("%rngrole", rngRole.getName());
-                dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 604800000));
+        if(!event.getMessage().getChannel().isPrivate()) {
+            DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor());
+            if (dbGuildUser.getRollTimeout() == null || new Timestamp(System.currentTimeMillis()).after(dbGuildUser.getRollTimeout())) {
+                java.util.Random rng = new Random();
+                int roll = rng.nextInt(100);
+                if (roll >= (Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() >= 0 ? Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() : 95)) {
+                    List<IRole> rollRoles = new LinkedList<>();
+                    for (IRole role : event.getGuild().getRoles())
+                        if (role.getName().contains("lotto-"))
+                            rollRoles.add(role);
+                    IRole rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
+                    event.getAuthor().addRole(rngRole);
+                    msg = msg.replace("%rngrole", rngRole.getName());
+                    dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 604800000));
+                } else {
+                    dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 21600000));
+                    msg = interaction.getRandomTemplatesFail();
+                }
+                dbGuildUser.update();
             } else {
-                dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 21600000));
-                msg = interaction.getRandomTemplatesFail();
-            }
-            dbGuildUser.update();
-        } else {
-            msg = interaction.getRandomTemplatesPermError();
+                msg = interaction.getRandomTemplatesPermError();
 
+            }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM @ HH:mm");
+            msg = msg.replace("%timeremaining", dateFormat.format(dbGuildUser.getRollTimeout()));
+            return msg;
         }
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM @ HH:mm");
-        msg = msg.replace("%timeremaining", dateFormat.format(dbGuildUser.getRollTimeout()));
-        return msg;
+        return "This cannot be used in a private message!";
     }
 }
