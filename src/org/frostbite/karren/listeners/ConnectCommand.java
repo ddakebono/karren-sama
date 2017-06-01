@@ -31,5 +31,7 @@ public class ConnectCommand implements IListener<ReadyEvent>{
         dbSettings.setProperty("password", Karren.conf.getSqlpass());
 
         Yank.setupDefaultConnectionPool(dbSettings);
+
+        event.getClient().online("KarrenSama Ver." + Karren.botVersion);
     }
 }
