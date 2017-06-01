@@ -16,7 +16,6 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.InstantReplay.InstantReplayManager;
-import org.frostbite.karren.listencast.ListenCast;
 import org.frostbite.karren.listeners.*;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.IDiscordClient;
@@ -30,7 +29,6 @@ import java.util.Map;
 public class KarrenBot {
     private IDiscordClient client;
     private MySQLInterface sql = new MySQLInterface();
-    private ListenCast lc;
     private boolean extrasReady = false;
     private GuildManager ic;
     private boolean isKill = false;
@@ -66,7 +64,6 @@ public class KarrenBot {
         } else {
             Karren.log.info("Running in test mode, not connected to Discord.");
             initExtras();
-            startThreads();
         }
     }
 
@@ -75,25 +72,13 @@ public class KarrenBot {
             ic = new GuildManager();
             ic.loadTags();
             ic.loadDefaultInteractions();
-            lc = new ListenCast(client);
             irm = new InstantReplayManager();
             extrasReady = true;
         }
     }
 
-    public boolean startThreads(){
-        if(extrasReady) {
-            if(!lc.isAlive())
-                lc.start();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public void killBot(String killer){
         isKill = true;
-        lc.kill();
         if(client.isReady()) {
             try {
                 client.logout();
@@ -125,10 +110,6 @@ public class KarrenBot {
 
     public void setClient(IDiscordClient client) {
         this.client = client;
-    }
-
-    public ListenCast getListenCast(){
-        return lc;
     }
 
     public boolean isExtrasReady() {

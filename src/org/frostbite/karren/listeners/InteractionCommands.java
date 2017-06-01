@@ -23,7 +23,7 @@ public class InteractionCommands implements IListener<MessageReceivedEvent> {
             MessageBuilder response;
             InteractionProcessor ip = Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild());
             if(ip!=null) {
-                if(Karren.bot.getSql().getUserData(event.getAuthor()).getIgnorecommands()!=1) {
+                if(!Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor()).isIgnoreCommands()) {
                     response = ip.handle(event);
                     if (response != null) {
                         try {

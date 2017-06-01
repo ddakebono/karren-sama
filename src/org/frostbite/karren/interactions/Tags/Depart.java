@@ -10,7 +10,7 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import org.frostbite.karren.Database.Models.tables.records.UserRecord;
+import org.frostbite.karren.Database.Objects.DbUser;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
@@ -28,13 +28,13 @@ public class Depart implements Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        UserRecord user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor());
-        if(user.getTimeleft()!=null){
+        DbUser user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor());
+        if(user.getTimeLeft()!=null){
             msg = interaction.getRandomTemplatesFail();
         } else {
             departedUsers.put(event.getMessage().getAuthor(), true);
         }
-        user.setTimeleft(new Timestamp(new Date().getTime()));
+        user.setTimeLeft(new Timestamp(new Date().getTime()));
         user.update();
         return msg;
     }

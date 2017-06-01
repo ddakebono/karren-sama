@@ -13,7 +13,6 @@ package org.frostbite.karren;
 
 import com.google.gson.Gson;
 import org.apache.commons.io.FilenameUtils;
-import org.frostbite.karren.Database.Models.tables.records.GuildRecord;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.InteractionProcessor;
 import org.frostbite.karren.interactions.Tag;
@@ -45,17 +44,12 @@ public class GuildManager {
     public void loadTags(){
         handlers = new HashMap<>();
         handlers.put("depart", new Depart());
-        handlers.put("dj", new DJ());
         handlers.put("echo", new Echo());
-        handlers.put("fave", new Fave());
         handlers.put("interactionreload", new InteractionReload());
         handlers.put("name", new Name());
-        handlers.put("nowplayingtoggle", new NowPlayingToggle());
         handlers.put("pm", new PM());
         handlers.put("random", new Random());
         handlers.put("return", new Return());
-        handlers.put("song", new Song());
-        handlers.put("songtime", new SongTime());
         handlers.put("version", new Version());
         handlers.put("overridechannel", new OverrideChannel());
         handlers.put("parameter", new Parameter());
@@ -131,7 +125,7 @@ public class GuildManager {
 
     public String getCommandPrefix(IGuild guild){
         if(guild!=null){
-            String prefix = Karren.bot.getSql().getGuild(guild).getCommandprefix();
+            String prefix = Karren.bot.getSql().getGuild(guild).getCommandPrefix();
             if(prefix!=null && prefix.trim().length()>0)
                 return prefix;
         }

@@ -10,7 +10,7 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import org.frostbite.karren.Database.Models.tables.records.UserRecord;
+import org.frostbite.karren.Database.Objects.DbUser;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
@@ -26,12 +26,12 @@ public class Return implements Tag {
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         HashMap<IUser, Boolean> departedUsers = ((Depart)Karren.bot.getGuildManager().getHandlers().get("depart")).departedUsers;
         if(departedUsers.getOrDefault(event.getMessage().getAuthor(), true) || !interaction.isSpecialInteraction()) {
-            UserRecord user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor());
+            DbUser user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor());
             if(departedUsers.putIfAbsent(event.getMessage().getAuthor(), false) != null)
                 departedUsers.put(event.getMessage().getAuthor(), false);
-            if (user.getTimeleft()!=null) {
-                msg = msg.replace("%away", KarrenUtil.calcAway(user.getTimeleft().getTime()));
-                user.setTimeleft(null);
+            if (user.getTimeLeft()!=null) {
+                msg = msg.replace("%away", KarrenUtil.calcAway(user.getTimeLeft().getTime()));
+                user.setTimeLeft(null);
                 user.update();
                 return msg;
             } else {
@@ -44,11 +44,11 @@ public class Return implements Tag {
             if(event.getMessage().getMentions().size()>0) {
                 boolean isDeparted = departedUsers.getOrDefault(event.getMessage().getMentions().get(0), false);
                 if (interaction.isSpecialInteraction() && isDeparted) {
-                    UserRecord mention = Karren.bot.getSql().getUserData(event.getMessage().getMentions().get(0));
+                    DbUser mention = Karren.bot.getSql().getUserData(event.getMessage().getMentions().get(0));
                     msg = interaction.getRandomTemplatesFail();
                     msg = msg.replace("%name", event.getMessage().getAuthor().getName());
                     msg = msg.replace("%mention", event.getMessage().getMentions().get(0).getName());
-                    msg = msg.replace("%away", KarrenUtil.calcAway(mention.getTimeleft().getTime()));
+                    msg = msg.replace("%away", KarrenUtil.calcAway(mention.getTimeLeft().getTime()));
                     return msg;
                 }
             }

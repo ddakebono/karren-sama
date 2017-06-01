@@ -24,40 +24,22 @@ public class Karren{
 
     public static KarrenBot bot;
     public static Logger log;
-    public static BotConfiguration confOld;
     public static JsonConfig conf;
-    public static final String botVersion = "4.0-Alpha";
+    public static final String botVersion = "4.0-Alpha2";
     public static final String confVersion = "1.0";
 
 	public static void main(String[] args){
         log = LoggerFactory.getLogger(Karren.class);
-        //Configs
-        confOld = new BotConfiguration();
-        try {
-            confOld.initConfig(log);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         //New config stuff
         conf = new JsonConfig(confVersion);
         conf.loadConfig();
-        if(confOld.isDoesExist()){
-            conf.importFromOldConf(confOld);
-            conf.saveConfig();
-            System.exit(0);
-        }
         if(conf.checkUpdate(false) || !conf.isSet()){
             Karren.log.info("Please check the configuration file at conf/bot.json and set your required settings.");
             System.exit(0);
         }
 
-        //New Database stuff
-
-
-
         System.setProperty("http.agent", "KarrenSama/" + botVersion);
-
 
         //Build our discord client
         IDiscordClient client = null;

@@ -1,14 +1,25 @@
+/*
+ * Copyright (c) 2017 Owen Bennett.
+ *  You may use, distribute and modify this code under the terms of the MIT licence.
+ *  You should have obtained a copy of the MIT licence with this software,
+ *  if not please obtain one from https://opensource.org/licences/MIT
+ *
+ *
+ *
+ */
+
 package org.frostbite.karren.Database.Objects;
 
-/**
- * Created by ddakebono on 5/31/2017.
- */
+import org.knowm.yank.Yank;
+
 public class DbGuild {
     private String guildID;
     private String guildName;
     private String guildOwner;
     private String commandPrefix;
     private int rollDifficulty;
+
+    public DbGuild(){}
 
     public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix) {
         this.guildID = guildID;
@@ -19,6 +30,10 @@ public class DbGuild {
 
     public String getGuildID() {
         return guildID;
+    }
+
+    public void setGuildID(String guildID) {
+        this.guildID = guildID;
     }
 
     public String getGuildName() {
@@ -51,5 +66,11 @@ public class DbGuild {
 
     public void setRollDifficulty(int rollDifficulty) {
         this.rollDifficulty = rollDifficulty;
+    }
+
+    //Update db entry
+    public void update(){
+        String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=? WHERE GuildID=?";
+        Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, guildID});
     }
 }
