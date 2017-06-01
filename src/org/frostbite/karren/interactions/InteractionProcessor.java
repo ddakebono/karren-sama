@@ -10,14 +10,11 @@
 
 package org.frostbite.karren.interactions;
 
-import org.frostbite.karren.Database.Models.tables.records.UserRecord;
 import org.frostbite.karren.Karren;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.MessageBuilder;
-
 import java.util.ArrayList;
-import java.util.Map;
 
 public class InteractionProcessor {
 

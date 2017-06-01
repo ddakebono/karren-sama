@@ -10,7 +10,7 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import org.frostbite.karren.Database.Models.tables.records.GuildRecord;
+import org.frostbite.karren.Database.Objects.DbGuild;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
@@ -22,8 +22,8 @@ public class SetPrefix implements Tag {
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         if(interaction.hasParameter()){
             String param = interaction.getParameter();
-            GuildRecord dbGuild = Karren.bot.getSql().getGuild(event.getGuild());
-            dbGuild.setCommandprefix(param.trim());
+            DbGuild dbGuild = Karren.bot.getSql().getGuild(event.getGuild());
+            dbGuild.setCommandPrefix(param.trim());
             dbGuild.update();
             msg = msg.replace("%prefix", param);
         } else {

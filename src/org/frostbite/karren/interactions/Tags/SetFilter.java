@@ -10,7 +10,7 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import org.frostbite.karren.Database.Models.tables.records.UserRecord;
+import org.frostbite.karren.Database.Objects.DbGuildUser;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
@@ -24,16 +24,16 @@ public class SetFilter implements Tag {
         if(interaction.getMentionedUsers().size()>0){
             IUser user = interaction.getMentionedUsers().get(0);
             if(!user.equals(event.getAuthor())){
-                UserRecord dbUser = Karren.bot.getSql().getUserData(user);
-                if(Byte.toUnsignedInt(dbUser.getIgnorecommands())==1){
-                    dbUser.setIgnorecommands(new Integer(0).byteValue());
+                DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor());
+                if(dbGuildUser.isIgnoreCommands()){
+                    dbGuildUser.setIgnoreCommands(false);
                     msg = msg.replace("%setting", "disabled");
                 } else {
-                    dbUser.setIgnorecommands(new Integer(1).byteValue());
+                    dbGuildUser.setIgnoreCommands(true);
                     msg = msg.replace("%setting", "enabled");
                 }
                 msg = msg.replace("%user", user.getName());
-                dbUser.update();
+                dbGuildUser.update();
             } else {
                 msg = interaction.getRandomTemplatesFail();
             }

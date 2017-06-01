@@ -110,36 +110,6 @@ public class JsonConfig {
         }
     }
 
-    public void importFromOldConf(BotConfiguration oldConf){
-        Karren.log.info("I've detected an old bot.prop config file, let's see if I can import that for you...");
-        try {
-            Files.move(new File("conf/bot.prop").toPath(), new File("conf/bot.prop.bak").toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        sqlhost = oldConf.getSqlhost();
-        sqlport = oldConf.getSqlport();
-        sqluser = oldConf.getSqluser();
-        sqldb = oldConf.getSqldb();
-        sqlpass = oldConf.getSqlpass();
-        icecastAdminUsername = oldConf.getIcecastAdminUsername();
-        icecastAdminPass = oldConf.getIcecastAdminPass();
-        icecastHost = oldConf.getIcecastHost();
-        icecastPort = oldConf.getIcecastPort();
-        icecastMount = oldConf.getIcecastMount();
-        discordApiKey = oldConf.getDiscordToken();
-        allowSQLRW = oldConf.getAllowSQLRW();
-        enableListencast = oldConf.getEnableListencast();
-        listencastAnnounce = oldConf.getListencastAnnounce();
-        enableInteractions = oldConf.getEnableInteractions();
-        commandPrefix = oldConf.getCommandPrefix();
-        connectToDiscord = oldConf.getConnectToDiscord();
-        osuAPIKey = oldConf.getOsuAPIKey();
-        googleAPIKey = oldConf.getGoogleAPIKey();
-
-        Karren.log.info("Imported config file, check the new bot.json to ensure that everything is imported.");
-    }
-
     public boolean getConnectToDiscord() {
         return connectToDiscord;
     }
