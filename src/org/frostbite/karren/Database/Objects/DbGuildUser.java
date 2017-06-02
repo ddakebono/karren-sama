@@ -10,9 +10,7 @@
 
 package org.frostbite.karren.Database.Objects;
 
-import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
-
 import java.sql.Timestamp;
 
 public class DbGuildUser {
@@ -24,19 +22,6 @@ public class DbGuildUser {
     private boolean notMapped = false;
 
     public DbGuildUser(){}
-
-    public DbGuildUser(int guildUserID, int userID, String guildID, Timestamp rollTimeout, boolean ignoreCommands) {
-        this(guildUserID, userID, guildID, rollTimeout, ignoreCommands, false);
-    }
-
-    public DbGuildUser(int guildUserID, int userID, String guildID, Timestamp rollTimeout, boolean ignoreCommands, boolean notMapped) {
-        this.guildUserID = guildUserID;
-        this.userID = userID;
-        this.guildID = guildID;
-        this.rollTimeout = rollTimeout;
-        this.ignoreCommands = ignoreCommands;
-        this.notMapped = notMapped;
-    }
 
     public int getGuildUserID() {
         return guildUserID;
