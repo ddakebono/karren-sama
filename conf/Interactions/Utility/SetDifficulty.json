@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "templates": [
+    "Roll difficulty set to %newdiff."
+  ],
+  "templatesFail":[
+    "You need to enter a valid number!"
+  ],
+  "templatesPermError": [
+    "You don't have permission to use this... (Not admin)",
+    "You're gonna need the admin role to use this..."
+  ],
+  "tags": [
+    "prefixed",
+    "parameter",
+    "setdifficulty"
+  ],
+  "triggers": [
+    "set-diff"
+  ],
+  "helptext": "Changes difficulty of rolls"
+}

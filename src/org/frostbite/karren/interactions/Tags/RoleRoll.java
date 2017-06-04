@@ -33,6 +33,7 @@ public class RoleRoll implements Tag {
             if (dbGuildUser.getRollTimeout() == null || new Timestamp(System.currentTimeMillis()).after(dbGuildUser.getRollTimeout())) {
                 java.util.Random rng = new Random();
                 int roll = rng.nextInt(100);
+                Karren.log.info("Rolled " + roll + " against a DC of " + (Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() >= 0 ? Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() : 95));
                 if (roll >= (Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() >= 0 ? Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() : 95)) {
                     List<IRole> rollRoles = new LinkedList<>();
                     for (IRole role : event.getGuild().getRoles())

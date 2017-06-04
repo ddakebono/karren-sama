@@ -69,8 +69,9 @@ public class InstantReplay {
             guild.getAudioManager().unsubscribeReceiver(receiver);
             guild.getAudioManager().setAudioProvider(Karren.bot.getGuildMusicManager(guild).getAudioProvider());
             receiver = null;
-            channel.leave();
             usersAudioFrames.clear();
+            if(!Karren.bot.getGuildMusicManager(guild).scheduler.isSchedulerActive())
+                channel.leave();
         }
     }
 

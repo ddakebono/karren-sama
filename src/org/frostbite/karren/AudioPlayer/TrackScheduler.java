@@ -89,10 +89,7 @@ public class TrackScheduler extends AudioEventAdapter {
         }
         if(queue.size()==0 && player.getPlayingTrack()==null){
             player.destroy();
-            if(Karren.bot.getIrm().getInstantReplayForGuild(guild)!=null) {
-                if (!Karren.bot.getIrm().getInstantReplayForGuild(guild).isRunning())
-                    guild.getConnectedVoiceChannel().leave();
-            } else {
+            if(!Karren.bot.getIrm().isGuildIRActive(guild)) {
                 guild.getConnectedVoiceChannel().leave();
             }
         } else {
@@ -111,11 +108,9 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public void stopQueue(){
         player.stopTrack();
+        player.destroy();
         queue.clear();
-        if(Karren.bot.getIrm().getInstantReplayForGuild(guild)!=null) {
-            if (!Karren.bot.getIrm().getInstantReplayForGuild(guild).isRunning())
-                guild.getConnectedVoiceChannel().leave();
-        } else {
+        if(!Karren.bot.getIrm().isGuildIRActive(guild)) {
             guild.getConnectedVoiceChannel().leave();
         }
     }
@@ -129,7 +124,10 @@ public class TrackScheduler extends AudioEventAdapter {
         }
 
         if(endReason == AudioTrackEndReason.STOPPED){
-            announceChannel.sendMessage("Stopped playback");
+            if(Karren.bot.getIrm().isGuildIRActive(guild))
+                announceChannel.sendMessage("Playback stopped, I'll be here until you stop Instant Replay.");
+            else
+                announceChannel.sendMessage("Stopped playback");
         }
     }
 
@@ -151,6 +149,8 @@ public class TrackScheduler extends AudioEventAdapter {
     public boolean isPlaying(){
         return player.getPlayingTrack() != null && !player.isPaused();
     }
+
+    public boolean isSchedulerActive() { return player.getPlayingTrack() !=null || queue.size()>0; }
 
     public boolean isRepeat() {
         return isRepeat;

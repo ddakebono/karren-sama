@@ -82,6 +82,7 @@ public class GuildManager {
         handlers.put("setfilter", new SetFilter());
         handlers.put("setprefix", new SetPrefix());
         handlers.put("roleroll", new RoleRoll());
+        handlers.put("setdifficulty", new SetDifficulty());
     }
 
     public void loadDefaultInteractions(){

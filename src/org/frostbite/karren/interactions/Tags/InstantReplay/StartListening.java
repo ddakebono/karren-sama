@@ -19,7 +19,7 @@ import sx.blah.discord.util.MessageBuilder;
 public class StartListening implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel()!=null){
+        if(!Karren.bot.getIrm().isGuildIRActive(event.getGuild()) && event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel()!=null){
             Karren.bot.getIrm().getInstantReplay(event.getGuild(), event.getAuthor()).startListening();
         }
         return msg;

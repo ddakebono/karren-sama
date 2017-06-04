@@ -42,4 +42,8 @@ public class InstantReplayManager {
         guildReplays.get(guild.getStringID()).stopListening();
         guildReplays.remove(guild.getStringID());
     }
+
+    public boolean isGuildIRActive(IGuild guild) {
+        return guildReplays.containsKey(guild.getStringID());
+    }
 }

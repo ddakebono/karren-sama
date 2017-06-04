@@ -10,6 +10,8 @@
 
 package org.frostbite.karren.interactions;
 
+import org.frostbite.karren.AudioPlayer.AudioProvider;
+import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Karren;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
@@ -35,10 +37,22 @@ public class InteractionProcessor {
     public void loadAndUpdateDatabase(){
         interactions = new ArrayList<>();
         interactions.addAll(defaultInteractions);
-        if(guild!=null)
+        if(guild!=null) {
+            if(Karren.bot.getGuildMusicManager(guild) == null || !(guild.getAudioManager().getAudioProvider() instanceof AudioProvider)){
+                Karren.log.info("Looks like the GuildMusicManager failed to start, let's try again.");
+                try {
+                    GuildMusicManager gm = Karren.bot.createGuildMusicManager(guild);
+                    guild.getAudioManager().setAudioProvider(gm.getAudioProvider());
+                    Karren.log.info("GuildMusicManager initialized on second try for guild " + guild.getName());
+                } catch (NullPointerException e){
+                    Karren.log.error("Uh oh, looks like we couldn't start the music manager on the second try! Guild " + guild.getName() + " doesn't have a music manager!");
+                }
+            }
             Karren.log.info("Interaction Processor for " + guild.getName() + " ready!");
-        else
+
+        } else {
             Karren.log.info("Default interaction processor initialized!");
+        }
     }
 
     public MessageBuilder handle(MessageReceivedEvent event) {

@@ -121,7 +121,8 @@ public class KarrenBot {
     }
 
     public GuildMusicManager createGuildMusicManager(IGuild guild){
-        gms.put(guild.getStringID(), new GuildMusicManager(pm, guild));
+        if(!gms.containsKey(guild.getStringID()))
+            gms.put(guild.getStringID(), new GuildMusicManager(pm, guild));
         return gms.get(guild.getStringID());
     }
 

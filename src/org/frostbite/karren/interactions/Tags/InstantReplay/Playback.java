@@ -21,13 +21,21 @@ import sx.blah.discord.util.MessageBuilder;
 public class Playback implements Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        InstantReplay ir = Karren.bot.getIrm().getInstantReplay(event.getGuild(), event.getAuthor());
-        if(interaction.getMentionedUsers().size()>0 && event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel().equals(ir.getChannel())){
-            ir.getLockedUsers().add(interaction.getMentionedUsers().get(0).getStringID());
-            msg = msg.replace("%username", interaction.getMentionedUsers().get(0).getStringID());
-            event.getGuild().getAudioManager().setAudioProvider(new IRAudioProvider(ir, interaction.getMentionedUsers().get(0)));
+        if(Karren.bot.getIrm().isGuildIRActive(event.getGuild()) && !Karren.bot.getGuildMusicManager(event.getGuild()).scheduler.isSchedulerActive()) {
+            InstantReplay ir = Karren.bot.getIrm().getInstantReplay(event.getGuild(), event.getAuthor());
+            if (interaction.getMentionedUsers().size() > 0) {
+                if(event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel().equals(ir.getChannel())) {
+                    ir.getLockedUsers().add(interaction.getMentionedUsers().get(0).getStringID());
+                    msg = msg.replace("%username", interaction.getMentionedUsers().get(0).getName());
+                    event.getGuild().getAudioManager().setAudioProvider(new IRAudioProvider(ir, interaction.getMentionedUsers().get(0)));
+                } else {
+                    msg = "You must be in the voice channel that I'm listening in.";
+                }
+            } else {
+                msg = interaction.getRandomTemplatesFail();
+            }
         } else {
-            msg = interaction.getRandomTemplatesFail();
+            msg = "Hold on a sec, looks like I'm either not listening or I'm playing music already.";
         }
         return msg;
     }
