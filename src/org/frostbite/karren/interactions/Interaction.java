@@ -116,7 +116,8 @@ public class Interaction {
             mentionedUsers = new LinkedList<>();
         mentionedUsers.clear();
         confidenceChecked = 0;
-        parameter = null;
+        if(Arrays.asList(tags).contains("parameter"))
+            parameter = null;
     }
 
     private boolean isAllowedUser(IUser user) {

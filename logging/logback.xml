@@ -11,7 +11,7 @@
         </encoder>
     </appender>
     <logger name="org.eclipse.jetty" level="WARN"/>
-    <logger name="org.jooq.Constants" level="WARN"/>
+    <logger name="com.zaxxer.hikari.pool.HikariPool" level="INFO"/>
     <root level="DEBUG">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="MAIN"/>
