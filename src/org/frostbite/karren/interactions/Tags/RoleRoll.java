@@ -40,9 +40,12 @@ public class RoleRoll implements Tag {
                         if (role.getName().contains("lotto-"))
                             rollRoles.add(role);
                     IRole rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
+                    for(IRole role : event.getAuthor().getRolesForGuild(event.getGuild()))
+                        if(role.getName().contains("lotto-"))
+                            event.getAuthor().removeRole(role);
                     event.getAuthor().addRole(rngRole);
                     msg = msg.replace("%rngrole", rngRole.getName());
-                    dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 604800000));
+                    dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 259200000 ));
                 } else {
                     dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 21600000));
                     msg = interaction.getRandomTemplatesFail();
