@@ -55,6 +55,7 @@ public class KarrenBot {
             ed.registerListener(new KillCommand());
             ed.registerListener(new GuildCreateListener());
             ed.registerListener(new ShutdownListener());
+            ed.registerListener(new ReconnectListener());
             try {
                 client.login();
             } catch (DiscordException | RateLimitException e) {
