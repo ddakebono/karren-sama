@@ -18,6 +18,7 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class Karren{
@@ -25,11 +26,24 @@ public class Karren{
     public static KarrenBot bot;
     public static Logger log;
     public static JsonConfig conf;
-    public static final String botVersion = "4.0-Alpha2";
+    public static Properties jarProps = new Properties();
+    public static String botVersion;
     public static final String confVersion = "1.0";
 
 	public static void main(String[] args){
         log = LoggerFactory.getLogger(Karren.class);
+
+        //Load properties from jar
+        InputStream propIn = Karren.class.getClassLoader().getResourceAsStream("git.properties");
+        try {
+            jarProps.load(propIn);
+            propIn.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Set some things from the properties
+        botVersion = jarProps.getProperty("git.build.version") + "-" + jarProps.getProperty("git.commit.id.abbrev");
 
         //New config stuff
         conf = new JsonConfig(confVersion);
