@@ -24,7 +24,7 @@ public class SetFilter implements Tag {
         if(interaction.getMentionedUsers().size()>0){
             IUser user = interaction.getMentionedUsers().get(0);
             if(!user.equals(event.getAuthor())){
-                DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor());
+                DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(event.getGuild(), user);
                 if(dbGuildUser.isIgnoreCommands()){
                     dbGuildUser.setIgnoreCommands(false);
                     msg = msg.replace("%setting", "disabled");
