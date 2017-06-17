@@ -16,6 +16,8 @@ import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.MessageBuilder;
 
+import java.util.Arrays;
+
 public class Parameter implements Tag {
 
     //Currently the parameter tag only works with Prefixed interactions, use on non prefixed interactions isn't possible yet.
@@ -29,8 +31,14 @@ public class Parameter implements Tag {
                     message = message.replace(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + trigger, "").trim();
                     break;
                 }
+                //Patch for prefixed interactions
+                if (event.getMessage().getContent().toLowerCase().startsWith(trigger) && !Arrays.asList(interaction.getTags()).contains("prefixed")){
+                    message = message.toLowerCase().replace(trigger, "").trim();
+                    break;
+                }
             }
         }
+
         interaction.setParameter(message);
         return msg;
     }

@@ -10,12 +10,12 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.MessageBuilder;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -28,8 +28,12 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class OverwatchUAPIAllHeroes implements Tag {
+    final String[] heroList = {"Reinhardt", "Tracer", "Zenyatta", "Junkrat", "Mccree", "Winston", "Orisa", "Hanzo", "Pharah", "Roadhog", "Zarya", "Torbjorn", "Mercy", "Soldier76", "Ana", "Widowmaker", "Genji", "Reaper", "Mei", "Bastion", "Symmetra", "Dva", "Sombra", "Lucio"};
     final TrustManager[] trustAllCertificates = new TrustManager[]{
             new X509TrustManager() {
                 @Override
@@ -54,18 +58,22 @@ public class OverwatchUAPIAllHeroes implements Tag {
         SSLContext sc;
         String parameter = interaction.getParameter();
         parameter = parameter.replace("#", "-");
-        Gson gson = new Gson();
+        JsonParser gson = new JsonParser();
         try {
             sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCertificates, new SecureRandom());
-            HttpsURLConnection heroRequest = (HttpsURLConnection) new URL("https://api.lootbox.eu/pc/us/" + parameter + "/quickplay/heroes").openConnection();
+            HttpsURLConnection heroRequest = (HttpsURLConnection) new URL("https://owapi.net/api/v3/u/" + parameter + "/heroes").openConnection();
             heroRequest.setSSLSocketFactory(sc.getSocketFactory());
             heroRequest.connect();
-            heroResponseObject[] heroes = gson.fromJson(new InputStreamReader((InputStream)heroRequest.getContent()), heroResponseObject[].class);
+            JsonObject heroPlaytime = gson.parse(new InputStreamReader((InputStream)heroRequest.getContent())).getAsJsonObject().getAsJsonObject("us").getAsJsonObject("heroes").getAsJsonObject("playtime");
+            TreeMap<String, Double> heroes = new TreeMap<>();
+            for(String hero : heroList)
+                heroes.put(hero, heroPlaytime.getAsJsonObject("competitive").get(hero.toLowerCase()).getAsDouble()+heroPlaytime.getAsJsonObject("quickplay").get(hero.toLowerCase()).getAsDouble());
+            LinkedHashMap heroesSort = heroes.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
             msg = msg.replace("%username", parameter);
             for(int i=0; i<3; i++) {
-                msg = msg.replace("%hero" + i, heroes[i].name);
-                msg = msg.replace("%timeplayed" + i, heroes[i].playtime);
+                msg = msg.replace("%hero" + i, (heroesSort.keySet().toArray())[(heroList.length-i)-1].toString());
+                msg = msg.replace("%timeplayed" + i, String.valueOf(heroes.get((heroesSort.keySet().toArray())[(heroList.length-i)-1])));
             }
         } catch (NoSuchAlgorithmException | IOException | KeyManagementException e) {
             e.printStackTrace();
@@ -73,11 +81,4 @@ public class OverwatchUAPIAllHeroes implements Tag {
         }
         return msg;
     }
-}
-
-class heroResponseObject{
-    public String name;
-    public String playtime;
-    public String image;
-    public Float percentage;
 }
