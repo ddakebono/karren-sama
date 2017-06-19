@@ -12,12 +12,37 @@ package org.frostbite.karren;
 
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
+
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.File;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
 public class KarrenUtil {
+
+    public static final String[] heroList = {"Reinhardt", "Tracer", "Zenyatta", "Junkrat", "Mccree", "Winston", "Orisa", "Hanzo", "Pharah", "Roadhog", "Zarya", "Torbjorn", "Mercy", "Soldier76", "Ana", "Widowmaker", "Genji", "Reaper", "Mei", "Bastion", "Symmetra", "Dva", "Sombra", "Lucio"};
+    public static final TrustManager[] trustAllCertificates = new TrustManager[]{
+            new X509TrustManager() {
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null; // Not relevant.
+                }
+
+                @Override
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                    // Do nothing. Just allow them all.
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                    // Do nothing. Just allow them all.
+                }
+            }
+    };
+
     @SuppressWarnings("ConstantConditions")
     public static File[] getFilesInFolders(File directory){
         ArrayList<File> files = new ArrayList<>();

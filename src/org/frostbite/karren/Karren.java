@@ -19,6 +19,7 @@ import sx.blah.discord.util.DiscordException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.Properties;
 
 public class Karren{
@@ -29,6 +30,7 @@ public class Karren{
     public static Properties jarProps = new Properties();
     public static String botVersion;
     public static final String confVersion = "1.0";
+    public static long startTime = System.currentTimeMillis();
 
 	public static void main(String[] args){
         log = LoggerFactory.getLogger(Karren.class);
