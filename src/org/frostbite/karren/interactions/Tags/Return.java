@@ -38,14 +38,14 @@ public class Return implements Tag {
                 if (interaction.isSpecialInteraction())
                     return null;
                 else
-                    return interaction.getRandomTemplatesFail();
+                    return interaction.getRandomTemplate("fail").getTemplate();
             }
         } else {
             if(event.getMessage().getMentions().size()>0) {
                 boolean isDeparted = departedUsers.getOrDefault(event.getMessage().getMentions().get(0), false);
                 if (interaction.isSpecialInteraction() && isDeparted) {
                     DbUser mention = Karren.bot.getSql().getUserData(event.getMessage().getMentions().get(0));
-                    msg = interaction.getRandomTemplatesFail();
+                    msg = interaction.getRandomTemplate("fail").getTemplate();
                     msg = msg.replace("%name", event.getMessage().getAuthor().getName());
                     msg = msg.replace("%mention", event.getMessage().getMentions().get(0).getName());
                     msg = msg.replace("%away", KarrenUtil.calcAway(mention.getTimeLeft().getTime()));

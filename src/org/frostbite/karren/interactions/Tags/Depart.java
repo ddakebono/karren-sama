@@ -30,7 +30,7 @@ public class Depart implements Tag {
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         DbUser user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor());
         if(user.getTimeLeft()!=null){
-            msg = interaction.getRandomTemplatesFail();
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         } else {
             departedUsers.put(event.getMessage().getAuthor(), true);
         }

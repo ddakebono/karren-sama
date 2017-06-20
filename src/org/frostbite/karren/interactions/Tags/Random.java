@@ -22,7 +22,7 @@ public class Random implements Tag {
         if(tempArray.length==2){
             return msg.replace("%result", randomList(tempArray[1]));
         } else {
-            return interaction.getRandomTemplatesFail();
+            return interaction.getRandomTemplate("fail").getTemplate();
         }
     }
     private static String randomList(String message){

@@ -25,7 +25,7 @@ public class SetDifficulty implements Tag {
             try {
                 difficulty = Integer.parseInt(interaction.getParameter());
             } catch (NumberFormatException e){
-                msg = interaction.getRandomTemplatesFail();
+                msg = interaction.getRandomTemplate("fail").getTemplate();
             }
             if(difficulty>=0 && difficulty<=100){
                 DbGuild dbGuild = Karren.bot.getSql().getGuild(event.getGuild());
@@ -33,7 +33,7 @@ public class SetDifficulty implements Tag {
                 dbGuild.update();
                 msg = msg.replace("%newdiff", String.valueOf(difficulty));
             } else {
-                msg = interaction.getRandomTemplatesFail();
+                msg = interaction.getRandomTemplate("fail").getTemplate();
             }
         }
         return msg;

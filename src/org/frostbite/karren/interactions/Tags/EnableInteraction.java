@@ -28,7 +28,7 @@ public class EnableInteraction implements Tag {
                 enable.setEnabled(true);
             }
         } else {
-            msg = interaction.getRandomTemplatesFail();
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
     }

@@ -58,7 +58,7 @@ public class OverwatchUAPIAllHeroes implements Tag {
             }
         } catch (NoSuchAlgorithmException | IOException | KeyManagementException e) {
             e.printStackTrace();
-            msg = interaction.getRandomTemplatesPermError();
+            msg = interaction.getRandomTemplate("permission").getTemplate();
         }
         return msg;
     }

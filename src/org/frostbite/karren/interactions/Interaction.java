@@ -22,14 +22,12 @@ import java.util.regex.Pattern;
 public class Interaction {
     private String[] triggers;
     private String[] tags;
-    private String[] templates;
+    private InteractionTemplate[] templates;
     private String[] voiceFiles;
     private boolean enabled = true;
     private String helptext;
     private String identifier;
     private int confidence = 0;
-    private String[] templatesFail;
-    private String[] templatesPermError;
     private String permissionLevel;
     private String channel;
     private float voiceVolume = 0.1f;
@@ -44,20 +42,20 @@ public class Interaction {
     private boolean lock = false;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
-        this(identifier ,tags, new String[]{templates}, triggers, confidence, enabled, helptext);
+        this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal", null)}, triggers, confidence, enabled, helptext);
     }
 
-    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
-        this(identifier ,tags, templates, triggers, confidence, enabled, helptext, null, null, "", "", null, 0.0f, false);
+    public Interaction(String identifier, String[] tags, InteractionTemplate[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
+        this(identifier ,tags, templates, triggers, confidence, enabled, helptext,"", "", null, 0.0f, false);
     }
 
-    public Interaction(String identifier, String[] tags, String[] templates, String[] templatesFail, int usageCount, String userID, float voiceVolume){
-        this(identifier, tags, templates, null, 0, true, "", templatesFail, null, "", "", null, voiceVolume, false);
+    public Interaction(String identifier, String[] tags, InteractionTemplate[] templates, String[] templatesFail, int usageCount, String userID, float voiceVolume){
+        this(identifier, tags, templates, null, 0, true, "", "", "", null, voiceVolume, false);
         this.usageCount = usageCount;
         this.allowedUsers.add(userID);
     }
 
-    public Interaction(String identifier, String[] tags, String[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String[] templatesFail, String[] templatesPermError, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction){
+    public Interaction(String identifier, String[] tags, InteractionTemplate[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction){
         this.specialInteraction = specialInteraction;
         this.identifier = identifier;
         this.tags = tags;
@@ -66,8 +64,6 @@ public class Interaction {
         this.triggers = triggers;
         this.enabled = enabled;
         this.helptext = helptext;
-        this.templatesPermError = templatesPermError;
-        this.templatesFail = templatesFail;
         this.permissionLevel = permissionLevel;
         this.channel = channel;
         this.voiceFiles = voiceFiles;
@@ -96,9 +92,9 @@ public class Interaction {
                             confidenceChecked = getConfidence(event.getMessage().getContent(), false, event.getGuild());
                         }
                         if (confidenceChecked >= this.confidence)
-                            result = getRandomTemplate(templates);
+                            result = getRandomTemplate("noraml").getTemplate();
                         if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), permissionLevel)) {
-                            result = getRandomTemplatesPermError();
+                            result = getRandomTemplate("permission").getTemplate();
                             isPermBad = true;
                         }
                     }
@@ -144,9 +140,15 @@ public class Interaction {
         return confidence;
     }
 
-    private String getRandomTemplate(String[] templates) {
-        Random rng = new Random();
-        return templates[rng.nextInt(templates.length)];
+    public InteractionTemplate getRandomTemplate(String type) {
+        InteractionTemplate[] random = (InteractionTemplate[]) Arrays.stream(templates).filter(x -> x.getTemplateType().equalsIgnoreCase(type)).toArray();
+        if(random.length>0) {
+            Random rng = new Random();
+            return random[rng.nextInt(random.length)];
+        } else {
+            Karren.log.error("Warning, interaction " + identifier + " is requesting a template for type " +type + " but none were found!");
+            return new InteractionTemplate("Missing template for type " + type, type, this);
+        }
     }
 
     public String[] getTags(){return tags;}
@@ -157,7 +159,8 @@ public class Interaction {
         }
         return result.toString();
     }
-    public String[] getTemplates(){return templates;}
+    public InteractionTemplate[] getTemplates(String type){return (InteractionTemplate[]) Arrays.stream(templates).filter(x -> x.getTemplateType().equalsIgnoreCase(type)).toArray();}
+    public InteractionTemplate[] getTemplates(){return getTemplates("normal");}
     public String[] getTriggers(){
         return triggers;
     }
@@ -178,44 +181,18 @@ public class Interaction {
         return channel;
     }
 
-    public String[] getTemplatesFail() {
-        return templatesFail;
+    public InteractionTemplate[] getTemplatesFail() {
+        return getTemplates("fail");
     }
 
-    public String[] getTemplatesPermError() {
-        return templatesPermError;
-    }
-
-    public String getRandomTemplatesFail() {
-        if(templatesFail!=null) {
-            return getRandomTemplate(templatesFail);
-        } else {
-            Karren.log.error("Interaction error, " + identifier + " uses failure templates but doesn't supply any!");
-            return "ERROR";
-        }
-    }
-
-    public String getRandomTemplates() {
-        if(templates!=null) {
-            return getRandomTemplate(templates);
-        } else {
-            Karren.log.error("Interaction error, " + identifier + " uses templates but doesn't supply any!");
-            return "ERROR";
-        }
-    }
-
-    public String getRandomTemplatesPermError() {
-        if(templatesPermError!=null) {
-            return getRandomTemplate(templatesPermError);
-        } else {
-            Karren.log.error("Interaction error, " + identifier + " uses permission error templates but doesn't supply any!");
-            return "PERMISSION ERROR";
-        }
+    public InteractionTemplate[] getTemplatesPermError() {
+        return getTemplates("permission");
     }
 
     public String getRandomVoiceFile(){
         if(voiceFiles!=null){
-            return "conf/" + getRandomTemplate(voiceFiles);
+            Random rng = new Random();
+            return "conf/" + voiceFiles[rng.nextInt(voiceFiles.length)];
         } else {
             return null;
         }

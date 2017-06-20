@@ -29,7 +29,7 @@ public class DisableInteraction implements Tag {
                 disable.setEnabled(false);
             }
         } else {
-            msg = interaction.getRandomTemplatesFail();
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
     }

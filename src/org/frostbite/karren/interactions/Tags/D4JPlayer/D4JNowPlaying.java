@@ -22,7 +22,7 @@ public class D4JNowPlaying implements Tag {
         if(Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack()!=null){
             msg = msg.replace("%d4jtitle", Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack().getInfo().title);
         } else {
-            msg = interaction.getRandomTemplatesFail();
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
     }

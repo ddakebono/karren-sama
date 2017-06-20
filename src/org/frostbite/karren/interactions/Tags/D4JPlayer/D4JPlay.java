@@ -41,7 +41,7 @@ public class D4JPlay implements Tag{
                     }
                 }
             } else {
-                msg = interaction.getRandomTemplatesFail();
+                msg = interaction.getRandomTemplate("fail").getTemplate();
             }
             if (arh.isFailed())
                 msg = arh.getMsg();

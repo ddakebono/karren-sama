@@ -54,14 +54,14 @@ public class RoleRoll implements Tag {
                 } else {
                     dbGuildUser.incrementRollsSinceLastClear();
                     dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 21600000));
-                    msg = interaction.getRandomTemplatesFail();
+                    msg = interaction.getRandomTemplate("fail").getTemplate();
                 }
                 msg = msg.replace("%bonus", String.valueOf(bonus));
                 msg = msg.replace("%roll", String.valueOf(roll));
                 msg = msg.replace("%dc", String.valueOf(dc));
                 dbGuildUser.update();
             } else {
-                msg = interaction.getRandomTemplatesPermError();
+                msg = interaction.getRandomTemplate("permission").getTemplate();
 
             }
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM @ HH:mm");

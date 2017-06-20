@@ -86,10 +86,10 @@ public class OsuGetUser implements Tag {
                     msg = msg.replace("%counts", osuProfile.get("count_rank_s").getAsString());
                     msg = msg.replace("%counta", osuProfile.get("count_rank_a").getAsString());
                 } else {
-                    msg = interaction.getRandomTemplatesFail();
+                    msg = interaction.getRandomTemplate("fail").getTemplate();
                 }
             } catch (NoSuchAlgorithmException | KeyManagementException | IOException e) {
-                msg = interaction.getRandomTemplatesFail();
+                msg = interaction.getRandomTemplate("fail").getTemplate();
                 e.printStackTrace();
             }
         } else {

@@ -36,7 +36,7 @@ public class D4JSelect implements Tag {
             search.getResultArray(event.getAuthor().getStringID());
             interaction.stopProcessing();
         } else {
-            msg = interaction.getRandomTemplatesFail();
+            msg = interaction.getRandomTemplate("fail").getTemplate();
             interaction.addUsageCount();
         }
         return msg;

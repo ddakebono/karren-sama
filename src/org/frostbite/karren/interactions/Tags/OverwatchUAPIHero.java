@@ -78,13 +78,13 @@ public class OverwatchUAPIHero implements Tag {
                     }
                     msg = msg.replace("%blob", heroDataBlob.toString());
                 } else {
-                    msg = interaction.getRandomTemplatesFail();
+                    msg = interaction.getRandomTemplate("fail").getTemplate();
                 }
             } else {
-                msg = interaction.getRandomTemplatesFail();
+                msg = interaction.getRandomTemplate("fail").getTemplate();
             }
         } catch (NoSuchAlgorithmException | IOException | KeyManagementException e) {
-            msg = interaction.getRandomTemplatesPermError();
+            msg = interaction.getRandomTemplate("permission").getTemplate();
         }
         return msg;
     }

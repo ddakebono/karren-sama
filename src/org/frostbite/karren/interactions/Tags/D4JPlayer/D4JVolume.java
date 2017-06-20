@@ -24,7 +24,7 @@ public class D4JVolume implements Tag {
             Karren.bot.getGuildMusicManager(event.getGuild()).player.setVolume(volume);
             msg = msg.replace("%volume", Integer.toString(volume));
         } else {
-            msg = interaction.getRandomTemplatesFail();
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
     }

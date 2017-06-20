@@ -35,7 +35,7 @@ public class SetFilter implements Tag {
                 msg = msg.replace("%user", user.getName());
                 dbGuildUser.update();
             } else {
-                msg = interaction.getRandomTemplatesFail();
+                msg = interaction.getRandomTemplate("fail").getTemplate();
             }
         }
         return msg;

@@ -56,13 +56,13 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     @Override
     public void noMatches() {
         failed = true;
-        msg = interaction.getRandomTemplatesFail();
+        msg = interaction.getRandomTemplate("fail").getTemplate();
     }
 
     @Override
     public void loadFailed(FriendlyException e) {
         failed = true;
-        msg = interaction.getRandomTemplatesPermError();
+        msg = interaction.getRandomTemplate("permission").getTemplate();
     }
 
     public void connectToVoiceChannel(MessageReceivedEvent event){

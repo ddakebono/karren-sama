@@ -23,7 +23,7 @@ public class SetStatus implements Tag {
             msg = msg.replace("%param", param);
             event.getClient().online(param);
         } else {
-            msg = interaction.getRandomTemplatesFail();
+            msg = interaction.getRandomTemplate("fail").getTemplate();
             event.getClient().online();
         }
         return msg;

@@ -63,7 +63,7 @@ public class OverwatchUAPIProfile implements Tag {
             msg = msg.replace("%playtime-comp", df.format(timeRanked));
             msg = msg.replace("%rank", quickplay.getAsJsonObject("overall_stats").get("comprank").getAsString());
         } catch (IOException e) {
-            msg = interaction.getRandomTemplatesFail();
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
         }

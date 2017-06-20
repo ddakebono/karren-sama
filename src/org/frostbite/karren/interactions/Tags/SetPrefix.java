@@ -27,7 +27,7 @@ public class SetPrefix implements Tag {
             dbGuild.update();
             msg = msg.replace("%prefix", param);
         } else {
-            msg = interaction.getRandomTemplatesFail();
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
     }

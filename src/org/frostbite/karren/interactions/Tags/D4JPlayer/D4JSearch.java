@@ -12,6 +12,7 @@ package org.frostbite.karren.interactions.Tags.D4JPlayer;
 
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
+import org.frostbite.karren.interactions.InteractionTemplate;
 import org.frostbite.karren.interactions.Tag;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -53,15 +54,15 @@ public class D4JSearch implements Tag {
                             resultMessage.append("\n").append(i + 1).append(" : ").append(results.getJSONObject(i).getJSONObject("snippet").getString("title"));
                         }
                         resultArrays.put(event.getAuthor().getStringID(), results);
-                        Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().add(new Interaction("selectOption", new String[]{"parameter", "d4jselect", "d4jplay"}, new String[]{"You selected \"%title\", added to queue!"}, new String[]{"That's not one of the options!"}, 1, event.getAuthor().getStringID(), interaction.getVoiceVolume()));
+                        Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().add(new Interaction("selectOption", new String[]{"parameter", "d4jselect", "d4jplay"}, new InteractionTemplate[]{new InteractionTemplate("You selected \"%title\", added to queue!", "normal", null)}, new String[]{"That's not one of the options!"}, 1, event.getAuthor().getStringID(), interaction.getVoiceVolume()));
                         msg = msg.replace("%results", resultMessage.toString());
                     }
                 } else {
-                    msg = interaction.getRandomTemplatesFail();
+                    msg = interaction.getRandomTemplate("fail").getTemplate();
                 }
             }
         } else {
-            msg = interaction.getRandomTemplatesFail();
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
     }

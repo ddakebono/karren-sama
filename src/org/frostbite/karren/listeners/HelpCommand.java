@@ -62,9 +62,9 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
                         try {
                             helpMsg.withChannel(event.getAuthor().getOrCreatePMChannel());
                             if (Arrays.asList(helpInteraction.getTags()).contains("prefixed"))
-                                helpMsg.withContent("__**" + helpInteraction.getIdentifier() + "**__\n**Command**: " + Karren.conf.getCommandPrefix() + helpInteraction.getTriggers()[0] + "\n**Sample Output**: " + helpInteraction.getRandomTemplates() + "\n**Help text**: " + helpInteraction.getHelptext());
+                                helpMsg.withContent("__**" + helpInteraction.getIdentifier() + "**__\n**Command**: " + Karren.conf.getCommandPrefix() + helpInteraction.getTriggers()[0] + "\n**Sample Output**: " + helpInteraction.getRandomTemplate("normal").getTemplate() + "\n**Help text**: " + helpInteraction.getHelptext());
                             else
-                                helpMsg.withContent("__**" + helpInteraction.getIdentifier() + "**__\n**Triggers**: " + helpInteraction.getActivatorsToString() + "\n**Amount of triggers needed to trigger**: " + helpInteraction.getConfidence() + "\n**Sample Output**: " + helpInteraction.getRandomTemplates() + "\n**Help text**: " + helpInteraction.getHelptext());
+                                helpMsg.withContent("__**" + helpInteraction.getIdentifier() + "**__\n**Triggers**: " + helpInteraction.getActivatorsToString() + "\n**Amount of triggers needed to trigger**: " + helpInteraction.getConfidence() + "\n**Sample Output**: " + helpInteraction.getRandomTemplate("normal").getTemplate() + "\n**Help text**: " + helpInteraction.getHelptext());
                             messages.add(helpMsg);
                         } catch (DiscordException | RateLimitException | MissingPermissionsException e) {
                             e.printStackTrace();

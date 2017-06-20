@@ -24,7 +24,7 @@ public class D4JNowPlayingTime implements Tag {
             msg = msg.replace("%position", KarrenUtil.getMinSecFormattedString(Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack().getPosition()));
             msg = msg.replace("%duration", KarrenUtil.getMinSecFormattedString(Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack().getDuration()));
         } else {
-            msg = interaction.getRandomTemplatesFail();
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
     }

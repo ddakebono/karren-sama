@@ -32,7 +32,7 @@ public class Playback implements Tag {
                     msg = "You must be in the voice channel that I'm listening in.";
                 }
             } else {
-                msg = interaction.getRandomTemplatesFail();
+                msg = interaction.getRandomTemplate("fail").getTemplate();
             }
         } else {
             msg = "Hold on a sec, looks like I'm either not listening or I'm playing music already.";
