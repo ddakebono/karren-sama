@@ -5,8 +5,8 @@
     "Congrats! You've cleared the DC and have acquired the role **%rngrole** enjoy!"
   ],
   "templatesFail": [
-    "Looks like you didn't clear the DC, better luck next time. (%timeremaining)",
-    "Better luck next time. (%timeremaining)"
+    "Looks like you didn't clear the DC, better luck next time. (%roll(+%bonus) against %dc | %timeremaining)",
+    "Better luck next time. (%roll(+%bonus) against %dc | %timeremaining)"
   ],
   "templatesPermError": [
     "You still need to wait before you can roll again! (%timeremaining)"

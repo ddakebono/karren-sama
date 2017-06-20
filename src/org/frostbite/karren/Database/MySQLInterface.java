@@ -51,7 +51,7 @@ public class MySQLInterface {
         if(Karren.conf.getAllowSQLRW()){
             if(guild!=null) {
                 if (!dbGuildUserCache.containsKey(guild.getStringID() + user.getStringID())) {
-                    String sql = "INSERT IGNORE GuildUser (GuildUserID, UserID, GuildID, RollTimeout, IgnoreCommands) VALUES (null, ?, ?, null, 0)";
+                    String sql = "INSERT IGNORE GuildUser (GuildUserID, UserID, GuildID, RollTimeout, IgnoreCommands, RollsSinceLastClear, TotalRolls) VALUES (null, ?, ?, null, 0, 0, 0)";
                     Object[] params = {user.getLongID(), guild.getStringID()};
                     Yank.execute(sql, params);
                     sql = "SELECT * FROM GuildUser WHERE UserID=? AND GuildID=?";
@@ -70,6 +70,8 @@ public class MySQLInterface {
                 dbGuildUser.setIgnoreCommands(false);
                 dbGuildUser.setRollTimeout(null);
                 dbGuildUser.setNotMapped(true);
+                dbGuildUser.setRollsSinceLastClear(0);
+                dbGuildUser.setTotalRolls(0);
                 return dbGuildUser;
             }
         }

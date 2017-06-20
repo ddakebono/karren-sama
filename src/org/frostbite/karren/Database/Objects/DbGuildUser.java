@@ -19,6 +19,8 @@ public class DbGuildUser {
     private String guildID;
     private Timestamp rollTimeout;
     private boolean ignoreCommands;
+    private int rollsSinceLastClear;
+    private int totalRolls;
     private boolean notMapped = false;
 
     public DbGuildUser(){}
@@ -30,6 +32,26 @@ public class DbGuildUser {
     public void setGuildUserID(int guildUserID) {
         this.guildUserID = guildUserID;
     }
+
+    public int getRollsSinceLastClear() {
+        return rollsSinceLastClear;
+    }
+
+    public void setRollsSinceLastClear(int rollsSinceLastClear) {
+        this.rollsSinceLastClear = rollsSinceLastClear;
+    }
+
+    public int getTotalRolls() {
+        return totalRolls;
+    }
+
+    public void setTotalRolls(int totalRolls) {
+        this.totalRolls = totalRolls;
+    }
+
+    public void incrementTotalRolls(){totalRolls++;}
+
+    public void incrementRollsSinceLastClear() {rollsSinceLastClear++;}
 
     public long getUserID() {
         return userID;
@@ -73,8 +95,8 @@ public class DbGuildUser {
 
     public void update(){
         if(!notMapped) {
-            String sql = "UPDATE GuildUser SET RollTimeout=?, IgnoreCommands=? WHERE GuildUserID=?";
-            Yank.execute(sql, new Object[]{rollTimeout, ignoreCommands, guildUserID});
+            String sql = "UPDATE GuildUser SET RollTimeout=?, IgnoreCommands=?, RollsSinceLastClear=?, TotalRolls=? WHERE GuildUserID=?";
+            Yank.execute(sql, new Object[]{rollTimeout, ignoreCommands, rollsSinceLastClear, totalRolls, guildUserID});
         }
     }
 }

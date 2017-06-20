@@ -31,10 +31,14 @@ public class RoleRoll implements Tag {
         if(!event.getMessage().getChannel().isPrivate()) {
             DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor());
             if (dbGuildUser.getRollTimeout() == null || new Timestamp(System.currentTimeMillis()).after(dbGuildUser.getRollTimeout())) {
+                dbGuildUser.incrementTotalRolls();
                 java.util.Random rng = new Random();
                 int roll = rng.nextInt(100);
-                Karren.log.info("Rolled " + roll + " against a DC of " + (Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() >= 0 ? Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() : 95));
-                if (roll >= (Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() >= 0 ? Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() : 95)) {
+                int bonus = (dbGuildUser.getRollsSinceLastClear()/10)*5;
+                int dc = (Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() >= 0 ? Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() : 95);
+                Karren.log.info("Rolled " + roll + " against a DC of " + dc + " with bonus of " + bonus);
+                roll+=bonus;
+                if (roll >= dc) {
                     List<IRole> rollRoles = new LinkedList<>();
                     for (IRole role : event.getGuild().getRoles())
                         if (role.getName().contains("lotto-"))
@@ -45,11 +49,16 @@ public class RoleRoll implements Tag {
                             event.getAuthor().removeRole(role);
                     event.getAuthor().addRole(rngRole);
                     msg = msg.replace("%rngrole", rngRole.getName());
+                    dbGuildUser.setRollsSinceLastClear(0);
                     dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 259200000 ));
                 } else {
+                    dbGuildUser.incrementRollsSinceLastClear();
                     dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 21600000));
                     msg = interaction.getRandomTemplatesFail();
                 }
+                msg = msg.replace("%bonus", String.valueOf(bonus));
+                msg = msg.replace("%roll", String.valueOf(roll));
+                msg = msg.replace("%dc", String.valueOf(dc));
                 dbGuildUser.update();
             } else {
                 msg = interaction.getRandomTemplatesPermError();
