@@ -54,28 +54,32 @@ public class OverwatchUAPIHero implements Tag {
                 heroRequest.setSSLSocketFactory(sc.getSocketFactory());
                 heroRequest.connect();
                 JsonObject stats = gson.parse(new InputStreamReader((InputStream)heroRequest.getContent())).getAsJsonObject().getAsJsonObject("us").getAsJsonObject("heroes").getAsJsonObject("stats").getAsJsonObject("quickplay").getAsJsonObject(params[1].toLowerCase());
-                Set<Map.Entry<String, JsonElement>> entries = stats.getAsJsonObject("average_stats").entrySet();
-                Set<Map.Entry<String, JsonElement>> entriesHero = stats.getAsJsonObject("hero_stats").entrySet();
-                Set<Map.Entry<String, JsonElement>> entriesGeneral = stats.getAsJsonObject("general_stats").entrySet();
-                msg = msg.replace("%username", params[0]);
-                msg = msg.replace("%hero", Arrays.stream(KarrenUtil.heroList).filter(x -> x.equalsIgnoreCase(params[1])).findFirst().get());
-                StringBuilder heroDataBlob = new StringBuilder("**Hero Stat Block**");
-                for(Map.Entry<String, JsonElement> stat : entries){
-                    if(KarrenUtil.getNormalizedName(stat.getKey()) != null){
-                        heroDataBlob.append("\n").append(KarrenUtil.getNormalizedName(stat.getKey())).append(": ").append(df.format(stat.getValue().getAsFloat()));
+                if(stats!=null) {
+                    Set<Map.Entry<String, JsonElement>> entries = stats.getAsJsonObject("average_stats").entrySet();
+                    Set<Map.Entry<String, JsonElement>> entriesHero = stats.getAsJsonObject("hero_stats").entrySet();
+                    Set<Map.Entry<String, JsonElement>> entriesGeneral = stats.getAsJsonObject("general_stats").entrySet();
+                    msg = msg.replace("%username", params[0]);
+                    msg = msg.replace("%hero", Arrays.stream(KarrenUtil.heroList).filter(x -> x.equalsIgnoreCase(params[1])).findFirst().get());
+                    StringBuilder heroDataBlob = new StringBuilder("**Hero Stat Block**");
+                    for (Map.Entry<String, JsonElement> stat : entries) {
+                        if (KarrenUtil.getNormalizedName(stat.getKey()) != null) {
+                            heroDataBlob.append("\n").append(KarrenUtil.getNormalizedName(stat.getKey())).append(": ").append(df.format(stat.getValue().getAsFloat()));
+                        }
                     }
-                }
-                for(Map.Entry<String, JsonElement> stat : entriesHero){
-                    if(KarrenUtil.getNormalizedName(stat.getKey()) != null){
-                        heroDataBlob.append("\n").append(KarrenUtil.getNormalizedName(stat.getKey())).append(": ").append(df.format(stat.getValue().getAsFloat()));
+                    for (Map.Entry<String, JsonElement> stat : entriesHero) {
+                        if (KarrenUtil.getNormalizedName(stat.getKey()) != null) {
+                            heroDataBlob.append("\n").append(KarrenUtil.getNormalizedName(stat.getKey())).append(": ").append(df.format(stat.getValue().getAsFloat()));
+                        }
                     }
-                }
-                for(Map.Entry<String, JsonElement> stat : entriesGeneral){
-                    if(KarrenUtil.getNormalizedName(stat.getKey()) != null){
-                        heroDataBlob.append("\n").append(KarrenUtil.getNormalizedName(stat.getKey())).append(": ").append(df.format(stat.getValue().getAsFloat()));
+                    for (Map.Entry<String, JsonElement> stat : entriesGeneral) {
+                        if (KarrenUtil.getNormalizedName(stat.getKey()) != null) {
+                            heroDataBlob.append("\n").append(KarrenUtil.getNormalizedName(stat.getKey())).append(": ").append(df.format(stat.getValue().getAsFloat()));
+                        }
                     }
+                    msg = msg.replace("%blob", heroDataBlob.toString());
+                } else {
+                    msg = interaction.getRandomTemplatesFail();
                 }
-                msg = msg.replace("%blob", heroDataBlob.toString());
             } else {
                 msg = interaction.getRandomTemplatesFail();
             }
