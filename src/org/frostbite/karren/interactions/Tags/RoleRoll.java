@@ -34,7 +34,7 @@ public class RoleRoll implements Tag {
                 dbGuildUser.incrementTotalRolls();
                 java.util.Random rng = new Random();
                 int roll = rng.nextInt(100);
-                int bonus = (dbGuildUser.getRollsSinceLastClear()/10)*5;
+                int bonus = (dbGuildUser.getRollsSinceLastClear() / 2);
                 int dc = (Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() >= 0 ? Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() : 95);
                 Karren.log.info("Rolled " + roll + " against a DC of " + dc + " with bonus of " + bonus);
                 roll+=bonus;

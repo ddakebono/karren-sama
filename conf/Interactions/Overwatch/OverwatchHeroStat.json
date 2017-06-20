@@ -2,7 +2,7 @@
   "enabled": true,
   "confidence": 1,
   "templates": [
-    "**%username** has **%timeplayed** on **%hero**. They've delivered **%damage**, killing **%kills players**. They've died **%deaths** times."
+    "**%username's Stats on %hero**\n```%blob```"
   ],
   "templatesFail": [
     "You seem to have missed a parameter, please include both ID and hero separated with a comma."
