@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class Interaction {
     @Expose private String[] triggers;
@@ -125,7 +126,7 @@ public class Interaction {
                             confidenceChecked = getConfidence(event.getMessage().getContent(), false, event.getGuild());
                         }
                         if (confidenceChecked >= this.confidence)
-                            result = getRandomTemplate("noraml").getTemplate();
+                            result = getRandomTemplate("normal").getTemplate();
                         if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), permissionLevel)) {
                             result = getRandomTemplate("permission").getTemplate();
                             isPermBad = true;
@@ -174,7 +175,7 @@ public class Interaction {
     }
 
     public InteractionTemplate getRandomTemplate(String type) {
-        InteractionTemplate[] random = (InteractionTemplate[]) Arrays.stream(templatesNew).filter(x -> x.getTemplateType().equalsIgnoreCase(type)).toArray();
+        InteractionTemplate[] random = Arrays.stream(templatesNew).filter(x -> x.getTemplateType().equalsIgnoreCase(type)).toArray(InteractionTemplate[]::new);
         if(random.length>0) {
             Random rng = new Random();
             return random[rng.nextInt(random.length)];
@@ -318,7 +319,7 @@ public class Interaction {
     }
 
     public boolean interactionOldFormatUpdate(){
-        if(templates.length>0 || templatesFail.length>0 || templatesPermError.length>0){
+        if(templates!=null || templatesFail!=null || templatesPermError!=null){
             Karren.log.info("Upgrading format on interaction " + identifier);
             ArrayList<InteractionTemplate> newTemplates = new ArrayList<>();
             if(templates!=null)
