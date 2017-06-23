@@ -1,23 +1,32 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "permissionLevel": "bot-manager",
-  "templates": [
-    "Interaction %interaction has been disabled."
-  ],
-  "templatesPermError": [
-    "You don't have permission to disable this... (Not admin)"
-  ],
-  "templatesFail": [
-    "Could not find interaction!"
+  "triggers": [
+    "disable"
   ],
   "tags": [
     "parameter",
     "prefixed",
     "disableinteraction"
   ],
-  "triggers": [
-    "disable"
+  "templatesNew": [
+    {
+      "template": "Interaction %interaction has been disabled.",
+      "templateType": "normal"
+    },
+    {
+      "template": "Could not find interaction!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to disable this... (Not admin)",
+      "templateType": "permission"
+    }
   ],
-  "helptext": "Disables specified interaction"
+  "enabled": true,
+  "helptext": "Disables specified interaction",
+  "identifier": "Disable",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

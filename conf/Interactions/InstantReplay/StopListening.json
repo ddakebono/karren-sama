@@ -1,16 +1,23 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "Stopping Instant Replay"
+  "triggers": [
+    "ir-stop"
   ],
   "tags": [
     "parameter",
     "prefixed",
     "irstop"
   ],
-  "triggers": [
-    "ir-stop"
+  "templatesNew": [
+    {
+      "template": "Stopping Instant Replay",
+      "templateType": "normal"
+    }
   ],
-  "helptext": "Stops Instant replay from listening"
+  "enabled": true,
+  "helptext": "Stops Instant replay from listening",
+  "identifier": "StopListening",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

@@ -1,15 +1,22 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "I'm currently on version %version"
+  "triggers": [
+    "version"
   ],
   "tags": [
     "version",
     "prefixed"
   ],
-  "triggers": [
-    "version"
+  "templatesNew": [
+    {
+      "template": "I\u0027m currently on version %version",
+      "templateType": "normal"
+    }
   ],
-  "helptext": "Ask me my version and I'll respond."
+  "enabled": true,
+  "helptext": "Ask me my version and I\u0027ll respond.",
+  "identifier": "VersionPrefixed",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

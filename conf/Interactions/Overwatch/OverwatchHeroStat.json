@@ -1,23 +1,32 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "**%username's Stats on %hero**\n```%blob```"
-  ],
-  "templatesFail": [
-    "You seem to have missed a parameter, please include both ID and hero separated with a comma."
-  ],
-  "templatesPermError": [
-    "I can't find that ID"
+  "triggers": [
+    "owh",
+    "overwatchhero"
   ],
   "tags": [
     "prefixed",
     "parameter",
     "overwatchhero"
   ],
-  "triggers": [
-    "owh",
-    "overwatchhero"
+  "templatesNew": [
+    {
+      "template": "**%username\u0027s Stats on %hero**\n```%blob```",
+      "templateType": "normal"
+    },
+    {
+      "template": "You seem to have missed a parameter, please include both ID and hero separated with a comma.",
+      "templateType": "fail"
+    },
+    {
+      "template": "I can\u0027t find that ID",
+      "templateType": "permission"
+    }
   ],
-  "helptext": "Pull some relevant data from the Overwatch UAPI"
+  "enabled": true,
+  "helptext": "Pull some relevant data from the Overwatch UAPI",
+  "identifier": "OverwatchHeroStat",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

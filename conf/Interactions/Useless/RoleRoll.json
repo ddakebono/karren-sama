@@ -1,24 +1,36 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "Congrats! You've cleared the DC and have acquired the role **%rngrole** enjoy!"
-  ],
-  "templatesFail": [
-    "Looks like you didn't clear the DC, better luck next time. (%roll(+%bonus) against %dc | %timeremaining)",
-    "Better luck next time. (%roll(+%bonus) against %dc | %timeremaining)"
-  ],
-  "templatesPermError": [
-    "You still need to wait before you can roll again! (%timeremaining)"
-  ],
-  "tags": [
-    "prefixed",
-    "roleroll"
-  ],
   "triggers": [
     "roll",
     "lotto",
     "gibcolor"
   ],
-  "helptext": "Try and roll for a coloured role"
+  "tags": [
+    "prefixed",
+    "roleroll"
+  ],
+  "templatesNew": [
+    {
+      "template": "Congrats! You\u0027ve cleared the DC and have acquired the role **%rngrole** enjoy!",
+      "templateType": "normal"
+    },
+    {
+      "template": "Looks like you didn\u0027t clear the DC, better luck next time. (%roll(+%bonus) against %dc | %timeremaining)",
+      "templateType": "fail"
+    },
+    {
+      "template": "Better luck next time. (%roll(+%bonus) against %dc | %timeremaining)",
+      "templateType": "fail"
+    },
+    {
+      "template": "You still need to wait before you can roll again! (%timeremaining)",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Try and roll for a coloured role",
+  "identifier": "RoleRoll",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

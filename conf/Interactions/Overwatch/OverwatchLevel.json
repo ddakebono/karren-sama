@@ -1,20 +1,28 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "**%username** is **level %level** with **%playtime-quick hours** logged in quickplay and **%playtime-comp hours** in competitive."
-  ],
-  "templatesFail": [
-    "I couldn't find anyone with that ID."
+  "triggers": [
+    "owl",
+    "overwatchlevel"
   ],
   "tags": [
     "prefixed",
     "parameter",
     "overwatchprofile"
   ],
-  "triggers": [
-    "owl",
-    "overwatchlevel"
+  "templatesNew": [
+    {
+      "template": "**%username** is **level %level** with **%playtime-quick hours** logged in quickplay and **%playtime-comp hours** in competitive.",
+      "templateType": "normal"
+    },
+    {
+      "template": "I couldn\u0027t find anyone with that ID.",
+      "templateType": "fail"
+    }
   ],
-  "helptext": "Pull some relevant data from the Overwatch UAPI"
+  "enabled": true,
+  "helptext": "Pull some relevant data from the Overwatch UAPI",
+  "identifier": "OverwatchLevel",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

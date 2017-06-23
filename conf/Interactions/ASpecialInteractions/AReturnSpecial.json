@@ -1,20 +1,32 @@
 {
-  "enabled": true,
-  "confidence": 0,
-  "specialInteraction": true,
-  "templates": [
-    "Hello %name, you have been away for %away.",
-    "Hey there %name, haven't seen you for %away",
-    "What kept you so long %name, last I saw you was %away ago"
-  ],
-  "templatesFail": [
-    "Hey %name, %mention has been away for %away."
-  ],
+  "triggers": [],
   "tags": [
     "return",
     "name"
   ],
-  "triggers": [
+  "templatesNew": [
+    {
+      "template": "Hello %name, you have been away for %away.",
+      "templateType": "normal"
+    },
+    {
+      "template": "Hey there %name, haven\u0027t seen you for %away",
+      "templateType": "normal"
+    },
+    {
+      "template": "What kept you so long %name, last I saw you was %away ago",
+      "templateType": "normal"
+    },
+    {
+      "template": "Hey %name, %mention has been away for %away.",
+      "templateType": "fail"
+    }
   ],
-  "helptext": "Tell me when your back and get a nice welcome back message with the total time you were away."
+  "enabled": true,
+  "helptext": "Tell me when your back and get a nice welcome back message with the total time you were away.",
+  "identifier": "AReturnSpecial",
+  "confidence": 0,
+  "voiceVolume": 0.0,
+  "specialInteraction": true,
+  "isPermBad": false
 }

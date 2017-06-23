@@ -1,15 +1,7 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "voiceVolume": 20,
-  "templates": [
-    "Hey, is this thing on?"
-  ],
-  "templatesFail": [
-    "Something's wrong with that URL, can you give me another one?"
-  ],
-  "templatesPermError":[
-    "I can't seem to use the file from the link you gave."
+  "triggers": [
+    "play",
+    "yt"
   ],
   "tags": [
     "parameter",
@@ -17,9 +9,25 @@
     "prefixed",
     "name"
   ],
-  "triggers": [
-    "play",
-    "yt"
+  "templatesNew": [
+    {
+      "template": "Hey, is this thing on?",
+      "templateType": "normal"
+    },
+    {
+      "template": "Something\u0027s wrong with that URL, can you give me another one?",
+      "templateType": "fail"
+    },
+    {
+      "template": "I can\u0027t seem to use the file from the link you gave.",
+      "templateType": "permission"
+    }
   ],
-  "helptext": "Downloads and plays audio shit from the internet!"
+  "enabled": true,
+  "helptext": "Downloads and plays audio shit from the internet!",
+  "identifier": "D4JPlay",
+  "confidence": 1,
+  "voiceVolume": 20.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

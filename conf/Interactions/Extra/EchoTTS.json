@@ -1,8 +1,6 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "%echo"
+  "triggers": [
+    "echotts"
   ],
   "tags": [
     "parameter",
@@ -10,8 +8,17 @@
     "prefixed",
     "usetts"
   ],
-  "triggers": [
-    "echotts"
+  "templatesNew": [
+    {
+      "template": "%echo",
+      "templateType": "normal"
+    }
   ],
-  "helptext": "Echoes the input message."
+  "enabled": true,
+  "helptext": "Echoes the input message.",
+  "identifier": "EchoTTS",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

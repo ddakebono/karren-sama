@@ -1,15 +1,22 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "Repeat is now %bool"
+  "triggers": [
+    "repeat"
   ],
   "tags": [
     "d4jrepeat",
     "prefixed"
   ],
-  "triggers": [
-    "repeat"
+  "templatesNew": [
+    {
+      "template": "Repeat is now %bool",
+      "templateType": "normal"
+    }
   ],
-  "helptext": "Enable/disable repeat on D4JPlayer"
+  "enabled": true,
+  "helptext": "Enable/disable repeat on D4JPlayer",
+  "identifier": "D4JRepeat",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

@@ -11,7 +11,7 @@
 package org.frostbite.karren;
 
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.InteractionProcessor;
@@ -25,8 +25,7 @@ import org.frostbite.karren.listeners.InteractionCommands;
 import sx.blah.discord.handle.obj.IGuild;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -89,17 +88,19 @@ public class GuildManager {
         lock = true;
         if(registeredGuilds.size()>0)
             registeredGuilds.clear();
-        Gson gson = new Gson();
+        ObjectMapper gson = new ObjectMapper();
         defaultInteractions = new ArrayList<>();
         File intDir = new File("conf/Interactions");
         if(intDir.isDirectory()){
             File[] intFiles = KarrenUtil.getFilesInFolders(intDir);
             for(File file : intFiles){
                 try {
-                    Interaction tempInteraction = gson.fromJson(new FileReader(file), Interaction.class);
+                    Interaction tempInteraction = gson.readValue(file, Interaction.class);
                     tempInteraction.setIdentifier(FilenameUtils.removeExtension(file.getName()));
+                    tempInteraction.setInteractionFile(file);
+                    tempInteraction.interactionOldFormatUpdate();
                     defaultInteractions.add(tempInteraction);
-                } catch (FileNotFoundException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }

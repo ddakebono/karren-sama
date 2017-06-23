@@ -1,20 +1,31 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "The current song playing is: \"%d4jtitle\" (%position/%duration)"
-  ],
-  "templatesFail": [
-    "Nothing is playing!",
-    "There's nothing being played right now"
+  "triggers": [
+    "np"
   ],
   "tags": [
     "d4jnowplaying",
     "d4jnowplayingtime",
     "prefixed"
   ],
-  "triggers": [
-    "np"
+  "templatesNew": [
+    {
+      "template": "The current song playing is: \"%d4jtitle\" (%position/%duration)",
+      "templateType": "normal"
+    },
+    {
+      "template": "Nothing is playing!",
+      "templateType": "fail"
+    },
+    {
+      "template": "There\u0027s nothing being played right now",
+      "templateType": "fail"
+    }
   ],
-  "helptext": "Lists current song title"
+  "enabled": true,
+  "helptext": "Lists current song title",
+  "identifier": "D4JNowPlaying",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

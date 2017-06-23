@@ -1,22 +1,31 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "**%username (Lvl %level)** is rank **#%rank** with a total score of **%score**"
-  ],
-  "templatesFail": [
-    "I can't seem to find someone with that name, please make sure you typed it correctly!"
-  ],
-  "templatesPermError": [
-    "I can't find that ID"
+  "triggers": [
+    "osu"
   ],
   "tags": [
     "prefixed",
     "parameter",
     "osugetuser"
   ],
-  "triggers": [
-    "osu"
+  "templatesNew": [
+    {
+      "template": "**%username (Lvl %level)** is rank **#%rank** with a total score of **%score**",
+      "templateType": "normal"
+    },
+    {
+      "template": "I can\u0027t seem to find someone with that name, please make sure you typed it correctly!",
+      "templateType": "fail"
+    },
+    {
+      "template": "I can\u0027t find that ID",
+      "templateType": "permission"
+    }
   ],
-  "helptext": "Pull some relevant data from the osu! api"
+  "enabled": true,
+  "helptext": "Pull some relevant data from the osu! api",
+  "identifier": "OsuProfile",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

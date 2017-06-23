@@ -1,23 +1,32 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "permissionLevel": "bot-manager",
-  "templates": [
-    "Status set to %param"
-  ],
-  "templatesPermError": [
-    "You don't have permission to disable this... (Not admin)"
-  ],
-  "templatesFail": [
-    "Status set to nothing"
+  "triggers": [
+    "status"
   ],
   "tags": [
     "parameter",
     "prefixed",
     "setstatus"
   ],
-  "triggers": [
-    "status"
+  "templatesNew": [
+    {
+      "template": "Status set to %param",
+      "templateType": "normal"
+    },
+    {
+      "template": "Status set to nothing",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to disable this... (Not admin)",
+      "templateType": "permission"
+    }
   ],
-  "helptext": "Disables specified interaction"
+  "enabled": true,
+  "helptext": "Disables specified interaction",
+  "identifier": "Status",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

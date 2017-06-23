@@ -1,23 +1,32 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "permissionLevel": "bot-manager",
-  "templates": [
-    "Command prefix has been set to %prefix"
-  ],
-  "templatesFail": [
-    "You need to give me a new command prefix!"
-  ],
-  "templatesPermError": [
-    "You don't have permission to change this... (Not admin)"
+  "triggers": [
+    "prefix"
   ],
   "tags": [
     "prefixed",
     "parameter",
     "setprefix"
   ],
-  "triggers": [
-    "prefix"
+  "templatesNew": [
+    {
+      "template": "Command prefix has been set to %prefix",
+      "templateType": "normal"
+    },
+    {
+      "template": "You need to give me a new command prefix!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to change this... (Not admin)",
+      "templateType": "permission"
+    }
   ],
-  "helptext": "Sets command prefix for a guild"
+  "enabled": true,
+  "helptext": "Sets command prefix for a guild",
+  "identifier": "SetPrefix",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

@@ -1,16 +1,23 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "The current playlist is: ```%nplist```"
+  "triggers": [
+    "list"
   ],
   "tags": [
     "d4jlist",
     "prefixed",
     "pm"
   ],
-  "triggers": [
-    "list"
+  "templatesNew": [
+    {
+      "template": "The current playlist is: ```%nplist```",
+      "templateType": "normal"
+    }
   ],
-  "helptext": "Lists current playlist"
+  "enabled": true,
+  "helptext": "Lists current playlist",
+  "identifier": "D4JQueue",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

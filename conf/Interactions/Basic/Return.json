@@ -1,19 +1,4 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "Hello %name, you have been away for %away.",
-    "Hey there %name, haven't seen you for %away",
-    "What kept you so long %name, last I saw you was %away ago"
-  ],
-  "templatesFail": [
-    "Hey %name, are you new? Be sure to say good bye to me when you leave!"
-  ],
-  "tags": [
-    "bot",
-    "return",
-    "name"
-  ],
   "triggers": [
     "hello",
     "hi",
@@ -22,5 +7,34 @@
     "ohio",
     "ohaiyo"
   ],
-  "helptext": "Tell me when your back and get a nice welcome back message with the total time you were away."
+  "tags": [
+    "bot",
+    "return",
+    "name"
+  ],
+  "templatesNew": [
+    {
+      "template": "Hello %name, you have been away for %away.",
+      "templateType": "normal"
+    },
+    {
+      "template": "Hey there %name, haven\u0027t seen you for %away",
+      "templateType": "normal"
+    },
+    {
+      "template": "What kept you so long %name, last I saw you was %away ago",
+      "templateType": "normal"
+    },
+    {
+      "template": "Hey %name, are you new? Be sure to say good bye to me when you leave!",
+      "templateType": "fail"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Tell me when your back and get a nice welcome back message with the total time you were away.",
+  "identifier": "Return",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

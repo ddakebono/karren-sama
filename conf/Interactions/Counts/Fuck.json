@@ -1,17 +1,23 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "specialInteraction": true,
-  "templates": [
-    "Fuck has been said %count times since %since"
-  ],
-  "tags": [
-    "count5"
-  ],
   "triggers": [
     "fuck",
     "fucking",
     "fucker"
   ],
-  "helptext": "Fuck counter"
+  "tags": [
+    "count5"
+  ],
+  "templatesNew": [
+    {
+      "template": "Fuck has been said %count times since %since",
+      "templateType": "normal"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Fuck counter",
+  "identifier": "Fuck",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": true,
+  "isPermBad": false
 }

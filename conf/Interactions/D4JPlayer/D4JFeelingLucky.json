@@ -1,12 +1,7 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "voiceVolume": 20,
-  "templates": [
-    "Found \"%title\", added to queue."
-  ],
-  "templatesFail": [
-    "No results were returned from that search..."
+  "triggers": [
+    "ytfl",
+    "feelinglucky"
   ],
   "tags": [
     "parameter",
@@ -15,9 +10,21 @@
     "d4jplay",
     "prefixed"
   ],
-  "triggers": [
-    "ytfl",
-    "feelinglucky"
+  "templatesNew": [
+    {
+      "template": "Found \"%title\", added to queue.",
+      "templateType": "normal"
+    },
+    {
+      "template": "No results were returned from that search...",
+      "templateType": "fail"
+    }
   ],
-  "helptext": "This command searches youtube for the specified video and plays the first result."
+  "enabled": true,
+  "helptext": "This command searches youtube for the specified video and plays the first result.",
+  "identifier": "D4JFeelingLucky",
+  "confidence": 1,
+  "voiceVolume": 20.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

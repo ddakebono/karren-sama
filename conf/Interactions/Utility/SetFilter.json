@@ -1,23 +1,32 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "permissionLevel": "bot-manager",
-  "templates": [
-    "Command block has been %setting for %user"
-  ],
-  "templatesFail": [
-    "You can't set yourself to be ignored!"
-  ],
-  "templatesPermError": [
-    "You don't have permission to change this... (Not admin)"
+  "triggers": [
+    "filter"
   ],
   "tags": [
     "prefixed",
     "mentioned",
     "setfilter"
   ],
-  "triggers": [
-    "filter"
+  "templatesNew": [
+    {
+      "template": "Command block has been %setting for %user",
+      "templateType": "normal"
+    },
+    {
+      "template": "You can\u0027t set yourself to be ignored!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to change this... (Not admin)",
+      "templateType": "permission"
+    }
   ],
-  "helptext": "Sets if a user is ignored by the bot"
+  "enabled": true,
+  "helptext": "Sets if a user is ignored by the bot",
+  "identifier": "SetFilter",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

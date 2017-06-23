@@ -18,6 +18,7 @@ import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,11 +52,12 @@ public class MySQLInterface {
         if(Karren.conf.getAllowSQLRW()){
             if(guild!=null) {
                 if (!dbGuildUserCache.containsKey(guild.getStringID() + user.getStringID())) {
+                    DbUser dbuser = getUserData(user);
                     String sql = "INSERT IGNORE GuildUser (GuildUserID, UserID, GuildID, RollTimeout, IgnoreCommands, RollsSinceLastClear, TotalRolls) VALUES (null, ?, ?, null, 0, 0, 0)";
-                    Object[] params = {user.getLongID(), guild.getStringID()};
+                    Object[] params = {dbuser.getUserID(), guild.getStringID()};
                     Yank.execute(sql, params);
                     sql = "SELECT * FROM GuildUser WHERE UserID=? AND GuildID=?";
-                    Object[] params2 = {user.getLongID(), guild.getStringID()};
+                    Object[] params2 = {dbuser.getUserID(), guild.getStringID()};
                     DbGuildUser dbGuildUser = Yank.queryBean(sql, DbGuildUser.class, params2);
                     dbGuildUserCache.put(guild.getStringID() + user.getStringID(), dbGuildUser);
                     return dbGuildUser;

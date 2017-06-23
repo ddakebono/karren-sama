@@ -1,20 +1,27 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "voiceVolume": 20,
-  "templates": [
-    "```Here's the results, please respond with the number of the video you want, or respond with c to cancel:%results```"
-  ],
-  "templatesFail": [
-    "No results were returned from that search..."
+  "triggers": [
+    "yts"
   ],
   "tags": [
     "parameter",
     "d4jsearch",
     "prefixed"
   ],
-  "triggers": [
-    "yts"
+  "templatesNew": [
+    {
+      "template": "```Here\u0027s the results, please respond with the number of the video you want, or respond with c to cancel:%results```",
+      "templateType": "normal"
+    },
+    {
+      "template": "No results were returned from that search...",
+      "templateType": "fail"
+    }
   ],
-  "helptext": "This command searches youtube for the specified title, then displays 3 options to choose for playback."
+  "enabled": true,
+  "helptext": "This command searches youtube for the specified title, then displays 3 options to choose for playback.",
+  "identifier": "D4JSearch",
+  "confidence": 1,
+  "voiceVolume": 20.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

@@ -1,12 +1,14 @@
 package org.frostbite.karren.interactions;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Created by ddakebono on 6/20/2017.
  */
 public class InteractionTemplate {
     private int templateid;
-    private String template;
-    private String templateType;
+    @Expose private String template;
+    @Expose private String templateType;
     private Interaction interaction;
 
     public InteractionTemplate(String template, String templateType, Interaction interaction){

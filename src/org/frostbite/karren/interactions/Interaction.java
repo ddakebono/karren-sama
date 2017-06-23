@@ -10,36 +10,49 @@
 
 package org.frostbite.karren.interactions;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 import java.util.regex.Pattern;
 
 public class Interaction {
-    private String[] triggers;
-    private String[] tags;
-    private InteractionTemplate[] templates;
-    private String[] voiceFiles;
-    private boolean enabled = true;
-    private String helptext;
-    private String identifier;
-    private int confidence = 0;
-    private String permissionLevel;
-    private String channel;
-    private float voiceVolume = 0.1f;
-    private String parameter;
-    private boolean specialInteraction = false;
-    private boolean isPermBad = false;
+    @Expose private String[] triggers;
+    @Expose private String[] tags;
+    @Expose private InteractionTemplate[] templatesNew;
+    private String[] templates;
+    private String[] templatesFail;
+    private String[] templatesPermError;
+    @Expose private String[] voiceFiles;
+    @Expose private boolean enabled = true;
+    @Expose private String helptext;
+    @Expose private String identifier;
+    @Expose private int confidence = 0;
+    @Expose private String permissionLevel;
+    @Expose private String channel;
+    @Expose private float voiceVolume = 0.1f;
+    @Expose private String parameter;
+    @Expose private boolean specialInteraction = false;
+    @Expose private boolean isPermBad = false;
     private int usageCount = -1;
     private ArrayList<String> allowedUsers = new ArrayList<>();
     private boolean stopProcessing = false;
     private int confidenceChecked = 0;
     private List<IUser> mentionedUsers = new LinkedList<>();
     private boolean lock = false;
+    private File interactionFile;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal", null)}, triggers, confidence, enabled, helptext);
@@ -55,11 +68,31 @@ public class Interaction {
         this.allowedUsers.add(userID);
     }
 
-    public Interaction(String identifier, String[] tags, InteractionTemplate[] templates, String[] triggers, int confidence, boolean enabled, String helptext, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction){
+    @JsonCreator
+    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail,@JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction) {
+        this.triggers = triggers;
+        this.tags = tags;
+        this.templatesNew = templatesNew;
+        this.templates = templates;
+        this.templatesFail = templatesFail;
+        this.templatesPermError = templatesPermError;
+        this.voiceFiles = voiceFiles;
+        this.enabled = enabled;
+        this.helptext = helptext;
+        this.identifier = identifier;
+        this.confidence = confidence;
+        this.permissionLevel = permissionLevel;
+        this.channel = channel;
+        this.voiceVolume = voiceVolume;
+        this.parameter = parameter;
+        this.specialInteraction = specialInteraction;
+    }
+
+    public Interaction(String identifier, String[] tags, InteractionTemplate[] templatesNew, String[] triggers, int confidence, boolean enabled, String helptext, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction){
         this.specialInteraction = specialInteraction;
         this.identifier = identifier;
         this.tags = tags;
-        this.templates = templates;
+        this.templatesNew = templatesNew;
         this.confidence = confidence;
         this.triggers = triggers;
         this.enabled = enabled;
@@ -141,7 +174,7 @@ public class Interaction {
     }
 
     public InteractionTemplate getRandomTemplate(String type) {
-        InteractionTemplate[] random = (InteractionTemplate[]) Arrays.stream(templates).filter(x -> x.getTemplateType().equalsIgnoreCase(type)).toArray();
+        InteractionTemplate[] random = (InteractionTemplate[]) Arrays.stream(templatesNew).filter(x -> x.getTemplateType().equalsIgnoreCase(type)).toArray();
         if(random.length>0) {
             Random rng = new Random();
             return random[rng.nextInt(random.length)];
@@ -159,7 +192,7 @@ public class Interaction {
         }
         return result.toString();
     }
-    public InteractionTemplate[] getTemplates(String type){return (InteractionTemplate[]) Arrays.stream(templates).filter(x -> x.getTemplateType().equalsIgnoreCase(type)).toArray();}
+    public InteractionTemplate[] getTemplates(String type){return (InteractionTemplate[]) Arrays.stream(templatesNew).filter(x -> x.getTemplateType().equalsIgnoreCase(type)).toArray();}
     public InteractionTemplate[] getTemplates(){return getTemplates("normal");}
     public String[] getTriggers(){
         return triggers;
@@ -274,5 +307,39 @@ public class Interaction {
 
     public void setLock(boolean lock) {
         this.lock = lock;
+    }
+
+    public File getInteractionFile() {
+        return interactionFile;
+    }
+
+    public void setInteractionFile(File interactionFile) {
+        this.interactionFile = interactionFile;
+    }
+
+    public boolean interactionOldFormatUpdate(){
+        if(templates.length>0 || templatesFail.length>0 || templatesPermError.length>0){
+            Karren.log.info("Upgrading format on interaction " + identifier);
+            ArrayList<InteractionTemplate> newTemplates = new ArrayList<>();
+            if(templates!=null)
+                for(String normal : templates)
+                    newTemplates.add(new InteractionTemplate(normal, "normal", this));
+            if(templatesFail!=null)
+                for(String fail : templatesFail)
+                    newTemplates.add(new InteractionTemplate(fail, "fail", this));
+            if(templatesPermError!=null)
+                for(String permission : templatesPermError)
+                    newTemplates.add(new InteractionTemplate(permission, "permission", this));
+            templatesNew = newTemplates.toArray(new InteractionTemplate[newTemplates.size()]);
+            Gson json = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+            try (Writer writer = new FileWriter(interactionFile)) {
+                json.toJson(this, writer);
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return false;
     }
 }

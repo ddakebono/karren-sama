@@ -1,19 +1,27 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "Playing back stored voice data for %username"
-  ],
-  "templatesFail": [
-    "You need to use an @ mention to tell me who to play back!"
+  "triggers": [
+    "ir-play"
   ],
   "tags": [
     "mentioned",
     "prefixed",
     "irplay"
   ],
-  "triggers": [
-    "ir-play"
+  "templatesNew": [
+    {
+      "template": "Playing back stored voice data for %username",
+      "templateType": "normal"
+    },
+    {
+      "template": "You need to use an @ mention to tell me who to play back!",
+      "templateType": "fail"
+    }
   ],
-  "helptext": "Plays back instant replay data for mentioned user."
+  "enabled": true,
+  "helptext": "Plays back instant replay data for mentioned user.",
+  "identifier": "IRPlay",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

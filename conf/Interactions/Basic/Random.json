@@ -1,16 +1,4 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "I choose %result",
-    "I pick %result",
-    "I drew %result",
-    "I selected %result"
-  ],
-  "tags": [
-    "bot",
-    "random"
-  ],
   "triggers": [
     "choose",
     "take",
@@ -18,5 +6,33 @@
     "select",
     "draw"
   ],
-  "helptext": "Give me a list and I'll pick a random one. Like this \"Karren-sama choose one: 1,2,3\""
+  "tags": [
+    "bot",
+    "random"
+  ],
+  "templatesNew": [
+    {
+      "template": "I choose %result",
+      "templateType": "normal"
+    },
+    {
+      "template": "I pick %result",
+      "templateType": "normal"
+    },
+    {
+      "template": "I drew %result",
+      "templateType": "normal"
+    },
+    {
+      "template": "I selected %result",
+      "templateType": "normal"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Give me a list and I\u0027ll pick a random one. Like this \"Karren-sama choose one: 1,2,3\"",
+  "identifier": "Random",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

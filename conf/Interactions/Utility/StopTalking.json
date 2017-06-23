@@ -1,20 +1,28 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "Alright..."
-  ],
-  "templatesPermError": [
-    "You can't tell me what to do!"
-  ],
-  "tags": [
-    "bot",
-    "d4jstop"
-  ],
   "triggers": [
     "shutup",
     "quiet",
     "talking"
   ],
-  "helptext": "Stops me from talking"
+  "tags": [
+    "bot",
+    "d4jstop"
+  ],
+  "templatesNew": [
+    {
+      "template": "Alright...",
+      "templateType": "normal"
+    },
+    {
+      "template": "You can\u0027t tell me what to do!",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Stops me from talking",
+  "identifier": "StopTalking",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

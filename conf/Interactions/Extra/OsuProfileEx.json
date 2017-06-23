@@ -1,22 +1,31 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "```%username (lvl %level) is rank #%rank (%rawpp PP) with a total score of %score.\nThey have played %playcount maps with %countss SS's, %counts S's and %counta A's.\nIt appears they are from %country and are ranked %countryrank there.```"
-  ],
-  "templatesFail": [
-    "I can't seem to find someone with that name, please make sure you typed it correctly!"
-  ],
-  "templatesPermError": [
-    "I can't find that ID"
+  "triggers": [
+    "osuex"
   ],
   "tags": [
     "prefixed",
     "parameter",
     "osugetuser"
   ],
-  "triggers": [
-    "osuex"
+  "templatesNew": [
+    {
+      "template": "```%username (lvl %level) is rank #%rank (%rawpp PP) with a total score of %score.\nThey have played %playcount maps with %countss SS\u0027s, %counts S\u0027s and %counta A\u0027s.\nIt appears they are from %country and are ranked %countryrank there.```",
+      "templateType": "normal"
+    },
+    {
+      "template": "I can\u0027t seem to find someone with that name, please make sure you typed it correctly!",
+      "templateType": "fail"
+    },
+    {
+      "template": "I can\u0027t find that ID",
+      "templateType": "permission"
+    }
   ],
-  "helptext": "Pull more relevant data from the osu! api"
+  "enabled": true,
+  "helptext": "Pull more relevant data from the osu! api",
+  "identifier": "OsuProfileEx",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

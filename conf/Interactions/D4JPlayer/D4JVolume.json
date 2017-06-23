@@ -1,16 +1,23 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "Volume changed to %volume"
+  "triggers": [
+    "volume"
   ],
   "tags": [
     "parameter",
     "volume",
     "prefixed"
   ],
-  "triggers": [
-    "volume"
+  "templatesNew": [
+    {
+      "template": "Volume changed to %volume",
+      "templateType": "normal"
+    }
   ],
-  "helptext": "Change the volume for playback"
+  "enabled": true,
+  "helptext": "Change the volume for playback",
+  "identifier": "D4JVolume",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

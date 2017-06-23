@@ -1,16 +1,23 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "templates": [
-    "Starting up Instant Replay"
+  "triggers": [
+    "ir-start"
   ],
   "tags": [
     "parameter",
     "prefixed",
     "irstart"
   ],
-  "triggers": [
-    "ir-start"
+  "templatesNew": [
+    {
+      "template": "Starting up Instant Replay",
+      "templateType": "normal"
+    }
   ],
-  "helptext": "Start up the instant replay listener"
+  "enabled": true,
+  "helptext": "Start up the instant replay listener",
+  "identifier": "StartListening",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

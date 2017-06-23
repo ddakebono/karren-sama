@@ -1,23 +1,32 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "permissionLevel": "bot-manager",
-  "templates": [
-    "Interaction %interaction has been enabled."
-  ],
-  "templatesPermError": [
-    "You don't have permission to enable this... (Not admin)"
-  ],
-  "templatesFail": [
-    "Could not find interaction!"
+  "triggers": [
+    "enable"
   ],
   "tags": [
     "parameter",
     "prefixed",
     "enableinteraction"
   ],
-  "triggers": [
-    "enable"
+  "templatesNew": [
+    {
+      "template": "Interaction %interaction has been enabled.",
+      "templateType": "normal"
+    },
+    {
+      "template": "Could not find interaction!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to enable this... (Not admin)",
+      "templateType": "permission"
+    }
   ],
-  "helptext": "Enables specified interaction"
+  "enabled": true,
+  "helptext": "Enables specified interaction",
+  "identifier": "Enable",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

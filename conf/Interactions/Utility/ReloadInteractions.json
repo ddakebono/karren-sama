@@ -1,20 +1,31 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "permissionLevel": "bot-manager",
-  "templates": [
-    "Interactions reloaded."
-  ],
-  "templatesPermError": [
-    "You don't have permission to use this... (Not admin)",
-    "You're gonna need the admin role to use this..."
+  "triggers": [
+    "reloadint"
   ],
   "tags": [
     "interactionreload",
     "prefixed"
   ],
-  "triggers": [
-    "reloadint"
+  "templatesNew": [
+    {
+      "template": "Interactions reloaded.",
+      "templateType": "normal"
+    },
+    {
+      "template": "You don\u0027t have permission to use this... (Not admin)",
+      "templateType": "permission"
+    },
+    {
+      "template": "You\u0027re gonna need the admin role to use this...",
+      "templateType": "permission"
+    }
   ],
-  "helptext": "Reloads interactions system"
+  "enabled": true,
+  "helptext": "Reloads interactions system",
+  "identifier": "ReloadInteractions",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
 }

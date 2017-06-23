@@ -1,16 +1,22 @@
 {
-  "enabled": true,
-  "confidence": 1,
-  "voiceVolume": 0.2,
-  "templates": [
-    ""
+  "triggers": [
+    "stop"
   ],
   "tags": [
     "d4jstop",
     "prefixed"
   ],
-  "triggers": [
-    "stop"
+  "templatesNew": [
+    {
+      "template": "",
+      "templateType": "normal"
+    }
   ],
-  "helptext": "Stopped music playback"
+  "enabled": true,
+  "helptext": "Stopped music playback",
+  "identifier": "D4JStop",
+  "confidence": 1,
+  "voiceVolume": 0.2,
+  "specialInteraction": false,
+  "isPermBad": false
 }
