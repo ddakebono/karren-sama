@@ -29,7 +29,7 @@ public class Karren{
     public static JsonConfig conf;
     public static Properties jarProps = new Properties();
     public static String botVersion;
-    public static final String confVersion = "1.0";
+    public static final String confVersion = "1.1";
     public static long startTime = System.currentTimeMillis();
 
 	public static void main(String[] args){
