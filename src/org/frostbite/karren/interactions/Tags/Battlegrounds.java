@@ -39,29 +39,41 @@ public class Battlegrounds implements Tag {
         if(!interaction.hasParameter())
             return interaction.getRandomTemplate("noparam").getTemplate();
         String parameter = interaction.getParameter();
-        JsonParser json = new JsonParser();
-        try {
-            sc = SSLContext.getInstance("SSL");
-            sc.init(null, KarrenUtil.trustAllCertificates, new SecureRandom());
-            HttpsURLConnection profileRequest = (HttpsURLConnection)new URL("https://pubgtracker.com/api/profile/pc/" + parameter).openConnection();
-            profileRequest.setSSLSocketFactory(sc.getSocketFactory());
-            profileRequest.setRequestProperty("TRN-Api-Key", Karren.conf.getTrackerNetworkAPIKey());
-            profileRequest.connect();
-            JsonObject profileData = json.parse(new InputStreamReader((InputStream)profileRequest.getContent())).getAsJsonObject();
-            JsonArray statsArray = profileData.get("Stats").getAsJsonArray().get(0).getAsJsonObject().get("Stats").getAsJsonArray();
-            ArrayList<JsonObject> statsArrayList = new ArrayList<>();
-            for(JsonElement jsonObject : statsArray)
-                statsArrayList.add(jsonObject.getAsJsonObject());
-            msg = msg.replace("%username", profileData.get("PlayerName").getAsString());
-            msg = msg.replace("%kills", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Kills")).findFirst().get().get("value").getAsString());
-            msg = msg.replace("%rating", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Rating")).findFirst().get().get("value").getAsString());
-            msg = msg.replace("%roundsPlayed", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("RoundsPlayed")).findFirst().get().get("value").getAsString());
-            msg = msg.replace("%kdr", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("KillDeathRatio")).findFirst().get().get("value").getAsString());
-            msg = msg.replace("%top10s", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Top10s")).findFirst().get().get("value").getAsString());
-            msg = msg.replace("%wins", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Wins")).findFirst().get().get("value").getAsString());
-            msg = msg.replace("%losses", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Losses")).findFirst().get().get("value").getAsString());
-        } catch (NoSuchAlgorithmException | IOException | KeyManagementException e) {
-            return interaction.getRandomTemplate("fail").getTemplate();
+        String[] params = parameter.split(",");
+        if(params.length>1) {
+            JsonParser json = new JsonParser();
+            try {
+                sc = SSLContext.getInstance("SSL");
+                sc.init(null, KarrenUtil.trustAllCertificates, new SecureRandom());
+                HttpsURLConnection profileRequest = (HttpsURLConnection) new URL("https://pubgtracker.com/api/profile/pc/" + params[0].trim()).openConnection();
+                profileRequest.setSSLSocketFactory(sc.getSocketFactory());
+                profileRequest.setRequestProperty("TRN-Api-Key", Karren.conf.getTrackerNetworkAPIKey());
+                profileRequest.connect();
+                JsonObject profileData = json.parse(new InputStreamReader((InputStream) profileRequest.getContent())).getAsJsonObject();
+                JsonObject selectedSeason = null;
+                for (JsonElement jsonElement : profileData.get("Stats").getAsJsonArray()) {
+                    if (jsonElement.getAsJsonObject().get("Region").getAsString().equalsIgnoreCase("na") && jsonElement.getAsJsonObject().get("Season").getAsString().equalsIgnoreCase(profileData.get("defaultSeason").getAsString()) && jsonElement.getAsJsonObject().get("Match").getAsString().equalsIgnoreCase(params[1].trim())) {
+                        selectedSeason = jsonElement.getAsJsonObject();
+                        break;
+                    }
+                }
+                ArrayList<JsonObject> statsArrayList = new ArrayList<>();
+                if (selectedSeason != null)
+                    for (JsonElement jsonObject : selectedSeason.get("Stats").getAsJsonArray())
+                        statsArrayList.add(jsonObject.getAsJsonObject());
+                msg = msg.replace("%username", profileData.get("PlayerName").getAsString());
+                msg = msg.replace("%kills", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Kills")).findFirst().get().get("value").getAsString());
+                msg = msg.replace("%rating", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Rating")).findFirst().get().get("value").getAsString());
+                msg = msg.replace("%roundsPlayed", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("RoundsPlayed")).findFirst().get().get("value").getAsString());
+                msg = msg.replace("%kdr", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("KillDeathRatio")).findFirst().get().get("value").getAsString());
+                msg = msg.replace("%top10s", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Top10s")).findFirst().get().get("value").getAsString());
+                msg = msg.replace("%wins", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Wins")).findFirst().get().get("value").getAsString());
+                msg = msg.replace("%losses", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Losses")).findFirst().get().get("value").getAsString());
+            } catch (NoSuchAlgorithmException | IOException | KeyManagementException e) {
+                return interaction.getRandomTemplate("fail").getTemplate();
+            }
+        } else {
+            msg = interaction.getRandomTemplate("noparam").getTemplate();
         }
         return msg;
     }
