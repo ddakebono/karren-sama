@@ -24,6 +24,10 @@
     {
       "template": "You still need to wait before you can roll again! (%timeremaining)",
       "templateType": "permission"
+    },
+    {
+      "template": "Looks like this server doesn't have any lotto- roles configured, tell your admin to add some!",
+      "templateType": "noroles"
     }
   ],
   "enabled": true,
