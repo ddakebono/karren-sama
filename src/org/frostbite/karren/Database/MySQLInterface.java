@@ -10,17 +10,17 @@
 
 package org.frostbite.karren.Database;
 
-import org.frostbite.karren.Database.Objects.DbGuild;
-import org.frostbite.karren.Database.Objects.DbGuildUser;
-import org.frostbite.karren.Database.Objects.DbUser;
-import org.frostbite.karren.Database.Objects.DbWordcount;
+import org.frostbite.karren.Database.Objects.*;
 import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MySQLInterface {
 
@@ -29,6 +29,7 @@ public class MySQLInterface {
     private Map<String, DbGuildUser> dbGuildUserCache = new HashMap<>();
     private Map<String, DbUser> dbUserCache = new HashMap<>();
     private Map<String, DbWordcount> dbWordcountCache = new HashMap<>();
+    private ArrayList<DbReminder> dbReminderCache = new ArrayList<>();
 
     public DbGuild getGuild(IGuild guild){
         if(Karren.conf.getAllowSQLRW()){
@@ -114,4 +115,16 @@ public class MySQLInterface {
         }
         return null;
     }
+
+    public DbReminder[] getReminder(IUser target){
+        if(Karren.conf.getAllowSQLRW()){
+            List<DbReminder> reminders = dbReminderCache.stream().filter(x -> x.getTargetID().equals(target.getStringID())).collect(Collectors.toList());
+            if(reminders.size()>0)
+                return (DbReminder[]) reminders.toArray();
+            String sql = "SELECT * FROM Reminders WHERE UserID=?, ReminderTime=?";
+
+        }
+        return null;
+    }
+
 }
