@@ -16,7 +16,9 @@ import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IRole;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
+import sx.blah.discord.util.PermissionUtils;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -31,7 +33,7 @@ public class RoleRoll implements Tag {
         if(!event.getMessage().getChannel().isPrivate()) {
             DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor());
             List<IRole> rollRoles = new LinkedList<>();
-            if(!event.getMessage().getGuild().getRolesForUser(event.getClient().getOurUser()).contains("MANAGE_ROLES"))
+            if(!PermissionUtils.hasPermissions(event.getGuild(), event.getClient().getOurUser(), Permissions.MANAGE_ROLES))
                 return interaction.getRandomTemplate("noroleperm").getTemplate();
             for (IRole role : event.getGuild().getRoles())
                 if (role.getName().contains("lotto-"))
