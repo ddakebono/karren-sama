@@ -31,6 +31,8 @@ public class RoleRoll implements Tag {
         if(!event.getMessage().getChannel().isPrivate()) {
             DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor());
             List<IRole> rollRoles = new LinkedList<>();
+            if(!event.getMessage().getGuild().getRolesForUser(event.getClient().getOurUser()).contains("MANAGE_ROLES"))
+                return interaction.getRandomTemplate("noroleperm").getTemplate();
             for (IRole role : event.getGuild().getRoles())
                 if (role.getName().contains("lotto-"))
                     rollRoles.add(role);
