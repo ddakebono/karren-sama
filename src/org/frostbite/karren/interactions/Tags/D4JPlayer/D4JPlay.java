@@ -9,13 +9,15 @@ import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Objects;
 
 
-public class D4JPlay implements Tag{
+public class D4JPlay extends Tag{
 
     public final String[] usableExtensions = {"mp3", "ogg", "webm", "flac", "wav", "mp4", "m4a", "aac", "m3u", "pls"};
 
@@ -50,6 +52,16 @@ public class D4JPlay implements Tag{
         }
 
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "d4jplay";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES, Permissions.VOICE_CONNECT, Permissions.VOICE_SPEAK);
     }
 
 

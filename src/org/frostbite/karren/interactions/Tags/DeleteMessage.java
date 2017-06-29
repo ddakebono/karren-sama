@@ -13,12 +13,15 @@ package org.frostbite.karren.interactions.Tags;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
-public class DeleteMessage implements Tag {
+import java.util.EnumSet;
+
+public class DeleteMessage extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         try {
@@ -27,5 +30,15 @@ public class DeleteMessage implements Tag {
             e.printStackTrace();
         }
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "deletemsg";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES, Permissions.MANAGE_MESSAGES);
     }
 }

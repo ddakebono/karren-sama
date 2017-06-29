@@ -13,11 +13,11 @@ package org.frostbite.karren.interactions.Tags;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -31,11 +31,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-public class OverwatchUAPIHero implements Tag {
+public class OverwatchUAPIHero extends Tag {
 
     DecimalFormat df =new DecimalFormat("#.##");
 
@@ -87,5 +87,15 @@ public class OverwatchUAPIHero implements Tag {
             msg = interaction.getRandomTemplate("permission").getTemplate();
         }
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "overwatchhero";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

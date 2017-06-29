@@ -16,9 +16,12 @@ import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
-public class SetFilter implements Tag {
+import java.util.EnumSet;
+
+public class SetFilter extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         if(interaction.getMentionedUsers().size()>0){
@@ -39,5 +42,15 @@ public class SetFilter implements Tag {
             }
         }
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "setfilter";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

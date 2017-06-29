@@ -16,6 +16,7 @@ import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -27,12 +28,13 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class OverwatchUAPIAllHeroes implements Tag {
+public class OverwatchUAPIAllHeroes extends Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
@@ -61,5 +63,15 @@ public class OverwatchUAPIAllHeroes implements Tag {
             msg = interaction.getRandomTemplate("permission").getTemplate();
         }
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "overwatchallheroes";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

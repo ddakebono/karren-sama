@@ -16,9 +16,12 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
-public class Playback implements Tag {
+import java.util.EnumSet;
+
+public class Playback extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         if(Karren.bot.getIrm().isGuildIRActive(event.getGuild()) && !Karren.bot.getGuildMusicManager(event.getGuild()).scheduler.isSchedulerActive()) {
@@ -39,4 +42,15 @@ public class Playback implements Tag {
         }
         return msg;
     }
+
+    @Override
+    public String getTagName() {
+        return "ifplay";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.VOICE_SPEAK, Permissions.SEND_MESSAGES);
+    }
+
 }

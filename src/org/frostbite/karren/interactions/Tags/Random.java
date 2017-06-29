@@ -13,9 +13,12 @@ package org.frostbite.karren.interactions.Tags;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
-public class Random implements Tag {
+import java.util.EnumSet;
+
+public class Random extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         String[] tempArray = event.getMessage().getContent().split(":");
@@ -25,6 +28,17 @@ public class Random implements Tag {
             return interaction.getRandomTemplate("fail").getTemplate();
         }
     }
+
+    @Override
+    public String getTagName() {
+        return "random";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
+    }
+
     private static String randomList(String message){
         String[] choiceSet = message.split(",");
         String choice;

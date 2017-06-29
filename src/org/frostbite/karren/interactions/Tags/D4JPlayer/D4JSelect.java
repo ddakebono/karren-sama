@@ -15,9 +15,12 @@ import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import org.json.JSONArray;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
-public class D4JSelect implements Tag {
+import java.util.EnumSet;
+
+public class D4JSelect extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         String param = interaction.getParameter();
@@ -40,5 +43,15 @@ public class D4JSelect implements Tag {
             interaction.addUsageCount();
         }
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "d4jselect";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

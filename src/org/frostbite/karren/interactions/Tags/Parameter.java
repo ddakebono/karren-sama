@@ -14,11 +14,13 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 
-public class Parameter implements Tag {
+public class Parameter extends Tag {
 
     //Currently the parameter tag only works with Prefixed interactions, use on non prefixed interactions isn't possible yet.
 
@@ -41,5 +43,15 @@ public class Parameter implements Tag {
 
         interaction.setParameter(message);
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "parameter";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

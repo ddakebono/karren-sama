@@ -20,12 +20,15 @@ import org.json.JSONTokener;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
+
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 
-public class D4JSearch implements Tag {
+public class D4JSearch extends Tag {
 
     HashMap<String, JSONArray> resultArrays = new HashMap<>();
 
@@ -65,6 +68,16 @@ public class D4JSearch implements Tag {
             msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "d4jsearch";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 
     public JSONArray getResultArray(String userID) {

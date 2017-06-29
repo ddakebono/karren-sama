@@ -16,13 +16,15 @@ import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 
-public class Depart implements Tag {
+public class Depart extends Tag {
 
     HashMap<IUser, Boolean> departedUsers = new HashMap<>();
 
@@ -37,5 +39,15 @@ public class Depart implements Tag {
         user.setTimeLeft(new Timestamp(new Date().getTime()));
         user.update();
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "depart";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

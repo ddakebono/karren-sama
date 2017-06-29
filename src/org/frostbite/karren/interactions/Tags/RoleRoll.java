@@ -22,11 +22,12 @@ import sx.blah.discord.util.PermissionUtils;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public class RoleRoll implements Tag {
+public class RoleRoll extends Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
@@ -77,5 +78,15 @@ public class RoleRoll implements Tag {
             }
         }
         return "This cannot be used in a private message!";
+    }
+
+    @Override
+    public String getTagName() {
+        return "roleroll";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES, Permissions.MANAGE_ROLES);
     }
 }

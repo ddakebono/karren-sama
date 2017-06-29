@@ -16,7 +16,9 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -29,8 +31,9 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.EnumSet;
 
-public class OsuGetUser implements Tag {
+public class OsuGetUser extends Tag {
 
     private boolean hasKey = true;
 
@@ -97,5 +100,15 @@ public class OsuGetUser implements Tag {
         }
 
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "osugetuser";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

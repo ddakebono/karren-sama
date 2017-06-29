@@ -17,11 +17,13 @@ import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 
-public class Return implements Tag {
+public class Return extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         HashMap<IUser, Boolean> departedUsers = ((Depart)Karren.bot.getGuildManager().getHandlers().get("depart")).departedUsers;
@@ -54,5 +56,15 @@ public class Return implements Tag {
             }
         }
         return null;
+    }
+
+    @Override
+    public String getTagName() {
+        return "return";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

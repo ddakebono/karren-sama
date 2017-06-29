@@ -14,14 +14,27 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
-public class StartListening implements Tag {
+import java.util.EnumSet;
+
+public class StartListening extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         if(!Karren.bot.getIrm().isGuildIRActive(event.getGuild()) && event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel()!=null){
             Karren.bot.getIrm().getInstantReplay(event.getGuild(), event.getAuthor()).startListening();
         }
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "irstart";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES, Permissions.VOICE_CONNECT);
     }
 }

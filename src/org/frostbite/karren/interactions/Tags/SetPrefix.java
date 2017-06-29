@@ -15,9 +15,12 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
-public class SetPrefix implements Tag {
+import java.util.EnumSet;
+
+public class SetPrefix extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         if(interaction.hasParameter()){
@@ -30,5 +33,15 @@ public class SetPrefix implements Tag {
             msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "setprefix";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

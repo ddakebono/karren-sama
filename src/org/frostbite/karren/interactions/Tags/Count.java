@@ -15,11 +15,13 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.sql.Timestamp;
+import java.util.EnumSet;
 
-public class Count implements Tag {
+public class Count extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         DbWordcount count = Karren.bot.getSql().getWordCount(interaction.getIdentifier());
@@ -31,5 +33,15 @@ public class Count implements Tag {
         } else {
             return msg;
         }
+    }
+
+    @Override
+    public String getTagName() {
+        return "count";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

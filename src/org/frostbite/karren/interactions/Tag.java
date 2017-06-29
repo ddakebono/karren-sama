@@ -11,8 +11,19 @@
 package org.frostbite.karren.interactions;
 
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
-public interface Tag {
-    String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event);
+import java.util.EnumSet;
+
+public class Tag {
+    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event){
+        return msg;
+    }
+    public String getTagName(){
+        return "NO NAME";
+    }
+    public EnumSet<Permissions> getRequiredPermissions(){
+        return EnumSet.of(Permissions.SEND_MESSAGES);
+    }
 }

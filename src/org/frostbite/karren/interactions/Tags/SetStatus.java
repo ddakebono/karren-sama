@@ -13,9 +13,12 @@ package org.frostbite.karren.interactions.Tags;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
-public class SetStatus implements Tag {
+import java.util.EnumSet;
+
+public class SetStatus extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         String param = interaction.getParameter();
@@ -27,5 +30,15 @@ public class SetStatus implements Tag {
             event.getClient().online();
         }
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "setstatus";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

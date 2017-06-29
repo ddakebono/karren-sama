@@ -10,7 +10,6 @@
 
 package org.frostbite.karren.interactions.Tags;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -19,6 +18,7 @@ import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -31,8 +31,10 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.EnumSet;
 
-public class Battlegrounds implements Tag {
+
+public class Battlegrounds extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         SSLContext sc;
@@ -76,5 +78,16 @@ public class Battlegrounds implements Tag {
             msg = interaction.getRandomTemplate("noparam").getTemplate();
         }
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "battlegrounds";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        EnumSet<Permissions> requiredPerms = EnumSet.of(Permissions.SEND_MESSAGES);
+        return requiredPerms;
     }
 }

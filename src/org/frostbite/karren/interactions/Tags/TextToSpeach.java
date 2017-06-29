@@ -13,13 +13,26 @@ package org.frostbite.karren.interactions.Tags;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
-public class TextToSpeach implements Tag {
+import java.util.EnumSet;
+
+public class TextToSpeach extends Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         response.withTTS();
         return msg;
+    }
+
+    @Override
+    public String getTagName() {
+        return "usetts";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES, Permissions.SEND_TTS_MESSAGES);
     }
 }

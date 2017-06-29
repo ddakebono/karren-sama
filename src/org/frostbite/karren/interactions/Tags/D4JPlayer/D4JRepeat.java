@@ -15,9 +15,12 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
-public class D4JRepeat implements Tag {
+import java.util.EnumSet;
+
+public class D4JRepeat extends Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
@@ -33,4 +36,16 @@ public class D4JRepeat implements Tag {
         }
         return msg;
     }
+
+    @Override
+    public String getTagName() {
+        return "d4jrepeat";
+    }
+
+    @Override
+    public EnumSet<Permissions> getRequiredPermissions() {
+        return EnumSet.of(Permissions.SEND_MESSAGES);
+    }
+
+
 }
