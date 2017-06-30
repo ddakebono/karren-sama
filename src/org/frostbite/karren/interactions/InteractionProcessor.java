@@ -16,6 +16,7 @@ import org.frostbite.karren.Karren;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.MessageBuilder;
+import sx.blah.discord.util.PermissionUtils;
 
 import java.util.ArrayList;
 
@@ -68,9 +69,13 @@ public class InteractionProcessor {
                 if(!check.isPermBad()) {
                     for (String tag : check.getTags()) {
                         if (!tag.equalsIgnoreCase("pm") && !check.isStopProcessing()) {
-                            Tag handler = Karren.bot.getGuildManager().getHandlers().get(tag.toLowerCase());
+                            Tag handler = Karren.bot.getGuildManager().getTag(tag.toLowerCase());
                             if (handler != null && returned != null)
-                                returned = handler.handleTemplate(returned, check, result, event);
+                                if(PermissionUtils.hasPermissions(event.getChannel(), event.getClient().getOurUser(), handler.getRequiredPermissions())) {
+                                    returned = handler.handleTemplate(returned, check, result, event);
+                                } else {
+                                    returned = "Uh oh, looks like I'm missing some permissions! " + handler.getRequiredPermissions().toString() + ". Ask your admin to fix this.";
+                                }
                             else if (!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && !tag.equalsIgnoreCase("feelinglucky") && returned != null)
                                 Karren.log.error("Please check interaction " + check.getIdentifier() + " as the file contains invalid tags!");
                         }

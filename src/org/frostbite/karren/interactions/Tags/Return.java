@@ -26,7 +26,7 @@ import java.util.HashMap;
 public class Return extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        HashMap<IUser, Boolean> departedUsers = ((Depart)Karren.bot.getGuildManager().getHandlers().get("depart")).departedUsers;
+        HashMap<IUser, Boolean> departedUsers = ((Depart)Karren.bot.getGuildManager().getTag("depart")).departedUsers;
         if(departedUsers.getOrDefault(event.getMessage().getAuthor(), true) || !interaction.isSpecialInteraction()) {
             DbUser user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor());
             if(departedUsers.putIfAbsent(event.getMessage().getAuthor(), false) != null)

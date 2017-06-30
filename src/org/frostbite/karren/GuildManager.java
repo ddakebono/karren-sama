@@ -16,21 +16,21 @@ import org.apache.commons.io.FilenameUtils;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.InteractionProcessor;
 import org.frostbite.karren.interactions.Tag;
+import org.frostbite.karren.interactions.Tags.*;
+import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
+import org.frostbite.karren.interactions.Tags.InstantReplay.*;
+import org.frostbite.karren.interactions.Tags.Random;
 import org.frostbite.karren.listeners.InteractionCommands;
-import org.reflections.Reflections;
 import sx.blah.discord.handle.obj.IGuild;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class GuildManager {
 
-    private Tag[] tagHandlers;
+    private ArrayList<Tag> tagHandlers;
     private Map<String, InteractionProcessor> registeredGuilds = new HashMap<>();
     //Default processor handles private message interactions
     private InteractionProcessor defaultProcessor;
@@ -38,16 +38,53 @@ public class GuildManager {
     private boolean lock = false;
 
     public void loadTags(){
-        Reflections reflection = new Reflections("org.frostbite.karren.interactions.Tags");
-        tagHandlers = (Tag[]) reflection.getSubTypesOf(Tag.class).toArray();
+        tagHandlers = new ArrayList<>();
+        tagHandlers.add(new Depart());
+        tagHandlers.add(new Echo());
+        tagHandlers.add(new InteractionReload());
+        tagHandlers.add(new Name());
+        tagHandlers.add(new PM());
+        tagHandlers.add(new Random());
+        tagHandlers.add(new Return());
+        tagHandlers.add(new Version());
+        tagHandlers.add(new OverrideChannel());
+        tagHandlers.add(new Parameter());
+        tagHandlers.add(new Count5());
+        tagHandlers.add(new DisableInteraction());
+        tagHandlers.add(new EnableInteraction());
+        tagHandlers.add(new Count());
+        tagHandlers.add(new OverwatchUAPIProfile());
+        tagHandlers.add(new SetStatus());
+        tagHandlers.add(new OverwatchUAPIHero());
+        tagHandlers.add(new OverwatchUAPIAllHeroes());
+        tagHandlers.add(new DeleteMessage());
+        tagHandlers.add(new D4JPlay());
+        tagHandlers.add(new D4JList());
+        tagHandlers.add(new D4JNowPlaying());
+        tagHandlers.add(new D4JShuffle());
+        tagHandlers.add(new D4JSkip());
+        tagHandlers.add(new D4JStop());
+        tagHandlers.add(new OsuGetUser());
+        tagHandlers.add(new TextToSpeach());
+        tagHandlers.add(new D4JVolume());
+        tagHandlers.add(new D4JRepeat());
+        tagHandlers.add(new D4JSearch());
+        tagHandlers.add(new D4JSelect());
+        tagHandlers.add(new D4JNowPlayingTime());
+        tagHandlers.add(new StopListening());
+        tagHandlers.add(new StartListening());
+        tagHandlers.add(new MentionedUsers());
+        tagHandlers.add(new Playback());
+        tagHandlers.add(new SetFilter());
+        tagHandlers.add(new SetPrefix());
+        tagHandlers.add(new RoleRoll());
+        tagHandlers.add(new SetDifficulty());
+        tagHandlers.add(new Battlegrounds());
     }
 
-    public void loadDefaultInteractions(){
-        lock = true;
-        if(registeredGuilds.size()>0)
-            registeredGuilds.clear();
+    public ArrayList<Interaction> loadInteractions(){
+        ArrayList<Interaction> loadedInteractions = new ArrayList<>();
         Gson gson = new Gson();
-        defaultInteractions = new ArrayList<>();
         File intDir = new File("conf/Interactions");
         if(intDir.isDirectory()){
             File[] intFiles = KarrenUtil.getFilesInFolders(intDir);
@@ -57,23 +94,41 @@ public class GuildManager {
                     tempInteraction.setIdentifier(FilenameUtils.removeExtension(file.getName()));
                     tempInteraction.setInteractionFile(file);
                     tempInteraction.interactionOldFormatUpdate();
-                    defaultInteractions.add(tempInteraction);
+                    loadedInteractions.add(tempInteraction);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            //Initialize default processor
-            defaultProcessor = new InteractionProcessor(null, defaultInteractions);
-            defaultProcessor.loadAndUpdateDatabase();
         } else {
-            Karren.log.info("No Interaction detected, interaction system unregistered.");
+            Karren.log.info("No Interactions detected, interaction system unregistered.");
             Karren.bot.getClient().getDispatcher().unregisterListener(new InteractionCommands());
+            return null;
         }
+        return loadedInteractions;
+    }
+
+    public void loadDefaultInteractions(){
+        lock = true;
+        if(registeredGuilds.size()>0)
+            registeredGuilds.clear();
+        defaultInteractions = loadInteractions();
+        //Initialize default processor
+        if(defaultInteractions!=null)
+            defaultProcessor = new InteractionProcessor(null, defaultInteractions);
         lock = false;
     }
 
     public Tag getTag(String name){
-        return Arrays.stream(tagHandlers).filter(x -> x.getTagName().equalsIgnoreCase(name)).findFirst().orElse(null);
+        Tag tag = tagHandlers.stream().filter(x -> x.getTagName().equalsIgnoreCase(name)).findFirst().orElse(null);
+        if(tag!=null) {
+            try {
+                //Create a new instance of a tag for each operation
+                return tag.getClass().newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public String getCommandPrefix(IGuild guild){
@@ -86,10 +141,12 @@ public class GuildManager {
     }
 
     public InteractionProcessor getInteractionProcessor(IGuild guild){
-        if(!lock){
+        if(!lock && defaultInteractions.size()>0){
             if(guild!=null){
-                if (!registeredGuilds.containsKey(guild.getStringID()))
-                    registeredGuilds.put(guild.getStringID(), new InteractionProcessor(guild, defaultInteractions));
+                if (!registeredGuilds.containsKey(guild.getStringID())) {
+                    ArrayList<Interaction> loadedInteractions = loadInteractions();
+                    registeredGuilds.put(guild.getStringID(), new InteractionProcessor(guild, loadedInteractions));
+                }
                 return registeredGuilds.getOrDefault(guild.getStringID(), defaultProcessor);
             } else {
                 return defaultProcessor;
