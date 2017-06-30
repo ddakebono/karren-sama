@@ -13,20 +13,17 @@ package org.frostbite.karren.interactions;
 import org.frostbite.karren.AudioPlayer.AudioProvider;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Karren;
-import org.reflections.Reflections;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 public class InteractionProcessor {
 
     private ArrayList<Interaction> interactions;
     private ArrayList<Interaction> defaultInteractions = null;
     private IGuild guild; //CAN BE NULL
-    Set<Class<? extends Tag>> tagClasses;
 
     public InteractionProcessor(IGuild guild){
         this(guild, null);
@@ -42,9 +39,6 @@ public class InteractionProcessor {
         interactions = new ArrayList<>();
         interactions.addAll(defaultInteractions);
         if(guild!=null) {
-            Reflections reflection = new Reflections("org.frostbite.karren.interaction.Tags");
-            tagClasses = reflection.getSubTypesOf(Tag.class);
-            Karren.log.info("TESTING " + tagClasses.size());
             if(Karren.bot.getGuildMusicManager(guild) == null || !(guild.getAudioManager().getAudioProvider() instanceof AudioProvider)){
                 Karren.log.info("Looks like the GuildMusicManager failed to start, let's try again.");
                 try {

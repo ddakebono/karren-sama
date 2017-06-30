@@ -17,8 +17,8 @@ import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.InstantReplay.InstantReplayManager;
 import org.frostbite.karren.listeners.*;
-import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
@@ -66,6 +66,8 @@ public class KarrenBot {
         } else {
             Karren.log.info("Running in test mode, not connected to Discord.");
             initExtras();
+            //Init interaction processor
+
         }
     }
 
