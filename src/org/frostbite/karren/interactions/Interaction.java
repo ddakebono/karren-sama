@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 public class Interaction {
     @Expose private String[] triggers;
@@ -55,6 +54,7 @@ public class Interaction {
     private boolean lock = false;
     private File interactionFile;
     private ArrayList<Tag> tagCache = new ArrayList<>();
+    private boolean noClearInteraction = false;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal", null)}, triggers, confidence, enabled, helptext);
@@ -143,15 +143,17 @@ public class Interaction {
     }
 
     private void cleanupInteraction(){
-        if(mentionedUsers==null)
-            mentionedUsers = new LinkedList<>();
-        mentionedUsers.clear();
-        if(tagCache==null)
-            tagCache = new ArrayList<>();
-        tagCache.clear();
-        confidenceChecked = 0;
-        if(Arrays.asList(tags).contains("parameter"))
-            parameter = null;
+        if(noClearInteraction) {
+            if (mentionedUsers == null)
+                mentionedUsers = new LinkedList<>();
+            mentionedUsers.clear();
+            if (tagCache == null)
+                tagCache = new ArrayList<>();
+            tagCache.clear();
+            confidenceChecked = 0;
+            if (Arrays.asList(tags).contains("parameter"))
+                parameter = null;
+        }
     }
 
     private boolean isAllowedUser(IUser user) {
@@ -350,5 +352,9 @@ public class Interaction {
 
         }
         return false;
+    }
+
+    public void setNoClearInteraction(boolean noClearInteraction) {
+        this.noClearInteraction = noClearInteraction;
     }
 }
