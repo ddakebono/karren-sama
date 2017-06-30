@@ -15,7 +15,7 @@
     <groupId>org.frostbite</groupId>
     <artifactId>Karren-sama</artifactId>
     <packaging>jar</packaging>
-    <version>4.1-DEV</version>
+    <version>4.2-DEV</version>
 
     <repositories>
         <repository> <!-- This repo fixes issues with transitive dependencies -->

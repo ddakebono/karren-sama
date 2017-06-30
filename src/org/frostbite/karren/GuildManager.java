@@ -154,4 +154,8 @@ public class GuildManager {
         }
         return null;
     }
+
+    public ArrayList<Tag> getTagHandlers() {
+        return tagHandlers;
+    }
 }

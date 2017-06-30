@@ -32,6 +32,8 @@ public class StatCommand implements IListener<MessageReceivedEvent> {
             msg.appendContent("\nConnected Guilds: " + Karren.bot.getClient().getGuilds().size());
             msg.appendContent("\nConnected Shards: " + Karren.bot.getClient().getShardCount());
             msg.appendContent("\nConnected Voice Channels: " + Karren.bot.getClient().getConnectedVoiceChannels().size());
+            msg.appendContent("\nInteraction System Tags: " + Karren.bot.getGuildManager().getTagHandlers().size());
+            msg.appendContent("\nTotal Users Visable: " + Karren.bot.getClient().getUsers().size());
             msg.appendContent("```");
             msg.send();
         }
