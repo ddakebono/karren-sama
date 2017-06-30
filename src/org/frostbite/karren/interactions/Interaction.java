@@ -54,6 +54,7 @@ public class Interaction {
     private List<IUser> mentionedUsers = new LinkedList<>();
     private boolean lock = false;
     private File interactionFile;
+    private ArrayList<Tag> tagCache = new ArrayList<>();
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal", null)}, triggers, confidence, enabled, helptext);
@@ -145,6 +146,9 @@ public class Interaction {
         if(mentionedUsers==null)
             mentionedUsers = new LinkedList<>();
         mentionedUsers.clear();
+        if(tagCache==null)
+            tagCache = new ArrayList<>();
+        tagCache.clear();
         confidenceChecked = 0;
         if(Arrays.asList(tags).contains("parameter"))
             parameter = null;
@@ -316,6 +320,10 @@ public class Interaction {
 
     public void setInteractionFile(File interactionFile) {
         this.interactionFile = interactionFile;
+    }
+
+    public ArrayList<Tag> getTagCache() {
+        return tagCache;
     }
 
     public boolean interactionOldFormatUpdate(){
