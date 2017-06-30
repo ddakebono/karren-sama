@@ -51,8 +51,10 @@ public class RoleRoll extends Tag {
                     if (roll >= dc) {
                         IRole rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
                         for (IRole role : event.getAuthor().getRolesForGuild(event.getGuild()))
-                            if (role.getName().contains("lotto-"))
+                            if (role.getName().contains("lotto-")) {
                                 event.getAuthor().removeRole(role);
+                                rollRoles.remove(role);
+                            }
                         event.getAuthor().addRole(rngRole);
                         msg = msg.replace("%rngrole", rngRole.getName());
                         dbGuildUser.setRollsSinceLastClear(0);
