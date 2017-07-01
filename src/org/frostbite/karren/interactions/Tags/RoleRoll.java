@@ -49,12 +49,13 @@ public class RoleRoll extends Tag {
                     Karren.log.info("Rolled " + roll + " against a DC of " + dc + " with bonus of " + bonus);
                     roll += bonus;
                     if (roll >= dc) {
-                        IRole rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
-                        for (IRole role : event.getAuthor().getRolesForGuild(event.getGuild()))
+                        for (IRole role : event.getAuthor().getRolesForGuild(event.getGuild())) {
                             if (role.getName().contains("lotto-")) {
                                 event.getAuthor().removeRole(role);
                                 rollRoles.remove(role);
                             }
+                        }
+                        IRole rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
                         event.getAuthor().addRole(rngRole);
                         msg = msg.replace("%rngrole", rngRole.getName());
                         dbGuildUser.setRollsSinceLastClear(0);
