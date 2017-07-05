@@ -32,6 +32,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Optional;
 
 
 public class Battlegrounds extends Tag {
@@ -64,13 +65,13 @@ public class Battlegrounds extends Tag {
                     for (JsonElement jsonObject : selectedSeason.get("Stats").getAsJsonArray())
                         statsArrayList.add(jsonObject.getAsJsonObject());
                 msg = msg.replace("%username", profileData.get("PlayerName").getAsString());
-                msg = msg.replace("%kills", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Kills")).findFirst().get().get("value").getAsString());
-                msg = msg.replace("%rating", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Rating")).findFirst().get().get("value").getAsString());
-                msg = msg.replace("%roundsPlayed", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("RoundsPlayed")).findFirst().get().get("value").getAsString());
-                msg = msg.replace("%kdr", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("KillDeathRatio")).findFirst().get().get("value").getAsString());
-                msg = msg.replace("%top10s", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Top10s")).findFirst().get().get("value").getAsString());
-                msg = msg.replace("%wins", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Wins")).findFirst().get().get("value").getAsString());
-                msg = msg.replace("%losses", statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase("Losses")).findFirst().get().get("value").getAsString());
+                msg = msg.replace("%kills", getValueFromJson("Kills", statsArrayList));
+                msg = msg.replace("%rating", getValueFromJson("Rating", statsArrayList));
+                msg = msg.replace("%roundsPlayed", getValueFromJson("RoundsPlayed", statsArrayList));
+                msg = msg.replace("%kdr", getValueFromJson("KillDeathRatio", statsArrayList));
+                msg = msg.replace("%top10s", getValueFromJson("Top10s", statsArrayList));
+                msg = msg.replace("%wins", getValueFromJson("Wins", statsArrayList));
+                msg = msg.replace("%losses", getValueFromJson("Losses", statsArrayList));
             } catch (NoSuchAlgorithmException | IOException | KeyManagementException e) {
                 return interaction.getRandomTemplate("fail").getTemplate();
             }
@@ -89,5 +90,10 @@ public class Battlegrounds extends Tag {
     public EnumSet<Permissions> getRequiredPermissions() {
         EnumSet<Permissions> requiredPerms = EnumSet.of(Permissions.SEND_MESSAGES);
         return requiredPerms;
+    }
+
+    private String getValueFromJson(String target, ArrayList<JsonObject> statsArrayList){
+        Optional<JsonObject> object = statsArrayList.stream().filter(x -> x.get("field").getAsString().equalsIgnoreCase(target)).findFirst();
+        return object.map(jsonObject -> jsonObject.get("value").getAsString()).orElse("0");
     }
 }
