@@ -80,6 +80,8 @@ public class GuildManager {
         tagHandlers.add(new RoleRoll());
         tagHandlers.add(new SetDifficulty());
         tagHandlers.add(new Battlegrounds());
+        tagHandlers.add(new ReminderCheck());
+        tagHandlers.add(new ReminderAdd());
     }
 
     public ArrayList<Interaction> loadInteractions(){

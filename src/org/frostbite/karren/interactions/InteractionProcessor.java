@@ -84,10 +84,12 @@ public class InteractionProcessor {
                         Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().remove(check);
                 }
                 check.setLock(false);
-                if(returned!=null)
+                if(returned!=null){
+                    returned = returned.replace("%prefix", Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()));
                     result.withContent(returned);
-                else
+                } else {
                     result = null;
+                }
                 if(!check.isSpecialInteraction())
                     break;
 

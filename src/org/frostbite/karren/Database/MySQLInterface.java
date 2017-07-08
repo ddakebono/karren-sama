@@ -116,15 +116,31 @@ public class MySQLInterface {
         return null;
     }
 
-    public DbReminder[] getReminder(IUser target){
+    public DbReminder[] getReminder(DbGuildUser target){
         if(Karren.conf.getAllowSQLRW()){
-            List<DbReminder> reminders = dbReminderCache.stream().filter(x -> x.getTargetID().equals(target.getStringID())).collect(Collectors.toList());
-            if(reminders.size()>0)
-                return (DbReminder[]) reminders.toArray();
-            String sql = "SELECT * FROM Reminders WHERE UserID=?, ReminderTime=?";
-
+            List<DbReminder> reminders = dbReminderCache.stream().filter(x -> x.getTargetID()==(target.getGuildUserID())).collect(Collectors.toList());
+            if(reminders.size()>0) {
+                DbReminder[] remindArray = new DbReminder[reminders.size()];
+                return reminders.toArray(remindArray);
+            }
+            String sql = "SELECT * FROM Reminder WHERE TargetID=? AND ReminderSent=0";
+            Object[] params = {target.getGuildUserID()};
+            reminders =  Yank.queryBeanList(sql, DbReminder.class, params);
+            dbReminderCache.addAll(reminders);
+            return reminders.toArray(new DbReminder[reminders.size()]);
         }
         return null;
     }
 
+    public void addReminder(DbReminder reminder){
+        if(Karren.conf.getAllowSQLRW()){
+            String sql = "INSERT IGNORE Reminder (ReminderID, AuthorID, TargetID, ReminderTime, Message, ReminderSent) VALUES (null, ?, ?, ?, ?, false)";
+            Object[] params = {reminder.getAuthorID(), reminder.getTargetID(), reminder.getReminderTime(), reminder.getMessage()};
+            Yank.execute(sql, params);
+        }
+    }
+
+    public ArrayList<DbReminder> getDbReminderCache() {
+        return dbReminderCache;
+    }
 }

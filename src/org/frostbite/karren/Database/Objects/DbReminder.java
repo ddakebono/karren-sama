@@ -1,25 +1,37 @@
+/*
+ * Copyright (c) 2017 Owen Bennett.
+ *  You may use, distribute and modify this code under the terms of the MIT licence.
+ *  You should have obtained a copy of the MIT licence with this software,
+ *  if not please obtain one from https://opensource.org/licences/MIT
+ *
+ *
+ *
+ */
+
 package org.frostbite.karren.Database.Objects;
+
+import org.knowm.yank.Yank;
 
 import java.sql.Timestamp;
 
-/**
- * Created by ddakebono on 6/27/2017.
- */
 public class DbReminder {
     public int reminderID;
-    public String authorID;
-    public String targetID;
+    public Long authorID;
+    public int targetID;
     public Timestamp reminderTime;
     public String message;
-    public boolean nextMessageReminder;
+    public boolean reminderSent;
 
-    public DbReminder(int reminderID, String authorID, String targetID, Timestamp reminderTime, String message, boolean nextMessageReminder) {
+    public DbReminder() {
+    }
+
+    public DbReminder(int reminderID, Long authorID, int targetID, Timestamp reminderTime, String message, boolean reminderSent) {
         this.reminderID = reminderID;
         this.authorID = authorID;
         this.targetID = targetID;
         this.reminderTime = reminderTime;
         this.message = message;
-        this.nextMessageReminder = nextMessageReminder;
+        this.reminderSent = reminderSent;
     }
 
     public int getReminderID() {
@@ -30,19 +42,19 @@ public class DbReminder {
         this.reminderID = reminderID;
     }
 
-    public String getAuthorID() {
+    public Long getAuthorID() {
         return authorID;
     }
 
-    public void setAuthorID(String authorID) {
+    public void setAuthorID(Long authorID) {
         this.authorID = authorID;
     }
 
-    public String getTargetID() {
+    public int getTargetID() {
         return targetID;
     }
 
-    public void setTargetID(String targetID) {
+    public void setTargetID(int targetID) {
         this.targetID = targetID;
     }
 
@@ -62,16 +74,17 @@ public class DbReminder {
         this.message = message;
     }
 
-    public boolean isNextMessageReminder() {
-        return nextMessageReminder;
+    public boolean isReminderSent() {
+        return reminderSent;
     }
 
-    public void setNextMessageReminder(boolean nextMessageReminder) {
-        this.nextMessageReminder = nextMessageReminder;
+    public void setReminderSent(boolean reminderSent) {
+        this.reminderSent = reminderSent;
     }
 
     public void update(){
-
+        String sql = "UPDATE Reminder SET ReminderSent=? WHERE ReminderID=?";
+        Yank.execute(sql, new Object[]{reminderSent, reminderID});
     }
 
 }
