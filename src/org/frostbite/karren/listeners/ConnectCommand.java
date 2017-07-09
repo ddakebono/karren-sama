@@ -33,7 +33,7 @@ public class ConnectCommand implements IListener<ReadyEvent>{
         Yank.setupDefaultConnectionPool(dbSettings);
 
         //Start auto reminder
-        Karren.bot.getAr().run();
+        Karren.bot.getAr().start();
 
         event.getClient().online("KarrenSama Ver." + Karren.botVersion);
     }
