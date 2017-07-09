@@ -20,17 +20,19 @@ public class DbReminder {
     public int targetID;
     public Timestamp reminderTime;
     public String message;
+    public Long channelID;
     public boolean reminderSent;
 
     public DbReminder() {
     }
 
-    public DbReminder(int reminderID, Long authorID, int targetID, Timestamp reminderTime, String message, boolean reminderSent) {
+    public DbReminder(int reminderID, Long authorID, int targetID, Timestamp reminderTime, String message, Long channelID, boolean reminderSent) {
         this.reminderID = reminderID;
         this.authorID = authorID;
         this.targetID = targetID;
         this.reminderTime = reminderTime;
         this.message = message;
+        this.channelID = channelID;
         this.reminderSent = reminderSent;
     }
 
@@ -80,6 +82,14 @@ public class DbReminder {
 
     public void setReminderSent(boolean reminderSent) {
         this.reminderSent = reminderSent;
+    }
+
+    public Long getChannelID() {
+        return channelID;
+    }
+
+    public void setChannelID(Long channelID) {
+        this.channelID = channelID;
     }
 
     public void update(){

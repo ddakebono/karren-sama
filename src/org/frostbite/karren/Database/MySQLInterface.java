@@ -81,6 +81,19 @@ public class MySQLInterface {
         return null;
     }
 
+    public DbGuildUser getGuildUser(int guildUserID){
+        if(Karren.conf.getAllowSQLRW()) {
+            DbGuildUser guildUser = dbGuildUserCache.values().stream().filter(x -> x.getGuildUserID()==guildUserID).findFirst().orElse(null);
+            if(guildUser==null) {
+                String sql = "SELECT * FROM GuildUser WHERE GuildUserID=?";
+                Object[] params = {guildUserID};
+                return Yank.queryBean(sql, DbGuildUser.class, params);
+            }
+            return guildUser;
+        }
+        return null;
+    }
+
     public DbWordcount getWordCount(String word){
         if(Karren.conf.getAllowSQLRW()) {
             if(!dbWordcountCache.containsKey(word)) {
@@ -132,11 +145,19 @@ public class MySQLInterface {
         return null;
     }
 
+    public void preloadReminderCache(){
+        if(Karren.conf.getAllowSQLRW()){
+            String sql = "SELECT * FROM Reminder WHERE ReminderSent=0 AND ReminderTime>CURDATE()";
+            dbReminderCache.addAll(Yank.queryBeanList(sql, DbReminder.class, null));
+        }
+    }
+
     public void addReminder(DbReminder reminder){
         if(Karren.conf.getAllowSQLRW()){
-            String sql = "INSERT IGNORE Reminder (ReminderID, AuthorID, TargetID, ReminderTime, Message, ReminderSent) VALUES (null, ?, ?, ?, ?, false)";
-            Object[] params = {reminder.getAuthorID(), reminder.getTargetID(), reminder.getReminderTime(), reminder.getMessage()};
-            Yank.execute(sql, params);
+            String sql = "INSERT IGNORE Reminder (ReminderID, AuthorID, TargetID, ReminderTime, Message, ReminderSent, ChannelID) VALUES (null, ?, ?, ?, ?, false, ?)";
+            Object[] params = {reminder.getAuthorID(), reminder.getTargetID(), reminder.getReminderTime(), reminder.getMessage(), reminder.getChannelID()};
+            reminder.setReminderID(Math.toIntExact(Yank.insert(sql, params)));
+            dbReminderCache.add(reminder);
         }
     }
 

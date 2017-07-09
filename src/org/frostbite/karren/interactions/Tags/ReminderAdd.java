@@ -35,6 +35,7 @@ public class ReminderAdd extends Tag {
             reminder.setTargetID(Karren.bot.getSql().getGuildUser(event.getGuild(), event.getMessage().getMentions().get(0)).getGuildUserID());
             reminder.setMessage(tempArray[1].trim());
             reminder.setReminderTime(getRemindTime(timeMatch.matcher(tempArray[0].trim())));
+            reminder.setChannelID(event.getChannel().getLongID());
             Karren.bot.getSql().addReminder(reminder);
             msg = msg.replace("%target", event.getMessage().getMentions().get(0).getName());
         } else {
@@ -45,25 +46,30 @@ public class ReminderAdd extends Tag {
 
     public Timestamp getRemindTime(Matcher matcher){
         long additionalTime = 0;
-        if(matcher.find()){
-            for(int i=0; i<matcher.groupCount(); i++){
-                String[] timeExtract = matcher.group(i).split(" ");
-                switch(timeExtract[1].toLowerCase()){
-                    case "weeks":
-                        timeExtract[0] = String.valueOf(Integer.parseInt(timeExtract[0])*7);
-                    case "days":
-                        timeExtract[0] = String.valueOf(Integer.parseInt(timeExtract[0])*24);
-                    case "hours":
-                        timeExtract[0] = String.valueOf(Integer.parseInt(timeExtract[0])*60);
-                    case "minutes":
-                        timeExtract[0] = String.valueOf(Integer.parseInt(timeExtract[0])*60);
-                    case "seconds":
-                        additionalTime+=Integer.parseInt(timeExtract[0])*1000;
-                        break;
-                }
+        while(matcher.find()){
+            String[] timeExtract = matcher.group(0).split(" ");
+            switch(timeExtract[1].toLowerCase()){
+                case "week":
+                case "weeks":
+                    timeExtract[0] = String.valueOf(Integer.parseInt(timeExtract[0])*7);
+                case "day":
+                case "days":
+                    timeExtract[0] = String.valueOf(Integer.parseInt(timeExtract[0])*24);
+                case "hour":
+                case "hours":
+                    timeExtract[0] = String.valueOf(Integer.parseInt(timeExtract[0])*60);
+                case "minute":
+                case "minutes":
+                    timeExtract[0] = String.valueOf(Integer.parseInt(timeExtract[0])*60);
+                case "second":
+                case "seconds":
+                    additionalTime+=Integer.parseInt(timeExtract[0])*1000;
+                    break;
             }
         }
-        return new Timestamp(System.currentTimeMillis()+additionalTime);
+        if(additionalTime>0)
+            return new Timestamp(System.currentTimeMillis()+additionalTime);
+        return new Timestamp(0);
     }
 
     @Override
