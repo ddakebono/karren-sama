@@ -17,21 +17,13 @@ import java.sql.Timestamp;
 public class DbUser {
     private long userID;
     private Timestamp timeLeft;
-    private String djName;
-    private String djPicture;
-    private boolean djActive;
-    private String djStreamName;
 
     public DbUser(){
     }
 
-    public DbUser(int userID, Timestamp timeLeft, String djName, String djPicture, boolean djActive, String djStreamName) {
+    public DbUser(int userID, Timestamp timeLeft) {
         this.userID = userID;
         this.timeLeft = timeLeft;
-        this.djName = djName;
-        this.djPicture = djPicture;
-        this.djActive = djActive;
-        this.djStreamName = djStreamName;
     }
 
     public long getUserID() {
@@ -50,40 +42,8 @@ public class DbUser {
         this.timeLeft = timeLeft;
     }
 
-    public String getDjName() {
-        return djName;
-    }
-
-    public void setDjName(String djName) {
-        this.djName = djName;
-    }
-
-    public String getDjPicture() {
-        return djPicture;
-    }
-
-    public void setDjPicture(String djPicture) {
-        this.djPicture = djPicture;
-    }
-
-    public boolean isDjActive() {
-        return djActive;
-    }
-
-    public void setDjActive(boolean djActive) {
-        this.djActive = djActive;
-    }
-
-    public String getDjStreamName() {
-        return djStreamName;
-    }
-
-    public void setDjStreamName(String djStreamName) {
-        this.djStreamName = djStreamName;
-    }
-
     public void update(){
-        String sql = "UPDATE User SET TimeLeft=?, DJName=?, DJPicture=?, DJActive=?, DJStreamName=? WHERE UserID=?";
-        Yank.execute(sql, new Object[]{timeLeft, djName, djPicture, djActive, djStreamName, userID});
+        String sql = "UPDATE User SET TimeLeft=? WHERE UserID=?";
+        Yank.execute(sql, new Object[]{timeLeft, userID});
     }
 }

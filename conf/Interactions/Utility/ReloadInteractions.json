@@ -3,13 +3,18 @@
     "reloadint"
   ],
   "tags": [
-    "interactionreload",
-    "prefixed"
+    "prefixed",
+    "parameter",
+    "reloadint"
   ],
   "templatesNew": [
     {
       "template": "Interactions reloaded.",
       "templateType": "normal"
+    },
+    {
+      "template": "Reloaded guild interaction processor",
+      "templateType": "single"
     },
     {
       "template": "You don\u0027t have permission to use this... (Not admin)",

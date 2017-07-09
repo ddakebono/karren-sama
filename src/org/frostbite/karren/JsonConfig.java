@@ -35,13 +35,6 @@ public class JsonConfig {
     private String sqldb = "changeme";
     private String sqluser = "changeme";
     private String sqlpass = "changeme";
-    private String icecastAdminUsername = "changeme";
-    private String icecastAdminPass = "changeme";
-    private boolean listencastAnnounce = false;
-    private boolean enableListencast = true;
-    private String icecastMount = "changeme.ogg";
-    private String icecastHost = "0.0.0.0";
-    private int icecastPort = 8000;
     private String discordApiKey = "changeme";
     private String osuAPIKey = "changeme";
     private String googleAPIKey = "changeme";
@@ -63,13 +56,6 @@ public class JsonConfig {
         this.sqldb = sqldb;
         this.sqluser = sqluser;
         this.sqlpass = sqlpass;
-        this.icecastAdminUsername = icecastAdminUsername;
-        this.icecastAdminPass = icecastAdminPass;
-        this.listencastAnnounce = listencastAnnounce;
-        this.enableListencast = enableListencast;
-        this.icecastMount = icecastMount;
-        this.icecastHost = icecastHost;
-        this.icecastPort = icecastPort;
         this.discordApiKey = discordApiKey;
         this.osuAPIKey = osuAPIKey;
         this.googleAPIKey = googleAPIKey;
@@ -147,34 +133,6 @@ public class JsonConfig {
 
     public String getSqlpass() {
         return sqlpass;
-    }
-
-    public String getIcecastAdminUsername() {
-        return icecastAdminUsername;
-    }
-
-    public String getIcecastAdminPass() {
-        return icecastAdminPass;
-    }
-
-    public boolean getListencastAnnounce() {
-        return listencastAnnounce;
-    }
-
-    public boolean getEnableListencast() {
-        return enableListencast;
-    }
-
-    public String getIcecastMount() {
-        return icecastMount;
-    }
-
-    public String getIcecastHost() {
-        return icecastHost;
-    }
-
-    public int getIcecastPort() {
-        return icecastPort;
     }
 
     public String getDiscordToken() {

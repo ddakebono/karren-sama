@@ -114,8 +114,8 @@ public class MySQLInterface {
     public DbUser getUserData(IUser user){
         if(Karren.conf.getAllowSQLRW()) {
             if(!dbUserCache.containsKey(user.getStringID())) {
-                String sql = "INSERT IGNORE User (UserID, TimeLeft, DJName, DJPicture, DJActive, DJStreamName) VALUES (?, null, ?, null, false, null)";
-                Object[] params = {user.getLongID(), user.getName()};
+                String sql = "INSERT IGNORE User (UserID, TimeLeft) VALUES (?, null)";
+                Object[] params = {user.getLongID()};
                 Yank.execute(sql, params);
                 sql = "SELECT * FROM User WHERE UserID=?";
                 Object[] params2 = {user.getLongID()};
@@ -149,6 +149,15 @@ public class MySQLInterface {
         if(Karren.conf.getAllowSQLRW()){
             String sql = "SELECT * FROM Reminder WHERE ReminderSent=0 AND ReminderTime>CURDATE()";
             dbReminderCache.addAll(Yank.queryBeanList(sql, DbReminder.class, null));
+        }
+    }
+
+    public void cleanReminderCache(){
+        if(dbReminderCache.size()>0){
+            for(DbReminder item : dbReminderCache){
+                if(item.reminderSent)
+                    dbReminderCache.remove(item);
+            }
         }
     }
 

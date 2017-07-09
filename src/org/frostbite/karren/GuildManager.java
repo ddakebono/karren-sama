@@ -18,15 +18,18 @@ import org.frostbite.karren.interactions.InteractionProcessor;
 import org.frostbite.karren.interactions.Tag;
 import org.frostbite.karren.interactions.Tags.*;
 import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
-import org.frostbite.karren.interactions.Tags.InstantReplay.*;
-import org.frostbite.karren.interactions.Tags.Random;
+import org.frostbite.karren.interactions.Tags.InstantReplay.Playback;
+import org.frostbite.karren.interactions.Tags.InstantReplay.StartListening;
+import org.frostbite.karren.interactions.Tags.InstantReplay.StopListening;
 import org.frostbite.karren.listeners.InteractionCommands;
 import sx.blah.discord.handle.obj.IGuild;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GuildManager {
 
@@ -118,6 +121,14 @@ public class GuildManager {
         if(defaultInteractions!=null)
             defaultProcessor = new InteractionProcessor(null, defaultInteractions);
         lock = false;
+    }
+
+    public void clearGuildInteractionProcessor(IGuild guild){
+        if(guild!=null){
+            if(registeredGuilds.containsKey(guild.getStringID())){
+                registeredGuilds.remove(guild.getStringID());
+            }
+        }
     }
 
     public Tag getTag(String name){

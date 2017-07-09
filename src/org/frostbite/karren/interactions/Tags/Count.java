@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Owen Bennett.
+ * Copyright (c) 2017 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -26,7 +26,7 @@ public class Count extends Tag {
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         DbWordcount count = Karren.bot.getSql().getWordCount(interaction.getIdentifier());
         if(count!=null) {
-            count.setCount(count.getCount()+1);
+            count.incrementCount();
             count.update();
             Timestamp time = count.getCountStarted();
             return msg.replace("%count", String.valueOf(count.getCount())).replace("%since", time.toString());
