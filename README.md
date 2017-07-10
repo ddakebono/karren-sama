@@ -13,8 +13,6 @@ Features
 --------
 
 There isn't too many and functionality may change suddenly but here we go.<br/>
-* Listening in on multiple servers, just invite your application once it's setup.<br/>
-* Icecast now playing integration<br/>
 * Json based Interaction system.<br/>
 * Simple voice channel support.<br/>
 

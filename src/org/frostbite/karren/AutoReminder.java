@@ -43,8 +43,6 @@ public class AutoReminder extends Thread {
                     }
                 }
             }
-            //Ensure reminder cache doesn't get stupid huge
-            Karren.bot.getSql().cleanReminderCache();
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
