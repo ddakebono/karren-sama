@@ -28,6 +28,8 @@ public class ReconnectListener implements IListener<ReconnectSuccessEvent> {
         dbSettings.setProperty("username", conf.getSqluser());
         dbSettings.setProperty("password", conf.getSqlpass());
 
+        Karren.bot.getAr().start();
+
         Yank.setupDefaultConnectionPool(dbSettings);
 
         reconnectSuccessEvent.getClient().online("KarrenSama Ver." + Karren.botVersion);
