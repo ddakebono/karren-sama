@@ -21,6 +21,6 @@ public class ShutdownListener implements IListener<DisconnectedEvent> {
         //Lets release the Yank SQL connection pool
         Karren.log.info("Releasing SQL connection pool");
         Yank.releaseAllConnectionPools();
-        Karren.bot.getAr().setKill(true);
+        Karren.bot.getAr().setSuspend(true);
     }
 }

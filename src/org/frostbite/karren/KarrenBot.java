@@ -84,6 +84,8 @@ public class KarrenBot {
 
     public void killBot(String killer){
         isKill = true;
+        if(ar.isAlive())
+            ar.setKill(true);
         if(client.isReady()) {
             try {
                 client.logout();
