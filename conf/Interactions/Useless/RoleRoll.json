@@ -32,6 +32,10 @@
     {
       "template": "Hold on a sec, looks like I don't have access to Manage Roles, your admin should fix that!",
       "templateType": "noroleperm"
+    },
+    {
+      "template": "Oh, looks like you've won, but it seems that I can't change your roles. Try adjusting the position the roles.",
+      "templateType": "higheruser"
     }
   ],
   "enabled": true,

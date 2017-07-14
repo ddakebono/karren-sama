@@ -49,17 +49,22 @@ public class RoleRoll extends Tag {
                     Karren.log.info("Rolled " + roll + " against a DC of " + dc + " with bonus of " + bonus);
                     roll += bonus;
                     if (roll >= dc) {
-                        for (IRole role : event.getAuthor().getRolesForGuild(event.getGuild())) {
-                            if (role.getName().contains("lotto-")) {
-                                event.getAuthor().removeRole(role);
-                                rollRoles.remove(role);
+                        if(PermissionUtils.isUserHigher(event.getGuild(), event.getClient().getOurUser(), event.getAuthor())) {
+                            for (IRole role : event.getAuthor().getRolesForGuild(event.getGuild())) {
+                                if (role.getName().contains("lotto-")) {
+                                    event.getAuthor().removeRole(role);
+                                    rollRoles.remove(role);
+                                }
                             }
+                            IRole rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
+                            event.getAuthor().addRole(rngRole);
+                            msg = msg.replace("%rngrole", rngRole.getName());
+                            dbGuildUser.setRollsSinceLastClear(0);
+                            dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 259200000));
+                        } else {
+                            //Cannot change users role
+                            return interaction.getRandomTemplate("higheruser").getTemplate();
                         }
-                        IRole rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
-                        event.getAuthor().addRole(rngRole);
-                        msg = msg.replace("%rngrole", rngRole.getName());
-                        dbGuildUser.setRollsSinceLastClear(0);
-                        dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 259200000));
                     } else {
                         dbGuildUser.incrementRollsSinceLastClear();
                         dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 21600000));
