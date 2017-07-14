@@ -143,7 +143,7 @@ public class Interaction {
     }
 
     private void cleanupInteraction(){
-        if(noClearInteraction) {
+        if(!noClearInteraction) {
             if (mentionedUsers == null)
                 mentionedUsers = new LinkedList<>();
             mentionedUsers.clear();
