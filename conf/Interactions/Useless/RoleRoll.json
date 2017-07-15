@@ -34,7 +34,7 @@
       "templateType": "noroleperm"
     },
     {
-      "template": "Oh, looks like you've won, but it seems that I can't change your roles. Try adjusting the position the roles.",
+      "template": "Oh, looks like you've won, but it seems that I can't change your roles. Try adjusting the position of the roles.",
       "templateType": "higheruser"
     }
   ],

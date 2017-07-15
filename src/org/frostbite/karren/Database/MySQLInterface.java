@@ -173,4 +173,20 @@ public class MySQLInterface {
     public ArrayList<DbReminder> getDbReminderCache() {
         return dbReminderCache;
     }
+
+    public Map<String, DbGuild> getDbGuildCache() {
+        return dbGuildCache;
+    }
+
+    public Map<String, DbGuildUser> getDbGuildUserCache() {
+        return dbGuildUserCache;
+    }
+
+    public Map<String, DbUser> getDbUserCache() {
+        return dbUserCache;
+    }
+
+    public Map<String, DbWordcount> getDbWordcountCache() {
+        return dbWordcountCache;
+    }
 }

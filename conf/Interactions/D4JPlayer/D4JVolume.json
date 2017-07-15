@@ -4,13 +4,17 @@
   ],
   "tags": [
     "parameter",
-    "volume",
+    "d4jvolume",
     "prefixed"
   ],
   "templatesNew": [
     {
       "template": "Volume changed to %volume",
       "templateType": "normal"
+    },
+    {
+      "template": "Hold on a sec, that's not a valid number!",
+      "templateType": "fail"
     }
   ],
   "enabled": true,

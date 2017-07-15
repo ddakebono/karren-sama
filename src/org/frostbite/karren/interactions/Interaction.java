@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Owen Bennett.
+ * Copyright (c) 2017 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -64,7 +64,7 @@ public class Interaction {
         this(identifier ,tags, templates, triggers, confidence, enabled, helptext,"", "", null, 0.0f, false);
     }
 
-    public Interaction(String identifier, String[] tags, InteractionTemplate[] templates, String[] templatesFail, int usageCount, String userID, float voiceVolume){
+    public Interaction(String identifier, String[] tags, InteractionTemplate[] templates, int usageCount, String userID, float voiceVolume){
         this(identifier, tags, templates, null, 0, true, "", "", "", null, voiceVolume, false);
         this.usageCount = usageCount;
         this.allowedUsers.add(userID);
