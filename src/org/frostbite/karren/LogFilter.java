@@ -17,7 +17,7 @@ import ch.qos.logback.core.spi.FilterReply;
 public class LogFilter extends Filter<ILoggingEvent> {
     @Override
     public FilterReply decide(ILoggingEvent iLoggingEvent) {
-        if(iLoggingEvent.getMessage().contains("D4J AudioThread | s.b.d.Discord4J | Discord4J Internal Exception"))
+        if(iLoggingEvent.getMessage().contains("D4J AudioThread | s.b.d.Discord4J | Discord4J Internal Exception") || iLoggingEvent.getMessage().contains("changed presence"))
             return FilterReply.DENY;
         return FilterReply.ACCEPT;
     }
