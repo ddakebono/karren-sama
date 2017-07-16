@@ -4,6 +4,7 @@
   ],
   "tags": [
     "parameter",
+    "requiresvoice",
     "d4jvolume",
     "prefixed"
   ],
@@ -15,6 +16,10 @@
     {
       "template": "Hold on a sec, that's not a valid number!",
       "templateType": "fail"
+    },
+    {
+      "template": "You're not connected to a voice channel!",
+      "templateType": "novoice"
     }
   ],
   "enabled": true,

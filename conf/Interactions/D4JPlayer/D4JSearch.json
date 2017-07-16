@@ -4,6 +4,7 @@
   ],
   "tags": [
     "parameter",
+    "requiresvoice",
     "d4jsearch",
     "prefixed"
   ],
@@ -15,6 +16,10 @@
     {
       "template": "No results were returned from that search...",
       "templateType": "fail"
+    },
+    {
+      "template": "You're not connected to a voice channel!",
+      "templateType": "novoice"
     }
   ],
   "enabled": true,

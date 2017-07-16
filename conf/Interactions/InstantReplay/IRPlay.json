@@ -3,6 +3,7 @@
     "ir-play"
   ],
   "tags": [
+    "requiresvoice",
     "mentioned",
     "prefixed",
     "irplay"
@@ -15,6 +16,10 @@
     {
       "template": "You need to use an @ mention to tell me who to play back!",
       "templateType": "fail"
+    },
+    {
+      "template": "You're not connected to a voice channel!",
+      "templateType": "novoice"
     }
   ],
   "enabled": true,

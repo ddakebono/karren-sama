@@ -4,6 +4,7 @@
   ],
   "tags": [
     "parameter",
+    "requiresvoice",
     "prefixed",
     "irstart"
   ],
@@ -11,6 +12,10 @@
     {
       "template": "Starting up Instant Replay",
       "templateType": "normal"
+    },
+    {
+      "template": "You're not connected to a voice channel!",
+      "templateType": "novoice"
     }
   ],
   "enabled": true,

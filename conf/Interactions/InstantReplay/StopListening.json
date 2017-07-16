@@ -3,6 +3,7 @@
     "ir-stop"
   ],
   "tags": [
+    "requiresvoice",
     "parameter",
     "prefixed",
     "irstop"
@@ -11,6 +12,10 @@
     {
       "template": "Stopping Instant Replay",
       "templateType": "normal"
+    },
+    {
+      "template": "You're not connected to a voice channel!",
+      "templateType": "novoice"
     }
   ],
   "enabled": true,

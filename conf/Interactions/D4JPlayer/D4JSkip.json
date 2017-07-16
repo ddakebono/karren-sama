@@ -3,6 +3,7 @@
     "skip"
   ],
   "tags": [
+    "requiresvoice",
     "d4jskip",
     "prefixed"
   ],
@@ -14,6 +15,10 @@
     {
       "template": "It seems that the URL given isn\u0027t valid!",
       "templateType": "fail"
+    },
+    {
+      "template": "You're not connected to a voice channel!",
+      "templateType": "novoice"
     }
   ],
   "enabled": true,

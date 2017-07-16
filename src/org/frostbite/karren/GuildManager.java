@@ -85,6 +85,7 @@ public class GuildManager {
         tagHandlers.add(new Battlegrounds());
         tagHandlers.add(new ReminderCheck());
         tagHandlers.add(new ReminderAdd());
+        tagHandlers.add(new VoiceChannelRequired());
     }
 
     public ArrayList<Interaction> loadInteractions(){

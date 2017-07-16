@@ -3,6 +3,7 @@
     "repeat"
   ],
   "tags": [
+    "requiresvoice",
     "d4jrepeat",
     "prefixed"
   ],
@@ -10,6 +11,10 @@
     {
       "template": "Repeat is now %bool",
       "templateType": "normal"
+    },
+    {
+      "template": "You're not connected to a voice channel!",
+      "templateType": "novoice"
     }
   ],
   "enabled": true,

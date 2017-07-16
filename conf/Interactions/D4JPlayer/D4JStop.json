@@ -3,6 +3,7 @@
     "stop"
   ],
   "tags": [
+    "requiresvoice",
     "d4jstop",
     "prefixed"
   ],
@@ -10,6 +11,10 @@
     {
       "template": "",
       "templateType": "normal"
+    },
+    {
+      "template": "You're not connected to a voice channel!",
+      "templateType": "novoice"
     }
   ],
   "enabled": true,

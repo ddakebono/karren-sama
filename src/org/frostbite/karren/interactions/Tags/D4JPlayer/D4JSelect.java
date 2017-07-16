@@ -10,7 +10,6 @@
 
 package org.frostbite.karren.interactions.Tags.D4JPlayer;
 
-import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import org.json.JSONArray;
@@ -35,14 +34,11 @@ public class D4JSelect extends Tag {
             msg = msg.replace("%title", resultArray.getJSONObject(selection - 1).getJSONObject("snippet").getString("title"));
         } else if(param.trim().equalsIgnoreCase("c")){
             msg = "Alright, I've deleted the results.";
-            D4JSearch search = (D4JSearch) Karren.bot.getGuildManager().getTag("d4jsearch");
-            search.getResultArray(event.getAuthor().getStringID());
             interaction.stopProcessing();
         } else {
             msg = interaction.getRandomTemplate("fail").getTemplate();
             interaction.addUsageCount();
         }
-        interaction.getTagCache().remove(0);
         return msg;
     }
 
