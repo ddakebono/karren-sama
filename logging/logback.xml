@@ -14,7 +14,7 @@
             <pattern>%d{ISO8601} | %-5level | %thread | %logger{1} | %m%n</pattern>
         </encoder>
     </appender>
-    <appender name="MAIN" class="ch.qos.logback.core.RollingFileAppender">
+    <appender name="MAIN" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/bot.log</file>
         <filter class="org.frostbite.karren.LogFilter"/>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
