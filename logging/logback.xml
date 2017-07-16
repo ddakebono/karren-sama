@@ -1,11 +1,26 @@
+<!--
+  ~ Copyright (c) 2017 Owen Bennett.
+  ~  You may use, distribute and modify this code under the terms of the MIT licence.
+  ~  You should have obtained a copy of the MIT licence with this software,
+  ~  if not please obtain one from https://opensource.org/licences/MIT
+  ~
+  ~
+  ~
+  -->
+
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{ISO8601} | %-5level | %thread | %logger{1} | %m%n</pattern>
         </encoder>
     </appender>
-    <appender name="MAIN" class="ch.qos.logback.core.FileAppender">
+    <appender name="MAIN" class="ch.qos.logback.core.RollingFileAppender">
         <file>logs/bot.log</file>
+        <filter class="org.frostbite.karren.LogFilter"/>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>logs/bot.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
         <encoder>
             <pattern>%d{ISO8601} | %-5level | %thread | %logger{1} | %m%n</pattern>
         </encoder>
