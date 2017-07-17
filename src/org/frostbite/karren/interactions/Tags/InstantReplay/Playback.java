@@ -45,7 +45,7 @@ public class Playback extends Tag {
 
     @Override
     public String getTagName() {
-        return "ifplay";
+        return "irplay";
     }
 
     @Override
