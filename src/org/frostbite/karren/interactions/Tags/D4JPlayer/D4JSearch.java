@@ -48,8 +48,12 @@ public class D4JSearch extends Tag {
                 JSONObject jsonObject = (JSONObject)new JSONTokener(json).nextValue();
                 if(jsonObject.getJSONArray("items").length()>0) {
                     if (Arrays.asList(interaction.getTags()).contains("feelinglucky")) {
-                        msg = msg.replace("%title", jsonObject.getJSONArray("items").getJSONObject(0).getJSONObject("snippet").getString("title"));
-                        interaction.setParameter(jsonObject.getJSONArray("items").getJSONObject(0).getJSONObject("id").getString("videoId"));
+                        if(jsonObject.getJSONArray("items").getJSONObject(0).getJSONObject("id").isNull("videoId")) {
+                            msg = msg.replace("%title", jsonObject.getJSONArray("items").getJSONObject(0).getJSONObject("snippet").getString("title"));
+                            interaction.setParameter(jsonObject.getJSONArray("items").getJSONObject(0).getJSONObject("id").getString("videoId"));
+                        } else {
+                            msg = interaction.getRandomTemplate("fail").getTemplate();
+                        }
                     } else {
                         JSONArray results = jsonObject.getJSONArray("items");
                         StringBuilder resultMessage = new StringBuilder();
