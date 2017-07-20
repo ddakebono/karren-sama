@@ -13,6 +13,7 @@ package org.frostbite.karren.interactions.Tags;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
@@ -52,7 +53,9 @@ public class Battlegrounds extends Tag {
                 profileRequest.setSSLSocketFactory(sc.getSocketFactory());
                 profileRequest.setRequestProperty("TRN-Api-Key", Karren.conf.getTrackerNetworkAPIKey());
                 profileRequest.connect();
-                JsonObject profileData = json.parse(new InputStreamReader((InputStream) profileRequest.getContent())).getAsJsonObject();
+                JsonReader jsonReader = new JsonReader(new InputStreamReader((InputStream)profileRequest.getContent()));
+                jsonReader.setLenient(true);
+                JsonObject profileData = json.parse(jsonReader).getAsJsonObject();
                 JsonObject selectedSeason = null;
                 for (JsonElement jsonElement : profileData.get("Stats").getAsJsonArray()) {
                     if (jsonElement.getAsJsonObject().get("Region").getAsString().equalsIgnoreCase("na") && jsonElement.getAsJsonObject().get("Season").getAsString().equalsIgnoreCase(profileData.get("defaultSeason").getAsString()) && jsonElement.getAsJsonObject().get("Match").getAsString().equalsIgnoreCase(params[1].trim())) {
