@@ -36,6 +36,7 @@ public class KarrenBot {
     private InstantReplayManager irm;
     private AudioPlayerManager pm = new DefaultAudioPlayerManager();
     private AutoReminder ar = new AutoReminder();
+    private InteractionCommands interactionListener = new InteractionCommands();
 
     public KarrenBot(IDiscordClient client){
         this.client = client;
@@ -52,7 +53,7 @@ public class KarrenBot {
             EventDispatcher ed = client.getDispatcher();
             ed.registerListener(new ConnectCommand());
             ed.registerListener(new HelpCommand());
-            ed.registerListener(new InteractionCommands());
+            ed.registerListener(interactionListener);
             ed.registerListener(new KillCommand());
             ed.registerListener(new GuildCreateListener());
             ed.registerListener(new ShutdownListener());
@@ -84,6 +85,10 @@ public class KarrenBot {
 
     public void killBot(String killer){
         isKill = true;
+        //Unhook and shutdown interaction system
+        client.getDispatcher().unregisterListener(interactionListener);
+        ic.loadDefaultInteractions();
+        //Interactions reset to default state and unregistered
         if(ar.isAlive())
             ar.setKill(true);
         if(client.isReady()) {
