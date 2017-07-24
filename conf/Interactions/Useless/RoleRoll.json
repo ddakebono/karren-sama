@@ -6,6 +6,7 @@
   ],
   "tags": [
     "prefixed",
+    "parameter",
     "roleroll"
   ],
   "templatesNew": [
@@ -34,8 +35,8 @@
       "templateType": "noroleperm"
     },
     {
-      "template": "Oh, looks like you've won, but it seems that I can't change your roles. Try adjusting the position of the roles.",
-      "templateType": "higheruser"
+      "template": "Oh, looks like you've won, but it seems that the lotto- roles are above my permission level.",
+      "templateType": "higherroles"
     }
   ],
   "enabled": true,

@@ -48,8 +48,11 @@ public class RoleRoll extends Tag {
                     int dc = (Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() >= 0 ? Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() : 95);
                     Karren.log.info("Rolled " + roll + " against a DC of " + dc + " with bonus of " + bonus);
                     roll += bonus;
+                    if(interaction.hasParameter() && event.getAuthor().getRolesForGuild(event.getGuild()).contains("bot-manager") && interaction.getParameter().equalsIgnoreCase("test"))
+                        roll = 100;
                     if (roll >= dc) {
-                        if(PermissionUtils.isUserHigher(event.getGuild(), event.getClient().getOurUser(), event.getAuthor())) {
+                        //PermissionUtils.isUserHigher(event.getGuild(), event.getClient().getOurUser(), event.getAuthor())
+                        if(PermissionUtils.isUserHigher(event.getGuild(), event.getClient().getOurUser(), rollRoles)) {
                             for (IRole role : event.getAuthor().getRolesForGuild(event.getGuild())) {
                                 if (role.getName().contains("lotto-")) {
                                     event.getAuthor().removeRole(role);
@@ -63,7 +66,7 @@ public class RoleRoll extends Tag {
                             dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 259200000));
                         } else {
                             //Cannot change users role
-                            return interaction.getRandomTemplate("higheruser").getTemplate();
+                            return interaction.getRandomTemplate("higherroles").getTemplate();
                         }
                     } else {
                         dbGuildUser.incrementRollsSinceLastClear();
