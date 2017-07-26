@@ -54,7 +54,7 @@ public class MySQLInterface {
             if(guild!=null) {
                 if (!dbGuildUserCache.containsKey(guild.getStringID() + user.getStringID())) {
                     DbUser dbuser = getUserData(user);
-                    String sql = "INSERT IGNORE GuildUser (GuildUserID, UserID, GuildID, RollTimeout, IgnoreCommands, RollsSinceLastClear, TotalRolls) VALUES (null, ?, ?, null, 0, 0, 0)";
+                    String sql = "INSERT IGNORE GuildUser (GuildUserID, UserID, GuildID, RollTimeout, IgnoreCommands, RollsSinceLastClear, TotalRolls, WinningRolls) VALUES (null, ?, ?, null, 0, 0, 0, 0)";
                     Object[] params = {dbuser.getUserID(), guild.getStringID()};
                     Yank.execute(sql, params);
                     sql = "SELECT * FROM GuildUser WHERE UserID=? AND GuildID=?";
@@ -75,6 +75,7 @@ public class MySQLInterface {
                 dbGuildUser.setNotMapped(true);
                 dbGuildUser.setRollsSinceLastClear(0);
                 dbGuildUser.setTotalRolls(0);
+                dbGuildUser.setWinningRolls(0);
                 return dbGuildUser;
             }
         }
@@ -168,6 +169,14 @@ public class MySQLInterface {
             reminder.setReminderID(Math.toIntExact(Yank.insert(sql, params)));
             dbReminderCache.add(reminder);
         }
+    }
+
+    public List<Object[]> getGuildRollsTop(){
+        if(Karren.conf.getAllowSQLRW()) {
+            String sql = "SELECT GuildID, SUM(TotalRolls) AS GuildRolls FROM GuildUser GROUP BY GuildID ORDER BY GuildRolls DESC LIMIT 5";
+            return Yank.queryObjectArrays(sql, null);
+        }
+        return null;
     }
 
     public ArrayList<DbReminder> getDbReminderCache() {

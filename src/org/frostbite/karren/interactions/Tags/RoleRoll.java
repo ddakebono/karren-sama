@@ -63,6 +63,7 @@ public class RoleRoll extends Tag {
                             event.getAuthor().addRole(rngRole);
                             msg = msg.replace("%rngrole", rngRole.getName());
                             dbGuildUser.setRollsSinceLastClear(0);
+                            dbGuildUser.incrementWinningRolls();
                             dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 259200000));
                         } else {
                             //Cannot change users role

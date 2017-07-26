@@ -11,6 +11,7 @@
 package org.frostbite.karren.Database.Objects;
 
 import org.knowm.yank.Yank;
+
 import java.sql.Timestamp;
 
 public class DbGuildUser {
@@ -21,6 +22,7 @@ public class DbGuildUser {
     private boolean ignoreCommands;
     private int rollsSinceLastClear;
     private int totalRolls;
+    private int winningRolls;
     private boolean notMapped = false;
 
     public DbGuildUser(){}
@@ -85,6 +87,18 @@ public class DbGuildUser {
         this.ignoreCommands = ignoreCommands;
     }
 
+    public int getWinningRolls() {
+        return winningRolls;
+    }
+
+    public void setWinningRolls(int winningRolls) {
+        this.winningRolls = winningRolls;
+    }
+
+    public void incrementWinningRolls(){
+        this.winningRolls++;
+    }
+
     public boolean isNotMapped() {
         return notMapped;
     }
@@ -95,8 +109,8 @@ public class DbGuildUser {
 
     public void update(){
         if(!notMapped) {
-            String sql = "UPDATE GuildUser SET RollTimeout=?, IgnoreCommands=?, RollsSinceLastClear=?, TotalRolls=? WHERE GuildUserID=?";
-            Yank.execute(sql, new Object[]{rollTimeout, ignoreCommands, rollsSinceLastClear, totalRolls, guildUserID});
+            String sql = "UPDATE GuildUser SET RollTimeout=?, IgnoreCommands=?, RollsSinceLastClear=?, TotalRolls=?, WinningRolls=? WHERE GuildUserID=?";
+            Yank.execute(sql, new Object[]{rollTimeout, ignoreCommands, rollsSinceLastClear, totalRolls, winningRolls, guildUserID});
         }
     }
 }
