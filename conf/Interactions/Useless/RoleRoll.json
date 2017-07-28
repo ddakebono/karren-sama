@@ -15,11 +15,11 @@
       "templateType": "normal"
     },
     {
-      "template": "Looks like you didn\u0027t clear the DC, better luck next time. (%roll(+%bonus) against %dc | %timeremaining)",
+      "template": "Looks like you didn\u0027t clear the DC, better luck next time. (%roll+%bonus=$total against %dc | %timeremaining)",
       "templateType": "fail"
     },
     {
-      "template": "Better luck next time. (%roll(+%bonus) against %dc | %timeremaining)",
+      "template": "Better luck next time. (%roll+%bonus=$total against %dc | %timeremaining)",
       "templateType": "fail"
     },
     {

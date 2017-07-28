@@ -70,12 +70,19 @@ public class RoleRoll extends Tag {
                             return interaction.getRandomTemplate("higherroles").getTemplate();
                         }
                     } else {
+                        if(roll-bonus==0){
+                            for(IRole role : event.getAuthor().getRolesForGuild(event.getGuild())){
+                                if(role.getName().contains("lotto-"))
+                                    event.getAuthor().removeRole(role);
+                            }
+                        }
                         dbGuildUser.incrementRollsSinceLastClear();
                         dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 21600000));
                         msg = interaction.getRandomTemplate("fail").getTemplate();
                     }
                     msg = msg.replace("%bonus", String.valueOf(bonus));
-                    msg = msg.replace("%roll", String.valueOf(roll));
+                    msg = msg.replace("%roll", String.valueOf(roll-bonus));
+                    msg = msg.replace("%total", String.valueOf(roll));
                     msg = msg.replace("%dc", String.valueOf(dc));
                     dbGuildUser.update();
                 } else {
