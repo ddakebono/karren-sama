@@ -47,15 +47,15 @@ public class D4JSearch extends Tag {
                 String json = doc.text();
                 JSONObject jsonObject = (JSONObject)new JSONTokener(json).nextValue();
                 if(jsonObject.getJSONArray("items").length()>0) {
+                    JSONArray results = jsonObject.getJSONArray("items");
                     if (Arrays.asList(interaction.getTags()).contains("feelinglucky")) {
-                        if(jsonObject.getJSONArray("items").getJSONObject(0).getJSONObject("id").isNull("videoId")) {
-                            msg = msg.replace("%title", jsonObject.getJSONArray("items").getJSONObject(0).getJSONObject("snippet").getString("title"));
-                            interaction.setParameter(jsonObject.getJSONArray("items").getJSONObject(0).getJSONObject("id").getString("videoId"));
+                        if(!results.getJSONObject(0).getJSONObject("id").isNull("videoId")) {
+                            msg = msg.replace("%title", results.getJSONObject(0).getJSONObject("snippet").getString("title"));
+                            interaction.setParameter(results.getJSONObject(0).getJSONObject("id").getString("videoId"));
                         } else {
                             msg = interaction.getRandomTemplate("fail").getTemplate();
                         }
                     } else {
-                        JSONArray results = jsonObject.getJSONArray("items");
                         StringBuilder resultMessage = new StringBuilder();
                         for (int i = 0; i < results.length(); i++) {
                             resultMessage.append("\n").append(i + 1).append(" : ").append(results.getJSONObject(i).getJSONObject("snippet").getString("title"));
