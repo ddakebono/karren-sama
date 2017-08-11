@@ -57,7 +57,6 @@ public class GuildManager {
         tagHandlers.add(new EnableInteraction());
         tagHandlers.add(new Count());
         tagHandlers.add(new OverwatchUAPIProfile());
-        tagHandlers.add(new SetStatus());
         tagHandlers.add(new OverwatchUAPIHero());
         tagHandlers.add(new OverwatchUAPIAllHeroes());
         tagHandlers.add(new DeleteMessage());
@@ -173,4 +172,5 @@ public class GuildManager {
     public ArrayList<Tag> getTagHandlers() {
         return tagHandlers;
     }
+    public Map<String, InteractionProcessor> getRegisteredGuilds() { return registeredGuilds; }
 }

@@ -27,16 +27,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class KarrenBot {
-    private IDiscordClient client;
-    private MySQLInterface sql = new MySQLInterface();
-    private boolean extrasReady = false;
-    private GuildManager ic;
-    private boolean isKill = false;
-    private Map<String, GuildMusicManager> gms;
-    private InstantReplayManager irm;
-    private AudioPlayerManager pm = new DefaultAudioPlayerManager();
-    private AutoReminder ar = new AutoReminder();
-    private InteractionCommands interactionListener = new InteractionCommands();
+    public IDiscordClient client;
+    public MySQLInterface sql = new MySQLInterface();
+    public boolean extrasReady = false;
+    public GuildManager ic;
+    public boolean isKill = false;
+    public Map<String, GuildMusicManager> gms;
+    public InstantReplayManager irm;
+    public AudioPlayerManager pm = new DefaultAudioPlayerManager();
+    public AutoReminder ar = new AutoReminder();
+    public InteractionCommands interactionListener = new InteractionCommands();
 
     public KarrenBot(IDiscordClient client){
         this.client = client;
@@ -52,6 +52,11 @@ public class KarrenBot {
         if(Karren.conf.getConnectToDiscord()) {
             EventDispatcher ed = client.getDispatcher();
             ed.registerListener(new ConnectCommand());
+            try {
+                client.login();
+            } catch (DiscordException | RateLimitException e) {
+                e.printStackTrace();
+            }
             ed.registerListener(new HelpCommand());
             ed.registerListener(interactionListener);
             ed.registerListener(new KillCommand());
@@ -59,11 +64,6 @@ public class KarrenBot {
             ed.registerListener(new ShutdownListener());
             ed.registerListener(new ReconnectListener());
             ed.registerListener(new StatCommand());
-            try {
-                client.login();
-            } catch (DiscordException | RateLimitException e) {
-                e.printStackTrace();
-            }
             initExtras();
         } else {
             Karren.log.info("Running in test mode, not connected to Discord.");
@@ -84,20 +84,7 @@ public class KarrenBot {
     }
 
     public void killBot(String killer){
-        isKill = true;
-        //Unhook and shutdown interaction system
-        client.getDispatcher().unregisterListener(interactionListener);
-        ic.loadDefaultInteractions();
-        //Interactions reset to default state and unregistered
-        if(ar.isAlive())
-            ar.setKill(true);
-        if(client.isReady()) {
-            try {
-                client.logout();
-            } catch (DiscordException e) {
-                e.printStackTrace();
-            }
-        }
+        Karren.watchdog.cleanupBot();
         Karren.log.info("Bot has been killed by " + killer);
         System.exit(0);
     }

@@ -14,6 +14,7 @@ import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.shard.ReconnectSuccessEvent;
+import sx.blah.discord.util.DiscordException;
 
 import java.util.Properties;
 
@@ -32,6 +33,10 @@ public class ReconnectListener implements IListener<ReconnectSuccessEvent> {
 
         Karren.bot.getAr().setSuspend(false);
 
-        reconnectSuccessEvent.getClient().online("KarrenSama Ver." + Karren.botVersion);
+        try {
+            reconnectSuccessEvent.getClient().online("KarrenSama Ver." + Karren.botVersion);
+        } catch (DiscordException e) {
+            Karren.log.error(e.getErrorMessage());
+        }
     }
 }
