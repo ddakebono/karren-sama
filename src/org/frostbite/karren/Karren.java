@@ -54,7 +54,7 @@ public class Karren{
         System.setProperty("http.agent", "KarrenSama/" + botVersion);
 
         //Prepare the watchdog
-        Watchdog watchdog = new Watchdog(60);
+        watchdog = new Watchdog(60);
 
         //Start watchdog
         watchdog.start();
