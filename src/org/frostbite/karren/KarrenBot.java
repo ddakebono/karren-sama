@@ -35,7 +35,7 @@ public class KarrenBot {
     public Map<String, GuildMusicManager> gms;
     public InstantReplayManager irm;
     public AudioPlayerManager pm = new DefaultAudioPlayerManager();
-    public AutoReminder ar = new AutoReminder();
+    public AutoInteraction ar = new AutoInteraction();
     public InteractionCommands interactionListener = new InteractionCommands();
 
     public KarrenBot(IDiscordClient client){
@@ -133,7 +133,7 @@ public class KarrenBot {
         return irm;
     }
 
-    public AutoReminder getAr() {
+    public AutoInteraction getAr() {
         return ar;
     }
 }

@@ -18,6 +18,7 @@ public class DbGuild {
     private String guildOwner;
     private String commandPrefix;
     private int rollDifficulty;
+    private boolean allowTempChannels;
 
     public DbGuild(){}
 
@@ -68,9 +69,17 @@ public class DbGuild {
         this.rollDifficulty = rollDifficulty;
     }
 
+    public boolean isAllowTempChannels() {
+        return allowTempChannels;
+    }
+
+    public void setAllowTempChannels(boolean allowTempChannels) {
+        this.allowTempChannels = allowTempChannels;
+    }
+
     //Update db entry
     public void update(){
-        String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=? WHERE GuildID=?";
-        Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, guildID});
+        String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, AllowTempChannels=? WHERE GuildID=?";
+        Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, allowTempChannels, guildID});
     }
 }

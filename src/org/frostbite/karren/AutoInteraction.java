@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AutoReminder extends Thread {
+public class AutoInteraction extends Thread {
 
     private boolean kill = false;
     private boolean suspend = false;
@@ -45,6 +45,11 @@ public class AutoReminder extends Thread {
                         }
                     }
                 }
+
+                /*for(IGuild guild : Karren.bot.getClient().getGuilds()){
+                    if(Karren.bot.getGuildManager().getInteractionProcessor(guild))
+                }*/
+
             }
             try {
                 Thread.sleep(5000);

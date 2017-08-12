@@ -87,6 +87,7 @@ public class Watchdog extends Thread {
                 Karren.log.warn("Looks like the interaction system may have stopped working!");
                 restartReason = "Interaction system problem detected!";
                 failedChecks = failedChecks + EVENT_CHECK_INTERVAL;
+                return false;
             }
         }
         if(!Karren.bot.getAr().isAlive() && Karren.conf.getEnableInteractions()) {
