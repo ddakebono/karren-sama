@@ -64,7 +64,8 @@ public class InteractionProcessor {
             returned = check.handleMessage(event);
             if(returned!=null){
                 check.setLock(true);
-                Karren.log.debug("Interaction match for " + check.getIdentifier() + ", handling templates! (Confidence: " + check.getConfidenceChecked() + ")");
+                if(!check.getTagsToString().contains("nodisplay"))
+                    Karren.log.debug("Interaction match for " + check.getIdentifier() + ", handling templates! (Confidence: " + check.getConfidenceChecked() + ")");
                 result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getMessage().getChannel());
                 if(!check.isPermBad()) {
                     for (String tag : check.getTags()) {
@@ -76,7 +77,7 @@ public class InteractionProcessor {
                                 } else {
                                     returned = "Uh oh, looks like I'm missing some permissions! " + handler.getRequiredPermissions().toString() + ". Ask your admin to fix this.";
                                 }
-                            else if (!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && !tag.equalsIgnoreCase("feelinglucky") && returned != null)
+                            else if (!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && !tag.equalsIgnoreCase("feelinglucky") && !tag.equalsIgnoreCase("nodisplay") && returned != null)
                                 Karren.log.error("Please check interaction " + check.getIdentifier() + " as the file contains invalid tags!");
                         }
                     }

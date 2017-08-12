@@ -86,6 +86,7 @@ public class GuildManager {
         tagHandlers.add(new ReminderAdd());
         tagHandlers.add(new VoiceChannelRequired());
         tagHandlers.add(new RollTopGuilds());
+        tagHandlers.add(new WatchdogEvent());
     }
 
     public ArrayList<Interaction> loadInteractions(){
@@ -93,6 +94,8 @@ public class GuildManager {
         Gson gson = new Gson();
         File intDir = new File("conf/Interactions");
         if(intDir.isDirectory()){
+            //Setup watchdog interaction
+            loadedInteractions.add(new Interaction("WatchdogSpecial", new String[]{"watchdog", "nodisplay", "prefixed"}, "", new String[]{"watchdogtestevent"}, 1, true, ""));
             File[] intFiles = KarrenUtil.getFilesInFolders(intDir);
             for(File file : intFiles){
                 try {

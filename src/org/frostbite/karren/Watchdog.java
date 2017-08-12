@@ -13,13 +13,19 @@ package org.frostbite.karren;
 import org.knowm.yank.Yank;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.obj.Message;
 import sx.blah.discord.util.DiscordException;
 
 public class Watchdog extends Thread {
     boolean kill = false;
     int checkFailedMax;
     int failedChecks = 0;
+    int checkInterval = 0;
+    String restartReason = "UNKNOWN";
     public int watchdogInterventions = 0;
+    public boolean eventTriggered;
+    final int EVENT_CHECK_INTERVAL = 10;
 
     public Watchdog(int checkFailedMax) {
         this.checkFailedMax = checkFailedMax;
@@ -37,7 +43,7 @@ public class Watchdog extends Thread {
             }
 
             if(failedChecks>=checkFailedMax){
-                Karren.log.info("Watchdog detected a problem with the bot, restarting!");
+                Karren.log.info("Watchdog detected a problem, restarting bot. REASON: " + restartReason);
                 watchdogInterventions++;
                 //Shutdown bot completely and restart
                 cleanupBot();
@@ -60,12 +66,41 @@ public class Watchdog extends Thread {
     }
 
     public boolean checkForLife(){
-        if(!Karren.bot.getAr().isAlive() && Karren.conf.getEnableInteractions())
+        checkInterval++;
+        if(checkInterval>=EVENT_CHECK_INTERVAL && Karren.conf.getEnableInteractions()) {
+            checkInterval = 0;
+            eventTriggered = false;
+            try {
+                Message testMessage = new Message(Karren.bot.client, 0, ".watchdogtestevent", Karren.bot.client.fetchUser(Long.parseLong(Karren.conf.getOperatorDiscordID())),
+                        Karren.bot.client.getOrCreatePMChannel(Karren.bot.client.fetchUser(Long.parseLong(Karren.conf.getOperatorDiscordID()))),
+                        null, null, false, null, null, null, false, null, null, 0);
+                MessageReceivedEvent testEvent = new MessageReceivedEvent(testMessage);
+                Karren.bot.client.getDispatcher().dispatch(testEvent);
+                Thread.sleep(1000);
+            } catch (DiscordException e){
+                e.getErrorMessage();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if(!eventTriggered) {
+                Karren.log.warn("Looks like the interaction system may have stopped working!");
+                restartReason = "Interaction system problem detected!";
+                failedChecks = failedChecks + EVENT_CHECK_INTERVAL;
+            }
+        }
+        if(!Karren.bot.getAr().isAlive() && Karren.conf.getEnableInteractions()) {
+            restartReason = "Auto reminder has stopped running!";
             return false;
-        if(!Karren.bot.getClient().isLoggedIn())
+        }
+        if(!Karren.bot.getClient().isLoggedIn()) {
+            restartReason = "Not logged into discord!";
             return false;
-        if(Karren.bot.getGuildManager().getTagHandlers().size()==0 && Karren.conf.getEnableInteractions())
+        }
+        if(Karren.bot.getGuildManager().getTagHandlers().size()==0 && Karren.conf.getEnableInteractions()) {
+            restartReason = "Something went wrong with the interaction system and no tags were detected!";
             return false;
+        }
         return true;
     }
 

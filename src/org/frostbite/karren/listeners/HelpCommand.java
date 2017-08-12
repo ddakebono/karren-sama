@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Owen Bennett.
+ * Copyright (c) 2017 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,13 +10,16 @@
 
 package org.frostbite.karren.listeners;
 
+import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.Karren;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.util.*;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.MessageBuilder;
+import sx.blah.discord.util.MissingPermissionsException;
+import sx.blah.discord.util.RateLimitException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +37,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
                     helpMsg.withChannel(event.getAuthor().getOrCreatePMChannel());
                     helpMsg.withContent("To view more information about a specific command enter " + Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "help CommandName\n");
                     for (Interaction help : Karren.bot.getGuildManager().getInteractionProcessor(event.getMessage().getGuild()).getInteractions()) {
-                        if (KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), help.getPermissionLevel())) {
+                        if (KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), help.getPermissionLevel()) && !help.getTagsToString().contains("nodisplay")) {
                             String helpData;
                             if (Arrays.asList(help.getTags()).contains("prefixed")) {
                                 helpData = "__**" + help.getIdentifier() + "**__ | " + help.getHelptext() + "\n\n";
