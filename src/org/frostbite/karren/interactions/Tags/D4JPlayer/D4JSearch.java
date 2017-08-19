@@ -61,7 +61,7 @@ public class D4JSearch extends Tag {
                             resultMessage.append("\n").append(i + 1).append(" : ").append(results.getJSONObject(i).getJSONObject("snippet").getString("title"));
                         }
                         resultArrays.put(event.getAuthor().getStringID(), results);
-                        Interaction selectInteraction = new Interaction("selectOption", new String[]{"parameter", "d4jselect", "d4jplay"}, new InteractionTemplate[]{new InteractionTemplate("You selected \"%title\", added to queue!", "normal", null), new InteractionTemplate("That's not one of the options!", "fail", null)}, 1, event.getAuthor().getStringID(), interaction.getVoiceVolume());
+                        Interaction selectInteraction = new Interaction("selectOption", new String[]{"novoicehijack", "parameter", "d4jselect", "d4jplay"}, new InteractionTemplate[]{new InteractionTemplate("You selected \"%title\", added to queue!", "normal", null), new InteractionTemplate("That's not one of the options!", "fail", null),  new InteractionTemplate("You must be in the same voice channel as me to control music.", "nohijack", null)}, 1, event.getAuthor().getStringID(), interaction.getVoiceVolume());
                         selectInteraction.getTagCache().add(this);
                         selectInteraction.setNoClearInteraction(true);
                         Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().add(selectInteraction);

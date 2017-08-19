@@ -3,6 +3,7 @@
     "yts"
   ],
   "tags": [
+    "novoicehijack",
     "parameter",
     "requiresvoice",
     "d4jsearch",
@@ -12,6 +13,10 @@
     {
       "template": "```Here\u0027s the results, please respond with the number of the video you want, or respond with c to cancel:%results```",
       "templateType": "normal"
+    },
+    {
+      "template": "You must be in the same voice channel as me to control music.",
+      "templateType": "nohijack"
     },
     {
       "template": "No results were returned from that search...",

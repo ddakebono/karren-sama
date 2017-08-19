@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Optional;
 
-
 public class Battlegrounds extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {

@@ -4,6 +4,7 @@
     "yt"
   ],
   "tags": [
+    "novoicehijack",
     "parameter",
     "d4jplay",
     "prefixed",
@@ -17,6 +18,10 @@
     {
       "template": "Something\u0027s wrong with that URL, can you give me another one?",
       "templateType": "fail"
+    },
+    {
+      "template": "You must be in the same voice channel as me to control music.",
+      "templateType": "nohijack"
     },
     {
       "template": "I can\u0027t seem to use the file from the link you gave.",

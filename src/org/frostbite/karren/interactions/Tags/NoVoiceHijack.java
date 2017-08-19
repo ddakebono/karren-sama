@@ -8,10 +8,8 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags.D4JPlayer;
+package org.frostbite.karren.interactions.Tags;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -20,23 +18,20 @@ import sx.blah.discord.util.MessageBuilder;
 
 import java.util.EnumSet;
 
-public class D4JList extends Tag {
+public class NoVoiceHijack extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(Karren.bot.getClient().getConnectedVoiceChannels().size()>0){
-            StringBuilder list = new StringBuilder();
-            for(AudioTrack source : Karren.bot.getGuildMusicManager(event.getGuild()).scheduler.getQueue()){
-                list.append(source.getInfo().title).append("\n");
+        if(event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel()!=null)
+            if(!event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel().equals(event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel())) {
+                msg = interaction.getRandomTemplate("nohijack").getTemplate();
+                interaction.stopProcessing();
             }
-            list = new StringBuilder(list.substring(0, list.length() - 2));
-            msg = msg.replace("%nplist", list.toString());
-        }
         return msg;
     }
 
     @Override
     public String getTagName() {
-        return "d4jlist";
+        return "novoicehijack";
     }
 
     @Override

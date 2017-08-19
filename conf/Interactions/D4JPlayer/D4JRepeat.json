@@ -3,6 +3,7 @@
     "repeat"
   ],
   "tags": [
+    "novoicehijack",
     "requiresvoice",
     "d4jrepeat",
     "prefixed"
@@ -11,6 +12,10 @@
     {
       "template": "Repeat is now %bool",
       "templateType": "normal"
+    },
+    {
+      "template": "You must be in the same voice channel as me to control music.",
+      "templateType": "nohijack"
     },
     {
       "template": "You're not connected to a voice channel!",

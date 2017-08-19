@@ -1,11 +1,12 @@
 {
   "triggers": [
-    "list"
+    "queue",
+    "list",
+    "q"
   ],
   "tags": [
     "d4jlist",
-    "prefixed",
-    "pm"
+    "prefixed"
   ],
   "templatesNew": [
     {

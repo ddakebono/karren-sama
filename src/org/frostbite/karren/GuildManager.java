@@ -87,6 +87,7 @@ public class GuildManager {
         tagHandlers.add(new VoiceChannelRequired());
         tagHandlers.add(new RollTopGuilds());
         tagHandlers.add(new WatchdogEvent());
+        tagHandlers.add(new NoVoiceHijack());
     }
 
     public ArrayList<Interaction> loadInteractions(){

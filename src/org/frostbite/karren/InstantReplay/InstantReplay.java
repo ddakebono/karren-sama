@@ -33,10 +33,11 @@ public class InstantReplay {
     }
 
     public void writeUserAudioFrame(AudioFrame frame){
+        Karren.log.debug("Getting audio frame from " + frame.user.getName());
         if(!lockedUsers.contains(frame.user.getStringID())) {
             LinkedList<AudioFrame> audioFrames = usersAudioFrames.getOrDefault(frame.user.getLongID(), new LinkedList<>());
             audioFrames.add(frame);
-            if (audioFrames.size() > 1500)
+            if (audioFrames.size() > 1000)
                 audioFrames.removeFirst();
             if (!usersAudioFrames.containsKey(frame.user.getLongID()))
                 usersAudioFrames.put(frame.user.getLongID(), audioFrames);
@@ -47,6 +48,7 @@ public class InstantReplay {
         channel.join();
         receiver = new IRAudioReceiver(this);
         guild.getAudioManager().subscribeReceiver(receiver);
+        Karren.log.debug("Loaded receiver subscriber");
     }
 
     public AudioFrame getSingleFrame(IUser playback){

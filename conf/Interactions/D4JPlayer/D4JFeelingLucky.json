@@ -4,6 +4,7 @@
     "feelinglucky"
   ],
   "tags": [
+    "novoicehijack",
     "requiresvoice",
     "parameter",
     "d4jsearch",
@@ -19,6 +20,10 @@
     {
       "template": "No results were returned from that search...",
       "templateType": "fail"
+    },
+    {
+      "template": "You must be in the same voice channel as me to control music.",
+      "templateType": "nohijack"
     },
     {
       "template": "You're not connected to a voice channel!",

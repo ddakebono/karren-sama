@@ -68,10 +68,12 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     public void connectToVoiceChannel(MessageReceivedEvent event){
         if(event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel() != null){
             if (!event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel().isConnected()) {
-                try {
-                    event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel().join();
-                } catch (MissingPermissionsException e) {
+                if(event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel()==null) {
+                    try {
+                        event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel().join();
+                    } catch (MissingPermissionsException e) {
                         e.printStackTrace();
+                    }
                 }
             }
         } else {

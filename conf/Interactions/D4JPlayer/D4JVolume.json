@@ -3,6 +3,7 @@
     "volume"
   ],
   "tags": [
+    "novoicehijack",
     "parameter",
     "requiresvoice",
     "d4jvolume",
@@ -12,6 +13,10 @@
     {
       "template": "Volume changed to %volume",
       "templateType": "normal"
+    },
+    {
+      "template": "You must be in the same voice channel as me to control music.",
+      "templateType": "nohijack"
     },
     {
       "template": "Hold on a sec, that's not a valid number!",

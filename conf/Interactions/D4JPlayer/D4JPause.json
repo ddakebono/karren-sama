@@ -3,6 +3,7 @@
     "pause"
   ],
   "tags": [
+    "novoicehijack",
     "requiresvoice",
     "d4jplay",
     "prefixed"
@@ -15,6 +16,10 @@
     {
       "template": "It seems that the URL given isn\u0027t valid!",
       "templateType": "fail"
+    },
+    {
+      "template": "You must be in the same voice channel as me to control music.",
+      "templateType": "nohijack"
     },
     {
       "template": "You're not connected to a voice channel!",

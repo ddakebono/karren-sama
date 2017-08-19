@@ -3,6 +3,7 @@
     "stop"
   ],
   "tags": [
+    "novoicehijack",
     "requiresvoice",
     "d4jstop",
     "prefixed"
@@ -11,6 +12,10 @@
     {
       "template": "",
       "templateType": "normal"
+    },
+    {
+      "template": "You must be in the same voice channel as me to control music.",
+      "templateType": "nohijack"
     },
     {
       "template": "You're not connected to a voice channel!",
