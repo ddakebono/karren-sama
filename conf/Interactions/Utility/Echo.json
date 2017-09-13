@@ -5,7 +5,8 @@
   "tags": [
     "parameter",
     "echo",
-    "prefixed"
+    "prefixed",
+    "embedded"
   ],
   "templatesNew": [
     {

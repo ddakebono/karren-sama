@@ -6,7 +6,8 @@
     "parameter",
     "requiresvoice",
     "prefixed",
-    "irstart"
+    "irstart",
+    "embedded"
   ],
   "templatesNew": [
     {

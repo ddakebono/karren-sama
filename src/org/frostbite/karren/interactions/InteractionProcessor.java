@@ -89,8 +89,10 @@ public class InteractionProcessor {
                     returned = returned.replace("%prefix", Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()));
                     result.withContent(returned);
                 } else {
-                    result = null;
+                    if(result.getEmbedObject()==null)
+                        result = null;
                 }
+
                 if(!check.isSpecialInteraction())
                     break;
 

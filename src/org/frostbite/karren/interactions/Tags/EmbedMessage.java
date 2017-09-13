@@ -14,14 +14,17 @@ import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
+import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.MessageBuilder;
 
+import java.awt.*;
 import java.util.EnumSet;
 
 public class EmbedMessage extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        return msg;
+        response.withEmbed(new EmbedBuilder().withColor(Color.RED).appendField(interaction.getIdentifier(), msg, false).withFooterText("Requested By: " + event.getAuthor().getName()).build());
+        return null;
     }
 
     @Override

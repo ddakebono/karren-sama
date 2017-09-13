@@ -6,7 +6,8 @@
     "requiresvoice",
     "mentioned",
     "prefixed",
-    "irplay"
+    "irplay",
+    "embedded"
   ],
   "templatesNew": [
     {

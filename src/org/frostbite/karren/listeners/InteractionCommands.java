@@ -27,7 +27,7 @@ public class InteractionCommands implements IListener<MessageReceivedEvent> {
             if(ip!=null) {
                 if(!Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor()).isIgnoreCommands()) {
                     response = ip.handle(event);
-                    if (response != null && response.getContent().length()>0) {
+                    if (response != null && response.getContent().length()>0 || response.getEmbedObject()!=null) {
                         try {
                             response.send();
                         } catch (RateLimitException | DiscordException | MissingPermissionsException e) {

@@ -5,7 +5,8 @@
   "tags": [
     "parameter",
     "prefixed",
-    "enableinteraction"
+    "enableinteraction",
+    "embedded"
   ],
   "templatesNew": [
     {

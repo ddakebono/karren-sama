@@ -7,7 +7,8 @@
     "parameter",
     "requiresvoice",
     "d4jsearch",
-    "prefixed"
+    "prefixed",
+    "embedded"
   ],
   "templatesNew": [
     {
