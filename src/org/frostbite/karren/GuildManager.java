@@ -81,13 +81,13 @@ public class GuildManager {
         tagHandlers.add(new SetPrefix());
         tagHandlers.add(new RoleRoll());
         tagHandlers.add(new SetDifficulty());
-        tagHandlers.add(new Battlegrounds());
         tagHandlers.add(new ReminderCheck());
         tagHandlers.add(new ReminderAdd());
         tagHandlers.add(new VoiceChannelRequired());
         tagHandlers.add(new RollTopGuilds());
         tagHandlers.add(new WatchdogEvent());
         tagHandlers.add(new NoVoiceHijack());
+        tagHandlers.add(new BattlegroundsNew());
     }
 
     public ArrayList<Interaction> loadInteractions(){
