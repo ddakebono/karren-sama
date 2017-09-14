@@ -9,7 +9,7 @@
   ],
   "templatesNew": [
     {
-      "template": "Player **%username** has won **%wins** rounds and lost **%losses** rounds. They have a KDR of **%kdr**, and have killed **%kills** other players. They've placed in the Top 10s **%top10s** times during the **%roundsPlayed** rounds they've played. Their skill rating is **%rating**.",
+      "template": "Seasonal statistics for **%username**",
       "templateType": "normal"
     },
     {

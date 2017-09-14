@@ -23,8 +23,10 @@ import pro.lukasgorny.enums.PUBGStat;
 import pro.lukasgorny.factory.JPubgFactory;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
+import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.MessageBuilder;
 
+import java.awt.*;
 import java.util.EnumSet;
 
 public class BattlegroundsNew extends Tag {
@@ -37,7 +39,7 @@ public class BattlegroundsNew extends Tag {
 
         JPubg pubg = JPubgFactory.getWrapper(Karren.conf.getTrackerNetworkAPIKey());
         FilterCriteria filter = new FilterCriteria();
-        filter.setMode(PUBGMode.valueOf(params[1]));
+        filter.setMode(PUBGMode.valueOf(params[1].trim()));
         filter.setRegion(PUBGRegion.na);
         filter.setSeason(PUBGSeason.PRE4_2017);
         Player player;
@@ -48,15 +50,21 @@ public class BattlegroundsNew extends Tag {
         }
 
         //Get stats
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.withAuthorName("Playerunknown's Battleground Stats");
         msg = msg.replace("%username", player.getPlayerName());
-        msg = msg.replace("%kills", pubg.getPlayerMatchStatByStatName(player, PUBGStat.KILLS).getDisplayValue());
-        msg = msg.replace("%rating", pubg.getPlayerMatchStatByStatName(player, PUBGStat.RATING).getDisplayValue());
-        msg = msg.replace("%roundsPlayed", pubg.getPlayerMatchStatByStatName(player, PUBGStat.ROUNDS_PLAYED).getDisplayValue());
-        msg = msg.replace("%kdr", pubg.getPlayerMatchStatByStatName(player, PUBGStat.KILL_DEATH_RATIO).getDisplayValue());
-        msg = msg.replace("%top10s", pubg.getPlayerMatchStatByStatName(player, PUBGStat.TOP_10).getDisplayValue());
-        msg = msg.replace("%wins", pubg.getPlayerMatchStatByStatName(player, PUBGStat.WINS).getDisplayValue());
-        msg = msg.replace("%losses", pubg.getPlayerMatchStatByStatName(player, PUBGStat.LOSSES).getDisplayValue());
-        return msg;
+        embed.withDescription(msg);
+        embed.withColor(Color.RED);
+        embed.appendField("Kills", pubg.getPlayerMatchStatByStatName(player, PUBGStat.KILLS).getDisplayValue(), false);
+        embed.appendField("Skill Rating", pubg.getPlayerMatchStatByStatName(player, PUBGStat.RATING).getDisplayValue(), false);
+        embed.appendField("Rounds Played", pubg.getPlayerMatchStatByStatName(player, PUBGStat.ROUNDS_PLAYED).getDisplayValue(), false);
+        embed.appendField("Kill to Death Ratio", pubg.getPlayerMatchStatByStatName(player, PUBGStat.KILL_DEATH_RATIO).getDisplayValue(), false);
+        embed.appendField("Rounds in Top 10", pubg.getPlayerMatchStatByStatName(player, PUBGStat.TOP_10).getDisplayValue(), false);
+        embed.appendField("Winner Winners", pubg.getPlayerMatchStatByStatName(player, PUBGStat.WINS).getDisplayValue(), false);
+        embed.appendField("Better Luck Next Times", pubg.getPlayerMatchStatByStatName(player, PUBGStat.LOSSES).getDisplayValue(), false);
+        embed.withFooterText("Requested by: " + event.getAuthor().getName());
+        response.withEmbed(embed.build());
+        return null;
     }
 
     @Override
@@ -66,6 +74,6 @@ public class BattlegroundsNew extends Tag {
 
     @Override
     public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
+        return EnumSet.of(Permissions.SEND_MESSAGES, Permissions.EMBED_LINKS);
     }
 }
