@@ -23,7 +23,7 @@ import java.util.EnumSet;
 public class EmbedMessage extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        response.withEmbed(new EmbedBuilder().withColor(Color.RED).appendField(interaction.getIdentifier(), msg, false).withFooterText("Requested By: " + event.getAuthor().getName()).build());
+        interaction.setEmbed(new EmbedBuilder().withColor(Color.RED).appendField(interaction.getIdentifier(), msg, false).withFooterText("Requested By: " + event.getAuthor().getName()));
         return null;
     }
 

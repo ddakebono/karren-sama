@@ -95,7 +95,7 @@ public class OsuGetUser extends Tag {
                     embed.appendField("S", osuProfile.get("count_rank_s").getAsString(), true);
                     embed.appendField("A", osuProfile.get("count_rank_a").getAsString(), true);
                     embed.withFooterText("Requested By: " + event.getAuthor().getName());
-                    response.withEmbed(embed.build());
+                    interaction.setEmbed(embed);
                     return null;
                 } else {
                     msg = interaction.getRandomTemplate("fail").getTemplate();

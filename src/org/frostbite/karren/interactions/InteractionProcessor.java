@@ -84,12 +84,14 @@ public class InteractionProcessor {
                     if(check.interactionUsed())
                         Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().remove(check);
                 }
+                if(check.isEmbedUsed())
+                    result.withEmbed(check.getEmbed().build());
                 check.setLock(false);
-                if(returned!=null){
+                if(returned!=null && returned.length()>0){
                     returned = returned.replace("%prefix", Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()));
                     result.withContent(returned);
                 } else {
-                    if(result.getEmbedObject()==null)
+                    if(!check.isEmbedUsed())
                         result = null;
                 }
 

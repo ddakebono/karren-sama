@@ -20,6 +20,7 @@ import org.frostbite.karren.KarrenUtil;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -55,6 +56,7 @@ public class Interaction {
     private File interactionFile;
     private ArrayList<Tag> tagCache = new ArrayList<>();
     private boolean noClearInteraction = false;
+    private EmbedBuilder embed;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal", null)}, triggers, confidence, enabled, helptext);
@@ -148,6 +150,7 @@ public class Interaction {
             if (mentionedUsers == null)
                 mentionedUsers = new LinkedList<>();
             mentionedUsers.clear();
+            embed = null;
             if (tagCache == null)
                 tagCache = new ArrayList<>();
             tagCache.clear();
@@ -291,6 +294,18 @@ public class Interaction {
     public boolean interactionUsed() {
         this.usageCount--;
         return this.usageCount == 0;
+    }
+
+    public boolean isEmbedUsed(){
+        return embed!=null;
+    }
+
+    public EmbedBuilder getEmbed(){
+        return embed;
+    }
+
+    public void setEmbed(EmbedBuilder embed){
+        this.embed = embed;
     }
 
     public boolean isStopProcessing() {

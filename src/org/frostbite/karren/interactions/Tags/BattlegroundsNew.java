@@ -63,7 +63,7 @@ public class BattlegroundsNew extends Tag {
         embed.appendField("Winner Winners", pubg.getPlayerMatchStatByStatName(player, PUBGStat.WINS).getDisplayValue(), false);
         embed.appendField("Better Luck Next Times", pubg.getPlayerMatchStatByStatName(player, PUBGStat.LOSSES).getDisplayValue(), false);
         embed.withFooterText("Requested by: " + event.getAuthor().getName());
-        response.withEmbed(embed.build());
+        interaction.setEmbed(embed);
         return null;
     }
 
