@@ -29,7 +29,7 @@ public class Playback extends Tag {
             if (interaction.getMentionedUsers().size() > 0) {
                 if(event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel().equals(ir.getChannel())) {
                     ir.getLockedUsers().add(interaction.getMentionedUsers().get(0).getStringID());
-                    msg = msg.replace("%username", interaction.getMentionedUsers().get(0).getName());
+                    msg = interaction.replaceMsg(msg,"%username", interaction.getMentionedUsers().get(0).getName());
                     event.getGuild().getAudioManager().setAudioProvider(new IRAudioProvider(ir, interaction.getMentionedUsers().get(0)));
                 } else {
                     msg = "You must be in the voice channel that I'm listening in.";

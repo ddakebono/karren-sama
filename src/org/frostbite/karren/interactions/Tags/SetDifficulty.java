@@ -34,7 +34,7 @@ public class SetDifficulty extends Tag {
                 DbGuild dbGuild = Karren.bot.getSql().getGuild(event.getGuild());
                 dbGuild.setRollDifficulty(difficulty);
                 dbGuild.update();
-                msg = msg.replace("%newdiff", String.valueOf(difficulty));
+                msg = interaction.replaceMsg(msg,"%newdiff", String.valueOf(difficulty));
             } else {
                 msg = interaction.getRandomTemplate("fail").getTemplate();
             }

@@ -31,7 +31,7 @@ public class Count5 extends Tag {
             count.update();
             if((count.getCount()%5)==0) {
                 Timestamp time = count.getCountStarted();
-                return msg.replace("%count", String.valueOf(count.getCount())).replace("%since", time.toString());
+                return interaction.replaceMsg(msg,"%count", String.valueOf(count.getCount())).replace("%since", time.toString());
             } else {
                 return null;
             }

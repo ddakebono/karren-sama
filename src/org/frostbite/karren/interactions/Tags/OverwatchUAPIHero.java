@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Owen Bennett.
+ * Copyright (c) 2017 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -58,8 +58,8 @@ public class OverwatchUAPIHero extends Tag {
                     Set<Map.Entry<String, JsonElement>> entries = stats.getAsJsonObject("average_stats").entrySet();
                     Set<Map.Entry<String, JsonElement>> entriesHero = stats.getAsJsonObject("hero_stats").entrySet();
                     Set<Map.Entry<String, JsonElement>> entriesGeneral = stats.getAsJsonObject("general_stats").entrySet();
-                    msg = msg.replace("%username", params[0]);
-                    msg = msg.replace("%hero", Arrays.stream(KarrenUtil.heroList).filter(x -> x.equalsIgnoreCase(params[1])).findFirst().get());
+                    msg = interaction.replaceMsg(msg,"%username", params[0]);
+                    msg = interaction.replaceMsg(msg,"%hero", Arrays.stream(KarrenUtil.heroList).filter(x -> x.equalsIgnoreCase(params[1])).findFirst().get());
                     StringBuilder heroDataBlob = new StringBuilder("**Hero Stat Block**");
                     for (Map.Entry<String, JsonElement> stat : entries) {
                         if (KarrenUtil.getNormalizedName(stat.getKey()) != null) {
@@ -76,7 +76,7 @@ public class OverwatchUAPIHero extends Tag {
                             heroDataBlob.append("\n").append(KarrenUtil.getNormalizedName(stat.getKey())).append(": ").append(df.format(stat.getValue().getAsFloat()));
                         }
                     }
-                    msg = msg.replace("%blob", heroDataBlob.toString());
+                    msg = interaction.replaceMsg(msg,"%blob", heroDataBlob.toString());
                 } else {
                     msg = interaction.getRandomTemplate("fail").getTemplate();
                 }

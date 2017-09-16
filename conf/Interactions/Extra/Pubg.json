@@ -5,7 +5,8 @@
   "tags": [
     "prefixed",
     "parameter",
-    "battlegrounds"
+    "battlegrounds",
+    "embedded"
   ],
   "templatesNew": [
     {
@@ -21,6 +22,44 @@
       "templateType": "noparam"
     }
   ],
+  "embedFields":[
+    {
+      "fieldTitle": "Kills",
+      "fieldValue": "%kills",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Skill Rating",
+      "fieldValue": "%rating",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Rounds Played This Season",
+      "fieldValue": "%roundsPlayed",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Kill to Death Ratio",
+      "fieldValue": "%kdr",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Rounds in Top 10 Remaining",
+      "fieldValue": "%top10s",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Chicken Dinners",
+      "fieldValue": "%wins",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Better Luck Next Times",
+      "fieldValue": "%losses",
+      "inline": false
+    }
+  ],
+  "friendlyName": "Playerunknown's Battleground Stats",
   "enabled": true,
   "helptext": "Pull pubg data from the PubgTracker api",
   "identifier": "Pubg",

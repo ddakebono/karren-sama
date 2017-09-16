@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Owen Bennett.
+ * Copyright (c) 2017 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,6 +10,7 @@
 
 package org.frostbite.karren.interactions.Tags;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.frostbite.karren.KarrenUtil;
@@ -50,20 +51,21 @@ public class OverwatchUAPIProfile extends Tag {
             if(profile==null)
                 throw new IOException();
             JsonObject quickplay = profile.getAsJsonObject("stats").getAsJsonObject("quickplay");
+            JsonObject comp = profile.getAsJsonObject("stats").getAsJsonObject("competitive");
             JsonObject playtime = profile.getAsJsonObject("heroes").getAsJsonObject("playtime");
-            msg = msg.replace("%username", parameter);
-            msg = msg.replace("%level", Integer.toString(quickplay.getAsJsonObject("overall_stats").get("level").getAsInt() + (quickplay.getAsJsonObject("overall_stats").get("prestige").getAsInt()*100)));
-            msg = msg.replace("%winrate", quickplay.getAsJsonObject("overall_stats").get("win_rate").getAsString());
-            msg = msg.replace("%gameswon", String.valueOf(quickplay.getAsJsonObject("overall_stats").get("games").getAsInt()-quickplay.getAsJsonObject("overall_stats").get("losses").getAsInt()));
+            msg = interaction.replaceMsg(msg,"%username", parameter);
+            msg = interaction.replaceMsg(msg,"%level", Integer.toString(quickplay.getAsJsonObject("overall_stats").get("level").getAsInt() + (quickplay.getAsJsonObject("overall_stats").get("prestige").getAsInt()*100)));
+            msg = interaction.replaceMsg(msg,"%gameswon", String.valueOf(quickplay.getAsJsonObject("overall_stats").get("wins").getAsInt()+comp.getAsJsonObject("overall_stats").get("wins").getAsInt()));
             double timeRanked = 0.0;
             double timeQuick = 0.0;
             for(String hero : KarrenUtil.heroList)
                 timeRanked += playtime.getAsJsonObject("competitive").get(hero.toLowerCase()).getAsDouble();
             for(String hero : KarrenUtil.heroList)
                 timeQuick += playtime.getAsJsonObject("quickplay").get(hero.toLowerCase()).getAsDouble();
-            msg = msg.replace("%playtime-quick", df.format(timeQuick));
-            msg = msg.replace("%playtime-comp", df.format(timeRanked));
-            msg = msg.replace("%rank", quickplay.getAsJsonObject("overall_stats").get("comprank").getAsString());
+            msg = interaction.replaceMsg(msg,"%playtime-quick", df.format(timeQuick));
+            msg = interaction.replaceMsg(msg,"%playtime-comp", df.format(timeRanked));
+            JsonElement comprank = quickplay.getAsJsonObject("overall_stats").get("comprank");
+            msg = interaction.replaceMsg(msg,"%rank", comprank.isJsonNull()?"Unranked":comprank.getAsString());
         } catch (IOException e) {
             msg = interaction.getRandomTemplate("fail").getTemplate();
         } catch (NoSuchAlgorithmException | KeyManagementException e) {

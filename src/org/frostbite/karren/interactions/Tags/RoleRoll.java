@@ -61,7 +61,7 @@ public class RoleRoll extends Tag {
                             }
                             IRole rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
                             event.getAuthor().addRole(rngRole);
-                            msg = msg.replace("%rngrole", rngRole.getName());
+                            msg = interaction.replaceMsg(msg,"%rngrole", rngRole.getName());
                             dbGuildUser.setRollsSinceLastClear(0);
                             dbGuildUser.incrementWinningRolls();
                             dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 259200000));
@@ -80,17 +80,17 @@ public class RoleRoll extends Tag {
                         dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 21600000));
                         msg = interaction.getRandomTemplate("fail").getTemplate();
                     }
-                    msg = msg.replace("%bonus", String.valueOf(bonus));
-                    msg = msg.replace("%roll", String.valueOf(roll-bonus));
-                    msg = msg.replace("%total", String.valueOf(roll));
-                    msg = msg.replace("%dc", String.valueOf(dc));
+                    msg = interaction.replaceMsg(msg,"%bonus", String.valueOf(bonus));
+                    msg = interaction.replaceMsg(msg,"%roll", String.valueOf(roll-bonus));
+                    msg = interaction.replaceMsg(msg,"%total", String.valueOf(roll));
+                    msg = interaction.replaceMsg(msg,"%dc", String.valueOf(dc));
                     dbGuildUser.update();
                 } else {
                     msg = interaction.getRandomTemplate("permission").getTemplate();
 
                 }
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM @ HH:mm");
-                msg = msg.replace("%timeremaining", dateFormat.format(dbGuildUser.getRollTimeout()));
+                msg = interaction.replaceMsg(msg,"%timeremaining", dateFormat.format(dbGuildUser.getRollTimeout()));
                 return msg;
             } else {
                 return interaction.getRandomTemplate("noroles").getTemplate();

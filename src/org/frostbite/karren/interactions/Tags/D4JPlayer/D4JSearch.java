@@ -50,7 +50,7 @@ public class D4JSearch extends Tag {
                     JSONArray results = jsonObject.getJSONArray("items");
                     if (Arrays.asList(interaction.getTags()).contains("feelinglucky")) {
                         if(!results.getJSONObject(0).getJSONObject("id").isNull("videoId")) {
-                            msg = msg.replace("%title", results.getJSONObject(0).getJSONObject("snippet").getString("title"));
+                            msg = interaction.replaceMsg(msg,"%title", results.getJSONObject(0).getJSONObject("snippet").getString("title"));
                             interaction.setParameter(results.getJSONObject(0).getJSONObject("id").getString("videoId"));
                         } else {
                             msg = interaction.getRandomTemplate("fail").getTemplate();
@@ -65,7 +65,7 @@ public class D4JSearch extends Tag {
                         selectInteraction.getTagCache().add(this);
                         selectInteraction.setNoClearInteraction(true);
                         Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().add(selectInteraction);
-                        msg = msg.replace("%results", resultMessage.toString());
+                        msg = interaction.replaceMsg(msg,"%results", resultMessage.toString());
                     }
                 } else {
                     msg = interaction.getRandomTemplate("fail").getTemplate();

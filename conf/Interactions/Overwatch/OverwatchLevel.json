@@ -1,25 +1,53 @@
 {
   "triggers": [
-    "owl",
-    "overwatchlevel"
+    "owl"
   ],
   "tags": [
     "prefixed",
     "parameter",
-    "overwatchprofile"
+    "overwatchprofile",
+    "embedded"
   ],
   "templatesNew": [
     {
-      "template": "**%username** is **level %level** with **%playtime-quick hours** logged in quickplay and **%playtime-comp hours** in competitive.",
+      "template": "Overwatch statistics for %username",
       "templateType": "normal"
     },
     {
-      "template": "I couldn\u0027t find anyone with that ID.",
+      "template": "I couldn\u0027t find that ID.",
       "templateType": "fail"
     }
   ],
+  "embedFields": [
+    {
+      "fieldTitle": "Level",
+      "fieldValue": "%level",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Hours in Quickplay",
+      "fieldValue": "%playtime-quick",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Hours in Competitive",
+      "fieldValue": "%playtime-comp",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Victories",
+      "fieldValue": "%gameswon",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Skill Rating",
+      "fieldValue": "%rank",
+      "inline": false
+    }
+  ],
+  "friendlyName": "Overwatch profile statistics",
   "enabled": true,
-  "helptext": "Pull some relevant data from the Overwatch UAPI",
+  "helptext": "Gets info from the Overwatch API",
   "identifier": "OverwatchLevel",
   "confidence": 1,
   "voiceVolume": 0.0,

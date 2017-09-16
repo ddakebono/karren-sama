@@ -24,8 +24,8 @@ public class D4JNowPlayingTime extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         if(Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack()!=null) {
-            msg = msg.replace("%position", KarrenUtil.getMinSecFormattedString(Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack().getPosition()));
-            msg = msg.replace("%duration", KarrenUtil.getMinSecFormattedString(Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack().getDuration()));
+            msg = interaction.replaceMsg(msg,"%position", KarrenUtil.getMinSecFormattedString(Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack().getPosition()));
+            msg = interaction.replaceMsg(msg,"%duration", KarrenUtil.getMinSecFormattedString(Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack().getDuration()));
         } else {
             msg = interaction.getRandomTemplate("fail").getTemplate();
         }

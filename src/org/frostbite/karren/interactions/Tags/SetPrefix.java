@@ -28,7 +28,7 @@ public class SetPrefix extends Tag {
             DbGuild dbGuild = Karren.bot.getSql().getGuild(event.getGuild());
             dbGuild.setCommandPrefix(param.trim());
             dbGuild.update();
-            msg = msg.replace("%prefix", param);
+            msg = interaction.replaceMsg(msg,"%prefix", param);
         } else {
             msg = interaction.getRandomTemplate("fail").getTemplate();
         }

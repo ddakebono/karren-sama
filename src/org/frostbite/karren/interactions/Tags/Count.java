@@ -29,7 +29,7 @@ public class Count extends Tag {
             count.incrementCount();
             count.update();
             Timestamp time = count.getCountStarted();
-            return msg.replace("%count", String.valueOf(count.getCount())).replace("%since", time.toString());
+            return interaction.replaceMsg(msg,"%count", String.valueOf(count.getCount())).replace("%since", time.toString());
         } else {
             return msg;
         }

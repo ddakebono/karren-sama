@@ -32,8 +32,8 @@ public class ReminderCheck extends Tag {
             DbReminder alert = reminders.get(0);
             alert.setReminderSent(true);
             alert.update();
-            msg = msg.replace("%author", event.getClient().getUserByID(alert.authorID).getName());
-            msg = msg.replace("%message", alert.getMessage());
+            msg = interaction.replaceMsg(msg,"%author", event.getClient().getUserByID(alert.authorID).getName());
+            msg = interaction.replaceMsg(msg,"%message", alert.getMessage());
             Karren.bot.getSql().getDbReminderCache().remove(alert);
             return msg;
         } else {

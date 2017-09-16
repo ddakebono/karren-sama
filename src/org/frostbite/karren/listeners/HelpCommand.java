@@ -15,12 +15,11 @@ import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.IListener;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MessageBuilder;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
+import sx.blah.discord.util.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -29,31 +28,48 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
     public void handle(MessageReceivedEvent event){
         IDiscordClient bot = event.getClient();
         if(event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "help")){
-            MessageBuilder helpMsg = new MessageBuilder(bot);
             ArrayList<MessageBuilder> messages = new ArrayList<>();
             String moreInfo = event.getMessage().getContent().replace(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "help", "").trim();
             if(moreInfo.length()==0) {
                 try {
-                    helpMsg.withChannel(event.getAuthor().getOrCreatePMChannel());
-                    helpMsg.withContent("To view more information about a specific command enter " + Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "help CommandName\n");
+                    ArrayList<EmbedObject> prefixedEmbed = new ArrayList<>();
+                    ArrayList<EmbedObject> confidenceEmbed = new ArrayList<>();
+                    EmbedBuilder prefixed = new EmbedBuilder();
+                    EmbedBuilder confidence = new EmbedBuilder();
                     for (Interaction help : Karren.bot.getGuildManager().getInteractionProcessor(event.getMessage().getGuild()).getInteractions()) {
                         if (KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), help.getPermissionLevel()) && !help.getTagsToString().contains("nodisplay")) {
-                            String helpData;
                             if (Arrays.asList(help.getTags()).contains("prefixed")) {
-                                helpData = "__**" + help.getIdentifier() + "**__ | " + help.getHelptext() + "\n\n";
+                                if(prefixed.getFieldCount()>=25) {
+                                    prefixedEmbed.add(prefixed.build());
+                                    prefixed = new EmbedBuilder();
+                                }
+                                if(prefixed.getFieldCount()==0){
+                                    prefixed.withTitle("**__Prefixed Commands__**");
+                                    prefixed.withColor(Color.RED);
+                                    prefixed.withDescription("All commands listed here use the server prefix \"" + Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "\"");
+                                }
+                                prefixed.appendField((help.getFriendlyName()!=null&&help.getFriendlyName().length()>0)?help.getFriendlyName():help.getIdentifier(), help.getHelptext(), false);
                             } else {
-                                helpData = "__**" + help.getIdentifier() + "**__ | " + help.getHelptext() + "\n\n";
-                            }
-                            if(helpMsg.getContent().length()+helpData.length()>=1980){
-                                messages.add(helpMsg);
-                                helpMsg = new MessageBuilder(bot);
-                                helpMsg.withChannel(event.getAuthor().getOrCreatePMChannel());
-                            } else {
-                                helpMsg.appendContent(helpData);
+                                if(confidence.getFieldCount()>=25) {
+                                    confidenceEmbed.add(confidence.build());
+                                    confidence = new EmbedBuilder();
+                                }
+                                if(confidence.getFieldCount()==0){
+                                    confidence.withTitle("**__Non-prefixed Commands__**");
+                                    confidence.withColor(Color.RED);
+                                    confidence.withDescription("All commands listed here are triggered by using words in a normal sentence, meet the threshold and it fires.");
+                                }
+                                confidence.appendField((help.getFriendlyName()!=null&&help.getFriendlyName().length()>0)?help.getFriendlyName():help.getIdentifier(), help.getHelptext(), false);
                             }
                         }
                     }
-                    messages.add(helpMsg);
+                    prefixedEmbed.add(prefixed.build());
+                    confidenceEmbed.add(confidence.build());
+                    for(EmbedObject embed : prefixedEmbed){
+                        messages.add(new MessageBuilder(bot).withChannel(event.getAuthor().getOrCreatePMChannel()).withEmbed(embed));
+                    }
+                    for(EmbedObject embed : confidenceEmbed)
+                        messages.add(new MessageBuilder(bot).withChannel(event.getAuthor().getOrCreatePMChannel()).withEmbed(embed));
                 } catch (DiscordException | RateLimitException | MissingPermissionsException e) {
                     e.printStackTrace();
                 }
@@ -63,6 +79,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
                     Interaction helpInteraction = interaction.get();
                     if(KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), helpInteraction.getPermissionLevel())) {
                         try {
+                            MessageBuilder helpMsg = new MessageBuilder(bot);
                             helpMsg.withChannel(event.getAuthor().getOrCreatePMChannel());
                             if (Arrays.asList(helpInteraction.getTags()).contains("prefixed"))
                                 helpMsg.withContent("__**" + helpInteraction.getIdentifier() + "**__\n**Command**: " + Karren.conf.getCommandPrefix() + helpInteraction.getTriggers()[0] + "\n**Sample Output**: " + helpInteraction.getRandomTemplate("normal").getTemplate() + "\n**Help text**: " + helpInteraction.getHelptext());

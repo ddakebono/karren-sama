@@ -11,6 +11,7 @@
 package org.frostbite.karren.interactions.Tags;
 
 import org.frostbite.karren.interactions.Interaction;
+import org.frostbite.karren.interactions.InteractionEmbedFields;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
@@ -23,7 +24,17 @@ import java.util.EnumSet;
 public class EmbedMessage extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        interaction.setEmbed(new EmbedBuilder().withColor(Color.RED).appendField(interaction.getIdentifier(), msg, false).withFooterText("Requested By: " + event.getAuthor().getName()));
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.withColor(Color.RED);
+        embed.withTitle((interaction.getFriendlyName()!=null&&interaction.getFriendlyName().length()>0)?interaction.getFriendlyName():interaction.getIdentifier());
+        embed.withDescription(msg);
+        embed.withFooterText("Requested By: " + event.getAuthor().getName());
+        if(interaction.getEmbedFields()!=null && interaction.getEmbedFields().length>0){
+            for(InteractionEmbedFields field : interaction.getEmbedFields()){
+                  embed.appendField(field.getFieldTitle(), interaction.getReplacementText(field.getFieldValue()), field.isInline());
+            }
+        }
+        interaction.setEmbed(embed);
         return null;
     }
 

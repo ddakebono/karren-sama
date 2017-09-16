@@ -28,7 +28,7 @@ public class RollTopGuilds extends Tag {
         for(int i=0; i<guildRanks.size(); i++){
             output.append(i+1).append(": ").append(Karren.bot.getClient().getGuildByID(Long.valueOf((String) guildRanks.get(i)[0])).getName()).append(" with ").append(guildRanks.get(i)[1]).append(" total rolls\n");
         }
-        msg = msg.replace("%ranks", output.toString());
+        msg = interaction.replaceMsg(msg,"%ranks", output.toString());
         return msg;
     }
 

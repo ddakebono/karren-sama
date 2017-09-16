@@ -31,7 +31,7 @@ public class D4JSelect extends Tag {
             D4JSearch search = (D4JSearch) interaction.getTagCache().get(0);
             JSONArray resultArray = search.getResultArray(event.getAuthor().getStringID());
             interaction.setParameter(resultArray.getJSONObject(selection - 1).getJSONObject("id").getString("videoId"));
-            msg = msg.replace("%title", resultArray.getJSONObject(selection - 1).getJSONObject("snippet").getString("title"));
+            msg = interaction.replaceMsg(msg,"%title", resultArray.getJSONObject(selection - 1).getJSONObject("snippet").getString("title"));
         } else if(param.trim().equalsIgnoreCase("c")){
             msg = "Alright, I've deleted the results.";
             interaction.stopProcessing();

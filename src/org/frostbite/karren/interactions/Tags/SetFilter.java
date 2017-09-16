@@ -30,12 +30,12 @@ public class SetFilter extends Tag {
                 DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(event.getGuild(), user);
                 if(dbGuildUser.isIgnoreCommands()){
                     dbGuildUser.setIgnoreCommands(false);
-                    msg = msg.replace("%setting", "disabled");
+                    msg = interaction.replaceMsg(msg,"%setting", "disabled");
                 } else {
                     dbGuildUser.setIgnoreCommands(true);
-                    msg = msg.replace("%setting", "enabled");
+                    msg = interaction.replaceMsg(msg,"%setting", "enabled");
                 }
-                msg = msg.replace("%user", user.getName());
+                msg = interaction.replaceMsg(msg,"%user", user.getName());
                 dbGuildUser.update();
             } else {
                 msg = interaction.getRandomTemplate("fail").getTemplate();

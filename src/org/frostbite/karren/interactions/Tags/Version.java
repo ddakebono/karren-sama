@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Owen Bennett.
+ * Copyright (c) 2017 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -22,7 +22,7 @@ import java.util.EnumSet;
 public class Version extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        return msg.replace("%version", Karren.botVersion);
+        return interaction.replaceMsg(msg,"%version", Karren.botVersion);
     }
 
     @Override

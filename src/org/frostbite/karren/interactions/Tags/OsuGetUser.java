@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Owen Bennett.
+ * Copyright (c) 2017 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -17,14 +17,12 @@ import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.MessageBuilder;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -79,24 +77,18 @@ public class OsuGetUser extends Tag {
                     profileRequest.setSSLSocketFactory(sc.getSocketFactory());
                     profileRequest.connect();
                     JsonObject osuProfile = gson.parse(new InputStreamReader((InputStream) profileRequest.getContent())).getAsJsonArray().get(0).getAsJsonObject();
-                    EmbedBuilder embed = new EmbedBuilder();
-                    embed.withAuthorName("osu! Stats");
-                    embed.withColor(Color.RED);
-                    msg = msg.replace("%username", osuProfile.get("username").getAsString());
-                    embed.withDescription(msg);
-                    embed.appendField("Global Ranking", osuProfile.get("pp_rank").getAsString(), true);
-                    embed.appendField("Country Ranking", osuProfile.get("pp_country_rank").getAsString(), true);
-                    embed.appendField("Total Score", osuProfile.get("total_score").getAsString(), true);
-                    embed.appendField("PP", osuProfile.get("pp_raw").getAsString(), true);
-                    embed.appendField("Level", osuProfile.get("level").getAsString(), true);
-                    embed.appendField("Country", osuProfile.get("country").getAsString(), true);
-                    embed.appendField("Playcount", osuProfile.get("playcount").getAsString() + " plays", false);
-                    embed.appendField("SS", osuProfile.get("count_rank_ss").getAsString(), true);
-                    embed.appendField("S", osuProfile.get("count_rank_s").getAsString(), true);
-                    embed.appendField("A", osuProfile.get("count_rank_a").getAsString(), true);
-                    embed.withFooterText("Requested By: " + event.getAuthor().getName());
-                    interaction.setEmbed(embed);
-                    return null;
+                    msg = interaction.replaceMsg(msg,"%username", osuProfile.get("username").getAsString());
+                    msg = interaction.replaceMsg(msg,"%rank", osuProfile.get("pp_rank").getAsString());
+                    msg = interaction.replaceMsg(msg,"%score", osuProfile.get("total_score").getAsString());
+                    msg = interaction.replaceMsg(msg,"%rawpp", osuProfile.get("pp_raw").getAsString());
+                    msg = interaction.replaceMsg(msg,"%level", osuProfile.get("level").getAsString());
+                    msg = interaction.replaceMsg(msg,"%countryrank", osuProfile.get("pp_country_rank").getAsString());
+                    msg = interaction.replaceMsg(msg,"%country", osuProfile.get("country").getAsString());
+                    msg = interaction.replaceMsg(msg,"%playcount", osuProfile.get("playcount").getAsString());
+                    msg = interaction.replaceMsg(msg,"%countss", osuProfile.get("count_rank_ss").getAsString());
+                    msg = interaction.replaceMsg(msg,"%counts", osuProfile.get("count_rank_s").getAsString());
+                    msg = interaction.replaceMsg(msg,"%counta", osuProfile.get("count_rank_a").getAsString());
+                    return msg;
                 } else {
                     msg = interaction.getRandomTemplate("fail").getTemplate();
                 }

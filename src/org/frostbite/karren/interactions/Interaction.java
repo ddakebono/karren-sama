@@ -57,6 +57,9 @@ public class Interaction {
     private ArrayList<Tag> tagCache = new ArrayList<>();
     private boolean noClearInteraction = false;
     private EmbedBuilder embed;
+    @Expose private InteractionEmbedFields[] embedFields;
+    @Expose private String friendlyName;
+    private HashMap<String, String> replacedTextMap = new HashMap<>();
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal", null)}, triggers, confidence, enabled, helptext);
@@ -73,7 +76,7 @@ public class Interaction {
     }
 
     @JsonCreator
-    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail,@JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction) {
+    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail,@JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction, @JsonProperty("embedFields") InteractionEmbedFields[] embedFields, @JsonProperty("friendlyName") String friendlyName) {
         this.triggers = triggers;
         this.tags = tags;
         this.templatesNew = templatesNew;
@@ -90,6 +93,8 @@ public class Interaction {
         this.voiceVolume = voiceVolume;
         this.parameter = parameter;
         this.specialInteraction = specialInteraction;
+        this.embedFields = embedFields;
+        this.friendlyName = friendlyName;
     }
 
     public Interaction(String identifier, String[] tags, InteractionTemplate[] templatesNew, String[] triggers, int confidence, boolean enabled, String helptext, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction){
@@ -150,6 +155,9 @@ public class Interaction {
             if (mentionedUsers == null)
                 mentionedUsers = new LinkedList<>();
             mentionedUsers.clear();
+            if(replacedTextMap==null)
+                replacedTextMap = new HashMap<>();
+            replacedTextMap.clear();
             embed = null;
             if (tagCache == null)
                 tagCache = new ArrayList<>();
@@ -240,6 +248,15 @@ public class Interaction {
         } else {
             return null;
         }
+    }
+
+    public String replaceMsg(String msg, String target, String value){
+        replacedTextMap.put(target, value);
+        return msg.replace(target, value);
+    }
+
+    public String getReplacementText(String target){
+        return replacedTextMap.get(target);
     }
 
     public float getVoiceVolume() {
@@ -342,6 +359,14 @@ public class Interaction {
 
     public ArrayList<Tag> getTagCache() {
         return tagCache;
+    }
+
+    public InteractionEmbedFields[] getEmbedFields() {
+        return embedFields;
+    }
+
+    public String getFriendlyName() {
+        return friendlyName;
     }
 
     public boolean interactionOldFormatUpdate(){

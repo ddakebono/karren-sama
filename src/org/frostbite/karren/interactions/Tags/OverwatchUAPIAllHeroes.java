@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Owen Bennett.
+ * Copyright (c) 2017 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -53,10 +53,10 @@ public class OverwatchUAPIAllHeroes extends Tag {
             for(String hero : KarrenUtil.heroList)
                 heroes.put(hero, heroPlaytime.getAsJsonObject("competitive").get(hero.toLowerCase()).getAsDouble()+heroPlaytime.getAsJsonObject("quickplay").get(hero.toLowerCase()).getAsDouble());
             LinkedHashMap heroesSort = heroes.entrySet().stream().sorted(Map.Entry.comparingByValue()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-            msg = msg.replace("%username", parameter);
+            msg = interaction.replaceMsg(msg,"%username", parameter);
             for(int i=0; i<3; i++) {
-                msg = msg.replace("%hero" + i, (heroesSort.keySet().toArray())[(KarrenUtil.heroList.length-i)-1].toString());
-                msg = msg.replace("%timeplayed" + i, String.valueOf(heroes.get((heroesSort.keySet().toArray())[(KarrenUtil.heroList.length-i)-1])));
+                msg = interaction.replaceMsg(msg,"%hero" + i, (heroesSort.keySet().toArray())[(KarrenUtil.heroList.length-i)-1].toString());
+                msg = interaction.replaceMsg(msg,"%timeplayed" + i, String.valueOf(heroes.get((heroesSort.keySet().toArray())[(KarrenUtil.heroList.length-i)-1])));
             }
         } catch (NoSuchAlgorithmException | IOException | KeyManagementException e) {
             e.printStackTrace();

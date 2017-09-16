@@ -5,11 +5,12 @@
   "tags": [
     "prefixed",
     "parameter",
-    "osugetuser"
+    "osugetuser",
+    "embedded"
   ],
   "templatesNew": [
     {
-      "template": "**%username (Lvl %level)** is rank **#%rank** with a total score of **%score**",
+      "template": "osu! statistics for **%username**",
       "templateType": "normal"
     },
     {
@@ -21,9 +22,62 @@
       "templateType": "permission"
     }
   ],
+  "embedFields": [
+    {
+      "fieldTitle": "Global Ranking",
+      "fieldValue": "%rank",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Country Ranking",
+      "fieldValue": "%countryrank",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Total Score",
+      "fieldValue": "%score",
+      "inline": true
+    },
+    {
+      "fieldTitle": "PP",
+      "fieldValue": "%rawpp",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Level",
+      "fieldValue": "%level",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Country",
+      "fieldValue": "%country",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Playcount",
+      "fieldValue": "%playcount",
+      "inline": false
+    },
+    {
+      "fieldTitle": "SS",
+      "fieldValue": "%countss",
+      "inline": true
+    },
+    {
+      "fieldTitle": "S",
+      "fieldValue": "%counts",
+      "inline": true
+    },
+    {
+      "fieldTitle": "A",
+      "fieldValue": "%counta",
+      "inline": true
+    }
+  ],
+  "friendlyName": "osu! User Stats",
   "enabled": true,
-  "helptext": "Pull some relevant data from the osu! api",
-  "identifier": "OsuProfile",
+  "helptext": "Pull more relevant data from the osu! api",
+  "identifier": "OsuProfileEx",
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,

@@ -37,7 +37,7 @@ public class ReminderAdd extends Tag {
             reminder.setReminderTime(getRemindTime(timeMatch.matcher(tempArray[0].trim())));
             reminder.setChannelID(event.getChannel().getLongID());
             Karren.bot.getSql().addReminder(reminder);
-            msg = msg.replace("%target", event.getMessage().getMentions().get(0).getName());
+            msg = interaction.replaceMsg(msg,"%target", event.getMessage().getMentions().get(0).getName());
         } else {
             msg = interaction.getRandomTemplate("fail").getTemplate();
         }

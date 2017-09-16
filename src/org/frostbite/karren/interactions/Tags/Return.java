@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Owen Bennett.
+ * Copyright (c) 2017 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -32,7 +32,7 @@ public class Return extends Tag {
             if(departedUsers.putIfAbsent(event.getMessage().getAuthor(), false) != null)
                 departedUsers.put(event.getMessage().getAuthor(), false);
             if (user.getTimeLeft()!=null) {
-                msg = msg.replace("%away", KarrenUtil.calcAway(user.getTimeLeft().getTime()));
+                msg = interaction.replaceMsg(msg,"%away", KarrenUtil.calcAway(user.getTimeLeft().getTime()));
                 user.setTimeLeft(null);
                 user.update();
                 return msg;
@@ -48,9 +48,9 @@ public class Return extends Tag {
                 if (interaction.isSpecialInteraction() && isDeparted) {
                     DbUser mention = Karren.bot.getSql().getUserData(event.getMessage().getMentions().get(0));
                     msg = interaction.getRandomTemplate("fail").getTemplate();
-                    msg = msg.replace("%name", event.getMessage().getAuthor().getName());
-                    msg = msg.replace("%mention", event.getMessage().getMentions().get(0).getName());
-                    msg = msg.replace("%away", KarrenUtil.calcAway(mention.getTimeLeft().getTime()));
+                    msg = interaction.replaceMsg(msg,"%name", event.getMessage().getAuthor().getName());
+                    msg = interaction.replaceMsg(msg,"%mention", event.getMessage().getMentions().get(0).getName());
+                    msg = interaction.replaceMsg(msg,"%away", KarrenUtil.calcAway(mention.getTimeLeft().getTime()));
                     return msg;
                 }
             }

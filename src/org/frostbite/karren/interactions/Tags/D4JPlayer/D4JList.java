@@ -29,7 +29,7 @@ public class D4JList extends Tag {
                 list.append(source.getInfo().title).append("\n");
             }
             list = new StringBuilder(list.substring(0, list.length() - 2));
-            msg = msg.replace("%nplist", list.toString());
+            msg = interaction.replaceMsg(msg,"%nplist", list.toString());
         }
         return msg;
     }
