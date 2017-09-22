@@ -37,13 +37,19 @@ public class BattlegroundsNew extends Tag {
 
         JPubg pubg = JPubgFactory.getWrapper(Karren.conf.getTrackerNetworkAPIKey());
         FilterCriteria filter = new FilterCriteria();
-        filter.setMode(PUBGMode.valueOf(params[1].trim()));
+        try {
+            filter.setMode(PUBGMode.valueOf(params[1].trim()));
+        } catch (IllegalArgumentException e){
+            interaction.stopProcessing();
+            return interaction.getRandomTemplate("badmode").getTemplate();
+        }
         filter.setRegion(PUBGRegion.na);
         filter.setSeason(PUBGSeason.PRE4_2017);
         Player player;
         try {
             player = pubg.getByNickname(params[0].trim(), filter);
         } catch (IllegalArgumentException e){
+            interaction.stopProcessing();
             return interaction.getRandomTemplate("fail").getTemplate();
         }
 

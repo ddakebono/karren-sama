@@ -18,6 +18,10 @@
       "templateType": "fail"
     },
     {
+      "template": "The gamemode you entered doesn't seem to exist!",
+      "templateType": "badmode"
+    },
+    {
       "template": "You need to give me a username to search!",
       "templateType": "noparam"
     }
