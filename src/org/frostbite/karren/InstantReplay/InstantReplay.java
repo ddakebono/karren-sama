@@ -33,7 +33,6 @@ public class InstantReplay {
     }
 
     public void writeUserAudioFrame(AudioFrame frame){
-        Karren.log.debug("Getting audio frame from " + frame.user.getName());
         if(!lockedUsers.contains(frame.user.getStringID())) {
             LinkedList<AudioFrame> audioFrames = usersAudioFrames.getOrDefault(frame.user.getLongID(), new LinkedList<>());
             audioFrames.add(frame);

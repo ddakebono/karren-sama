@@ -102,7 +102,7 @@
         <dependency>
             <groupId>com.github.austinv11</groupId>
             <artifactId>Discord4j</artifactId>
-            <version>2.9</version>
+            <version>430c826</version>
         </dependency>
         <dependency>
             <groupId>com.sedmelluq</groupId>
