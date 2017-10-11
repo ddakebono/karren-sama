@@ -369,6 +369,10 @@ public class Interaction {
         return friendlyName;
     }
 
+    public int getReplacementTextCount(){
+        return replacedTextMap.size();
+    }
+
     public boolean interactionOldFormatUpdate(){
         if(templates!=null || templatesFail!=null || templatesPermError!=null){
             Karren.log.info("Upgrading format on interaction " + identifier);

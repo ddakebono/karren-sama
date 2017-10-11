@@ -29,7 +29,7 @@ public class EmbedMessage extends Tag {
         embed.withTitle((interaction.getFriendlyName()!=null&&interaction.getFriendlyName().length()>0)?interaction.getFriendlyName():interaction.getIdentifier());
         embed.withDescription(msg);
         embed.withFooterText("Requested By: " + event.getAuthor().getName());
-        if(interaction.getEmbedFields()!=null && interaction.getEmbedFields().length>0){
+        if(interaction.getEmbedFields()!=null && interaction.getEmbedFields().length>0 && interaction.getReplacementTextCount()>0){
             for(InteractionEmbedFields field : interaction.getEmbedFields()){
                   embed.appendField(field.getFieldTitle(), interaction.getReplacementText(field.getFieldValue()), field.isInline());
             }

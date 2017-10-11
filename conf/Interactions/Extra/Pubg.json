@@ -22,7 +22,7 @@
       "templateType": "badmode"
     },
     {
-      "template": "You need to give me a username to search!",
+      "template": "You need to give me a username and gamemode to search! (username, gamemode)",
       "templateType": "noparam"
     }
   ],

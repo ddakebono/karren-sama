@@ -52,6 +52,6 @@ public class IRAudioProvider implements IAudioProvider {
 
     @Override
     public AudioEncodingType getAudioEncodingType() {
-        return AudioEncodingType.OPUS;
+        return AudioEncodingType.PCM;
     }
 }

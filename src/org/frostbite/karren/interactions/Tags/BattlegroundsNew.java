@@ -43,7 +43,7 @@ public class BattlegroundsNew extends Tag {
             interaction.stopProcessing();
             return interaction.getRandomTemplate("badmode").getTemplate();
         }
-        filter.setRegion(PUBGRegion.na);
+        filter.setRegion(PUBGRegion.agg);
         filter.setSeason(PUBGSeason.PRE4_2017);
         Player player;
         try {

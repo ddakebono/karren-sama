@@ -31,7 +31,7 @@ public class IRAudioReceiver implements IAudioReceiver {
 
     @Override
     public AudioEncodingType getAudioEncodingType() {
-        return AudioEncodingType.OPUS;
+        return AudioEncodingType.PCM;
     }
 }
 

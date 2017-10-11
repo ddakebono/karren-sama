@@ -22,10 +22,14 @@ import java.util.EnumSet;
 public class D4JVolume extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        int volume = Integer.parseInt(interaction.getParameter().trim());
-        if(volume>=0 && volume<=100) {
-            Karren.bot.getGuildMusicManager(event.getGuild()).player.setVolume(volume);
-            msg = interaction.replaceMsg(msg,"%volume", Integer.toString(volume));
+        if(interaction.hasParameter()) {
+            int volume = Integer.parseInt(interaction.getParameter().trim());
+            if (volume >= 0 && volume <= 100) {
+                Karren.bot.getGuildMusicManager(event.getGuild()).player.setVolume(volume);
+                msg = interaction.replaceMsg(msg, "%volume", Integer.toString(volume));
+            } else {
+                msg = interaction.getRandomTemplate("fail").getTemplate();
+            }
         } else {
             msg = interaction.getRandomTemplate("fail").getTemplate();
         }
