@@ -1,0 +1,34 @@
+{
+  "triggers": [
+    "makechan",
+    "open-temp",
+    "temp"
+  ],
+  "tags": [
+    "parameter",
+    "prefixed",
+    "createtempchannel",
+    "embedded"
+  ],
+  "templatesNew": [
+    {
+      "template": "Created temporary voice channel %channel, it will expire in 24 hours.",
+      "templateType": "normal"
+    },
+    {
+      "template": "You need to give the channel a name!",
+      "templateType": "noparam"
+    },
+    {
+      "template": "Hold on a sec, I don't see a category called \"Temp Voice Channel\", tell your admin to resolve this issue.",
+      "templateType": "nocategory"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Creates a temporary voice channel",
+  "identifier": "TempChannel",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

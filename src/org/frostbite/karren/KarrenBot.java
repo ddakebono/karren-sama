@@ -37,6 +37,7 @@ public class KarrenBot {
     public AudioPlayerManager pm = new DefaultAudioPlayerManager();
     public AutoInteraction ar = new AutoInteraction();
     public InteractionCommands interactionListener = new InteractionCommands();
+    public ChannelMonitor cm = new ChannelMonitor();
 
     public KarrenBot(IDiscordClient client){
         this.client = client;
@@ -135,5 +136,9 @@ public class KarrenBot {
 
     public AutoInteraction getAr() {
         return ar;
+    }
+
+    public ChannelMonitor getCm() {
+        return cm;
     }
 }

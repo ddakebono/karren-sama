@@ -114,6 +114,8 @@ public class Watchdog extends Thread {
         //Interactions reset to default state and unregistered
         if(Karren.bot.ar.isAlive())
             Karren.bot.ar.setKill(true);
+        if(Karren.bot.cm.isAlive())
+            Karren.bot.cm.kill();
         if(Karren.bot.client.isReady()) {
             try {
                 Karren.bot.client.logout();

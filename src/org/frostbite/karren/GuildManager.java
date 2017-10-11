@@ -89,6 +89,7 @@ public class GuildManager {
         tagHandlers.add(new NoVoiceHijack());
         tagHandlers.add(new BattlegroundsNew());
         tagHandlers.add(new EmbedMessage());
+        tagHandlers.add(new CreateTempChannel());
     }
 
     public ArrayList<Interaction> loadInteractions(){
