@@ -11,7 +11,6 @@
 package org.frostbite.karren;
 
 import sx.blah.discord.handle.obj.ICategory;
-import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 
@@ -23,18 +22,16 @@ public class ChannelMonitor extends Thread {
     public void run() {
         while(!kill){
             for(IGuild guild : Karren.bot.getClient().getGuilds()){
-                ICategory category = guild.getCategories().stream().filter(x -> x.getName().equalsIgnoreCase("Temp Voice Channels")).findFirst().orElse(null);
+                ICategory category = guild.getCategories().stream().filter(x -> x.getName().toLowerCase().contains("temp voice channels")).findFirst().orElse(null);
                 if(category!=null) {
-                    Karren.log.debug("Found category");
-                    for (IChannel channel : category.getChannels()){
-                        Karren.log.debug("Checking channel " + channel.getName());
+                    for (IVoiceChannel channel : category.getVoiceChannels()){
                         if(channel.getExtendedInvites().stream().filter(x -> x.getInviter().equals(Karren.bot.getClient().getOurUser())).count()==0){
-                            if(((IVoiceChannel)channel).getConnectedUsers().size()>0){
-                                //channel.createInvite(3600, 1, false, true);
+                            if(channel.getConnectedUsers().size()>0){
+                                channel.createInvite(3600, 1, false, true);
                                 break;
                             }
                             Karren.log.debug("Channel " + channel.getName() + " has expired, deleting.");
-                            //channel.delete();
+                            channel.delete();
                         }
                     }
                 }

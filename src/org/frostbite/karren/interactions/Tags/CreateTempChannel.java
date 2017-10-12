@@ -24,9 +24,13 @@ import java.util.EnumSet;
 public class CreateTempChannel extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        ICategory category = event.getGuild().getCategories().stream().filter(x -> x.getName().contains("Temp Voice Channels")).findFirst().orElse(null);
+        ICategory category = event.getGuild().getCategories().stream().filter(x -> x.getName().toLowerCase().contains("temp voice channels")).findFirst().orElse(null);
+        int maxChannels = 0;
         if(category!=null){
-            if(interaction.hasParameter()) {
+            String[] nameSplit = category.getName().split("-");
+            if(nameSplit.length>1)
+                maxChannels = Integer.parseInt(nameSplit[1].trim());
+            if(interaction.hasParameter() && (category.getVoiceChannels().size()<maxChannels || maxChannels==0)) {
                 IVoiceChannel channel = event.getGuild().createVoiceChannel(interaction.getParameter());
                 msg = interaction.replaceMsg(msg, "%channel", channel.getName());
                 channel.changeCategory(category);
@@ -35,6 +39,8 @@ public class CreateTempChannel extends Tag {
                     channel.createInvite(60, 1, false, true);
                 else
                     channel.createInvite(86400, 1, false, true);
+            } else if(interaction.hasParameter()) {
+                return interaction.getRandomTemplate("limited").getTemplate();
             } else {
                 return interaction.getRandomTemplate("noparam").getTemplate();
             }

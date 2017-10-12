@@ -36,7 +36,7 @@ public class ConnectCommand implements IListener<ReadyEvent>{
         Karren.bot.getAr().start();
 
         //Start ChannelMonitor
-        //Karren.bot.getCm().start();
+        Karren.bot.getCm().start();
 
         if(!Karren.conf.isTestMode())
             event.getClient().online("KarrenSama Ver." + Karren.botVersion);

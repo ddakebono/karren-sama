@@ -22,6 +22,10 @@
     {
       "template": "Hold on a sec, I don't see a category called \"Temp Voice Channel\", tell your admin to resolve this issue.",
       "templateType": "nocategory"
+    },
+    {
+      "template": "Looks like the max amount of temp channels has been reached!",
+      "templateType": "limited"
     }
   ],
   "enabled": true,
