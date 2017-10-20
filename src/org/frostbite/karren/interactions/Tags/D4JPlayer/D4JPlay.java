@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2017 Owen Bennett.
+ *  You may use, distribute and modify this code under the terms of the MIT licence.
+ *  You should have obtained a copy of the MIT licence with this software,
+ *  if not please obtain one from https://opensource.org/licences/MIT
+ *
+ *
+ *
+ */
+
 package org.frostbite.karren.interactions.Tags.D4JPlayer;
 
 import org.apache.commons.io.FilenameUtils;
@@ -34,7 +44,13 @@ public class D4JPlay extends Tag{
                 if (voiceFile != null) {
                     Karren.bot.getPm().loadItemOrdered(gm, voiceFile, arh);
                 } else {
-                    Karren.bot.getPm().loadItemOrdered(gm, interaction.getParameter(), arh);
+                    String[] params = interaction.getParameter().split(",");
+                    if(params.length==2) {
+                        try {
+                            arh.setStartAt(Long.parseLong(params[1].trim()) * 1000);
+                        } catch (NumberFormatException ignored){ }
+                    }
+                    Karren.bot.getPm().loadItemOrdered(gm, params[0].trim(), arh);
                 }
             } else if (!event.getMessage().getAttachments().isEmpty()) {
                 for (IMessage.Attachment media : event.getMessage().getAttachments()) {

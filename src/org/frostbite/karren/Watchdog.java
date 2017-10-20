@@ -15,6 +15,7 @@ import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.obj.Message;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.util.DiscordException;
 
 public class Watchdog extends Thread {
@@ -73,7 +74,7 @@ public class Watchdog extends Thread {
             try {
                 Message testMessage = new Message(Karren.bot.client, 0, ".watchdogtestevent", Karren.bot.client.fetchUser(Long.parseLong(Karren.conf.getOperatorDiscordID())),
                         Karren.bot.client.getOrCreatePMChannel(Karren.bot.client.fetchUser(Long.parseLong(Karren.conf.getOperatorDiscordID()))),
-                        null, null, false, null, null, null, false, null, null, 0);
+                        null, null, false, null, null, null, false, null, 0, IMessage.Type.DEFAULT);
                 MessageReceivedEvent testEvent = new MessageReceivedEvent(testMessage);
                 Karren.bot.client.getDispatcher().dispatch(testEvent);
                 Thread.sleep(1000);

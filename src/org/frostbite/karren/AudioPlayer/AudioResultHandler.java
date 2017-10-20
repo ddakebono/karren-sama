@@ -26,6 +26,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     boolean isPlaylist = false;
     int trackCount = 0;
     AudioTrack queuedTrack = null;
+    long startAt = 0L;
 
     boolean failed = false;
 
@@ -39,6 +40,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
     @Override
     public void trackLoaded(AudioTrack audioTrack) {
         connectToVoiceChannel(event);
+        audioTrack.setPosition(startAt);
         gm.scheduler.queue(audioTrack);
         queuedTrack = audioTrack;
     }
@@ -84,6 +86,10 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
     public String getMsg() {
         return msg;
+    }
+
+    public void setStartAt(long startAt){
+        this.startAt = startAt;
     }
 
     public boolean isPlaylist() {
