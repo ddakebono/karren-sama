@@ -14,6 +14,7 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
@@ -27,13 +28,14 @@ import sx.blah.discord.util.MessageBuilder;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
 public class D4JSearch extends Tag {
 
-    HashMap<String, List<SearchResult>> resultArrays = new HashMap<>();
+    HashMap<String, List<Video>> resultArrays = new HashMap<>();
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
@@ -49,10 +51,12 @@ public class D4JSearch extends Tag {
 
                 SearchListResponse slr = search.execute();
                 List<SearchResult> results = slr.getItems();
+                ArrayList<Video> videos = new ArrayList<>();
                 for(SearchResult result : results){
                     YouTube.Videos.List list = Karren.bot.yt.videos().list("id, snippet, contentDetails").setId(result.getId().getVideoId());
                     list.setKey(Karren.conf.getGoogleAPIKey());
                     VideoListResponse vlr = list.execute();
+                    videos.add(vlr.getItems().get(0));
                     interaction.addEmbedField(new InteractionEmbedFields(
                             0,
                             (results.indexOf(result)+1) + " : " + vlr.getItems().get(0).getSnippet().getTitle(),
@@ -61,7 +65,7 @@ public class D4JSearch extends Tag {
                     ));
                 }
                 if(results.size()>0){
-                    resultArrays.put(event.getAuthor().getStringID(), results);
+                    resultArrays.put(event.getAuthor().getStringID(), videos);
                     Interaction selectInteraction = new Interaction("selectOption", new String[]{"novoicehijack", "parameter", "d4jselect", "d4jplay"}, new InteractionTemplate[]{new InteractionTemplate("You selected \"%title\", added to queue!", "normal", null), new InteractionTemplate("That's not one of the options!", "fail", null),  new InteractionTemplate("You must be in the same voice channel as me to control music.", "nohijack", null)}, 1, event.getAuthor().getStringID(), interaction.getVoiceVolume());
                     selectInteraction.getTagCache().add(this);
                     selectInteraction.setNoClearInteraction(true);
@@ -83,8 +87,8 @@ public class D4JSearch extends Tag {
         return msg;
     }
 
-    public List<SearchResult> getResultArray(String id){
-        List<SearchResult> results = resultArrays.get(id);
+    public List<Video> getResultArray(String id){
+        List<Video> results = resultArrays.get(id);
         resultArrays.remove(id);
         return results;
     }

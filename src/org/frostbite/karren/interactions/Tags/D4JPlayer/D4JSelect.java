@@ -10,7 +10,7 @@
 
 package org.frostbite.karren.interactions.Tags.D4JPlayer;
 
-import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -30,8 +30,8 @@ public class D4JSelect extends Tag {
         } catch (NumberFormatException ignored){}
         if(selection>0 && selection<=3) {
             D4JSearch search = (D4JSearch) interaction.getTagCache().get(0);
-            List<SearchResult> resultArray = search.getResultArray(event.getAuthor().getStringID());
-            interaction.setParameter(resultArray.get(selection-1).getId().getVideoId());
+            List<Video> resultArray = search.getResultArray(event.getAuthor().getStringID());
+            interaction.setParameter(resultArray.get(selection-1).getId());
             msg = interaction.replaceMsg(msg,"%title", resultArray.get(selection - 1).getSnippet().getTitle());
         } else if(param.trim().equalsIgnoreCase("c")){
             msg = "Alright, I've deleted the results.";

@@ -159,6 +159,8 @@ public class Interaction {
             if(replacedTextMap==null)
                 replacedTextMap = new HashMap<>();
             replacedTextMap.clear();
+            if(tagAddedEmbeds)
+                embedFields.clear();
             tagAddedEmbeds = false;
             embed = null;
             if (tagCache == null)
