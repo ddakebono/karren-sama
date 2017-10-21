@@ -10,6 +10,9 @@
 
 package org.frostbite.karren;
 
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.youtube.YouTube;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -38,6 +41,7 @@ public class KarrenBot {
     public AutoInteraction ar = new AutoInteraction();
     public InteractionCommands interactionListener = new InteractionCommands();
     public ChannelMonitor cm = new ChannelMonitor();
+    public YouTube yt;
 
     public KarrenBot(IDiscordClient client){
         this.client = client;
@@ -80,6 +84,10 @@ public class KarrenBot {
             ic.loadTags();
             ic.loadDefaultInteractions();
             irm = new InstantReplayManager();
+
+            //Setup youtube
+            yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
+
             extrasReady = true;
         }
     }

@@ -12,7 +12,7 @@
   ],
   "templatesNew": [
     {
-      "template": "```Here\u0027s the results, please respond with the number of the video you want, or respond with c to cancel:%results```",
+      "template": "Here\u0027s the results, please respond with the number of the video you want, or respond with c to cancel.",
       "templateType": "normal"
     },
     {
@@ -24,11 +24,20 @@
       "templateType": "fail"
     },
     {
+      "template": "You need to give me something to search for!",
+      "templateType": "noparams"
+    },
+    {
+      "template": "Looks like something went weird, try again later",
+      "templateType": "fail-except"
+    },
+    {
       "template": "You're not connected to a voice channel!",
       "templateType": "novoice"
     }
   ],
   "enabled": true,
+  "friendlyName": "YouTube Search",
   "helptext": "This command searches youtube for the specified title, then displays 3 options to choose for playback.",
   "identifier": "D4JSearch",
   "confidence": 1,

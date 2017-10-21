@@ -57,9 +57,10 @@ public class Interaction {
     private ArrayList<Tag> tagCache = new ArrayList<>();
     private boolean noClearInteraction = false;
     private EmbedBuilder embed;
-    @Expose private InteractionEmbedFields[] embedFields;
+    @Expose private ArrayList<InteractionEmbedFields> embedFields;
     @Expose private String friendlyName;
     private HashMap<String, String> replacedTextMap = new HashMap<>();
+    private boolean tagAddedEmbeds = false;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal", null)}, triggers, confidence, enabled, helptext);
@@ -76,7 +77,7 @@ public class Interaction {
     }
 
     @JsonCreator
-    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail,@JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction, @JsonProperty("embedFields") InteractionEmbedFields[] embedFields, @JsonProperty("friendlyName") String friendlyName) {
+    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail,@JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction, @JsonProperty("embedFields") ArrayList<InteractionEmbedFields> embedFields, @JsonProperty("friendlyName") String friendlyName) {
         this.triggers = triggers;
         this.tags = tags;
         this.templatesNew = templatesNew;
@@ -158,6 +159,7 @@ public class Interaction {
             if(replacedTextMap==null)
                 replacedTextMap = new HashMap<>();
             replacedTextMap.clear();
+            tagAddedEmbeds = false;
             embed = null;
             if (tagCache == null)
                 tagCache = new ArrayList<>();
@@ -361,8 +363,19 @@ public class Interaction {
         return tagCache;
     }
 
-    public InteractionEmbedFields[] getEmbedFields() {
+    public ArrayList<InteractionEmbedFields> getEmbedFields() {
         return embedFields;
+    }
+
+    public void addEmbedField(InteractionEmbedFields field){
+        if(embedFields==null)
+            embedFields = new ArrayList<>();
+        embedFields.add(field);
+        tagAddedEmbeds = true;
+    }
+
+    public boolean isTagAddedEmbeds() {
+        return tagAddedEmbeds;
     }
 
     public String getFriendlyName() {

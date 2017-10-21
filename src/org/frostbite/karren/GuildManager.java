@@ -90,6 +90,7 @@ public class GuildManager {
         tagHandlers.add(new BattlegroundsNew());
         tagHandlers.add(new EmbedMessage());
         tagHandlers.add(new CreateTempChannel());
+        tagHandlers.add(new D4JFeelingLucky());
     }
 
     public ArrayList<Interaction> loadInteractions(){

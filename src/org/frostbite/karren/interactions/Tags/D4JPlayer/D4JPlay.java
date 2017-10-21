@@ -45,10 +45,15 @@ public class D4JPlay extends Tag{
                     Karren.bot.getPm().loadItemOrdered(gm, voiceFile, arh);
                 } else {
                     String[] params = interaction.getParameter().split(",");
-                    if(params.length==2) {
+                    if(params.length>=2) {
                         try {
                             arh.setStartAt(Long.parseLong(params[1].trim()) * 1000);
                         } catch (NumberFormatException ignored){ }
+                    }
+                    if(params.length==3){
+                        try{
+                            gm.player.setVolume(Integer.parseInt(params[2].trim()));
+                        } catch (NumberFormatException ignored){}
                     }
                     Karren.bot.getPm().loadItemOrdered(gm, params[0].trim(), arh);
                 }

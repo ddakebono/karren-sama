@@ -48,7 +48,7 @@ public class HelpCommand implements IListener<MessageReceivedEvent> {
                                     prefixed.withColor(Color.RED);
                                     prefixed.withDescription("All commands listed here use the server prefix \"" + Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "\"");
                                 }
-                                prefixed.appendField((help.getFriendlyName()!=null&&help.getFriendlyName().length()>0)?help.getFriendlyName():help.getIdentifier(), help.getHelptext(), false);
+                                prefixed.appendField((help.getFriendlyName()!=null&&help.getFriendlyName().length()>0)?help.getFriendlyName():help.getIdentifier(), help.getHelptext().replaceAll("%prefix", Karren.bot.getGuildManager().getCommandPrefix(event.getGuild())), false);
                             } else {
                                 if(confidence.getFieldCount()>=25) {
                                     confidenceEmbed.add(confidence.build());

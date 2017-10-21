@@ -30,7 +30,7 @@
     }
   ],
   "enabled": true,
-  "helptext": "Downloads and plays audio shit from the internet!",
+  "helptext": "Downloads and plays audio from the internet. Usage: %prefixyt [url], [start at time], [volume]",
   "identifier": "D4JPlay",
   "confidence": 1,
   "voiceVolume": 20.0,

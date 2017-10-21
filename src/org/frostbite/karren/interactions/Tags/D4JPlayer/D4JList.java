@@ -11,8 +11,11 @@
 package org.frostbite.karren.interactions.Tags.D4JPlayer;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Karren;
+import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
+import org.frostbite.karren.interactions.InteractionEmbedFields;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
@@ -24,12 +27,18 @@ public class D4JList extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         if(Karren.bot.getClient().getConnectedVoiceChannels().size()>0){
-            StringBuilder list = new StringBuilder();
+            GuildMusicManager gmm = Karren.bot.getGuildMusicManager(event.getGuild());
+            interaction.addEmbedField(new InteractionEmbedFields(0,
+                    "\u25B6 " + gmm.player.getPlayingTrack().getInfo().title,
+                    KarrenUtil.getMinSecFormattedString(gmm.player.getPlayingTrack().getPosition()) + " - " + KarrenUtil.getMinSecFormattedString(Karren.bot.getGuildMusicManager(event.getGuild()).player.getPlayingTrack().getDuration()), false
+            ));
             for(AudioTrack source : Karren.bot.getGuildMusicManager(event.getGuild()).scheduler.getQueue()){
-                list.append(source.getInfo().title).append("\n");
+                interaction.addEmbedField(new InteractionEmbedFields(0,
+                        source.getInfo().title,
+                        "Creator: " + source.getInfo().author + ", Length: " + KarrenUtil.getMinSecFormattedString(source.getInfo().length) + ", Streaming link: " + (source.getInfo().isStream?"Yes":"No"),
+                        false
+                ));
             }
-            list = new StringBuilder(list.substring(0, list.length() - 2));
-            msg = interaction.replaceMsg(msg,"%nplist", list.toString());
         }
         return msg;
     }

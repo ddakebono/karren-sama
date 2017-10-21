@@ -14,58 +14,36 @@ import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
-import com.google.api.services.youtube.model.VideoListResponse;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.InteractionEmbedFields;
-import org.frostbite.karren.interactions.InteractionTemplate;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 
-public class D4JSearch extends Tag {
-
-    HashMap<String, List<SearchResult>> resultArrays = new HashMap<>();
-
+public class D4JFeelingLucky extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         if(interaction.hasParameter()) {
             String searchText = interaction.getParameter().replaceAll(" ", "+");
             try {
-                YouTube.Search.List search = Karren.bot.yt.search().list("id");
+                YouTube.Search.List search = Karren.bot.yt.search().list("id, snippet");
                 search.setKey(Karren.conf.getGoogleAPIKey());
                 search.setQ(searchText);
                 search.setType("video");
-                search.setFields("items(id/videoId)");
-                search.setMaxResults(3L);
+                search.setFields("items(id/videoId, snippet/title)");
+                search.setMaxResults(1L);
 
                 SearchListResponse slr = search.execute();
                 List<SearchResult> results = slr.getItems();
-                for(SearchResult result : results){
-                    YouTube.Videos.List list = Karren.bot.yt.videos().list("id, snippet, contentDetails").setId(result.getId().getVideoId());
-                    list.setKey(Karren.conf.getGoogleAPIKey());
-                    VideoListResponse vlr = list.execute();
-                    interaction.addEmbedField(new InteractionEmbedFields(
-                            0,
-                            (results.indexOf(result)+1) + " : " + vlr.getItems().get(0).getSnippet().getTitle(),
-                            "Duration: " + KarrenUtil.getMinSecFormattedString(Duration.parse(vlr.getItems().get(0).getContentDetails().getDuration()).toMillis()),
-                            false
-                    ));
-                }
+
                 if(results.size()>0){
-                    resultArrays.put(event.getAuthor().getStringID(), results);
-                    Interaction selectInteraction = new Interaction("selectOption", new String[]{"novoicehijack", "parameter", "d4jselect", "d4jplay"}, new InteractionTemplate[]{new InteractionTemplate("You selected \"%title\", added to queue!", "normal", null), new InteractionTemplate("That's not one of the options!", "fail", null),  new InteractionTemplate("You must be in the same voice channel as me to control music.", "nohijack", null)}, 1, event.getAuthor().getStringID(), interaction.getVoiceVolume());
-                    selectInteraction.getTagCache().add(this);
-                    selectInteraction.setNoClearInteraction(true);
-                    Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().add(selectInteraction);
+                    msg = interaction.replaceMsg(msg, "%title", results.get(0).getSnippet().getTitle());
+                    interaction.setParameter(results.get(0).getId().getVideoId());
                 } else {
                     msg = interaction.getRandomTemplate("fail").getTemplate();
                 }
@@ -83,15 +61,9 @@ public class D4JSearch extends Tag {
         return msg;
     }
 
-    public List<SearchResult> getResultArray(String id){
-        List<SearchResult> results = resultArrays.get(id);
-        resultArrays.remove(id);
-        return results;
-    }
-
     @Override
     public String getTagName() {
-        return "d4jsearch";
+        return "feelinglucky";
     }
 
     @Override

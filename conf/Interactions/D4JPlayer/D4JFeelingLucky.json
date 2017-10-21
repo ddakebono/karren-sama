@@ -7,7 +7,6 @@
     "novoicehijack",
     "requiresvoice",
     "parameter",
-    "d4jsearch",
     "feelinglucky",
     "d4jplay",
     "prefixed"
@@ -18,12 +17,20 @@
       "templateType": "normal"
     },
     {
+      "template": "You must be in the same voice channel as me to control music.",
+      "templateType": "nohijack"
+    },
+    {
       "template": "No results were returned from that search...",
       "templateType": "fail"
     },
     {
-      "template": "You must be in the same voice channel as me to control music.",
-      "templateType": "nohijack"
+      "template": "You need to give me something to search for!",
+      "templateType": "noparams"
+    },
+    {
+      "template": "Looks like something went weird, try again later",
+      "templateType": "fail-except"
     },
     {
       "template": "You're not connected to a voice channel!",
