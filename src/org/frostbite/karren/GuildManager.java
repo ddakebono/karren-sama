@@ -27,6 +27,7 @@ import sx.blah.discord.handle.obj.IGuild;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -144,8 +145,8 @@ public class GuildManager {
         if(tag!=null) {
             try {
                 //Create a new instance of a tag for each operation
-                return tag.getClass().newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                return tag.getClass().getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }

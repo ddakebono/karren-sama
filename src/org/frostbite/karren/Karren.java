@@ -23,10 +23,10 @@ public class Karren{
     public static Watchdog watchdog;
     public static Logger log;
     public static JsonConfig conf;
-    public static Properties jarProps = new Properties();
+    public static final Properties jarProps = new Properties();
     public static String botVersion;
     public static final String confVersion = "1.4";
-    public static long startTime = System.currentTimeMillis();
+    public static final long startTime = System.currentTimeMillis();
 
 	public static void main(String[] args){
         log = LoggerFactory.getLogger(Karren.class);
@@ -42,6 +42,7 @@ public class Karren{
 
         //Set some things from the properties
         botVersion = jarProps.getProperty("git.build.version") + "-" + jarProps.getProperty("git.commit.id.abbrev");
+        log.info("Karren-sama version " + botVersion + " starting up!");
 
         //New config stuff
         conf = new JsonConfig(confVersion);

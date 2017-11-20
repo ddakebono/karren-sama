@@ -90,8 +90,7 @@ public class Battlegrounds extends Tag {
 
     @Override
     public EnumSet<Permissions> getRequiredPermissions() {
-        EnumSet<Permissions> requiredPerms = EnumSet.of(Permissions.SEND_MESSAGES);
-        return requiredPerms;
+        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 
     private String getValueFromJson(String target, ArrayList<JsonObject> statsArrayList){

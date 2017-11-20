@@ -19,8 +19,10 @@ public class ShutdownListener implements IListener<DisconnectedEvent> {
     @Override
     public void handle(DisconnectedEvent disconnectedEvent) {
         //Lets release the Yank SQL connection pool
-        Karren.log.info("Releasing SQL connection pool");
-        Yank.releaseAllConnectionPools();
+        if(disconnectedEvent.getReason().equals(DisconnectedEvent.Reason.LOGGED_OUT)) {
+            Karren.log.info("Releasing SQL connection pool");
+            Yank.releaseAllConnectionPools();
+        }
         Karren.bot.getAr().setSuspend(true);
     }
 }

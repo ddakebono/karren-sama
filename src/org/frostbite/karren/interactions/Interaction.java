@@ -57,6 +57,7 @@ public class Interaction {
     private ArrayList<Tag> tagCache = new ArrayList<>();
     private boolean noClearInteraction = false;
     private EmbedBuilder embed;
+    @Expose private ArrayList<InteractionParameter> parameters;
     @Expose private ArrayList<InteractionEmbedFields> embedFields;
     @Expose private String friendlyName;
     private HashMap<String, String> replacedTextMap = new HashMap<>();
