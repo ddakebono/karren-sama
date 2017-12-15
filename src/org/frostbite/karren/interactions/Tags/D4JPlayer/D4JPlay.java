@@ -52,7 +52,10 @@ public class D4JPlay extends Tag{
                     }
                     if(params.length==3){
                         try{
-                            gm.player.setVolume(Integer.parseInt(params[2].trim()));
+                            int volume = Integer.parseInt(params[2].trim());
+                            if(volume>40)
+                                volume=40;
+                            gm.player.setVolume(volume);
                         } catch (NumberFormatException ignored){}
                     }
                     Karren.bot.getPm().loadItemOrdered(gm, params[0].trim(), arh);

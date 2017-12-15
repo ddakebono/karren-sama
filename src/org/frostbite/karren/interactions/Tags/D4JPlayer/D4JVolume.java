@@ -25,6 +25,8 @@ public class D4JVolume extends Tag {
         if(interaction.hasParameter()) {
             int volume = Integer.parseInt(interaction.getParameter().trim());
             if (volume >= 0 && volume <= 100) {
+                if(volume>40)
+                    volume=40;
                 Karren.bot.getGuildMusicManager(event.getGuild()).player.setVolume(volume);
                 msg = interaction.replaceMsg(msg, "%volume", Integer.toString(volume));
             } else {
