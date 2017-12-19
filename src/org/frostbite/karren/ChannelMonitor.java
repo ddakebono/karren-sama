@@ -25,7 +25,7 @@ public class ChannelMonitor extends Thread {
                 ICategory category = guild.getCategories().stream().filter(x -> x.getName().toLowerCase().contains("temp voice channels")).findFirst().orElse(null);
                 if(category!=null) {
                     for (IVoiceChannel channel : category.getVoiceChannels()){
-                        if(channel.getExtendedInvites().stream().filter(x -> x.getInviter().equals(Karren.bot.getClient().getOurUser())).count()==0){
+                        if(channel.getExtendedInvites().stream().noneMatch(x -> x.getInviter().equals(Karren.bot.getClient().getOurUser()))){
                             if(channel.getConnectedUsers().size()>0){
                                 channel.createInvite(3600, 1, false, true);
                                 break;

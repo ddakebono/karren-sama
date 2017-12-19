@@ -14,6 +14,8 @@ import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
+import sx.blah.discord.handle.obj.ActivityType;
+import sx.blah.discord.handle.obj.StatusType;
 
 import java.util.Properties;
 
@@ -39,8 +41,8 @@ public class ConnectCommand implements IListener<ReadyEvent>{
         Karren.bot.getCm().start();
 
         if(!Karren.conf.isTestMode())
-            event.getClient().online("KarrenSama Ver." + Karren.botVersion);
+            event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "KarrenSama Ver." + Karren.botVersion);
         else
-            event.getClient().online("TEST MODE");
+            event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "TEST MODE");
     }
 }

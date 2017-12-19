@@ -13,6 +13,8 @@ package org.frostbite.karren.listeners;
 import org.frostbite.karren.Karren;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.shard.ReconnectSuccessEvent;
+import sx.blah.discord.handle.obj.ActivityType;
+import sx.blah.discord.handle.obj.StatusType;
 import sx.blah.discord.util.DiscordException;
 
 public class ReconnectListener implements IListener<ReconnectSuccessEvent> {
@@ -21,7 +23,7 @@ public class ReconnectListener implements IListener<ReconnectSuccessEvent> {
         Karren.bot.getAr().setSuspend(false);
 
         try {
-            reconnectSuccessEvent.getClient().online("KarrenSama Ver." + Karren.botVersion);
+            reconnectSuccessEvent.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "KarrenSama Ver." + Karren.botVersion);
         } catch (DiscordException e) {
             Karren.log.error(e.getErrorMessage());
         }
