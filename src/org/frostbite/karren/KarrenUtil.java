@@ -10,9 +10,6 @@
 
 package org.frostbite.karren;
 
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
-
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.File;
@@ -132,10 +129,6 @@ public class KarrenUtil {
             default:
                 return null;
         }
-    }
-
-    public static boolean hasRole(IUser user, IGuild guild, String roleName) {
-        return guild == null || roleName == null || user.getRolesForGuild(guild).stream().anyMatch(x -> x.getName().equals(roleName));
     }
 
     public static String calcAway(long leaveDate){

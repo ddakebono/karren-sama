@@ -10,22 +10,25 @@
 
 package org.frostbite.karren;
 
+import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 public class Karren{
 
     public static KarrenBot bot;
-    public static Watchdog watchdog;
     public static Logger log;
     public static JsonConfig conf;
     public static final Properties jarProps = new Properties();
     public static String botVersion;
-    public static final String confVersion = "1.4";
+    public static final String confVersion = "1.5";
     public static final long startTime = System.currentTimeMillis();
 
 	public static void main(String[] args){
@@ -54,10 +57,21 @@ public class Karren{
 
         System.setProperty("http.agent", "KarrenSama/" + botVersion);
 
-        //Prepare the watchdog
-        watchdog = new Watchdog(60);
+        List<Configuration.ServerEntry> servers = new LinkedList<>();
+        servers.add(new Configuration.ServerEntry("irc.chat.twitch.tv", 6667));
 
-        //Start watchdog
-        watchdog.start();
+        Configuration ircConf = new Configuration.Builder()
+                .setAutoReconnect(true)
+                .setAutoReconnectAttempts(5)
+                .setAutoReconnectDelay(10)
+                .setName("Karren-sama")
+                .setServers(servers)
+                .setCapEnabled(true)
+                .buildConfiguration();
+
+        bot = new KarrenBot(new PircBotX(ircConf));
+
+        //Start bot
+        bot.initDiscord();
 	}
 }

@@ -18,9 +18,6 @@ import org.frostbite.karren.interactions.InteractionProcessor;
 import org.frostbite.karren.interactions.Tag;
 import org.frostbite.karren.interactions.Tags.*;
 import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
-import org.frostbite.karren.interactions.Tags.InstantReplay.Playback;
-import org.frostbite.karren.interactions.Tags.InstantReplay.StartListening;
-import org.frostbite.karren.interactions.Tags.InstantReplay.StopListening;
 import org.frostbite.karren.listeners.InteractionCommands;
 import sx.blah.discord.handle.obj.IGuild;
 
@@ -51,7 +48,6 @@ public class GuildManager {
         tagHandlers.add(new Random());
         tagHandlers.add(new Return());
         tagHandlers.add(new Version());
-        tagHandlers.add(new OverrideChannel());
         tagHandlers.add(new Parameter());
         tagHandlers.add(new Count5());
         tagHandlers.add(new DisableInteraction());
@@ -61,37 +57,14 @@ public class GuildManager {
         tagHandlers.add(new OverwatchUAPIHero());
         tagHandlers.add(new OverwatchUAPIAllHeroes());
         tagHandlers.add(new DeleteMessage());
-        tagHandlers.add(new D4JPlay());
-        tagHandlers.add(new D4JList());
-        tagHandlers.add(new D4JNowPlaying());
-        tagHandlers.add(new D4JShuffle());
-        tagHandlers.add(new D4JSkip());
-        tagHandlers.add(new D4JStop());
         tagHandlers.add(new OsuGetUser());
-        tagHandlers.add(new TextToSpeach());
-        tagHandlers.add(new D4JVolume());
-        tagHandlers.add(new D4JRepeat());
-        tagHandlers.add(new D4JSearch());
-        tagHandlers.add(new D4JSelect());
-        tagHandlers.add(new D4JNowPlayingTime());
-        tagHandlers.add(new StopListening());
-        tagHandlers.add(new StartListening());
         tagHandlers.add(new MentionedUsers());
-        tagHandlers.add(new Playback());
         tagHandlers.add(new SetFilter());
         tagHandlers.add(new SetPrefix());
-        tagHandlers.add(new RoleRoll());
-        tagHandlers.add(new SetDifficulty());
         tagHandlers.add(new ReminderCheck());
         tagHandlers.add(new ReminderAdd());
-        tagHandlers.add(new VoiceChannelRequired());
-        tagHandlers.add(new RollTopGuilds());
         tagHandlers.add(new WatchdogEvent());
-        tagHandlers.add(new NoVoiceHijack());
         tagHandlers.add(new BattlegroundsNew());
-        tagHandlers.add(new EmbedMessage());
-        tagHandlers.add(new CreateTempChannel());
-        tagHandlers.add(new D4JFeelingLucky());
     }
 
     public ArrayList<Interaction> loadInteractions(){

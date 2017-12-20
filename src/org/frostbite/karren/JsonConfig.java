@@ -35,9 +35,8 @@ public class JsonConfig {
     private String sqldb = "changeme";
     private String sqluser = "changeme";
     private String sqlpass = "changeme";
-    private String discordApiKey = "changeme";
+    private String ircAuthCode = "changeme";
     private String osuAPIKey = "changeme";
-    private String googleAPIKey = "changeme";
     private String trackerNetworkAPIKey = "changeme";
     private String operatorDiscordID = "changeme";
     private boolean testMode = false;
@@ -47,7 +46,7 @@ public class JsonConfig {
     }
 
     @JsonCreator
-    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("icecastAdminUsername") String icecastAdminUsername,@JsonProperty("icecastAdminPass") String icecastAdminPass,@JsonProperty("listencastAnnounce") boolean listencastAnnounce,@JsonProperty("enableListencast") boolean enableListencast,@JsonProperty("icecastMount") String icecastMount,@JsonProperty("icecastHost") String icecastHost,@JsonProperty("icecastPort") int icecastPort,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("osuAPIKey") String osuAPIKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("trackerNetworkAPIKey")String trackerNetworkAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode) {
+    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker, @JsonProperty("connectToDiscord") boolean connectToDiscord, @JsonProperty("allowSQLRW") boolean allowSQLRW, @JsonProperty("enableInteractions") boolean enableInteractions, @JsonProperty("commandPrefix") String commandPrefix, @JsonProperty("sqlhost") String sqlhost, @JsonProperty("sqlport") int sqlport, @JsonProperty("sqldb") String sqldb, @JsonProperty("sqluser") String sqluser, @JsonProperty("sqlpass") String sqlpass, @JsonProperty("icecastAdminUsername") String icecastAdminUsername, @JsonProperty("icecastAdminPass") String icecastAdminPass, @JsonProperty("listencastAnnounce") boolean listencastAnnounce, @JsonProperty("enableListencast") boolean enableListencast, @JsonProperty("icecastMount") String icecastMount, @JsonProperty("icecastHost") String icecastHost, @JsonProperty("icecastPort") int icecastPort, @JsonProperty("ircAuthCode") String ircAuthCode, @JsonProperty("osuAPIKey") String osuAPIKey, @JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("trackerNetworkAPIKey")String trackerNetworkAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode) {
         this.confVersionMarker = confVersionMarker;
         this.connectToDiscord = connectToDiscord;
         this.allowSQLRW = allowSQLRW;
@@ -58,16 +57,15 @@ public class JsonConfig {
         this.sqldb = sqldb;
         this.sqluser = sqluser;
         this.sqlpass = sqlpass;
-        this.discordApiKey = discordApiKey;
+        this.ircAuthCode = ircAuthCode;
         this.osuAPIKey = osuAPIKey;
-        this.googleAPIKey = googleAPIKey;
         this.trackerNetworkAPIKey = trackerNetworkAPIKey;
         this.operatorDiscordID = operatorDiscordID;
         this.testMode = testMode;
     }
 
     public boolean isSet(){
-        return !connectToDiscord || !discordApiKey.equalsIgnoreCase("changeme");
+        return !connectToDiscord || !ircAuthCode.equalsIgnoreCase("changeme");
     }
 
     public boolean checkUpdate(boolean noFile){
@@ -140,15 +138,11 @@ public class JsonConfig {
     }
 
     public String getDiscordToken() {
-        return discordApiKey;
+        return ircAuthCode;
     }
 
     public String getOsuAPIKey() {
         return osuAPIKey;
-    }
-
-    public String getGoogleAPIKey() {
-        return googleAPIKey;
     }
 
     public String getTrackerNetworkAPIKey() {

@@ -10,51 +10,33 @@
 
 package org.frostbite.karren;
 
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.youtube.YouTube;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
-import org.frostbite.karren.InstantReplay.InstantReplayManager;
 import org.frostbite.karren.listeners.*;
+import org.pircbotx.PircBotX;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
-import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class KarrenBot {
-    public IDiscordClient client;
+    public PircBotX client;
+    //public IDiscordClient client;
     public MySQLInterface sql = new MySQLInterface();
     public boolean extrasReady = false;
     public GuildManager ic;
     public boolean isKill = false;
-    public Map<String, GuildMusicManager> gms;
-    public InstantReplayManager irm;
-    public AudioPlayerManager pm = new DefaultAudioPlayerManager();
     public AutoInteraction ar = new AutoInteraction();
     public InteractionCommands interactionListener = new InteractionCommands();
     public ChannelMonitor cm = new ChannelMonitor();
-    public YouTube yt;
 
-    public KarrenBot(IDiscordClient client){
+    public KarrenBot(PircBotX client){
         this.client = client;
     }
 
     public void initDiscord(){
-        //Init lavaplayer
-        Karren.log.info("Starting up Lavaplayer...");
-        gms = new HashMap<>();
-        AudioSourceManagers.registerRemoteSources(pm);
-        AudioSourceManagers.registerLocalSource(pm);
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
+            client.
             EventDispatcher ed = client.getDispatcher();
             ed.registerListener(new ConnectCommand());
             try {
@@ -83,11 +65,6 @@ public class KarrenBot {
             ic = new GuildManager();
             ic.loadTags();
             ic.loadDefaultInteractions();
-            irm = new InstantReplayManager();
-
-            //Setup youtube
-            yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
-
             extrasReady = true;
         }
     }
@@ -122,24 +99,6 @@ public class KarrenBot {
 
     public boolean isExtrasReady() {
         return extrasReady;
-    }
-
-    public GuildMusicManager getGuildMusicManager(IGuild guild){
-        return gms.get(guild.getStringID());
-    }
-
-    public GuildMusicManager createGuildMusicManager(IGuild guild){
-        if(!gms.containsKey(guild.getStringID()))
-            gms.put(guild.getStringID(), new GuildMusicManager(pm, guild));
-        return gms.get(guild.getStringID());
-    }
-
-    public AudioPlayerManager getPm() {
-        return pm;
-    }
-
-    public InstantReplayManager getIrm() {
-        return irm;
     }
 
     public AutoInteraction getAr() {
