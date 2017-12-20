@@ -16,16 +16,19 @@ public class InteractionParameter {
 
     @Expose public String name; //Name of the parameter, will be used for variable and template replacement)
     @Expose public String prefix = ""; //Allows the use of many parameters
+    @Expose public String description = "";
     @Expose public String value = ""; //If an interaction uses a fixed value
+    @Expose public String validation = "";
     @Expose public boolean optional = false; //Sets if a parameter can be skipped in the command
     @Expose public boolean enabled = true; //Sets if parameter is available
 
-    public InteractionParameter(String name, String prefix, String value, boolean optional, boolean enabled) {
+    public InteractionParameter(String name, String prefix, String value, boolean optional, boolean enabled, String description) {
         this.name = name;
         this.prefix = prefix;
         this.value = value;
         this.optional = optional;
         this.enabled = enabled;
+        this.description = description;
     }
 
     public String getName() {
@@ -58,6 +61,14 @@ public class InteractionParameter {
 
     public void setOptional(boolean optional) {
         this.optional = optional;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean isEnabled() {
