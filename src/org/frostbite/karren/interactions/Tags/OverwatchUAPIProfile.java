@@ -16,9 +16,7 @@ import com.google.gson.JsonParser;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
+import org.pircbotx.hooks.events.MessageEvent;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -30,13 +28,12 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
-import java.util.EnumSet;
 
 public class OverwatchUAPIProfile extends Tag {
     DecimalFormat df =new DecimalFormat("#.##");
 
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, MessageEvent event) {
         SSLContext sc;
         String parameter = interaction.getParameter();
         parameter = parameter.replace("#", "-");
@@ -77,11 +74,6 @@ public class OverwatchUAPIProfile extends Tag {
     @Override
     public String getTagName() {
         return "overwatchprofile";
-    }
-
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 
 }

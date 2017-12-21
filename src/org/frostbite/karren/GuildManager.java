@@ -17,9 +17,7 @@ import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.InteractionProcessor;
 import org.frostbite.karren.interactions.Tag;
 import org.frostbite.karren.interactions.Tags.*;
-import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
-import org.frostbite.karren.listeners.InteractionCommands;
-import sx.blah.discord.handle.obj.IGuild;
+import org.pircbotx.Channel;
 
 import java.io.File;
 import java.io.FileReader;
@@ -44,7 +42,6 @@ public class GuildManager {
         tagHandlers.add(new Echo());
         tagHandlers.add(new InteractionReload());
         tagHandlers.add(new Name());
-        tagHandlers.add(new PM());
         tagHandlers.add(new Random());
         tagHandlers.add(new Return());
         tagHandlers.add(new Version());
@@ -56,14 +53,8 @@ public class GuildManager {
         tagHandlers.add(new OverwatchUAPIProfile());
         tagHandlers.add(new OverwatchUAPIHero());
         tagHandlers.add(new OverwatchUAPIAllHeroes());
-        tagHandlers.add(new DeleteMessage());
         tagHandlers.add(new OsuGetUser());
-        tagHandlers.add(new MentionedUsers());
-        tagHandlers.add(new SetFilter());
         tagHandlers.add(new SetPrefix());
-        tagHandlers.add(new ReminderCheck());
-        tagHandlers.add(new ReminderAdd());
-        tagHandlers.add(new WatchdogEvent());
         tagHandlers.add(new BattlegroundsNew());
     }
 
@@ -88,7 +79,6 @@ public class GuildManager {
             }
         } else {
             Karren.log.info("No Interactions detected, interaction system unregistered.");
-            Karren.bot.getClient().getDispatcher().unregisterListener(new InteractionCommands());
             return null;
         }
         return loadedInteractions;
@@ -105,10 +95,10 @@ public class GuildManager {
         lock = false;
     }
 
-    public void clearGuildInteractionProcessor(IGuild guild){
+    public void clearGuildInteractionProcessor(Channel guild){
         if(guild!=null){
-            if(registeredGuilds.containsKey(guild.getStringID())){
-                registeredGuilds.remove(guild.getStringID());
+            if(registeredGuilds.containsKey(guild.getName())){
+                registeredGuilds.remove(guild.getName());
             }
         }
     }
@@ -126,7 +116,7 @@ public class GuildManager {
         return null;
     }
 
-    public String getCommandPrefix(IGuild guild){
+    public String getCommandPrefix(Channel guild){
         if(guild!=null){
             String prefix = Karren.bot.getSql().getGuild(guild).getCommandPrefix();
             if(prefix!=null && prefix.trim().length()>0)
@@ -135,14 +125,14 @@ public class GuildManager {
         return Karren.conf.getCommandPrefix();
     }
 
-    public InteractionProcessor getInteractionProcessor(IGuild guild){
+    public InteractionProcessor getInteractionProcessor(Channel guild){
         if(!lock && defaultInteractions.size()>0){
             if(guild!=null){
-                if (!registeredGuilds.containsKey(guild.getStringID())) {
+                if (!registeredGuilds.containsKey(guild.getName())) {
                     ArrayList<Interaction> loadedInteractions = loadInteractions();
-                    registeredGuilds.put(guild.getStringID(), new InteractionProcessor(guild, loadedInteractions));
+                    registeredGuilds.put(guild.getName(), new InteractionProcessor(guild, loadedInteractions));
                 }
-                return registeredGuilds.getOrDefault(guild.getStringID(), defaultProcessor);
+                return registeredGuilds.getOrDefault(guild.getName(), defaultProcessor);
             } else {
                 return defaultProcessor;
             }

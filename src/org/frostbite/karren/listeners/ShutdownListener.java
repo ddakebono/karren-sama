@@ -12,17 +12,14 @@ package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
-import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.shard.DisconnectedEvent;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.DisconnectEvent;
 
-public class ShutdownListener implements IListener<DisconnectedEvent> {
+public class ShutdownListener extends ListenerAdapter {
     @Override
-    public void handle(DisconnectedEvent disconnectedEvent) {
+    public void onDisconnect(DisconnectEvent disconnectedEvent) {
         //Lets release the Yank SQL connection pool
-        if(disconnectedEvent.getReason().equals(DisconnectedEvent.Reason.LOGGED_OUT)) {
-            Karren.log.info("Releasing SQL connection pool");
-            Yank.releaseAllConnectionPools();
-        }
-        Karren.bot.getAr().setSuspend(true);
+        Karren.log.info("Releasing SQL connection pool");
+        Yank.releaseAllConnectionPools();
     }
 }

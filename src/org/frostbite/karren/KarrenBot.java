@@ -11,12 +11,11 @@
 package org.frostbite.karren;
 
 import org.frostbite.karren.Database.MySQLInterface;
-import org.frostbite.karren.listeners.*;
+import org.frostbite.karren.listeners.InteractionCommands;
 import org.pircbotx.PircBotX;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.EventDispatcher;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.RateLimitException;
+import org.pircbotx.exception.IrcException;
+
+import java.io.IOException;
 
 public class KarrenBot {
     public PircBotX client;
@@ -25,33 +24,16 @@ public class KarrenBot {
     public boolean extrasReady = false;
     public GuildManager ic;
     public boolean isKill = false;
-    public AutoInteraction ar = new AutoInteraction();
     public InteractionCommands interactionListener = new InteractionCommands();
-    public ChannelMonitor cm = new ChannelMonitor();
 
     public KarrenBot(PircBotX client){
         this.client = client;
     }
 
-    public void initDiscord(){
+    public void initDiscord() throws IOException, IrcException {
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
-            client.
-            EventDispatcher ed = client.getDispatcher();
-            ed.registerListener(new ConnectCommand());
-            try {
-                client.login();
-            } catch (DiscordException | RateLimitException e) {
-                e.printStackTrace();
-            }
-            ed.registerListener(new HelpCommand());
-            ed.registerListener(interactionListener);
-            ed.registerListener(new KillCommand());
-            ed.registerListener(new GuildCreateListener());
-            ed.registerListener(new ShutdownListener());
-            ed.registerListener(new ReconnectListener());
-            ed.registerListener(new StatCommand());
-            initExtras();
+            client.startBot();
         } else {
             Karren.log.info("Running in test mode, not connected to Discord.");
             initExtras();
@@ -62,6 +44,7 @@ public class KarrenBot {
 
     public void initExtras(){
         if(!extrasReady) {
+            Karren.log.debug("Starting up interaction system and guild manager");
             ic = new GuildManager();
             ic.loadTags();
             ic.loadDefaultInteractions();
@@ -70,7 +53,8 @@ public class KarrenBot {
     }
 
     public void killBot(String killer){
-        Karren.watchdog.cleanupBot();
+        client.stopBotReconnect();
+        client.sendIRC().quitServer("Kill command given, shutting down!");
         Karren.log.info("Bot has been killed by " + killer);
         System.exit(0);
     }
@@ -89,11 +73,11 @@ public class KarrenBot {
 
     public GuildManager getGuildManager() {return ic;}
 
-    public IDiscordClient getClient(){
+    public PircBotX getClient(){
         return client;
     }
 
-    public void setClient(IDiscordClient client) {
+    public void setClient(PircBotX client) {
         this.client = client;
     }
 
@@ -101,11 +85,4 @@ public class KarrenBot {
         return extrasReady;
     }
 
-    public AutoInteraction getAr() {
-        return ar;
-    }
-
-    public ChannelMonitor getCm() {
-        return cm;
-    }
 }

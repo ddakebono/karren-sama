@@ -14,17 +14,14 @@ import org.frostbite.karren.Database.Objects.DbWordcount;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
+import org.pircbotx.hooks.events.MessageEvent;
 
 import java.sql.Timestamp;
-import java.util.EnumSet;
 
 public class Count5 extends Tag {
 
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, MessageEvent event) {
         DbWordcount count = Karren.bot.getSql().getWordCount(interaction.getIdentifier());
         if(count!=null) {
             count.incrementCount();
@@ -45,8 +42,4 @@ public class Count5 extends Tag {
         return "count5";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
-    }
 }

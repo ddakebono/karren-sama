@@ -10,13 +10,9 @@
 
 package org.frostbite.karren.interactions;
 
-import org.frostbite.karren.AudioPlayer.AudioProvider;
-import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Karren;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.util.MessageBuilder;
-import sx.blah.discord.util.PermissionUtils;
+import org.pircbotx.Channel;
+import org.pircbotx.hooks.events.MessageEvent;
 
 import java.util.ArrayList;
 
@@ -24,13 +20,13 @@ public class InteractionProcessor {
 
     private ArrayList<Interaction> interactions;
     private ArrayList<Interaction> defaultInteractions = null;
-    private IGuild guild; //CAN BE NULL
+    private Channel guild; //CAN BE NULL
 
-    public InteractionProcessor(IGuild guild){
+    public InteractionProcessor(Channel guild){
         this(guild, null);
     }
 
-    public InteractionProcessor(IGuild guild, ArrayList<Interaction> defaultInteractions){
+    public InteractionProcessor(Channel guild, ArrayList<Interaction> defaultInteractions){
         this.guild = guild;
         this.defaultInteractions = defaultInteractions;
         loadAndUpdateDatabase();
@@ -40,16 +36,6 @@ public class InteractionProcessor {
         interactions = new ArrayList<>();
         interactions.addAll(defaultInteractions);
         if(guild!=null) {
-            if(Karren.bot.getGuildMusicManager(guild) == null || !(guild.getAudioManager().getAudioProvider() instanceof AudioProvider)){
-                Karren.log.info("Looks like the GuildMusicManager failed to start, let's try again.");
-                try {
-                    GuildMusicManager gm = Karren.bot.createGuildMusicManager(guild);
-                    guild.getAudioManager().setAudioProvider(gm.getAudioProvider());
-                    Karren.log.info("GuildMusicManager initialized on second try for guild " + guild.getName());
-                } catch (NullPointerException e){
-                    Karren.log.error("Uh oh, looks like we couldn't start the music manager on the second try! Guild " + guild.getName() + " doesn't have a music manager!");
-                }
-            }
             Karren.log.info("Interaction Processor for " + guild.getName() + " ready!");
 
         } else {
@@ -57,42 +43,30 @@ public class InteractionProcessor {
         }
     }
 
-    public MessageBuilder handle(MessageReceivedEvent event) {
-        String returned;
-        MessageBuilder result = null;
+    public String handle(MessageEvent event) {
+        String returned = null;
         for(Interaction check : interactions){
             returned = check.handleMessage(event);
             if(returned!=null){
                 check.setLock(true);
                 if(!check.getTagsToString().contains("nodisplay"))
                     Karren.log.debug("Interaction match for " + check.getIdentifier() + ", handling templates! (Confidence: " + check.getConfidenceChecked() + ")");
-                result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getMessage().getChannel());
                 if(!check.isPermBad()) {
                     for (String tag : check.getTags()) {
                         if (!tag.equalsIgnoreCase("pm") && !check.isStopProcessing()) {
                             Tag handler = Karren.bot.getGuildManager().getTag(tag.toLowerCase());
                             if (handler != null && returned != null)
-                                if(PermissionUtils.hasPermissions(event.getChannel(), event.getClient().getOurUser(), handler.getRequiredPermissions())) {
-                                    returned = handler.handleTemplate(returned, check, result, event);
-                                } else {
-                                    returned = "Uh oh, looks like I'm missing some permissions! " + handler.getRequiredPermissions().toString() + ". Ask your admin to fix this.";
-                                }
+                                returned = handler.handleTemplate(returned, check, event);
                             else if (!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && !tag.equalsIgnoreCase("feelinglucky") && !tag.equalsIgnoreCase("nodisplay") && returned != null)
                                 Karren.log.error("Please check interaction " + check.getIdentifier() + " as the file contains invalid tags!");
                         }
                     }
                     if(check.interactionUsed())
-                        Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().remove(check);
+                        Karren.bot.getGuildManager().getInteractionProcessor(event.getChannel()).getInteractions().remove(check);
                 }
-                if(check.isEmbedUsed())
-                    result.withEmbed(check.getEmbed().build());
                 check.setLock(false);
                 if(returned!=null && returned.length()>0){
-                    returned = returned.replace("%prefix", Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()));
-                    result.withContent(returned);
-                } else {
-                    if(!check.isEmbedUsed())
-                        result = null;
+                    returned = returned.replace("%prefix", Karren.bot.getGuildManager().getCommandPrefix(event.getChannel()));
                 }
 
                 if(!check.isSpecialInteraction())
@@ -100,7 +74,7 @@ public class InteractionProcessor {
 
             }
         }
-        return result;
+        return returned;
     }
 
     public ArrayList<Interaction> getInteractions() {

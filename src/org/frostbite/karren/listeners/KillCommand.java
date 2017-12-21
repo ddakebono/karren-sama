@@ -11,18 +11,18 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Karren;
-import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.MessageEvent;
 
-public class KillCommand implements IListener<MessageReceivedEvent> {
-	public void handle(MessageReceivedEvent event){
-		String message = event.getMessage().getContent();
-        String cmd = Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "kill";
+public class KillCommand extends ListenerAdapter {
+	public void onMessage(MessageEvent event){
+		String message = event.getMessage();
+        String cmd = Karren.bot.getGuildManager().getCommandPrefix(event.getChannel()) + "kill";
         if(message.toLowerCase().startsWith(cmd)) {
-            if (event.getAuthor().getStringID().equals(Karren.conf.getOperatorDiscordID())) {
-                Karren.bot.killBot(event.getMessage().getAuthor().getName());
+            if (event.getUser().getNick().equals(Karren.conf.getOperatorDiscordID())) {
+                Karren.bot.killBot(event.getUser().getNick());
             } else {
-                event.getChannel().sendMessage("Hold on a sec, this command can only be used by my operator.");
+                event.getChannel().send().message("Hold on a sec, this command can only be used by my operator.");
             }
         }
 	}

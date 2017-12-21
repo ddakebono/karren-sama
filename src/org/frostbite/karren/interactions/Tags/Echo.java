@@ -12,16 +12,12 @@ package org.frostbite.karren.interactions.Tags;
 
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
-
-import java.util.EnumSet;
+import org.pircbotx.hooks.events.MessageEvent;
 
 public class Echo extends Tag {
 
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, MessageEvent event) {
         String parameter = interaction.getParameter();
         if(parameter!=null) {
             return interaction.replaceMsg(msg,"%echo", parameter);
@@ -35,8 +31,4 @@ public class Echo extends Tag {
         return "echo";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
-    }
 }

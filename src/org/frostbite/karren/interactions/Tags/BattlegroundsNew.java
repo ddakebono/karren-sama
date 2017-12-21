@@ -13,6 +13,7 @@ package org.frostbite.karren.interactions.Tags;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
+import org.pircbotx.hooks.events.MessageEvent;
 import pro.lukasgorny.core.JPubg;
 import pro.lukasgorny.dto.FilterCriteria;
 import pro.lukasgorny.dto.Player;
@@ -21,15 +22,10 @@ import pro.lukasgorny.enums.PUBGRegion;
 import pro.lukasgorny.enums.PUBGSeason;
 import pro.lukasgorny.enums.PUBGStat;
 import pro.lukasgorny.factory.JPubgFactory;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
-
-import java.util.EnumSet;
 
 public class BattlegroundsNew extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, MessageEvent event) {
         if(!interaction.hasParameter())
             return interaction.getRandomTemplate("noparam").getTemplate();
         String parameter = interaction.getParameter();
@@ -70,8 +66,4 @@ public class BattlegroundsNew extends Tag {
         return "battlegrounds";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES, Permissions.EMBED_LINKS);
-    }
 }

@@ -10,13 +10,16 @@
 
 package org.frostbite.karren;
 
+import org.frostbite.karren.listeners.*;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -28,7 +31,7 @@ public class Karren{
     public static JsonConfig conf;
     public static final Properties jarProps = new Properties();
     public static String botVersion;
-    public static final String confVersion = "1.5";
+    public static final String confVersion = "1.6";
     public static final long startTime = System.currentTimeMillis();
 
 	public static void main(String[] args){
@@ -64,14 +67,25 @@ public class Karren{
                 .setAutoReconnect(true)
                 .setAutoReconnectAttempts(5)
                 .setAutoReconnectDelay(10)
-                .setName("Karren-sama")
+                .setName("karrensamabot")
+                .setServerPassword(conf.getDiscordToken())
                 .setServers(servers)
+                .addListener(new ConnectCommand())
+                .addListener(new InteractionCommands())
+                .addListener(new KillCommand())
+                .addListener(new ShutdownListener())
+                .addListener(new StatCommand())
+                .addAutoJoinChannels(Arrays.asList(conf.getChannels()))
                 .setCapEnabled(true)
                 .buildConfiguration();
 
         bot = new KarrenBot(new PircBotX(ircConf));
 
         //Start bot
-        bot.initDiscord();
-	}
+        try {
+            bot.initDiscord();
+        } catch (IOException | IrcException e) {
+            e.printStackTrace();
+        }
+    }
 }

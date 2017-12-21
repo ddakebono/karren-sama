@@ -15,22 +15,22 @@ import org.knowm.yank.Yank;
 import java.sql.Timestamp;
 
 public class DbUser {
-    private long userID;
+    private String userID;
     private Timestamp timeLeft;
 
     public DbUser(){
     }
 
-    public DbUser(int userID, Timestamp timeLeft) {
+    public DbUser(String userID, Timestamp timeLeft) {
         this.userID = userID;
         this.timeLeft = timeLeft;
     }
 
-    public long getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(long userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 

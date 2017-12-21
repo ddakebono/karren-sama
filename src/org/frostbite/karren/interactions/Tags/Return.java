@@ -15,22 +15,19 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
+import org.pircbotx.User;
+import org.pircbotx.hooks.events.MessageEvent;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 
 public class Return extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        HashMap<IUser, Boolean> departedUsers = ((Depart)Karren.bot.getGuildManager().getTag("depart")).departedUsers;
-        if(departedUsers.getOrDefault(event.getMessage().getAuthor(), true) || !interaction.isSpecialInteraction()) {
-            DbUser user = Karren.bot.getSql().getUserData(event.getMessage().getAuthor());
-            if(departedUsers.putIfAbsent(event.getMessage().getAuthor(), false) != null)
-                departedUsers.put(event.getMessage().getAuthor(), false);
+    public String handleTemplate(String msg, Interaction interaction, MessageEvent event) {
+        HashMap<User, Boolean> departedUsers = ((Depart)Karren.bot.getGuildManager().getTag("depart")).departedUsers;
+        if(departedUsers.getOrDefault(event.getUser(), true) || !interaction.isSpecialInteraction()) {
+            DbUser user = Karren.bot.getSql().getUserData(event.getUser());
+            if(departedUsers.putIfAbsent(event.getUser(), false) != null)
+                departedUsers.put(event.getUser(), false);
             if (user.getTimeLeft()!=null) {
                 msg = interaction.replaceMsg(msg,"%away", KarrenUtil.calcAway(user.getTimeLeft().getTime()));
                 user.setTimeLeft(null);
@@ -43,7 +40,7 @@ public class Return extends Tag {
                     return interaction.getRandomTemplate("fail").getTemplate();
             }
         } else {
-            if(event.getMessage().getMentions().size()>0) {
+            /*if(event.getMessage().getMentions().size()>0) {
                 boolean isDeparted = departedUsers.getOrDefault(event.getMessage().getMentions().get(0), false);
                 if (interaction.isSpecialInteraction() && isDeparted) {
                     DbUser mention = Karren.bot.getSql().getUserData(event.getMessage().getMentions().get(0));
@@ -53,7 +50,7 @@ public class Return extends Tag {
                     msg = interaction.replaceMsg(msg,"%away", KarrenUtil.calcAway(mention.getTimeLeft().getTime()));
                     return msg;
                 }
-            }
+            }*/
         }
         return null;
     }
@@ -63,8 +60,4 @@ public class Return extends Tag {
         return "return";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
-    }
 }

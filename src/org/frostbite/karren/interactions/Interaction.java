@@ -16,17 +16,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.KarrenUtil;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.EmbedBuilder;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
+import org.pircbotx.UserLevel;
+import org.pircbotx.hooks.events.MessageEvent;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 public class Interaction {
@@ -51,12 +53,10 @@ public class Interaction {
     private ArrayList<String> allowedUsers = new ArrayList<>();
     private boolean stopProcessing = false;
     private int confidenceChecked = 0;
-    private List<IUser> mentionedUsers = new LinkedList<>();
     private boolean lock = false;
     private File interactionFile;
     private ArrayList<Tag> tagCache = new ArrayList<>();
     private boolean noClearInteraction = false;
-    private EmbedBuilder embed;
     @Expose private ArrayList<InteractionParameter> parameters;
     @Expose private ArrayList<InteractionEmbedFields> embedFields;
     @Expose private String friendlyName;
@@ -116,28 +116,28 @@ public class Interaction {
     /*
     handleMessage checks which interaction type the message is and runs the respective functions.
      */
-    String handleMessage(MessageReceivedEvent event){
+    String handleMessage(MessageEvent event){
         String result = null;
         if(!lock) {
             cleanupInteraction();
             confidenceChecked = 0;
             try {
                 if (enabled) {
-                    if (isAllowedUser(event.getAuthor())) {
-                        if (event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild())) && Arrays.asList(tags).contains("prefixed")) {
+                    if (isAllowedUser(event.getUser())) {
+                        if (event.getMessage().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getChannel())) && Arrays.asList(tags).contains("prefixed")) {
                             //Get only word follow prefix
                             Pattern prefixedPattern = Pattern.compile("\\s+");
-                            String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()), ""));
+                            String[] regex = prefixedPattern.split(event.getMessage().replace(Karren.bot.getGuildManager().getCommandPrefix(event.getChannel()), ""));
                             if (regex.length > 0) {
-                                confidenceChecked = getConfidence(regex[0], true, event.getGuild());
+                                confidenceChecked = getConfidence(regex[0], true, event.getChannel());
                             }
                         }
-                        if (!event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild())) && !Arrays.asList(tags).contains("prefixed")) {
-                            confidenceChecked = getConfidence(event.getMessage().getContent(), false, event.getGuild());
+                        if (!event.getMessage().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getChannel())) && !Arrays.asList(tags).contains("prefixed")) {
+                            confidenceChecked = getConfidence(event.getMessage(), false, event.getChannel());
                         }
                         if (confidenceChecked >= this.confidence)
                             result = getRandomTemplate("normal").getTemplate();
-                        if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !KarrenUtil.hasRole(event.getMessage().getAuthor(), event.getGuild(), permissionLevel)) {
+                        if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !(event.getUser().getUserLevels(event.getChannel()).stream().filter(x -> x.equals(UserLevel.valueOf(permissionLevel))).count()>0)) {
                             result = getRandomTemplate("permission").getTemplate();
                             isPermBad = true;
                         }
@@ -154,16 +154,12 @@ public class Interaction {
     private void cleanupInteraction(){
         stopProcessing = false;
         if(!noClearInteraction) {
-            if (mentionedUsers == null)
-                mentionedUsers = new LinkedList<>();
-            mentionedUsers.clear();
             if(replacedTextMap==null)
                 replacedTextMap = new HashMap<>();
             replacedTextMap.clear();
             if(tagAddedEmbeds)
                 embedFields.clear();
             tagAddedEmbeds = false;
-            embed = null;
             if (tagCache == null)
                 tagCache = new ArrayList<>();
             tagCache.clear();
@@ -173,15 +169,15 @@ public class Interaction {
         }
     }
 
-    private boolean isAllowedUser(IUser user) {
-        return allowedUsers == null || allowedUsers.isEmpty() || allowedUsers.contains(user.getStringID());
-    }
 
-    private int getConfidence(String message, boolean prefixed, IGuild guild){
+    private boolean isAllowedUser(User user) {
+        return allowedUsers == null || allowedUsers.isEmpty() || allowedUsers.contains(user.getNick());
+    }
+    private int getConfidence(String message, boolean prefixed, Channel guild){
         int confidence = 0;
         if(!prefixed){
             //Add getNicknameForGuild once it's fixed and doesn't return a null
-            if(Arrays.asList(tags).contains("bot") && !message.toLowerCase().contains(Karren.bot.getClient().getOurUser().getName().toLowerCase()))
+            if(Arrays.asList(tags).contains("bot") && !message.toLowerCase().contains(Karren.bot.getClient().getNick().toLowerCase()))
                 return 0;
         }
         String[] tokenizedMessage = message.split("\\s+");
@@ -318,18 +314,6 @@ public class Interaction {
         return this.usageCount == 0;
     }
 
-    public boolean isEmbedUsed(){
-        return embed!=null;
-    }
-
-    public EmbedBuilder getEmbed(){
-        return embed;
-    }
-
-    public void setEmbed(EmbedBuilder embed){
-        this.embed = embed;
-    }
-
     public boolean isStopProcessing() {
         return stopProcessing;
     }
@@ -340,10 +324,6 @@ public class Interaction {
 
     public int getConfidenceChecked() {
         return confidenceChecked;
-    }
-
-    public List<IUser> getMentionedUsers() {
-        return mentionedUsers;
     }
 
     public boolean isLock() {

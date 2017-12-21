@@ -12,16 +12,12 @@ package org.frostbite.karren.interactions.Tags;
 
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
-
-import java.util.EnumSet;
+import org.pircbotx.hooks.events.MessageEvent;
 
 public class Name extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        return interaction.replaceMsg(msg,"%name", event.getMessage().getAuthor().getName());
+    public String handleTemplate(String msg, Interaction interaction, MessageEvent event) {
+        return interaction.replaceMsg(msg,"%name", event.getUser().getNick());
     }
 
     @Override
@@ -29,8 +25,4 @@ public class Name extends Tag {
         return "name";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
-    }
 }

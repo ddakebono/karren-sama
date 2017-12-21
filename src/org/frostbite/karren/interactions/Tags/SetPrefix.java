@@ -14,18 +14,14 @@ import org.frostbite.karren.Database.Objects.DbGuild;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
-
-import java.util.EnumSet;
+import org.pircbotx.hooks.events.MessageEvent;
 
 public class SetPrefix extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, MessageEvent event) {
         if(interaction.hasParameter()){
             String param = interaction.getParameter();
-            DbGuild dbGuild = Karren.bot.getSql().getGuild(event.getGuild());
+            DbGuild dbGuild = Karren.bot.getSql().getGuild(event.getChannel());
             dbGuild.setCommandPrefix(param.trim());
             dbGuild.update();
             msg = interaction.replaceMsg(msg,"%prefix", param);
@@ -40,8 +36,4 @@ public class SetPrefix extends Tag {
         return "setprefix";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
-    }
 }

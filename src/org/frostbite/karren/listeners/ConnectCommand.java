@@ -12,19 +12,17 @@ package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
-import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.obj.ActivityType;
-import sx.blah.discord.handle.obj.StatusType;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.ConnectEvent;
 
 import java.util.Properties;
 
 import static org.frostbite.karren.Karren.conf;
 
-public class ConnectCommand implements IListener<ReadyEvent>{
+public class ConnectCommand extends ListenerAdapter{
 
     @Override
-    public void handle(ReadyEvent event){
+    public void onConnect(ConnectEvent event){
         //Initialize database connection pool
         Karren.log.info("Initializing Yank database pool");
         Properties dbSettings = new Properties();
@@ -32,17 +30,10 @@ public class ConnectCommand implements IListener<ReadyEvent>{
         dbSettings.setProperty("username", conf.getSqluser());
         dbSettings.setProperty("password", conf.getSqlpass());
 
-        Yank.setupDefaultConnectionPool(dbSettings);
+        Karren.bot.initExtras();
 
-        //Start auto reminder
-        Karren.bot.getAr().start();
+        if(Karren.conf.getAllowSQLRW())
+            Yank.setupDefaultConnectionPool(dbSettings);
 
-        //Start ChannelMonitor
-        Karren.bot.getCm().start();
-
-        if(!Karren.conf.isTestMode())
-            event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "KarrenSama Ver." + Karren.botVersion);
-        else
-            event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "TEST MODE");
     }
 }

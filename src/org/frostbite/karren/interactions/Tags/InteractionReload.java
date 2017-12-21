@@ -13,24 +13,20 @@ package org.frostbite.karren.interactions.Tags;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
-
-import java.util.EnumSet;
+import org.pircbotx.hooks.events.MessageEvent;
 
 public class InteractionReload extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, MessageEvent event) {
         if(interaction.hasParameter()){
             if(interaction.getParameter().trim().equalsIgnoreCase("full")){
-                Karren.log.info("Interaction system reload triggered by " + event.getMessage().getAuthor().getName());
+                Karren.log.info("Interaction system reload triggered by " + event.getUser().getNick());
                 Karren.bot.getGuildManager().loadDefaultInteractions();
                 return msg;
             }
         }
-        Karren.log.info("Guild " + event.getGuild().getName() + " interaction processor has been reloaded by " + event.getAuthor().getName());
-        Karren.bot.getGuildManager().clearGuildInteractionProcessor(event.getGuild());
+        Karren.log.info("Guild " + event.getChannel().getName() + " interaction processor has been reloaded by " + event.getUser().getNick());
+        Karren.bot.getGuildManager().clearGuildInteractionProcessor(event.getChannel());
         return interaction.getRandomTemplate("single").getTemplate();
     }
 
@@ -39,8 +35,4 @@ public class InteractionReload extends Tag {
         return "reloadint";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
-    }
 }

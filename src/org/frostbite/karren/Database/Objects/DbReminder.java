@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 
 public class DbReminder {
     public int reminderID;
-    public Long authorID;
+    public String authorID;
     public int targetID;
     public Timestamp reminderTime;
     public String message;
@@ -26,7 +26,7 @@ public class DbReminder {
     public DbReminder() {
     }
 
-    public DbReminder(int reminderID, Long authorID, int targetID, Timestamp reminderTime, String message, Long channelID, boolean reminderSent) {
+    public DbReminder(int reminderID, String authorID, int targetID, Timestamp reminderTime, String message, Long channelID, boolean reminderSent) {
         this.reminderID = reminderID;
         this.authorID = authorID;
         this.targetID = targetID;
@@ -44,11 +44,11 @@ public class DbReminder {
         this.reminderID = reminderID;
     }
 
-    public Long getAuthorID() {
+    public String getAuthorID() {
         return authorID;
     }
 
-    public void setAuthorID(Long authorID) {
+    public void setAuthorID(String authorID) {
         this.authorID = authorID;
     }
 
