@@ -15,11 +15,19 @@
       "templateType": "normal"
     },
     {
-      "template": "Looks like you didn\u0027t clear the DC, better luck next time. (%roll+%bonus=$total against %dc | %timeremaining)",
+      "template": "Winner Winner Chicken Dinner, you\u0027ve acquired the role **%rngrole**!",
+      "templateType": "normal"
+    },
+    {
+      "template": "It\u0027s time for some randomization! You\u0027ve hit a nat 100! You and %guildrange users around you get new colours!",
+      "templateType": "winrar"
+    },
+    {
+      "template": "Looks like you didn\u0027t clear the DC, better luck next time. (%roll+%bonus=%total against %dc | %timeremaining)",
       "templateType": "fail"
     },
     {
-      "template": "Better luck next time. (%roll+%bonus=$total against %dc | %timeremaining)",
+      "template": "Better luck next time. (%roll+%bonus=%total against %dc | %timeremaining)",
       "templateType": "fail"
     },
     {

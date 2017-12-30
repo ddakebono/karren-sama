@@ -1,0 +1,36 @@
+{
+  "triggers": [
+    "randomrange"
+  ],
+  "tags": [
+    "prefixed",
+    "parameter",
+    "randomrange"
+  ],
+  "templatesNew": [
+    {
+      "template": "Random range is now set to %range.",
+      "templateType": "normal"
+    },
+    {
+      "template": "I need a new range to set!",
+      "templateType": "noparam"
+    },
+    {
+      "template": "The new range must be between 0 to 5! Use 0 to disable random range.",
+      "templateType": "noparam"
+    },
+    {
+      "template": "You don\u0027t have permission to change this... (Not admin)",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Sets how many people near the nat 100 roller get randomized",
+  "identifier": "SetRandomRange",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

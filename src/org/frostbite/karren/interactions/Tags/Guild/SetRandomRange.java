@@ -8,45 +8,40 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags;
+package org.frostbite.karren.interactions.Tags.Guild;
 
-import org.frostbite.karren.Database.Objects.DbGuildUser;
+import org.frostbite.karren.Database.Objects.DbGuild;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.util.EnumSet;
 
-public class SetFilter extends Tag {
+public class SetRandomRange extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(interaction.getMentionedUsers().size()>0){
-            IUser user = interaction.getMentionedUsers().get(0);
-            if(!user.equals(event.getAuthor())){
-                DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(event.getGuild(), user);
-                if(dbGuildUser.isIgnoreCommands()){
-                    dbGuildUser.setIgnoreCommands(false);
-                    msg = interaction.replaceMsg(msg,"%setting", "disabled");
-                } else {
-                    dbGuildUser.setIgnoreCommands(true);
-                    msg = interaction.replaceMsg(msg,"%setting", "enabled");
-                }
-                msg = interaction.replaceMsg(msg,"%user", user.getName());
-                dbGuildUser.update();
+        if(interaction.hasParameter()) {
+            int range = Integer.parseInt(interaction.getParameter().trim());
+            if (range >= 0 && range <= 5) {
+                DbGuild guild = Karren.bot.getSql().getGuild(event.getGuild());
+                guild.setRandomRange(range);
+                guild.update();
+                msg = interaction.replaceMsg(msg, "%range", Integer.toString(range));
             } else {
                 msg = interaction.getRandomTemplate("fail").getTemplate();
             }
+        } else {
+            msg = interaction.getRandomTemplate("noparam").getTemplate();
         }
         return msg;
     }
 
     @Override
     public String getTagName() {
-        return "setfilter";
+        return "randomrange";
     }
 
     @Override

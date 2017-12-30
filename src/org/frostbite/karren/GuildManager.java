@@ -18,6 +18,7 @@ import org.frostbite.karren.interactions.InteractionProcessor;
 import org.frostbite.karren.interactions.Tag;
 import org.frostbite.karren.interactions.Tags.*;
 import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
+import org.frostbite.karren.interactions.Tags.Guild.*;
 import org.frostbite.karren.interactions.Tags.InstantReplay.Playback;
 import org.frostbite.karren.interactions.Tags.InstantReplay.StartListening;
 import org.frostbite.karren.interactions.Tags.InstantReplay.StopListening;
@@ -92,6 +93,10 @@ public class GuildManager {
         tagHandlers.add(new EmbedMessage());
         tagHandlers.add(new CreateTempChannel());
         tagHandlers.add(new D4JFeelingLucky());
+        tagHandlers.add(new SetMaxVolume());
+        tagHandlers.add(new GetGuildName());
+        tagHandlers.add(new GuildSettings());
+        tagHandlers.add(new SetRandomRange());
     }
 
     public ArrayList<Interaction> loadInteractions(){

@@ -16,6 +16,7 @@ import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IRole;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.PermissionUtils;
@@ -26,6 +27,7 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class RoleRoll extends Tag {
 
@@ -48,20 +50,24 @@ public class RoleRoll extends Tag {
                     int dc = (Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() >= 0 ? Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() : 95);
                     Karren.log.info("Rolled " + roll + " against a DC of " + dc + " with bonus of " + bonus);
                     roll += bonus;
-                    if(interaction.hasParameter() && event.getAuthor().getRolesForGuild(event.getGuild()).contains("bot-manager") && interaction.getParameter().equalsIgnoreCase("test"))
+                    if(interaction.hasParameter() && event.getAuthor().getRolesForGuild(event.getGuild()).stream().filter(x -> x.getName().equalsIgnoreCase("bot-manager")).count()>0 && interaction.getParameter().equalsIgnoreCase("test"))
                         roll = 100;
                     if (roll >= dc) {
                         //PermissionUtils.isUserHigher(event.getGuild(), event.getClient().getOurUser(), event.getAuthor())
                         if(PermissionUtils.isUserHigher(event.getGuild(), event.getClient().getOurUser(), rollRoles)) {
-                            for (IRole role : event.getAuthor().getRolesForGuild(event.getGuild())) {
-                                if (role.getName().contains("lotto-")) {
-                                    event.getAuthor().removeRole(role);
-                                    rollRoles.remove(role);
+                            if(roll==100 && Karren.bot.getSql().getGuild(event.getGuild()).getRandomRange()>0){
+                                msg = interaction.getRandomTemplate("winrar").getTemplate();
+                                msg = interaction.replaceMsg(msg, "%guildrange", Integer.toString(Karren.bot.getSql().getGuild(event.getGuild()).getRandomRange()));
+                                List<IUser> userList = event.getGuild().getUsers();
+                                int userPos = userList.indexOf(event.getAuthor());
+                                for(int i=userPos-Karren.bot.getSql().getGuild(event.getGuild()).getRandomRange(); i<userPos+Karren.bot.getSql().getGuild(event.getGuild()).getRandomRange(); i++ ){
+                                    try {
+                                        randomizer(userList.get(i), event, rng);
+                                    } catch (IndexOutOfBoundsException ignored){ }
                                 }
+                            } else {
+                                msg = interaction.replaceMsg(msg,"%rngrole", randomizer(event.getAuthor(), event, rng));
                             }
-                            IRole rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
-                            event.getAuthor().addRole(rngRole);
-                            msg = interaction.replaceMsg(msg,"%rngrole", rngRole.getName());
                             dbGuildUser.setRollsSinceLastClear(0);
                             dbGuildUser.incrementWinningRolls();
                             dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 259200000));
@@ -97,6 +103,19 @@ public class RoleRoll extends Tag {
             }
         }
         return "This cannot be used in a private message!";
+    }
+
+    private String randomizer(IUser user, MessageReceivedEvent event, Random rng){
+        List<IRole> rollRoles = event.getGuild().getRoles().stream().filter(x -> x.getName().contains("lotto-")).collect(Collectors.toList());
+        for (IRole role : user.getRolesForGuild(event.getGuild())) {
+            if (role.getName().contains("lotto-")) {
+                event.getAuthor().removeRole(role);
+                rollRoles.remove(role);
+            }
+        }
+        IRole rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
+        event.getAuthor().addRole(rngRole);
+        return rngRole.getName();
     }
 
     @Override

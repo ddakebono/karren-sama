@@ -34,7 +34,7 @@ public class MySQLInterface {
     public DbGuild getGuild(IGuild guild){
         if(Karren.conf.getAllowSQLRW()){
             if(!dbGuildCache.containsKey(guild.getStringID())) {
-                String sql = "INSERT IGNORE Guild (GuildID, GuildOwner, GuildName, CommandPrefix, RollDifficulty, AllowTempChannels) VALUES (?, ?, ?, null, -1, false)";
+                String sql = "INSERT IGNORE Guild (GuildID, GuildOwner, GuildName, CommandPrefix, RollDifficulty, MaxVolume, RandomRange) VALUES (?, ?, ?, null, -1, 40, 0)";
                 Object[] params = {guild.getStringID(), guild.getOwner().getName(), guild.getName()};
                 Yank.execute(sql, params);
                 sql = "SELECT * FROM Guild WHERE GuildID=?";

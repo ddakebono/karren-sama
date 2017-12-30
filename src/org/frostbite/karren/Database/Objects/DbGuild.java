@@ -18,15 +18,18 @@ public class DbGuild {
     private String guildOwner;
     private String commandPrefix;
     private int rollDifficulty;
-    private boolean allowTempChannels;
+    private int randomRange;
+    private int maxVolume;
 
     public DbGuild(){}
 
-    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix) {
+    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, int maxVolume, int randomRange) {
         this.guildID = guildID;
         this.guildName = guildName;
         this.guildOwner = guildOwner;
         this.commandPrefix = commandPrefix;
+        this.maxVolume = maxVolume;
+        this.randomRange = randomRange;
     }
 
     public String getGuildID() {
@@ -69,17 +72,25 @@ public class DbGuild {
         this.rollDifficulty = rollDifficulty;
     }
 
-    public boolean isAllowTempChannels() {
-        return allowTempChannels;
+    public int getMaxVolume() {
+        return maxVolume;
     }
 
-    public void setAllowTempChannels(boolean allowTempChannels) {
-        this.allowTempChannels = allowTempChannels;
+    public void setMaxVolume(int maxVolume) {
+        this.maxVolume = maxVolume;
+    }
+
+    public int getRandomRange() {
+        return randomRange;
+    }
+
+    public void setRandomRange(int randomRange) {
+        this.randomRange = randomRange;
     }
 
     //Update db entry
     public void update(){
-        String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, AllowTempChannels=? WHERE GuildID=?";
-        Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, allowTempChannels, guildID});
+        String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?  WHERE GuildID=?";
+        Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, guildID});
     }
 }

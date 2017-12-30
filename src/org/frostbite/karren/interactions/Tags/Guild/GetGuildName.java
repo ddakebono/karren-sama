@@ -8,10 +8,8 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags;
+package org.frostbite.karren.interactions.Tags.Guild;
 
-import org.frostbite.karren.Database.Objects.DbGuild;
-import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -20,24 +18,16 @@ import sx.blah.discord.util.MessageBuilder;
 
 import java.util.EnumSet;
 
-public class SetPrefix extends Tag {
+public class GetGuildName extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(interaction.hasParameter()){
-            String param = interaction.getParameter();
-            DbGuild dbGuild = Karren.bot.getSql().getGuild(event.getGuild());
-            dbGuild.setCommandPrefix(param.trim());
-            dbGuild.update();
-            msg = interaction.replaceMsg(msg,"%prefix", param);
-        } else {
-            msg = interaction.getRandomTemplate("fail").getTemplate();
-        }
+        msg = interaction.replaceMsg(msg, "%guild", event.getGuild().getName());
         return msg;
     }
 
     @Override
     public String getTagName() {
-        return "setprefix";
+        return "guildname";
     }
 
     @Override

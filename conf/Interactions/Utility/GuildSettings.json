@@ -1,0 +1,49 @@
+{
+  "triggers": [
+    "guild",
+    "settings",
+    "config"
+  ],
+  "tags": [
+    "prefixed",
+    "guildsettings",
+    "guildname",
+    "embedded"
+  ],
+  "templatesNew": [
+    {
+      "template": "Configuration for %guild",
+      "templateType": "normal"
+    }
+  ],
+  "embedFields": [
+    {
+      "fieldTitle": "Prefix",
+      "fieldValue": "%prefix",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Max Volume",
+      "fieldValue": "%maxvolume",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Roll Difficulty",
+      "fieldValue": "%difficulty",
+      "inline": true
+    },
+    {
+      "fieldTitle": "AoE range for Nat 100",
+      "fieldValue": "%range",
+      "inline": false
+    }
+  ],
+  "friendlyName": "Server Configuration",
+  "enabled": true,
+  "helptext": "Displays current settings for the bot in this server",
+  "identifier": "GuildConfig",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

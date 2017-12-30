@@ -8,8 +8,9 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags;
+package org.frostbite.karren.interactions.Tags.Guild;
 
+import org.frostbite.karren.Database.Objects.DbGuild;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
@@ -18,27 +19,32 @@ import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.util.EnumSet;
-import java.util.stream.Collectors;
 
-public class DisableInteraction extends Tag {
-
+public class SetDifficulty extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        String parameter = interaction.getParameter();
-        if(parameter!=null){
-            msg = interaction.replaceMsg(msg,"%interaction", parameter);
-            for(Interaction disable : Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild()).getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(parameter)).collect(Collectors.toList())){
-                disable.setEnabled(false);
+        if(interaction.hasParameter()){
+            int difficulty = -1;
+            try {
+                difficulty = Integer.parseInt(interaction.getParameter());
+            } catch (NumberFormatException e){
+                msg = interaction.getRandomTemplate("fail").getTemplate();
             }
-        } else {
-            msg = interaction.getRandomTemplate("fail").getTemplate();
+            if(difficulty>=0 && difficulty<=100){
+                DbGuild dbGuild = Karren.bot.getSql().getGuild(event.getGuild());
+                dbGuild.setRollDifficulty(difficulty);
+                dbGuild.update();
+                msg = interaction.replaceMsg(msg,"%newdiff", String.valueOf(difficulty));
+            } else {
+                msg = interaction.getRandomTemplate("fail").getTemplate();
+            }
         }
         return msg;
     }
 
     @Override
     public String getTagName() {
-        return "disableinteraction";
+        return "setdifficulty";
     }
 
     @Override
