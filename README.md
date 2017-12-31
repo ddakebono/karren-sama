@@ -4,9 +4,9 @@ Karren-sama Discord Bot
 Description
 -----------
 
-This is my Discord bot I build using the Discord4J library, it's somewhat tied into a database I haven't released yet so some features may not be usable.
+This is my Discord bot I build using the Discord4J library.
 
-If you're interested there is also a branch on here that contains a version using Javacord as the library, both branches are close to the same feature wise, but the Javacord one will not be worked on unless Discord4J dies or otherwise stops working.
+If you're interested there is also a branch on here that contains a version using Javacord as the library, the Javacord branch has been stale for a while now and probably won't work at all.
 
 
 Features
@@ -28,13 +28,16 @@ Dependencies
 ------------
 
 To use this bot you will need the Java 8 runtime, the rest of the dependencies will be handled by Maven.
-You will also need to have an SQL server to use the bot, it's only been tested against a MariaDB server, but you should just need to change the connector used as long as the DB server is compatable with JOOQ
+You will also need to have an SQL server to use the bot, it's only been tested against a MariaDB server, but you should just need to change the connector used as long as the DB server is compatable with JOOQ.
+You can find the SQL file in the conf folder
 
 
 Usage
 -----
 
 Check out our wiki for instructions on adding the bot to your discord!
+
+Documentation will be up sometime on how to run your own instance of the bot.
 
 
 Licence
