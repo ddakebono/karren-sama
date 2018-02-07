@@ -1,0 +1,40 @@
+{
+  "triggers": [
+    "set-chan"
+  ],
+  "tags": [
+    "prefixed",
+    "parameter",
+    "setoverridechannel"
+  ],
+  "templatesNew": [
+    {
+      "template": "Global override channel set to **\"%channel\"**",
+      "templateType": "normal"
+    },
+    {
+      "template": "Seems like either there are 2 channels with similar names or no channel with that name exists!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to use this... (Not admin)",
+      "templateType": "permission"
+    },
+    {
+      "template": "You need to enter a target channel!",
+      "templateType": "noparam"
+    },
+    {
+      "template": "You\u0027re gonna need the admin role to use this...",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Sets override channel",
+  "identifier": "SetDifficulty",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2017 Owen Bennett.
+  ~ Copyright (c) 2018 Owen Bennett.
   ~  You may use, distribute and modify this code under the terms of the MIT licence.
   ~  You should have obtained a copy of the MIT licence with this software,
   ~  if not please obtain one from https://opensource.org/licences/MIT
@@ -102,12 +102,12 @@
         <dependency>
             <groupId>com.github.austinv11</groupId>
             <artifactId>Discord4j</artifactId>
-            <version>9209983</version>
+            <version>87e15e2</version>
         </dependency>
         <dependency>
             <groupId>com.sedmelluq</groupId>
             <artifactId>lavaplayer</artifactId>
-            <version>1.2.43</version>
+            <version>1.2.46</version>
         </dependency>
         <dependency>
             <groupId>org.knowm</groupId>

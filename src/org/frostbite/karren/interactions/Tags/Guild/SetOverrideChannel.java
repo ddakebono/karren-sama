@@ -15,29 +15,35 @@ import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageBuilder;
 
 import java.util.EnumSet;
+import java.util.List;
 
-public class GuildSettings extends Tag {
+public class SetOverrideChannel extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        DbGuild guild = Karren.bot.getSql().getGuild(event.getGuild());
-        interaction.replaceMsg(msg, "%difficulty", Integer.toString(guild.getRollDifficulty()));
-        interaction.replaceMsg(msg, "%maxvolume", Integer.toString(guild.getMaxVolume()));
-        interaction.replaceMsg(msg, "%prefix", ("\"" + Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "\""));
-        interaction.replaceMsg(msg, "%range", Integer.toString(guild.getRandomRange()));
-        if(Karren.bot.getSql().getGuild(event.getGuild()).getOverrideChannel()!=0)
-            interaction.replaceMsg(msg, "%override", event.getGuild().getChannelByID(Karren.bot.getSql().getGuild(event.getGuild()).getOverrideChannel()).getName());
-        else
-            interaction.replaceMsg(msg, "%override", "None Set");
+        if(interaction.hasParameter()){
+            List<IChannel> channels = event.getGuild().getChannelsByName(interaction.getParameter());
+            if(channels.size()==1){
+                DbGuild guild = Karren.bot.getSql().getGuild(event.getGuild());
+                guild.setOverrideChannel(channels.get(0).getLongID());
+                guild.update();
+                msg = interaction.replaceMsg(msg, "%channel", channels.get(0).getName());
+            } else {
+                msg = interaction.getRandomTemplate("fail").getTemplate();
+            }
+        } else {
+            msg = interaction.getRandomTemplate("noparam").getTemplate();
+        }
         return msg;
     }
 
     @Override
     public String getTagName() {
-        return "guildsettings";
+        return "setoverridechannel";
     }
 
     @Override

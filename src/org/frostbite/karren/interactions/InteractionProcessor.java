@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -66,7 +66,10 @@ public class InteractionProcessor {
                 check.setLock(true);
                 if(!check.getTagsToString().contains("nodisplay"))
                     Karren.log.debug("Interaction match for " + check.getIdentifier() + ", handling templates! (Confidence: " + check.getConfidenceChecked() + ")");
-                result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getMessage().getChannel());
+                if(event.getGuild()!=null && Karren.bot.getSql().getGuild(event.getGuild()).getOverrideChannel()!=0)
+                    result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getGuild().getChannelByID(Karren.bot.getSql().getGuild(event.getGuild()).getOverrideChannel()));
+                else
+                    result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getMessage().getChannel());
                 if(!check.isPermBad()) {
                     for (String tag : check.getTags()) {
                         if (!tag.equalsIgnoreCase("pm") && !check.isStopProcessing()) {

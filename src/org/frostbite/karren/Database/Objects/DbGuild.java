@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -20,16 +20,18 @@ public class DbGuild {
     private int rollDifficulty;
     private int randomRange;
     private int maxVolume;
+    private long overrideChannel;
 
     public DbGuild(){}
 
-    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, int maxVolume, int randomRange) {
+    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, int maxVolume, int randomRange, long overrideChannel) {
         this.guildID = guildID;
         this.guildName = guildName;
         this.guildOwner = guildOwner;
         this.commandPrefix = commandPrefix;
         this.maxVolume = maxVolume;
         this.randomRange = randomRange;
+        this.overrideChannel = overrideChannel;
     }
 
     public String getGuildID() {
@@ -88,9 +90,17 @@ public class DbGuild {
         this.randomRange = randomRange;
     }
 
+    public long getOverrideChannel() {
+        return overrideChannel;
+    }
+
+    public void setOverrideChannel(long overrideChannel) {
+        this.overrideChannel = overrideChannel;
+    }
+
     //Update db entry
     public void update(){
-        String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?  WHERE GuildID=?";
-        Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, guildID});
+        String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?  WHERE GuildID=?";
+        Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, guildID});
     }
 }
