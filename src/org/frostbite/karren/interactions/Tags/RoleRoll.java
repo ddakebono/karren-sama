@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -12,6 +12,7 @@ package org.frostbite.karren.interactions.Tags;
 
 import org.frostbite.karren.Database.Objects.DbGuildUser;
 import org.frostbite.karren.Karren;
+import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -22,7 +23,6 @@ import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.PermissionUtils;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -95,8 +95,7 @@ public class RoleRoll extends Tag {
                     msg = interaction.getRandomTemplate("permission").getTemplate();
 
                 }
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM @ HH:mm");
-                msg = interaction.replaceMsg(msg,"%timeremaining", dateFormat.format(dbGuildUser.getRollTimeout()));
+                msg = interaction.replaceMsg(msg,"%timeremaining", KarrenUtil.calcTimeDiff(dbGuildUser.getRollTimeout().getTime(), System.currentTimeMillis()));
                 return msg;
             } else {
                 return interaction.getRandomTemplate("noroles").getTemplate();
