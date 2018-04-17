@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,17 +10,18 @@
 
 package org.frostbite.karren.Database.Objects;
 
+import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
 
 import java.sql.Timestamp;
 
 public class DbReminder {
-    public int reminderID;
-    public Long authorID;
-    public int targetID;
+    public int reminderID = 0;
+    public Long authorID = 0L;
+    public int targetID = 0;
     public Timestamp reminderTime;
-    public String message;
-    public Long channelID;
+    public String message = "";
+    public Long channelID = 0L;
     public boolean reminderSent;
 
     public DbReminder() {
@@ -93,8 +94,10 @@ public class DbReminder {
     }
 
     public void update(){
-        String sql = "UPDATE Reminder SET ReminderSent=? WHERE ReminderID=?";
-        Yank.execute(sql, new Object[]{reminderSent, reminderID});
+        if(Karren.conf.getAllowSQLRW()) {
+            String sql = "UPDATE Reminder SET ReminderSent=? WHERE ReminderID=?";
+            Yank.execute(sql, new Object[]{reminderSent, reminderID});
+        }
     }
 
 }

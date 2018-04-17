@@ -160,7 +160,7 @@ public class GuildManager {
     }
 
     public String getCommandPrefix(IGuild guild){
-        if(guild!=null){
+        if(guild!=null && Karren.conf.getAllowSQLRW()){
             String prefix = Karren.bot.getSql().getGuild(guild).getCommandPrefix();
             if(prefix!=null && prefix.trim().length()>0)
                 return prefix;

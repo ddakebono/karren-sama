@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -25,7 +25,7 @@ public class InteractionCommands implements IListener<MessageReceivedEvent> {
             MessageBuilder response;
             InteractionProcessor ip = Karren.bot.getGuildManager().getInteractionProcessor(event.getGuild());
             if(ip!=null) {
-                if(!Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor()).isIgnoreCommands()) {
+                if(!Karren.conf.getAllowSQLRW() || !Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor()).isIgnoreCommands()) {
                     response = ip.handle(event);
                     if (response != null) {
                         try {

@@ -74,14 +74,23 @@ public class InteractionProcessor {
                     for (String tag : check.getTags()) {
                         if (!tag.equalsIgnoreCase("pm") && !check.isStopProcessing()) {
                             Tag handler = Karren.bot.getGuildManager().getTag(tag.toLowerCase());
-                            if (handler != null && returned != null)
-                                if(PermissionUtils.hasPermissions(event.getChannel(), event.getClient().getOurUser(), handler.getRequiredPermissions())) {
-                                    returned = handler.handleTemplate(returned, check, result, event);
+                            if (handler != null && returned != null) {
+                                if (!handler.getVoiceUsed()) {
+                                    if (PermissionUtils.hasPermissions(event.getChannel(), event.getClient().getOurUser(), handler.getRequiredPermissions())) {
+                                        returned = handler.handleTemplate(returned, check, result, event);
+                                    } else {
+                                        returned = "Uh oh, looks like I'm missing some text channel permissions! " + handler.getRequiredPermissions().toString() + ". Ask your admin to fix this.";
+                                    }
                                 } else {
-                                    returned = "Uh oh, looks like I'm missing some permissions! " + handler.getRequiredPermissions().toString() + ". Ask your admin to fix this.";
+                                    if (PermissionUtils.hasPermissions(event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel(), event.getClient().getOurUser(), handler.getRequiredPermissions())) {
+                                        returned = handler.handleTemplate(returned, check, result, event);
+                                    } else {
+                                        returned = "Uh oh, looks like I'm missing some voice channel permissions! " + handler.getRequiredPermissions().toString() + ". Ask your admin to fix this.";
+                                    }
                                 }
-                            else if (!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && !tag.equalsIgnoreCase("feelinglucky") && !tag.equalsIgnoreCase("nodisplay") && returned != null)
+                            } else if (!tag.equalsIgnoreCase("bot") && !tag.equalsIgnoreCase("prefixed") && !tag.equalsIgnoreCase("special") && !tag.equalsIgnoreCase("feelinglucky") && !tag.equalsIgnoreCase("nodisplay") && returned != null) {
                                 Karren.log.error("Please check interaction " + check.getIdentifier() + " as the file contains invalid tags!");
+                            }
                         }
                     }
                     if(check.interactionUsed())

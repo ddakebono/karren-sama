@@ -46,7 +46,7 @@ public class MySQLInterface {
                 return dbGuildCache.get(guild.getStringID());
             }
         }
-        return null;
+        return new DbGuild();
     }
 
     public DbGuildUser getGuildUser(IGuild guild, IUser user){
@@ -79,7 +79,7 @@ public class MySQLInterface {
                 return dbGuildUser;
             }
         }
-        return null;
+        return new DbGuildUser();
     }
 
     public DbGuildUser getGuildUser(int guildUserID){
@@ -92,7 +92,7 @@ public class MySQLInterface {
             }
             return guildUser;
         }
-        return null;
+        return new DbGuildUser();
     }
 
     public DbWordcount getWordCount(String word){
@@ -109,7 +109,7 @@ public class MySQLInterface {
                 return dbWordcountCache.get(word);
             }
         }
-        return null;
+        return new DbWordcount();
     }
 
     public DbUser getUserData(IUser user){
@@ -127,7 +127,7 @@ public class MySQLInterface {
                 return dbUserCache.get(user.getStringID());
             }
         }
-        return null;
+        return new DbUser();
     }
 
     public DbReminder[] getReminder(DbGuildUser target){

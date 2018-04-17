@@ -10,17 +10,18 @@
 
 package org.frostbite.karren.Database.Objects;
 
+import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
 
 public class DbGuild {
-    private String guildID;
-    private String guildName;
-    private String guildOwner;
+    private String guildID = "";
+    private String guildName = "";
+    private String guildOwner = "";
     private String commandPrefix;
-    private int rollDifficulty;
-    private int randomRange;
-    private int maxVolume;
-    private long overrideChannel;
+    private int rollDifficulty = -1;
+    private int randomRange = 0;
+    private int maxVolume = 40;
+    private long overrideChannel = 0;
 
     public DbGuild(){}
 
@@ -100,7 +101,9 @@ public class DbGuild {
 
     //Update db entry
     public void update(){
-        String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?  WHERE GuildID=?";
-        Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, guildID});
+        if(Karren.conf.getAllowSQLRW()) {
+            String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?  WHERE GuildID=?";
+            Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, guildID});
+        }
     }
 }
