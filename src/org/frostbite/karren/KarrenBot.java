@@ -16,6 +16,7 @@ import com.google.api.services.youtube.YouTube;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import io.github.vrchatapi.VRCUser;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.InstantReplay.InstantReplayManager;
@@ -87,6 +88,9 @@ public class KarrenBot {
 
             //Setup youtube
             yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
+
+            //Log into VRCAPI and get auth token
+            VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
 
             extrasReady = true;
         }

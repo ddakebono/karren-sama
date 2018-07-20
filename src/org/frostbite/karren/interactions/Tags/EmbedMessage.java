@@ -28,6 +28,8 @@ public class EmbedMessage extends Tag {
         embed.withColor(Color.RED);
         embed.withTitle((interaction.getFriendlyName()!=null&&interaction.getFriendlyName().length()>0)?interaction.getFriendlyName():interaction.getIdentifier());
         embed.withDescription(msg);
+        if(interaction.getEmbedImage()!=null)
+            embed.withImage(interaction.getEmbedImage());
         embed.withFooterText("Requested By: " + event.getAuthor().getName());
         if((interaction.getEmbedFields()!=null && interaction.getEmbedFields().size()>0 && interaction.getReplacementTextCount()>0) || interaction.isTagAddedEmbeds()){
             for(InteractionEmbedFields field : interaction.getEmbedFields()){

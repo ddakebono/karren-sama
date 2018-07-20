@@ -22,6 +22,7 @@ import org.frostbite.karren.interactions.Tags.Guild.*;
 import org.frostbite.karren.interactions.Tags.InstantReplay.Playback;
 import org.frostbite.karren.interactions.Tags.InstantReplay.StartListening;
 import org.frostbite.karren.interactions.Tags.InstantReplay.StopListening;
+import org.frostbite.karren.interactions.Tags.VRChat.VRCUserSearch;
 import org.frostbite.karren.listeners.InteractionCommands;
 import sx.blah.discord.handle.obj.IGuild;
 
@@ -98,6 +99,7 @@ public class GuildManager {
         tagHandlers.add(new GuildSettings());
         tagHandlers.add(new SetRandomRange());
         tagHandlers.add(new SetOverrideChannel());
+        tagHandlers.add(new VRCUserSearch());
     }
 
     public ArrayList<Interaction> loadInteractions(){

@@ -62,6 +62,7 @@ public class Interaction {
     @Expose private String friendlyName;
     private HashMap<String, String> replacedTextMap = new HashMap<>();
     private boolean tagAddedEmbeds = false;
+    private String embedImage;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal", null)}, triggers, confidence, enabled, helptext);
@@ -164,6 +165,7 @@ public class Interaction {
                 embedFields.clear();
             tagAddedEmbeds = false;
             embed = null;
+            embedImage = null;
             if (tagCache == null)
                 tagCache = new ArrayList<>();
             tagCache.clear();
@@ -368,6 +370,14 @@ public class Interaction {
 
     public ArrayList<InteractionEmbedFields> getEmbedFields() {
         return embedFields;
+    }
+
+    public void setEmbedImage(String image){
+        this.embedImage = image;
+    }
+
+    public String getEmbedImage() {
+        return embedImage;
     }
 
     public void addEmbedField(InteractionEmbedFields field){

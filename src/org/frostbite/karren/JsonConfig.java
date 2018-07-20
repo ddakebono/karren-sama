@@ -40,6 +40,8 @@ public class JsonConfig {
     private String googleAPIKey = "changeme";
     private String trackerNetworkAPIKey = "changeme";
     private String operatorDiscordID = "changeme";
+    private String vrcUsername = "changeme";
+    private String vrcPassword = "changeme";
     private boolean testMode = false;
 
     public JsonConfig(String confVersionMarker) {
@@ -47,7 +49,7 @@ public class JsonConfig {
     }
 
     @JsonCreator
-    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("icecastAdminUsername") String icecastAdminUsername,@JsonProperty("icecastAdminPass") String icecastAdminPass,@JsonProperty("listencastAnnounce") boolean listencastAnnounce,@JsonProperty("enableListencast") boolean enableListencast,@JsonProperty("icecastMount") String icecastMount,@JsonProperty("icecastHost") String icecastHost,@JsonProperty("icecastPort") int icecastPort,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("osuAPIKey") String osuAPIKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("trackerNetworkAPIKey")String trackerNetworkAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode) {
+    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("icecastAdminUsername") String icecastAdminUsername,@JsonProperty("icecastAdminPass") String icecastAdminPass,@JsonProperty("listencastAnnounce") boolean listencastAnnounce,@JsonProperty("enableListencast") boolean enableListencast,@JsonProperty("icecastMount") String icecastMount,@JsonProperty("icecastHost") String icecastHost,@JsonProperty("icecastPort") int icecastPort,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("osuAPIKey") String osuAPIKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("trackerNetworkAPIKey")String trackerNetworkAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode, @JsonProperty("VRCUsername") String vrcUsername, @JsonProperty("VRCPassword") String vrcPassword) {
         this.confVersionMarker = confVersionMarker;
         this.connectToDiscord = connectToDiscord;
         this.allowSQLRW = allowSQLRW;
@@ -64,6 +66,8 @@ public class JsonConfig {
         this.trackerNetworkAPIKey = trackerNetworkAPIKey;
         this.operatorDiscordID = operatorDiscordID;
         this.testMode = testMode;
+        this.vrcUsername = vrcUsername;
+        this.vrcPassword = vrcPassword;
     }
 
     public boolean isSet(){
@@ -161,5 +165,13 @@ public class JsonConfig {
 
     public boolean isTestMode() {
         return testMode;
+    }
+
+    public String getVrcUsername() {
+        return vrcUsername;
+    }
+
+    public String getVrcPassword() {
+        return vrcPassword;
     }
 }
