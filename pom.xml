@@ -140,11 +140,9 @@
             <version>2.9.3</version>
         </dependency>
         <dependency>
-            <groupId>io.github</groupId>
-            <artifactId>vrchatapi</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/VRChatJava-1.0.0.jar</systemPath>
+            <groupId>com.github.ripxfrostbite</groupId>
+            <artifactId>VRChatJava</artifactId>
+            <version>master</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
