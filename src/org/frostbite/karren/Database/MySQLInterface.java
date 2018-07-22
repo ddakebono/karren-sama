@@ -115,7 +115,7 @@ public class MySQLInterface {
     public DbUser getUserData(IUser user){
         if(Karren.conf.getAllowSQLRW()) {
             if(!dbUserCache.containsKey(user.getStringID())) {
-                String sql = "INSERT IGNORE User (UserID, TimeLeft) VALUES (?, null)";
+                String sql = "INSERT IGNORE User (UserID, TimeLeft, VRCUserID) VALUES (?, null, null)";
                 Object[] params = {user.getLongID()};
                 Yank.execute(sql, params);
                 sql = "SELECT * FROM User WHERE UserID=?";

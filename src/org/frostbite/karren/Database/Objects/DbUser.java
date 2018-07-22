@@ -18,13 +18,15 @@ import java.sql.Timestamp;
 public class DbUser {
     private long userID = 0;
     private Timestamp timeLeft;
+    private String vrcUserID;
 
     public DbUser(){
     }
 
-    public DbUser(int userID, Timestamp timeLeft) {
+    public DbUser(int userID, Timestamp timeLeft, String vrcUserID) {
         this.userID = userID;
         this.timeLeft = timeLeft;
+        this.vrcUserID = vrcUserID;
     }
 
     public long getUserID() {
@@ -33,6 +35,14 @@ public class DbUser {
 
     public void setUserID(long userID) {
         this.userID = userID;
+    }
+
+    public String getVrcUserID() {
+        return vrcUserID;
+    }
+
+    public void setVrcUserID(String vrcUserID) {
+        this.vrcUserID = vrcUserID;
     }
 
     public Timestamp getTimeLeft() {
@@ -45,8 +55,8 @@ public class DbUser {
 
     public void update(){
         if(Karren.conf.getAllowSQLRW()) {
-            String sql = "UPDATE User SET TimeLeft=? WHERE UserID=?";
-            Yank.execute(sql, new Object[]{timeLeft, userID});
+            String sql = "UPDATE User SET TimeLeft=?, VRCUserID=? WHERE UserID=?";
+            Yank.execute(sql, new Object[]{timeLeft, vrcUserID, userID});
         }
     }
 }

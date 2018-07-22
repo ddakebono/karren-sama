@@ -1,15 +1,15 @@
 {
   "triggers": [
-    "vrc-add"
+    "vrc-unfriend"
   ],
   "tags": [
     "prefixed",
     "parameter",
-    "vrcaddfriend"
+    "vrcunlinkaccount"
   ],
   "templatesNew": [
     {
-      "template": "A friend request has been sent to **%username**",
+      "template": "Unfriended %vrcuser and removed the link.",
       "templateType": "normal"
     },
     {
@@ -17,14 +17,19 @@
       "templateType": "fail"
     },
     {
-      "template": "You need to give me a username to search up!",
+      "template": "You need to give mention a user",
       "templateType": "noparam"
+    },
+    {
+      "template": "This user never added a VRChat account!",
+      "templateType": "nolink"
     }
   ],
   "friendlyName": "VRChat Add Friend",
   "enabled": true,
-  "helptext": "Sends a friend request from the bot, this allows access to online status and world info.",
-  "identifier": "VRCAddFriend",
+  "helptext": "Unfriends the account linked to the mentioned discord user",
+  "identifier": "VRCUnfriend",
+  "permissionLevel": "bot-manager",
   "confidence": 1,
   "specialInteraction": false,
   "isPermBad": false
