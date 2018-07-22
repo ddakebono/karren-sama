@@ -33,7 +33,10 @@ public class VRCUserSearch extends Tag {
                         if(!user.getWorldID().equalsIgnoreCase("private")) {
                             VRCWorld world = VRCWorld.fetch(user.getWorldID());
                             msg = interaction.replaceMsg(msg, "%world", world.getName());
-                            msg = interaction.replaceMsg(msg, "%link", "[Click here to join](https://www.vrchat.net/launch?worldId=" + world.getId() + "&instanceId=" + user.getInstanceID() + ")");
+                            if(user.getInstanceID().length()<10)
+                                msg = interaction.replaceMsg(msg, "%link", "[Click here to join](https://www.vrchat.net/launch?worldId=" + world.getId() + "&instanceId=" + user.getInstanceID() + ")");
+                            else
+                                msg = interaction.replaceMsg(msg, "%link", "Not Public");
                         } else {
                             msg = interaction.replaceMsg(msg, "%world", "Private World");
                             msg = interaction.replaceMsg(msg, "%link", "Private World");
