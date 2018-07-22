@@ -22,7 +22,9 @@ import org.frostbite.karren.interactions.Tags.Guild.*;
 import org.frostbite.karren.interactions.Tags.InstantReplay.Playback;
 import org.frostbite.karren.interactions.Tags.InstantReplay.StartListening;
 import org.frostbite.karren.interactions.Tags.InstantReplay.StopListening;
+import org.frostbite.karren.interactions.Tags.VRChat.VRCAddFriend;
 import org.frostbite.karren.interactions.Tags.VRChat.VRCUserSearch;
+import org.frostbite.karren.interactions.Tags.VRChat.VRCWorldSearch;
 import org.frostbite.karren.listeners.InteractionCommands;
 import sx.blah.discord.handle.obj.IGuild;
 
@@ -90,7 +92,6 @@ public class GuildManager {
         tagHandlers.add(new RollTopGuilds());
         tagHandlers.add(new WatchdogEvent());
         tagHandlers.add(new NoVoiceHijack());
-        tagHandlers.add(new BattlegroundsNew());
         tagHandlers.add(new EmbedMessage());
         tagHandlers.add(new CreateTempChannel());
         tagHandlers.add(new D4JFeelingLucky());
@@ -100,6 +101,8 @@ public class GuildManager {
         tagHandlers.add(new SetRandomRange());
         tagHandlers.add(new SetOverrideChannel());
         tagHandlers.add(new VRCUserSearch());
+        tagHandlers.add(new VRCAddFriend());
+        tagHandlers.add(new VRCWorldSearch());
     }
 
     public ArrayList<Interaction> loadInteractions(){

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -30,6 +30,8 @@ public class EmbedMessage extends Tag {
         embed.withDescription(msg);
         if(interaction.getEmbedImage()!=null)
             embed.withImage(interaction.getEmbedImage());
+        if(interaction.getEmbedURL()!=null)
+            embed.withUrl(interaction.getEmbedURL());
         embed.withFooterText("Requested By: " + event.getAuthor().getName());
         if((interaction.getEmbedFields()!=null && interaction.getEmbedFields().size()>0 && interaction.getReplacementTextCount()>0) || interaction.isTagAddedEmbeds()){
             for(InteractionEmbedFields field : interaction.getEmbedFields()){

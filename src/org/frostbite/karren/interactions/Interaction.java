@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -63,6 +63,7 @@ public class Interaction {
     private HashMap<String, String> replacedTextMap = new HashMap<>();
     private boolean tagAddedEmbeds = false;
     private String embedImage;
+    private String embedURL;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal", null)}, triggers, confidence, enabled, helptext);
@@ -166,6 +167,7 @@ public class Interaction {
             tagAddedEmbeds = false;
             embed = null;
             embedImage = null;
+            embedURL = null;
             if (tagCache == null)
                 tagCache = new ArrayList<>();
             tagCache.clear();
@@ -263,7 +265,12 @@ public class Interaction {
     }
 
     public String getReplacementText(String target){
-        return replacedTextMap.get(target);
+        for(String word : replacedTextMap.keySet()){
+            if(target.toLowerCase().contains(word.toLowerCase())){
+                return target.replaceAll(word, replacedTextMap.get(word));
+            }
+        }
+        return target;
     }
 
     public float getVoiceVolume() {
@@ -385,6 +392,14 @@ public class Interaction {
             embedFields = new ArrayList<>();
         embedFields.add(field);
         tagAddedEmbeds = true;
+    }
+
+    public String getEmbedURL() {
+        return embedURL;
+    }
+
+    public void setEmbedURL(String embedURL) {
+        this.embedURL = embedURL;
     }
 
     public boolean isTagAddedEmbeds() {

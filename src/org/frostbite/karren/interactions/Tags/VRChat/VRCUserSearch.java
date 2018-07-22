@@ -1,6 +1,15 @@
+/*
+ * Copyright (c) 2018 Owen Bennett.
+ *  You may use, distribute and modify this code under the terms of the MIT licence.
+ *  You should have obtained a copy of the MIT licence with this software,
+ *  if not please obtain one from https://opensource.org/licences/MIT
+ *
+ *
+ *
+ */
+
 package org.frostbite.karren.interactions.Tags.VRChat;
 
-import io.github.vrchatapi.VRCAvatar;
 import io.github.vrchatapi.VRCUser;
 import io.github.vrchatapi.VRCWorld;
 import org.frostbite.karren.interactions.Interaction;
@@ -21,19 +30,23 @@ public class VRCUserSearch extends Tag {
                 VRCUser user = VRCUser.fetch(users.get(0).getId());
                 if(user.isFriend()) {
                     if(!user.getWorldID().equalsIgnoreCase("offline")) {
-                        VRCWorld world = VRCWorld.fetch(user.getLocation());
-                        msg = interaction.replaceMsg(msg, "%world", world.getName());
+                        if(!user.getWorldID().equalsIgnoreCase("private")) {
+                            VRCWorld world = VRCWorld.fetch(user.getWorldID());
+                            msg = interaction.replaceMsg(msg, "%world", world.getName());
+                            msg = interaction.replaceMsg(msg, "%link", "[Click here to join](https://www.vrchat.net/launch?worldId=" + world.getId() + "&instanceId=" + user.getInstanceID() + ")");
+                        } else {
+                            msg = interaction.replaceMsg(msg, "%world", "Private World");
+                            msg = interaction.replaceMsg(msg, "%link", "Private World");
+                        }
                     } else {
                         msg = interaction.replaceMsg(msg, "%world", "Offline");
+                        msg = interaction.replaceMsg(msg, "%link", "Offline");
                     }
-                }
-                msg = interaction.replaceMsg(msg, "%username", user.getUsername());
-                if(user.getAvatarId()!=null) {
-                    VRCAvatar avatar = VRCAvatar.fetch(user.getAvatarId());
-                    msg = interaction.replaceMsg(msg, "%avatar", avatar.getName());
                 } else {
-                    msg = interaction.replaceMsg(msg, "%avatar", "Offline");
+                    msg = interaction.replaceMsg(msg, "%world", "Not a friend");
+                    msg = interaction.replaceMsg(msg, "%link", "Not a friend");
                 }
+                msg = interaction.replaceMsg(msg, "%username", user.getDisplayName());
                 interaction.setEmbedImage(user.getCurrentAvatarImageUrl());
 
             } else {
@@ -53,6 +66,6 @@ public class VRCUserSearch extends Tag {
 
     @Override
     public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
+        return EnumSet.of(Permissions.SEND_MESSAGES, Permissions.EMBED_LINKS);
     }
 }

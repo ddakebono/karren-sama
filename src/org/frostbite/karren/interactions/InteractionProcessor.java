@@ -79,7 +79,8 @@ public class InteractionProcessor {
                                     if (PermissionUtils.hasPermissions(event.getChannel(), event.getClient().getOurUser(), handler.getRequiredPermissions())) {
                                         returned = handler.handleTemplate(returned, check, result, event);
                                     } else {
-                                        returned = "Uh oh, looks like I'm missing some text channel permissions! " + handler.getRequiredPermissions().toString() + ". Ask your admin to fix this.";
+                                        if(!check.isSpecialInteraction())
+                                            returned = "Uh oh, looks like I'm missing some text channel permissions! " + handler.getRequiredPermissions().toString() + ". Ask your admin to fix this.";
                                     }
                                 } else {
                                     if (PermissionUtils.hasPermissions(event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel(), event.getClient().getOurUser(), handler.getRequiredPermissions())) {

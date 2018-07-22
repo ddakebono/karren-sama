@@ -1,16 +1,15 @@
 {
   "triggers": [
-    "vrcu"
+    "vrc-add"
   ],
   "tags": [
     "prefixed",
     "parameter",
-    "vrcusersearch",
-    "embedded"
+    "vrcaddfriend"
   ],
   "templatesNew": [
     {
-      "template": "Info for VRChat user **%username**",
+      "template": "A friend request has been sent to **%username**",
       "templateType": "normal"
     },
     {
@@ -22,23 +21,11 @@
       "templateType": "noparam"
     }
   ],
-  "embedFields": [
-    {
-      "fieldTitle": "World",
-      "fieldValue": "%world",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Launch Link",
-      "fieldValue": "%link",
-      "inline": true
-    }
-
-  ],
-  "friendlyName": "VRChat User Search",
+  "friendlyName": "VRChat Add Friend",
   "enabled": true,
-  "helptext": "Gets user info from the VRChat API",
-  "identifier": "VRCUserSearch",
+  "helptext": "Sends a friend request from the bot, this allows access to online status, world, and avatar name.",
+  "identifier": "VRCAddFriend",
+  "permissionLevel": "bot-manager",
   "confidence": 1,
   "specialInteraction": false,
   "isPermBad": false
