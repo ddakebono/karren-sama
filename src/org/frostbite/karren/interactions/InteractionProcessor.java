@@ -76,11 +76,10 @@ public class InteractionProcessor {
                             Tag handler = Karren.bot.getGuildManager().getTag(tag.toLowerCase());
                             if (handler != null && returned != null) {
                                 if (!handler.getVoiceUsed()) {
-                                    if (PermissionUtils.hasPermissions(event.getChannel(), event.getClient().getOurUser(), handler.getRequiredPermissions())) {
+                                    if (PermissionUtils.hasPermissions(event.getChannel(), event.getClient().getOurUser(), handler.getRequiredPermissions()) || (check.isSpecialInteraction() && Karren.bot.sql.getGuild(guild).getOverrideChannel()!=0)) {
                                         returned = handler.handleTemplate(returned, check, result, event);
                                     } else {
-                                        if(!check.isSpecialInteraction())
-                                            returned = "Uh oh, looks like I'm missing some text channel permissions! " + handler.getRequiredPermissions().toString() + ". Ask your admin to fix this.";
+                                        returned = "Uh oh, looks like I'm missing some text channel permissions! " + handler.getRequiredPermissions().toString() + ". Ask your admin to fix this.";
                                     }
                                 } else {
                                     if (PermissionUtils.hasPermissions(event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel(), event.getClient().getOurUser(), handler.getRequiredPermissions())) {
@@ -101,7 +100,7 @@ public class InteractionProcessor {
                     result.withEmbed(check.getEmbed().build());
                 check.setLock(false);
                 if(returned!=null && returned.length()>0){
-                    returned = returned.replace("%prefix", Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()));
+                    returned = returned.replaceAll("%prefix", Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()));
                     result.withContent(returned);
                 } else {
                     if(!check.isEmbedUsed())
