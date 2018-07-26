@@ -44,6 +44,6 @@ public class ConnectCommand implements IListener<ReadyEvent>{
         if(!Karren.conf.isTestMode())
             event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "KarrenSama Ver." + Karren.botVersion);
         else
-            event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "TEST MODE");
+            event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "TEST MODE - " + Karren.jarProps.getProperty("git.build.version"));
     }
 }
