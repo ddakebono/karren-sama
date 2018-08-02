@@ -10,60 +10,35 @@
 
 package org.frostbite.karren.Database.Objects;
 
-import org.frostbite.karren.Karren;
-import org.knowm.yank.Yank;
-
 import java.sql.Timestamp;
 
 public class DbInventoryItem {
-    public int itemID;
-    public String itemName;
-    public String itemDesc;
-    public int itemBaseValue;
+    public int inventoryItemID;
+    public DbItem itemID;
+    public String userID;
     public Timestamp itemAcquired;
-    public String itemImage;
-    public int itemBaseRarity;
 
     public DbInventoryItem(){
 
     }
 
-    public DbInventoryItem(int itemID, String itemName, String itemDesc, int itemBaseValue, Timestamp itemAcquired, String itemImage, int itemBaseRarity) {
+    public DbInventoryItem(int inventoryItemID, DbItem itemID, String userID, Timestamp itemAcquired) {
+        this.inventoryItemID = inventoryItemID;
         this.itemID = itemID;
-        this.itemName = itemName;
-        this.itemDesc = itemDesc;
-        this.itemBaseValue = itemBaseValue;
+        this.userID = userID;
         this.itemAcquired = itemAcquired;
-        this.itemImage = itemImage;
-        this.itemBaseRarity = itemBaseRarity;
     }
 
-    public int getItemID() {
+    public DbItem getItemID() {
         return itemID;
     }
 
-    public String getItemName() {
-        return itemName;
+    public int getInventoryItemID() {
+        return inventoryItemID;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public String getItemDesc() {
-        return itemDesc;
-    }
-
-    public void setItemDesc(String itemDesc) {
-        this.itemDesc = itemDesc;
-    }
-
-    public int getItemBaseValue() {
-        return itemBaseValue;
-    }
-
-    public void setItemBaseValue(int itemBaseValue) {
-        this.itemBaseValue = itemBaseValue;
+    public String getUserID() {
+        return userID;
     }
 
     public Timestamp getItemAcquired() {
@@ -72,28 +47,5 @@ public class DbInventoryItem {
 
     public void setItemAcquired(Timestamp itemAcquired) {
         this.itemAcquired = itemAcquired;
-    }
-
-    public String getItemImage() {
-        return itemImage;
-    }
-
-    public void setItemImage(String itemImage) {
-        this.itemImage = itemImage;
-    }
-
-    public int getItemBaseRarity() {
-        return itemBaseRarity;
-    }
-
-    public void setItemBaseRarity(int itemBaseRarity) {
-        this.itemBaseRarity = itemBaseRarity;
-    }
-
-    public void update(){
-        if(Karren.conf.getAllowSQLRW()) {
-            String sql = "UPDATE Inventory SET ItemName=?, ItemDesc=?, ItemBaseValue=?, ItemAcquired=?, ItemImage=?, ItemBaseRarity=? WHERE ItemID=?";
-            Yank.execute(sql, new Object[]{itemName, itemDesc, itemBaseValue, itemAcquired, itemImage, itemBaseRarity, itemID});
-        }
     }
 }
