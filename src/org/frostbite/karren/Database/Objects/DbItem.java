@@ -15,6 +15,7 @@ import org.knowm.yank.Yank;
 
 public class DbItem {
     public int itemID;
+    public String itemLinkedInteraction; //unique
     public String itemName;
     public String itemDesc;
     public int itemBaseValue;
@@ -77,10 +78,18 @@ public class DbItem {
         this.itemBaseRarity = itemBaseRarity;
     }
 
+    public String getItemLinkedInteraction() {
+        return itemLinkedInteraction;
+    }
+
+    public void setItemLinkedInteraction(String itemLinkedInteraction) {
+        this.itemLinkedInteraction = itemLinkedInteraction;
+    }
+
     public void update(){
         if(Karren.conf.getAllowSQLRW()) {
-            String sql = "UPDATE Item SET ItemName=?, ItemDesc=?, ItemValue=?, ItemImage=?, ItemRarity=? WHERE ItemID=?";
-            Yank.execute(sql, new Object[]{itemName, itemDesc, itemBaseValue, itemImage, itemBaseRarity, itemID});
+            String sql = "UPDATE Item SET ItemName=?, ItemDesc=?, ItemValue=?, ItemImage=?, ItemRarity=?, ItemLinkedInteraction=? WHERE ItemID=?";
+            Yank.execute(sql, new Object[]{itemName, itemDesc, itemBaseValue, itemImage, itemBaseRarity, itemLinkedInteraction, itemID});
         }
     }
 }

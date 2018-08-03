@@ -21,6 +21,7 @@ import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.InstantReplay.InstantReplayManager;
 import org.frostbite.karren.listeners.*;
+import org.knowm.yank.Yank;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.handle.obj.IGuild;
@@ -29,6 +30,9 @@ import sx.blah.discord.util.RateLimitException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+
+import static org.frostbite.karren.Karren.conf;
 
 public class KarrenBot {
     public IDiscordClient client;
@@ -54,6 +58,8 @@ public class KarrenBot {
         gms = new HashMap<>();
         AudioSourceManagers.registerRemoteSources(pm);
         AudioSourceManagers.registerLocalSource(pm);
+        //Start YankSQL
+        startYankSQL();
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
             EventDispatcher ed = client.getDispatcher();
@@ -77,6 +83,19 @@ public class KarrenBot {
             //Init interaction processor
 
         }
+    }
+
+    public void startYankSQL(){
+        //Initialize database connection pool
+        Karren.log.info("Initializing Yank database pool");
+        Properties dbSettings = new Properties();
+        dbSettings.setProperty("jdbcUrl", "jdbc:mysql://" + conf.getSqlhost() + ":" + conf.getSqlport() + "/" + conf.getSqldb() + "?useUnicode=true&characterEncoding=UTF-8");
+        dbSettings.setProperty("username", conf.getSqluser());
+        dbSettings.setProperty("password", conf.getSqlpass());
+
+        if(Karren.conf.getAllowSQLRW())
+            Yank.setupDefaultConnectionPool(dbSettings);
+
     }
 
     public void initExtras(){

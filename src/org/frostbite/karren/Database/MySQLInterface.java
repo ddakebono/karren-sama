@@ -30,7 +30,7 @@ public class MySQLInterface {
     private Map<String, DbUser> dbUserCache = new HashMap<>();
     private Map<String, DbWordcount> dbWordcountCache = new HashMap<>();
     private ArrayList<DbReminder> dbReminderCache = new ArrayList<>();
-    private Map<String, DbItem> dbItemCache = new HashMap<>();
+    private Map<Integer, DbItem> dbItemCache = new HashMap<>();
     private Map<String, DbInventoryItem> dbInventoryItemCache = new HashMap<>();
 
     public DbGuild getGuild(IGuild guild){
@@ -141,11 +141,24 @@ public class MySQLInterface {
                 sql = "SELECT * FROM Item WHERE ItemID=?";
                 Object[] params2 = {id};
                 DbItem dbItem = Yank.queryBean(sql, DbItem.class, params2);
-                dbItemCache.put(dbItem.itemName, dbItem);
+                dbItemCache.put(dbItem.itemID, dbItem);
                 return dbItem;
             } else {
-                return dbItemCache.get(item.itemName);
+                return dbItemCache.get(item.itemID);
             }
+        }
+        return null;
+    }
+
+    public List<DbItem> preloadInteractionItems(String interactionName){
+        if(Karren.conf.getAllowSQLRW()){
+            String sql = "SELECT * FROM Item WHERE ItemLinkedInteraction=?";
+            Object[] params = {interactionName};
+            List<DbItem> items = Yank.queryBeanList(sql, DbItem.class, params);
+            if(items!=null)
+                for(DbItem item : items)
+                    dbItemCache.putIfAbsent(item.itemID, item);
+            return items;
         }
         return null;
     }
@@ -219,7 +232,7 @@ public class MySQLInterface {
         return dbWordcountCache;
     }
 
-    public Map<String, DbItem> getDbItemCache() {
+    public Map<Integer, DbItem> getDbItemCache() {
         return dbItemCache;
     }
 

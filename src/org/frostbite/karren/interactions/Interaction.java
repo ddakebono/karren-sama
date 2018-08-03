@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
+import org.frostbite.karren.Database.Objects.DbItem;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Interaction {
     @Expose private String[] triggers;
@@ -59,6 +61,8 @@ public class Interaction {
     private EmbedBuilder embed;
     @Expose private ArrayList<InteractionParameter> parameters;
     @Expose private ArrayList<InteractionEmbedFields> embedFields;
+    @Expose private ArrayList<DbItem> items = new ArrayList<>();
+    private ArrayList<DbItem> processedItems = new ArrayList<>();
     @Expose private String friendlyName;
     private HashMap<String, String> replacedTextMap = new HashMap<>();
     private boolean tagAddedEmbeds = false;
@@ -438,6 +442,27 @@ public class Interaction {
 
         }
         return false;
+    }
+
+    public void prepareOrUpdateItems(){
+        if(items!=null && items.size()>0) {
+            List<DbItem> itemsFromDB = Karren.bot.getSql().preloadInteractionItems(identifier);
+            List<DbItem> missingItems = null;
+            processedItems = new ArrayList<>();
+            if(itemsFromDB!=null) {
+                processedItems.addAll(itemsFromDB);
+                Set<String> uniqueIDs = processedItems.stream().map(DbItem::getItemName).collect(Collectors.toSet());
+                missingItems = items.stream().filter(dbItem -> !uniqueIDs.contains(dbItem.itemName)).collect(Collectors.toList());
+            } else {
+                missingItems = items;
+            }
+            if(missingItems!=null) {
+                for (DbItem item : missingItems) {
+                    Karren.log.info("Adding item to database - Name: " + item.getItemName() + " Interaction: " + identifier);
+                    processedItems.add(Karren.bot.getSql().getItem(item));
+                }
+            }
+        }
     }
 
     public void setNoClearInteraction(boolean noClearInteraction) {
