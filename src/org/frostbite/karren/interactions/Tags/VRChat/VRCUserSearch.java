@@ -51,6 +51,7 @@ public class VRCUserSearch extends Tag {
                 }
                 msg = interaction.replaceMsg(msg, "%username", user.getDisplayName());
                 interaction.setEmbedImage(user.getCurrentAvatarImageUrl());
+                msg = interaction.replaceMsg(msg, "%tags", user.getTags().toString());
 
             } else {
                 msg = interaction.getRandomTemplate("fail").getTemplate();
