@@ -37,6 +37,11 @@
       "fieldTitle": "Tags",
       "fieldValue": "%tags",
       "inline": true
+    },
+    {
+      "fieldTitle": "VRChat Safety System Converted Level",
+      "fieldValue": "%newlevel",
+      "inline": true
     }
 
   ],

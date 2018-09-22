@@ -17,9 +17,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.File;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 
 public class KarrenUtil {
 
@@ -57,6 +55,29 @@ public class KarrenUtil {
         } else {
             return files.toArray(new File[files.size()]);
         }
+    }
+
+    public static String getVRCSafetySystemRank(List<String> tags){
+        LinkedHashMap<String, String> permMap = new LinkedHashMap<>();
+        permMap.put("system_trust_basic", "New User");
+        permMap.put("system_trust_intermediate", "New User");
+        permMap.put("system_trust_known", "User");
+        permMap.put("system_trust_trusted", "Known User");
+        permMap.put("system_trust_veteran", "Trusted User");
+        permMap.put("system_trust_legend", "Veteran");
+        String permission = "Visitor/New User (No Tags)";
+        int permLevel = -1;
+        for(String tag : tags){
+            String level = permMap.getOrDefault(tag, null);
+            if(level!=null){
+                int index = new ArrayList<String>(permMap.values()).indexOf(level);
+                if(index>permLevel){
+                    permission = level;
+                    permLevel = index;
+                }
+            }
+        }
+        return permission;
     }
 
     public static String getNormalizedName(String jsonName){
