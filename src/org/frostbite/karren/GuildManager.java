@@ -121,6 +121,7 @@ public class GuildManager {
                     tempInteraction.setIdentifier(FilenameUtils.removeExtension(file.getName()));
                     tempInteraction.setInteractionFile(file);
                     tempInteraction.interactionOldFormatUpdate();
+                    tempInteraction.prepareOrUpdateItems(); //Currency system
                     loadedInteractions.add(tempInteraction);
                 } catch (IOException e) {
                     e.printStackTrace();

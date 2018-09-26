@@ -30,6 +30,8 @@ public class MySQLInterface {
     private Map<String, DbUser> dbUserCache = new HashMap<>();
     private Map<String, DbWordcount> dbWordcountCache = new HashMap<>();
     private ArrayList<DbReminder> dbReminderCache = new ArrayList<>();
+    private Map<Integer, DbItem> dbItemCache = new HashMap<>();
+    private Map<String, DbInventoryItem> dbInventoryItemCache = new HashMap<>();
 
     public DbGuild getGuild(IGuild guild){
         if(Karren.conf.getAllowSQLRW()){
@@ -130,6 +132,37 @@ public class MySQLInterface {
         return new DbUser();
     }
 
+    public DbItem getItem(DbItem item){
+        if(Karren.conf.getAllowSQLRW()){
+            if(!dbItemCache.containsKey(item.itemID)){
+                String sql = "INSERT IGNORE Item (ItemID, ItemName, ItemDesc, ItemBaseRarity, ItemBaseValue, ItemImage) VALUES (null, ?, ?, ?, ?, ?)";
+                Object[] params = {item.itemName, item.itemDesc, item.itemBaseRarity, item.itemBaseValue, item.itemImage};
+                int id = Yank.execute(sql, params);
+                sql = "SELECT * FROM Item WHERE ItemID=?";
+                Object[] params2 = {id};
+                DbItem dbItem = Yank.queryBean(sql, DbItem.class, params2);
+                dbItemCache.put(dbItem.itemID, dbItem);
+                return dbItem;
+            } else {
+                return dbItemCache.get(item.itemID);
+            }
+        }
+        return null;
+    }
+
+    public List<DbItem> preloadInteractionItems(String interactionName){
+        if(Karren.conf.getAllowSQLRW()){
+            String sql = "SELECT * FROM Item WHERE ItemLinkedInteraction=?";
+            Object[] params = {interactionName};
+            List<DbItem> items = Yank.queryBeanList(sql, DbItem.class, params);
+            if(items!=null)
+                for(DbItem item : items)
+                    dbItemCache.putIfAbsent(item.itemID, item);
+            return items;
+        }
+        return null;
+    }
+
     public DbReminder[] getReminder(DbGuildUser target){
         if(Karren.conf.getAllowSQLRW()){
             List<DbReminder> reminders = dbReminderCache.stream().filter(x -> x.getTargetID()==(target.getGuildUserID())).collect(Collectors.toList());
@@ -197,5 +230,13 @@ public class MySQLInterface {
 
     public Map<String, DbWordcount> getDbWordcountCache() {
         return dbWordcountCache;
+    }
+
+    public Map<Integer, DbItem> getDbItemCache() {
+        return dbItemCache;
+    }
+
+    public Map<String, DbInventoryItem> getDbInventoryItemCache() {
+        return dbInventoryItemCache;
     }
 }

@@ -11,30 +11,15 @@
 package org.frostbite.karren.listeners;
 
 import org.frostbite.karren.Karren;
-import org.knowm.yank.Yank;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.ActivityType;
 import sx.blah.discord.handle.obj.StatusType;
 
-import java.util.Properties;
-
-import static org.frostbite.karren.Karren.conf;
-
 public class ConnectCommand implements IListener<ReadyEvent>{
 
     @Override
     public void handle(ReadyEvent event){
-        //Initialize database connection pool
-        Karren.log.info("Initializing Yank database pool");
-        Properties dbSettings = new Properties();
-        dbSettings.setProperty("jdbcUrl", "jdbc:mysql://" + conf.getSqlhost() + ":" + conf.getSqlport() + "/" + conf.getSqldb() + "?useUnicode=true&characterEncoding=UTF-8");
-        dbSettings.setProperty("username", conf.getSqluser());
-        dbSettings.setProperty("password", conf.getSqlpass());
-
-        if(Karren.conf.getAllowSQLRW())
-            Yank.setupDefaultConnectionPool(dbSettings);
-
         //Start auto reminder
         Karren.bot.getAr().start();
 
