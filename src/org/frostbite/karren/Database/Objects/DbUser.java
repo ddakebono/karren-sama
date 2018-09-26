@@ -19,14 +19,16 @@ public class DbUser {
     private long userID = 0;
     private Timestamp timeLeft;
     private String vrcUserID;
+    private int points;
 
     public DbUser(){
     }
 
-    public DbUser(int userID, Timestamp timeLeft, String vrcUserID) {
+    public DbUser(int userID, Timestamp timeLeft, String vrcUserID, int points) {
         this.userID = userID;
         this.timeLeft = timeLeft;
         this.vrcUserID = vrcUserID;
+        this.points = points;
     }
 
     public long getUserID() {
@@ -53,10 +55,18 @@ public class DbUser {
         this.timeLeft = timeLeft;
     }
 
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
     public void update(){
         if(Karren.conf.getAllowSQLRW()) {
-            String sql = "UPDATE User SET TimeLeft=?, VRCUserID=? WHERE UserID=?";
-            Yank.execute(sql, new Object[]{timeLeft, vrcUserID, userID});
+            String sql = "UPDATE User SET TimeLeft=?, VRCUserID=?, Points=? WHERE UserID=?";
+            Yank.execute(sql, new Object[]{timeLeft, vrcUserID, points, userID});
         }
     }
 }
