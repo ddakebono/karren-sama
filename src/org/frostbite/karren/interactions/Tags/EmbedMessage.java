@@ -32,7 +32,10 @@ public class EmbedMessage extends Tag {
             embed.withImage(interaction.getEmbedImage());
         if(interaction.getEmbedURL()!=null)
             embed.withUrl(interaction.getEmbedURL());
-        embed.withFooterText("Requested By: " + event.getAuthor().getName());
+        if(interaction.getEmbedFooter()!=null)
+            embed.withFooterText("Requested By: " + event.getAuthor().getName() + " | " + interaction.getEmbedFooter());
+        else
+            embed.withFooterText("Requested By: " + event.getAuthor().getName());
         if((interaction.getEmbedFields()!=null && interaction.getEmbedFields().size()>0 && interaction.getReplacementTextCount()>0) || interaction.isTagAddedEmbeds()){
             for(InteractionEmbedFields field : interaction.getEmbedFields()){
                 if(interaction.isTagAddedEmbeds())

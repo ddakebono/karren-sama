@@ -142,7 +142,7 @@
         <dependency>
             <groupId>com.github.ripxfrostbite</groupId>
             <artifactId>VRChatJava</artifactId>
-            <version>dbd193e08a</version>
+            <version>a2b2bd1e5d</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>

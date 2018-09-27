@@ -64,6 +64,7 @@ public class Interaction {
     private boolean tagAddedEmbeds = false;
     private String embedImage;
     private String embedURL;
+    private String embedFooter;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal", null)}, triggers, confidence, enabled, helptext);
@@ -400,6 +401,14 @@ public class Interaction {
 
     public void setEmbedURL(String embedURL) {
         this.embedURL = embedURL;
+    }
+
+    public String getEmbedFooter() {
+        return embedFooter;
+    }
+
+    public void setEmbedFooter(String embedFooter) {
+        this.embedFooter = embedFooter;
     }
 
     public boolean isTagAddedEmbeds() {

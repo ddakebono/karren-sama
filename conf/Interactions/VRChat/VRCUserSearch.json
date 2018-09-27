@@ -3,6 +3,7 @@
     "vrcu"
   ],
   "tags": [
+    "vrcanalytics",
     "prefixed",
     "parameter",
     "vrcusersearch",
@@ -36,6 +37,11 @@
     {
       "fieldTitle": "Trust Level",
       "fieldValue": "%newlevel",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Status Message",
+      "fieldValue": "%statdesc",
       "inline": true
     }
 

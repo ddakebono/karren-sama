@@ -3,6 +3,7 @@
     "vrct"
   ],
   "tags": [
+    "vrcanalytics",
     "prefixed",
     "parameter",
     "vrcusersearch",
@@ -41,6 +42,11 @@
     {
       "fieldTitle": "VRChat Safety System Converted Level",
       "fieldValue": "%newlevel",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Status Message",
+      "fieldValue": "%statdesc",
       "inline": true
     }
 
