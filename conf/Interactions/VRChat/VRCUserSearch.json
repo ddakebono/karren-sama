@@ -32,6 +32,11 @@
       "fieldTitle": "Launch Link",
       "fieldValue": "%link",
       "inline": true
+    },
+    {
+      "fieldTitle": "Trust Level",
+      "fieldValue": "%newlevel",
+      "inline": true
     }
 
   ],
