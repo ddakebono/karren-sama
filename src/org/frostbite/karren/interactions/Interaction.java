@@ -436,7 +436,7 @@ public class Interaction {
             if(templatesPermError!=null)
                 for(String permission : templatesPermError)
                     newTemplates.add(new InteractionTemplate(permission, "permission", this));
-            templatesNew = newTemplates.toArray(new InteractionTemplate[newTemplates.size()]);
+            templatesNew = newTemplates.toArray(new InteractionTemplate[0]);
             Gson json = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
             try (Writer writer = new FileWriter(interactionFile)) {
                 json.toJson(this, writer);

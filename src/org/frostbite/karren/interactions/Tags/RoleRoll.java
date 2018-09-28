@@ -50,7 +50,7 @@ public class RoleRoll extends Tag {
                     int dc = (Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() >= 0 ? Karren.bot.getSql().getGuild(event.getGuild()).getRollDifficulty() : 95);
                     Karren.log.info("Rolled " + roll + " against a DC of " + dc + " with bonus of " + bonus);
                     roll += bonus;
-                    if(interaction.hasParameter() && event.getAuthor().getRolesForGuild(event.getGuild()).stream().filter(x -> x.getName().equalsIgnoreCase("bot-manager")).count()>0 && interaction.getParameter().equalsIgnoreCase("test"))
+                    if(interaction.hasParameter() && event.getAuthor().getRolesForGuild(event.getGuild()).stream().anyMatch(x -> x.getName().equalsIgnoreCase("bot-manager")) && interaction.getParameter().equalsIgnoreCase("test"))
                         roll = 100;
                     if (roll >= dc) {
                         //PermissionUtils.isUserHigher(event.getGuild(), event.getClient().getOurUser(), event.getAuthor())

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -25,7 +25,7 @@ import java.io.IOException;
 
 public class JsonConfig {
 
-    private String confVersionMarker = "";
+    private String confVersionMarker;
     private boolean connectToDiscord = true;
     private boolean allowSQLRW = true;
     private boolean enableInteractions = true;

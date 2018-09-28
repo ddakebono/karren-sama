@@ -141,7 +141,7 @@ public class MySQLInterface {
             Object[] params = {target.getGuildUserID()};
             reminders =  Yank.queryBeanList(sql, DbReminder.class, params);
             dbReminderCache.addAll(reminders);
-            return reminders.toArray(new DbReminder[reminders.size()]);
+            return reminders.toArray(new DbReminder[0]);
         }
         return null;
     }

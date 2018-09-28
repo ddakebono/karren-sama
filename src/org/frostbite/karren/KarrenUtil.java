@@ -51,9 +51,9 @@ public class KarrenUtil {
                 else
                     files.add(file);
             }
-            return files.toArray(new File[files.size()]);
+            return files.toArray(new File[0]);
         } else {
-            return files.toArray(new File[files.size()]);
+            return files.toArray(new File[0]);
         }
     }
 

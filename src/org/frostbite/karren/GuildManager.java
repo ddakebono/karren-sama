@@ -145,9 +145,7 @@ public class GuildManager {
 
     public void clearGuildInteractionProcessor(IGuild guild){
         if(guild!=null){
-            if(registeredGuilds.containsKey(guild.getStringID())){
-                registeredGuilds.remove(guild.getStringID());
-            }
+            registeredGuilds.remove(guild.getStringID());
         }
     }
 
