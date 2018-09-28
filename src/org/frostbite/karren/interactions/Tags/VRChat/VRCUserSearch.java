@@ -59,7 +59,7 @@ public class VRCUserSearch extends Tag {
                     msg = interaction.replaceMsg(msg, "%world", "Not a friend");
                     msg = interaction.replaceMsg(msg, "%link", "Not a friend");
                 }
-                msg = interaction.replaceMsg(msg, "%status", user.getStatus().toString());
+                msg = interaction.replaceMsg(msg, "%status", user.getStatus());
                 if(user.getStatusDesc().length()>0)
                     msg = interaction.replaceMsg(msg, "%statdesc", user.getStatusDesc());
                 else
