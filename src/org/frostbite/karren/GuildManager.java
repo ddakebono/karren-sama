@@ -12,6 +12,7 @@ package org.frostbite.karren;
 
 
 import com.google.gson.Gson;
+import discord4j.core.object.entity.Guild;
 import org.apache.commons.io.FilenameUtils;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.InteractionProcessor;
@@ -23,8 +24,6 @@ import org.frostbite.karren.interactions.Tags.InstantReplay.Playback;
 import org.frostbite.karren.interactions.Tags.InstantReplay.StartListening;
 import org.frostbite.karren.interactions.Tags.InstantReplay.StopListening;
 import org.frostbite.karren.interactions.Tags.VRChat.*;
-import org.frostbite.karren.listeners.InteractionCommands;
-import sx.blah.discord.handle.obj.IGuild;
 
 import java.io.File;
 import java.io.FileReader;
@@ -126,7 +125,8 @@ public class GuildManager {
             }
         } else {
             Karren.log.info("No Interactions detected, interaction system unregistered.");
-            Karren.bot.getClient().getDispatcher().unregisterListener(new InteractionCommands());
+            //Karren.bot.getClient().getEventDispatcher().unregisterListener(new InteractionCommands());
+            //Karren.bot.getClient().getEventDispatcher().on(MessageCreateEvent.class)
             return null;
         }
         return loadedInteractions;
@@ -143,9 +143,9 @@ public class GuildManager {
         lock = false;
     }
 
-    public void clearGuildInteractionProcessor(IGuild guild){
+    public void clearGuildInteractionProcessor(Guild guild){
         if(guild!=null){
-            registeredGuilds.remove(guild.getStringID());
+            registeredGuilds.remove(guild.getId().asString());
         }
     }
 
@@ -162,7 +162,7 @@ public class GuildManager {
         return null;
     }
 
-    public String getCommandPrefix(IGuild guild){
+    public String getCommandPrefix(Guild guild){
         if(guild!=null && Karren.conf.getAllowSQLRW()){
             String prefix = Karren.bot.getSql().getGuild(guild).getCommandPrefix();
             if(prefix!=null && prefix.trim().length()>0)
@@ -171,14 +171,14 @@ public class GuildManager {
         return Karren.conf.getCommandPrefix();
     }
 
-    public InteractionProcessor getInteractionProcessor(IGuild guild){
+    public InteractionProcessor getInteractionProcessor(Guild guild){
         if(!lock && defaultInteractions.size()>0){
             if(guild!=null){
-                if (!registeredGuilds.containsKey(guild.getStringID())) {
+                if (!registeredGuilds.containsKey(guild.getId().asString())) {
                     ArrayList<Interaction> loadedInteractions = loadInteractions();
-                    registeredGuilds.put(guild.getStringID(), new InteractionProcessor(guild, loadedInteractions));
+                    registeredGuilds.put(guild.getId().asString(), new InteractionProcessor(guild, loadedInteractions));
                 }
-                return registeredGuilds.getOrDefault(guild.getStringID(), defaultProcessor);
+                return registeredGuilds.getOrDefault(guild.getId().asString(), defaultProcessor);
             } else {
                 return defaultProcessor;
             }

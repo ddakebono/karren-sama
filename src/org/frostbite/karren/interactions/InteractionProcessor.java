@@ -10,11 +10,10 @@
 
 package org.frostbite.karren.interactions;
 
-import org.frostbite.karren.AudioPlayer.AudioProvider;
-import org.frostbite.karren.AudioPlayer.GuildMusicManager;
+import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.data.stored.MessageBean;
+import discord4j.core.object.entity.Guild;
 import org.frostbite.karren.Karren;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.PermissionUtils;
 
@@ -24,13 +23,13 @@ public class InteractionProcessor {
 
     private ArrayList<Interaction> interactions;
     private ArrayList<Interaction> defaultInteractions = null;
-    private IGuild guild; //CAN BE NULL
+    private Guild guild; //CAN BE NULL
 
-    public InteractionProcessor(IGuild guild){
+    public InteractionProcessor(Guild guild){
         this(guild, null);
     }
 
-    public InteractionProcessor(IGuild guild, ArrayList<Interaction> defaultInteractions){
+    public InteractionProcessor(Guild guild, ArrayList<Interaction> defaultInteractions){
         this.guild = guild;
         this.defaultInteractions = defaultInteractions;
         loadAndUpdateDatabase();
@@ -40,7 +39,7 @@ public class InteractionProcessor {
         interactions = new ArrayList<>();
         interactions.addAll(defaultInteractions);
         if(guild!=null) {
-            if(Karren.bot.getGuildMusicManager(guild) == null || !(guild.getAudioManager().getAudioProvider() instanceof AudioProvider)){
+            /*if(Karren.bot.getGuildMusicManager(guild) == null || !(guild.getAudioManager().getAudioProvider() instanceof AudioProvider)){
                 Karren.log.info("Looks like the GuildMusicManager failed to start, let's try again.");
                 try {
                     GuildMusicManager gm = Karren.bot.createGuildMusicManager(guild);
@@ -49,7 +48,7 @@ public class InteractionProcessor {
                 } catch (NullPointerException e){
                     Karren.log.error("Uh oh, looks like we couldn't start the music manager on the second try! Guild " + guild.getName() + " doesn't have a music manager!");
                 }
-            }
+            }*/
             Karren.log.info("Interaction Processor for " + guild.getName() + " ready!");
 
         } else {
@@ -57,9 +56,9 @@ public class InteractionProcessor {
         }
     }
 
-    public MessageBuilder handle(MessageReceivedEvent event) {
+    public MessageBean handle(MessageCreateEvent event) {
         String returned;
-        MessageBuilder result = null;
+        MessageBean result = null;
         for(Interaction check : interactions){
             returned = check.handleMessage(event);
             if(returned!=null){

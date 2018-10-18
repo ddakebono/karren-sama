@@ -10,11 +10,11 @@
 
 package org.frostbite.karren.Database;
 
+import discord4j.core.object.entity.Guild;
+import discord4j.core.object.entity.User;
 import org.frostbite.karren.Database.Objects.*;
 import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,39 +31,39 @@ public class MySQLInterface {
     private Map<String, DbWordcount> dbWordcountCache = new HashMap<>();
     private ArrayList<DbReminder> dbReminderCache = new ArrayList<>();
 
-    public DbGuild getGuild(IGuild guild){
+    public DbGuild getGuild(Guild guild){
         if(Karren.conf.getAllowSQLRW()){
-            if(!dbGuildCache.containsKey(guild.getStringID())) {
+            if(!dbGuildCache.containsKey(guild.getId().asString())) {
                 String sql = "INSERT IGNORE Guild (GuildID, GuildOwner, GuildName, CommandPrefix, RollDifficulty, MaxVolume, RandomRange, OverrideChannel) VALUES (?, ?, ?, null, -1, 40, 0, 0)";
-                Object[] params = {guild.getStringID(), guild.getOwner().getName(), guild.getName()};
+                Object[] params = {guild.getId().asString(), guild.getOwner().block().getDisplayName(), guild.getName()};
                 Yank.execute(sql, params);
                 sql = "SELECT * FROM Guild WHERE GuildID=?";
-                Object[] params2 = {guild.getStringID()};
+                Object[] params2 = {guild.getId().asString()};
                 DbGuild dbGuild = Yank.queryBean(sql, DbGuild.class, params2);
-                dbGuildCache.put(guild.getStringID(), dbGuild);
+                dbGuildCache.put(guild.getId().asString(), dbGuild);
                 return dbGuild;
             } else {
-                return dbGuildCache.get(guild.getStringID());
+                return dbGuildCache.get(guild.getId().asString());
             }
         }
         return new DbGuild();
     }
 
-    public DbGuildUser getGuildUser(IGuild guild, IUser user){
+    public DbGuildUser getGuildUser(Guild guild, User user){
         if(Karren.conf.getAllowSQLRW()){
             if(guild!=null) {
-                if (!dbGuildUserCache.containsKey(guild.getStringID() + user.getStringID())) {
+                if (!dbGuildUserCache.containsKey(guild.getId().asString() + user.getId().asString())) {
                     DbUser dbuser = getUserData(user);
                     String sql = "INSERT IGNORE GuildUser (GuildUserID, UserID, GuildID, RollTimeout, IgnoreCommands, RollsSinceLastClear, TotalRolls, WinningRolls) VALUES (null, ?, ?, null, 0, 0, 0, 0)";
-                    Object[] params = {dbuser.getUserID(), guild.getStringID()};
+                    Object[] params = {dbuser.getUserID(), guild.getId().asString()};
                     Yank.execute(sql, params);
                     sql = "SELECT * FROM GuildUser WHERE UserID=? AND GuildID=?";
-                    Object[] params2 = {dbuser.getUserID(), guild.getStringID()};
+                    Object[] params2 = {dbuser.getUserID(), guild.getId().asString()};
                     DbGuildUser dbGuildUser = Yank.queryBean(sql, DbGuildUser.class, params2);
-                    dbGuildUserCache.put(guild.getStringID() + user.getStringID(), dbGuildUser);
+                    dbGuildUserCache.put(guild.getId().asString() + user.getId().asString(), dbGuildUser);
                     return dbGuildUser;
                 } else {
-                    return dbGuildUserCache.get(guild.getStringID() + user.getStringID());
+                    return dbGuildUserCache.get(guild.getId().asString() + user.getId().asString());
                 }
             } else {
                 DbGuildUser dbGuildUser = new DbGuildUser();
@@ -112,19 +112,19 @@ public class MySQLInterface {
         return new DbWordcount();
     }
 
-    public DbUser getUserData(IUser user){
+    public DbUser getUserData(User user){
         if(Karren.conf.getAllowSQLRW()) {
-            if(!dbUserCache.containsKey(user.getStringID())) {
+            if(!dbUserCache.containsKey(user.getId().asString())) {
                 String sql = "INSERT IGNORE User (UserID, TimeLeft, VRCUserID) VALUES (?, null, null)";
-                Object[] params = {user.getLongID()};
+                Object[] params = {user.getId().asBigInteger()};
                 Yank.execute(sql, params);
                 sql = "SELECT * FROM User WHERE UserID=?";
-                Object[] params2 = {user.getLongID()};
+                Object[] params2 = {user.getId().asBigInteger()};
                 DbUser dbUser = Yank.queryBean(sql, DbUser.class, params2);
-                dbUserCache.put(user.getStringID(), dbUser);
+                dbUserCache.put(user.getId().asString(), dbUser);
                 return dbUser;
             } else {
-                return dbUserCache.get(user.getStringID());
+                return dbUserCache.get(user.getId().asString());
             }
         }
         return new DbUser();

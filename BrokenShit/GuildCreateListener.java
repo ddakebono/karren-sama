@@ -10,14 +10,16 @@
 
 package org.frostbite.karren.listeners;
 
+import discord4j.core.event.domain.guild.GuildCreateEvent;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Karren;
-import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
 
-public class GuildCreateListener implements IListener<GuildCreateEvent> {
+import java.util.function.Consumer;
+
+public class GuildCreateListener implements Consumer<GuildCreateEvent> {
+
     @Override
-    public void handle(GuildCreateEvent guildCreateEvent) {
+    public void accept(GuildCreateEvent guildCreateEvent) {
         GuildMusicManager gm = Karren.bot.createGuildMusicManager(guildCreateEvent.getGuild());
         guildCreateEvent.getGuild().getAudioManager().setAudioProvider(gm.getAudioProvider());
         Karren.log.info("Guild " + guildCreateEvent.getGuild().getName() + " has been registered with the database, and a GuildMusicManager has been spawned.");

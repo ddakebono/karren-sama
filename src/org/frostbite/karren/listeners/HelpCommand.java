@@ -10,23 +10,23 @@
 
 package org.frostbite.karren.listeners;
 
+import discord4j.core.DiscordClient;
+import discord4j.core.event.domain.message.MessageCreateEvent;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 import org.frostbite.karren.interactions.Interaction;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.api.internal.json.objects.EmbedObject;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.util.*;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Consumer;
 
-public class HelpCommand implements IListener<MessageReceivedEvent> {
-    public void handle(MessageReceivedEvent event){
-        IDiscordClient bot = event.getClient();
+public class HelpCommand implements Consumer<MessageCreateEvent> {
+
+    @Override
+    public void accept(MessageCreateEvent event){
+        DiscordClient bot = event.getClient();
         if(event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "help")){
             ArrayList<MessageBuilder> messages = new ArrayList<>();
             String moreInfo = event.getMessage().getContent().replace(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "help", "").trim();

@@ -10,21 +10,21 @@
 
 package org.frostbite.karren.listeners;
 
+import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.presence.Activity;
+import discord4j.core.object.presence.Presence;
 import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
-import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.obj.ActivityType;
-import sx.blah.discord.handle.obj.StatusType;
 
 import java.util.Properties;
+import java.util.function.Consumer;
 
 import static org.frostbite.karren.Karren.conf;
 
-public class ConnectCommand implements IListener<ReadyEvent>{
+public class ConnectCommand implements Consumer<MessageCreateEvent> {
 
     @Override
-    public void handle(ReadyEvent event){
+    public void accept(MessageCreateEvent event) {
         //Initialize database connection pool
         Karren.log.info("Initializing Yank database pool");
         Properties dbSettings = new Properties();
@@ -42,8 +42,8 @@ public class ConnectCommand implements IListener<ReadyEvent>{
         Karren.bot.getCm().start();
 
         if(!Karren.conf.isTestMode())
-            event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "KarrenSama Ver." + Karren.botVersion);
+            event.getClient().updatePresence(Presence.online(Activity.playing("KarrenSama Ver." + Karren.botVersion)));
         else
-            event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "TEST MODE");
+            event.getClient().updatePresence(Presence.online(Activity.playing("TEST MODE - " + Karren.botVersion)));
     }
 }

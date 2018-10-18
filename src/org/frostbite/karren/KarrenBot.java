@@ -16,22 +16,19 @@ import com.google.api.services.youtube.YouTube;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import discord4j.core.DiscordClient;
+import discord4j.core.event.EventDispatcher;
 import io.github.vrchatapi.VRCUser;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.InstantReplay.InstantReplayManager;
 import org.frostbite.karren.listeners.*;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.EventDispatcher;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.RateLimitException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class KarrenBot {
-    public IDiscordClient client;
+    public DiscordClient client;
     public MySQLInterface sql = new MySQLInterface();
     public boolean extrasReady = false;
     public GuildManager ic;
@@ -44,7 +41,7 @@ public class KarrenBot {
     public ChannelMonitor cm = new ChannelMonitor();
     public YouTube yt;
 
-    public KarrenBot(IDiscordClient client){
+    public KarrenBot(DiscordClient client){
         this.client = client;
     }
 
@@ -56,7 +53,7 @@ public class KarrenBot {
         AudioSourceManagers.registerLocalSource(pm);
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
-            EventDispatcher ed = client.getDispatcher();
+            EventDispatcher ed = client.getEventDispatcher();
             ed.registerListener(new ConnectCommand());
             try {
                 client.login();
@@ -116,11 +113,11 @@ public class KarrenBot {
 
     public GuildManager getGuildManager() {return ic;}
 
-    public IDiscordClient getClient(){
+    public DiscordClient getClient(){
         return client;
     }
 
-    public void setClient(IDiscordClient client) {
+    public void setClient(DiscordClient client) {
         this.client = client;
     }
 
@@ -128,15 +125,15 @@ public class KarrenBot {
         return extrasReady;
     }
 
-    public GuildMusicManager getGuildMusicManager(IGuild guild){
+    /*public GuildMusicManager getGuildMusicManager(Guild guild){
         return gms.get(guild.getStringID());
     }
 
-    public GuildMusicManager createGuildMusicManager(IGuild guild){
+    public GuildMusicManager createGuildMusicManager(Guild guild){
         if(!gms.containsKey(guild.getStringID()))
             gms.put(guild.getStringID(), new GuildMusicManager(pm, guild));
         return gms.get(guild.getStringID());
-    }
+    }*/
 
     public AudioPlayerManager getPm() {
         return pm;
