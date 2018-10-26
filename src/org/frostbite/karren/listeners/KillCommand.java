@@ -22,15 +22,15 @@ public class KillCommand implements Consumer<MessageCreateEvent> {
 
     @Override
 	public void accept(MessageCreateEvent event){
-		String message = event.getMessage().toString();
-        String cmd = Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block()) + "kill";
-        if(message.toLowerCase().startsWith(cmd)) {
-            Optional<Member> optMember = event.getMember();
-            if (optMember.isPresent()){
-                if (optMember.get().getId().asString().equals(Karren.conf.getOperatorDiscordID())) {
-                    Karren.bot.killBot(optMember.get().getNickname().isPresent() ? optMember.get().getNickname().get() : optMember.get().getDisplayName());
-                } else {
-                    Objects.requireNonNull(event.getMessage().getChannel().block()).createMessage("Hold on a sec, this command can only be used by my operator.");
+        if(event.getMessage().getContent().isPresent()) {
+            if (event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block()) + "kill")) {
+                Optional<Member> optMember = event.getMember();
+                if (optMember.isPresent()) {
+                    if (optMember.get().getId().asString().equals(Karren.conf.getOperatorDiscordID())) {
+                        Karren.bot.killBot(optMember.get().getNickname().isPresent() ? optMember.get().getNickname().get() : optMember.get().getDisplayName());
+                    } else {
+                        Objects.requireNonNull(event.getMessage().getChannel().block()).createMessage("Hold on a sec, this command can only be used by my operator.");
+                    }
                 }
             }
         }

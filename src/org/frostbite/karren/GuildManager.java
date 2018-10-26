@@ -11,24 +11,11 @@
 package org.frostbite.karren;
 
 
-import com.google.gson.Gson;
 import discord4j.core.object.entity.Guild;
-import org.apache.commons.io.FilenameUtils;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.InteractionProcessor;
-import org.frostbite.karren.interactions.Tag;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GuildManager {
 
-    private ArrayList<Tag> tagHandlers;
+    /*private ArrayList<Tag> tagHandlers;
     private Map<String, InteractionProcessor> registeredGuilds = new HashMap<>();
     //Default processor handles private message interactions
     private InteractionProcessor defaultProcessor;
@@ -98,6 +85,7 @@ public class GuildManager {
         tagHandlers.add(new VRCUtils());
     }*/
 
+    /*
     public ArrayList<Interaction> loadInteractions(){
         ArrayList<Interaction> loadedInteractions = new ArrayList<>();
         Gson gson = new Gson();
@@ -154,7 +142,7 @@ public class GuildManager {
             }
         }
         return null;
-    }
+    }*/
 
     public String getCommandPrefix(Guild guild){
         if(guild!=null && Karren.conf.getAllowSQLRW()){
@@ -165,7 +153,7 @@ public class GuildManager {
         return Karren.conf.getCommandPrefix();
     }
 
-    public InteractionProcessor getInteractionProcessor(Guild guild){
+    /*public InteractionProcessor getInteractionProcessor(Guild guild){
         if(!lock && defaultInteractions.size()>0){
             if(guild!=null){
                 if (!registeredGuilds.containsKey(guild.getId().asString())) {
@@ -183,5 +171,5 @@ public class GuildManager {
     public ArrayList<Tag> getTagHandlers() {
         return tagHandlers;
     }
-    public Map<String, InteractionProcessor> getRegisteredGuilds() { return registeredGuilds; }
+    public Map<String, InteractionProcessor> getRegisteredGuilds() { return registeredGuilds; }*/
 }

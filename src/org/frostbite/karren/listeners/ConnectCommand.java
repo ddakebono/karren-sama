@@ -10,7 +10,7 @@
 
 package org.frostbite.karren.listeners;
 
-import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.event.domain.lifecycle.ConnectEvent;
 import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.Presence;
 import org.frostbite.karren.Karren;
@@ -21,10 +21,10 @@ import java.util.function.Consumer;
 
 import static org.frostbite.karren.Karren.conf;
 
-public class ConnectCommand implements Consumer<MessageCreateEvent> {
+public class ConnectCommand implements Consumer<ConnectEvent> {
 
     @Override
-    public void accept(MessageCreateEvent event) {
+    public void accept(ConnectEvent event) {
         //Initialize database connection pool
         Karren.log.info("Initializing Yank database pool");
         Properties dbSettings = new Properties();
@@ -40,8 +40,8 @@ public class ConnectCommand implements Consumer<MessageCreateEvent> {
         //TODO Start ChannelMonitor
 
         if(!Karren.conf.isTestMode())
-            event.getClient().updatePresence(Presence.online(Activity.playing("KarrenSama Ver." + Karren.botVersion)));
+            event.getClient().updatePresence(Presence.online(Activity.playing("KarrenSama Ver." + Karren.botVersion))).block();
         else
-            event.getClient().updatePresence(Presence.online(Activity.playing("TEST MODE - " + Karren.botVersion)));
+            event.getClient().updatePresence(Presence.online(Activity.playing("TEST MODE - " + Karren.botVersion))).block();
     }
 }

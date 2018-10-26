@@ -16,6 +16,9 @@ import com.google.api.services.youtube.YouTube;
 import discord4j.core.DiscordClient;
 import discord4j.core.event.EventDispatcher;
 import discord4j.core.event.domain.lifecycle.ConnectEvent;
+import discord4j.core.event.domain.lifecycle.DisconnectEvent;
+import discord4j.core.event.domain.lifecycle.ReconnectEvent;
+import discord4j.core.event.domain.message.MessageCreateEvent;
 import io.github.vrchatapi.VRCUser;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.listeners.*;
@@ -39,15 +42,20 @@ public class KarrenBot {
         if(Karren.conf.getConnectToDiscord()) {
             EventDispatcher ed = client.getEventDispatcher();
             ed.on(ConnectEvent.class).subscribe(new ConnectCommand());
-            ed.registerListener(new ConnectCommand());
+            ed.on(MessageCreateEvent.class).subscribe(new KillCommand());
+            ed.on(ReconnectEvent.class).subscribe(new ReconnectListener());
+            ed.on(DisconnectEvent.class).subscribe(new ShutdownListener());
+            ed.on(MessageCreateEvent.class).subscribe(new StatCommand());
+            /*ed.registerListener(new ConnectCommand());
             ed.registerListener(new HelpCommand());
             ed.registerListener(interactionListener);
             ed.registerListener(new KillCommand());
             ed.registerListener(new GuildCreateListener());
             ed.registerListener(new ShutdownListener());
             ed.registerListener(new ReconnectListener());
-            ed.registerListener(new StatCommand());
+            ed.registerListener(new StatCommand());*/
             initExtras();
+            client.login().block(); //Let's GOOOOO
         } else {
             Karren.log.info("Running in test mode, not connected to Discord.");
             initExtras();
@@ -58,7 +66,7 @@ public class KarrenBot {
 
     public void initExtras(){
         if(!extrasReady) {
-            //ic = new GuildManager();
+            ic = new GuildManager();
             //ic.loadTags();
             //ic.loadDefaultInteractions();
 
