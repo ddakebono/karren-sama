@@ -10,15 +10,19 @@
 
 package org.frostbite.karren.listeners;
 
+import discord4j.core.event.domain.message.MessageCreateEvent;
 import org.frostbite.karren.Karren;
-import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
-public class KillCommand implements IListener<MessageReceivedEvent> {
-	public void handle(MessageReceivedEvent event){
-		String message = event.getMessage().getContent();
-        String cmd = Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "kill";
+import java.util.function.Consumer;
+
+public class KillCommand implements Consumer<MessageCreateEvent> {
+
+    @Override
+	public void accept(MessageCreateEvent event){
+		String message = event.getMessage().toString();
+        String cmd = Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block()) + "kill";
         if(message.toLowerCase().startsWith(cmd)) {
+            
             if (event.getAuthor().getStringID().equals(Karren.conf.getOperatorDiscordID())) {
                 Karren.bot.killBot(event.getMessage().getAuthor().getName());
             } else {

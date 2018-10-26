@@ -17,13 +17,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.InteractionProcessor;
 import org.frostbite.karren.interactions.Tag;
-import org.frostbite.karren.interactions.Tags.*;
-import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
-import org.frostbite.karren.interactions.Tags.Guild.*;
-import org.frostbite.karren.interactions.Tags.InstantReplay.Playback;
-import org.frostbite.karren.interactions.Tags.InstantReplay.StartListening;
-import org.frostbite.karren.interactions.Tags.InstantReplay.StopListening;
-import org.frostbite.karren.interactions.Tags.VRChat.*;
 
 import java.io.File;
 import java.io.FileReader;
@@ -42,7 +35,8 @@ public class GuildManager {
     private ArrayList<Interaction> defaultInteractions;
     private boolean lock = false;
 
-    public void loadTags(){
+    //TODO Port Tags
+    /*public void loadTags(){
         tagHandlers = new ArrayList<>();
         tagHandlers.add(new Depart());
         tagHandlers.add(new Echo());
@@ -102,7 +96,7 @@ public class GuildManager {
         tagHandlers.add(new VRCWorldSearch());
         tagHandlers.add(new VRCUnlinkAccount());
         tagHandlers.add(new VRCUtils());
-    }
+    }*/
 
     public ArrayList<Interaction> loadInteractions(){
         ArrayList<Interaction> loadedInteractions = new ArrayList<>();

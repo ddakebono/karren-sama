@@ -10,19 +10,17 @@
 
 package org.frostbite.karren.listeners;
 
+import discord4j.core.event.domain.lifecycle.DisconnectEvent;
 import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
-import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.shard.DisconnectedEvent;
 
-public class ShutdownListener implements IListener<DisconnectedEvent> {
+import java.util.function.Consumer;
+
+public class ShutdownListener implements Consumer<DisconnectEvent> {
     @Override
-    public void handle(DisconnectedEvent disconnectedEvent) {
+    public void accept(DisconnectEvent event) {
         //Lets release the Yank SQL connection pool
-        if(disconnectedEvent.getReason().equals(DisconnectedEvent.Reason.LOGGED_OUT)) {
-            Karren.log.info("Releasing SQL connection pool");
-            Yank.releaseAllConnectionPools();
-        }
-        Karren.bot.getAr().setSuspend(true);
+        Karren.log.info("Releasing SQL connection pool");
+        Yank.releaseAllConnectionPools();
     }
 }

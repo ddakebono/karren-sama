@@ -24,6 +24,10 @@ import java.util.function.Consumer;
 
 public class HelpCommand implements Consumer<MessageCreateEvent> {
 
+    //
+    //TODO Port this mess
+    //
+
     @Override
     public void accept(MessageCreateEvent event){
         DiscordClient bot = event.getClient();

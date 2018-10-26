@@ -10,22 +10,18 @@
 
 package org.frostbite.karren.listeners;
 
+import discord4j.core.event.domain.lifecycle.ReconnectEvent;
+import discord4j.core.object.presence.Activity;
+import discord4j.core.object.presence.Presence;
 import org.frostbite.karren.Karren;
-import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.shard.ReconnectSuccessEvent;
-import sx.blah.discord.handle.obj.ActivityType;
-import sx.blah.discord.handle.obj.StatusType;
-import sx.blah.discord.util.DiscordException;
 
-public class ReconnectListener implements IListener<ReconnectSuccessEvent> {
+import java.util.function.Consumer;
+
+public class ReconnectListener implements Consumer<ReconnectEvent> {
     @Override
-    public void handle(ReconnectSuccessEvent reconnectSuccessEvent) {
-        Karren.bot.getAr().setSuspend(false);
+    public void accept(ReconnectEvent event) {
+        //TODO AR - Look at changes for old code
 
-        try {
-            reconnectSuccessEvent.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "KarrenSama Ver." + Karren.botVersion);
-        } catch (DiscordException e) {
-            Karren.log.error(e.getErrorMessage());
-        }
+        event.getClient().updatePresence(Presence.online(Activity.playing("KarrenSama Ver." + Karren.botVersion)));
     }
 }

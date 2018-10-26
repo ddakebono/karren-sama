@@ -35,11 +35,9 @@ public class ConnectCommand implements Consumer<MessageCreateEvent> {
         if(Karren.conf.getAllowSQLRW())
             Yank.setupDefaultConnectionPool(dbSettings);
 
-        //Start auto reminder
-        Karren.bot.getAr().start();
+        //TODO Start auto reminder
 
-        //Start ChannelMonitor
-        Karren.bot.getCm().start();
+        //TODO Start ChannelMonitor
 
         if(!Karren.conf.isTestMode())
             event.getClient().updatePresence(Presence.online(Activity.playing("KarrenSama Ver." + Karren.botVersion)));

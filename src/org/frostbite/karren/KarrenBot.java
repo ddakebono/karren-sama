@@ -13,19 +13,11 @@ package org.frostbite.karren;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import discord4j.core.DiscordClient;
 import discord4j.core.event.EventDispatcher;
 import io.github.vrchatapi.VRCUser;
-import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
-import org.frostbite.karren.InstantReplay.InstantReplayManager;
 import org.frostbite.karren.listeners.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class KarrenBot {
     public DiscordClient client;
@@ -33,12 +25,7 @@ public class KarrenBot {
     public boolean extrasReady = false;
     public GuildManager ic;
     public boolean isKill = false;
-    public Map<String, GuildMusicManager> gms;
-    public InstantReplayManager irm;
-    public AudioPlayerManager pm = new DefaultAudioPlayerManager();
-    public AutoInteraction ar = new AutoInteraction();
     public InteractionCommands interactionListener = new InteractionCommands();
-    public ChannelMonitor cm = new ChannelMonitor();
     public YouTube yt;
 
     public KarrenBot(DiscordClient client){
@@ -46,11 +33,7 @@ public class KarrenBot {
     }
 
     public void initDiscord(){
-        //Init lavaplayer
-        Karren.log.info("Starting up Lavaplayer...");
-        gms = new HashMap<>();
-        AudioSourceManagers.registerRemoteSources(pm);
-        AudioSourceManagers.registerLocalSource(pm);
+        //TODO lavaplayer
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
             EventDispatcher ed = client.getEventDispatcher();
@@ -81,7 +64,6 @@ public class KarrenBot {
             ic = new GuildManager();
             ic.loadTags();
             ic.loadDefaultInteractions();
-            irm = new InstantReplayManager();
 
             //Setup youtube
             yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
@@ -93,11 +75,11 @@ public class KarrenBot {
         }
     }
 
-    public void killBot(String killer){
+    /*public void killBot(String killer){
         Karren.watchdog.cleanupBot();
         Karren.log.info("Bot has been killed by " + killer);
         System.exit(0);
-    }
+    }*/
 
     /*
     GETTERS
@@ -135,19 +117,23 @@ public class KarrenBot {
         return gms.get(guild.getStringID());
     }*/
 
-    public AudioPlayerManager getPm() {
+    //TODO Audio player
+    /*public AudioPlayerManager getPm() {
         return pm;
-    }
+    }*/
 
-    public InstantReplayManager getIrm() {
+    //TODO Instant Replay
+    /*public InstantReplayManager getIrm() {
         return irm;
-    }
+    }*/
 
-    public AutoInteraction getAr() {
+    //TODO Auto interaction
+    /*public AutoInteraction getAr() {
         return ar;
-    }
+    }*/
 
-    public ChannelMonitor getCm() {
+    //TODO Channel Monitor
+    /*public ChannelMonitor getCm() {
         return cm;
-    }
+    }*/
 }

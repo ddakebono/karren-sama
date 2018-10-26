@@ -10,6 +10,8 @@
 
 package org.frostbite.karren;
 
+import discord4j.core.DiscordClient;
+import discord4j.core.DiscordClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +22,6 @@ import java.util.Properties;
 public class Karren{
 
     public static KarrenBot bot;
-    public static Watchdog watchdog;
     public static Logger log;
     public static JsonConfig conf;
     public static final Properties jarProps = new Properties();
@@ -54,10 +55,16 @@ public class Karren{
 
         System.setProperty("http.agent", "KarrenSama/" + botVersion);
 
-        //Prepare the watchdog
-        watchdog = new Watchdog(60);
+        //Build our discord client
+        DiscordClient client;
 
-        //Start watchdog
-        watchdog.start();
+        //client = new ClientBuilder().withToken(Karren.conf.getDiscordToken()).withRecommendedShardCount().build();
+        client = new DiscordClientBuilder(Karren.conf.getDiscordToken()).build();
+
+        //Setup the objects we need.
+        Karren.bot = new KarrenBot(client);
+
+        //Pass execution to main bot class.
+        Karren.bot.initDiscord();
 	}
 }
