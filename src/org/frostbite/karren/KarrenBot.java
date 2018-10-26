@@ -15,9 +15,11 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import discord4j.core.DiscordClient;
 import discord4j.core.event.EventDispatcher;
+import discord4j.core.event.domain.lifecycle.ConnectEvent;
 import io.github.vrchatapi.VRCUser;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.listeners.*;
+import org.knowm.yank.Yank;
 
 public class KarrenBot {
     public DiscordClient client;
@@ -25,7 +27,6 @@ public class KarrenBot {
     public boolean extrasReady = false;
     public GuildManager ic;
     public boolean isKill = false;
-    public InteractionCommands interactionListener = new InteractionCommands();
     public YouTube yt;
 
     public KarrenBot(DiscordClient client){
@@ -37,12 +38,8 @@ public class KarrenBot {
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
             EventDispatcher ed = client.getEventDispatcher();
+            ed.on(ConnectEvent.class).subscribe(new ConnectCommand());
             ed.registerListener(new ConnectCommand());
-            try {
-                client.login();
-            } catch (DiscordException | RateLimitException e) {
-                e.printStackTrace();
-            }
             ed.registerListener(new HelpCommand());
             ed.registerListener(interactionListener);
             ed.registerListener(new KillCommand());
@@ -61,9 +58,9 @@ public class KarrenBot {
 
     public void initExtras(){
         if(!extrasReady) {
-            ic = new GuildManager();
-            ic.loadTags();
-            ic.loadDefaultInteractions();
+            //ic = new GuildManager();
+            //ic.loadTags();
+            //ic.loadDefaultInteractions();
 
             //Setup youtube
             yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
@@ -75,11 +72,17 @@ public class KarrenBot {
         }
     }
 
-    /*public void killBot(String killer){
-        Karren.watchdog.cleanupBot();
+    public void killBot(String killer){
+        Karren.bot.isKill = true;
+        //Unhook and shutdown interaction system
+        Yank.releaseAllConnectionPools();
+        //Interactions reset to default state and unregistered
+        client.logout();
+        Karren.bot = null;
+        System.gc();
         Karren.log.info("Bot has been killed by " + killer);
         System.exit(0);
-    }*/
+    }
 
     /*
     GETTERS

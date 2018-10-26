@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,41 +10,41 @@
 
 package org.frostbite.karren.listeners;
 
+import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.spec.MessageCreateSpec;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
-import sx.blah.discord.api.events.IListener;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.util.MessageBuilder;
 
-public class StatCommand implements IListener<MessageReceivedEvent> {
+import java.util.Objects;
+
+public class StatCommand implements Command {
+
     @Override
-    public void handle(MessageReceivedEvent event) {
-        if(event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "stats")){
-            MessageBuilder msg = new MessageBuilder(event.getClient());
-            msg.withChannel(event.getChannel());
-            msg.withContent("**Karren-sama Stats**");
-            msg.appendContent("```Bot Uptime: " + KarrenUtil.calcAway(Karren.startTime));
-            msg.appendContent("\n-------------Build Info-------------");
-            msg.appendContent("\nBot Version: " + Karren.botVersion);
-            msg.appendContent("\nCommit ID: " + Karren.jarProps.getProperty("git.commit.id"));
-            msg.appendContent("\nCommit Time: " + Karren.jarProps.getProperty("git.commit.time"));
-            msg.appendContent("\nCommit Message: " + Karren.jarProps.getProperty("git.commit.message.full"));
-            msg.appendContent("\nBuild Branch: " + Karren.jarProps.getProperty("git.branch"));
-            msg.appendContent("\n-------------Bot Status-------------");
-            msg.appendContent("\nConnected Guilds: " + Karren.bot.getClient().getGuilds().size());
-            msg.appendContent("\nConnected Shards: " + Karren.bot.getClient().getShardCount());
-            msg.appendContent("\nConnected Voice Channels: " + Karren.bot.getClient().getConnectedVoiceChannels().size());
-            msg.appendContent("\nInteraction System Tags: " + Karren.bot.getGuildManager().getTagHandlers().size());
-            msg.appendContent("\nTotal Users Visable: " + Karren.bot.getClient().getUsers().size());
-            msg.appendContent("\nWatchdog Interventions: " + Karren.watchdog.watchdogInterventions);
-            msg.appendContent("\n-------------Cache Status-------------");
-            msg.appendContent("\nCached Reminders: " + Karren.bot.getSql().getDbReminderCache().size());
-            msg.appendContent("\nCached Users: " + Karren.bot.getSql().getDbUserCache().size());
-            msg.appendContent("\nCached Guild Users: " + Karren.bot.getSql().getDbGuildUserCache().size());
-            msg.appendContent("\nCached Guilds: " + Karren.bot.getSql().getDbGuildCache().size());
-            msg.appendContent("\nCached Word Counts: " + Karren.bot.getSql().getDbWordcountCache().size());
-            msg.appendContent("```");
-            msg.send();
+    public void accept(MessageCreateEvent event) {
+        if(event.getMessage().toString().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block()) + "stats")){
+            StringBuilder msg = new StringBuilder("**Karren-sama Stats**");
+            msg.append("```Bot Uptime: ").append(KarrenUtil.calcAway(Karren.startTime));
+            msg.append("\n-------------Build Info-------------");
+            msg.append("\nBot Version: ").append(Karren.botVersion);
+            msg.append("\nCommit ID: ").append(Karren.jarProps.getProperty("git.commit.id"));
+            msg.append("\nCommit Time: ").append(Karren.jarProps.getProperty("git.commit.time"));
+            msg.append("\nCommit Message: ").append(Karren.jarProps.getProperty("git.commit.message.full"));
+            msg.append("\nBuild Branch: ").append(Karren.jarProps.getProperty("git.branch"));
+            msg.append("\n-------------Bot Status-------------");
+            msg.append("\nConnected Guilds: ").append(Karren.bot.getClient().getGuilds().collectList().block().size());
+            msg.append("\nConnected Shards: Borked");
+            msg.append("\nConnected Voice Channels: Borked");
+            msg.append("\nInteraction System Tags: ").append(Karren.bot.getGuildManager().getTagHandlers().size());
+            msg.append("\nTotal Users Visable: Borked");
+            msg.append("\n-------------Cache Status-------------");
+            msg.append("\nCached Reminders: ").append(Karren.bot.getSql().getDbReminderCache().size());
+            msg.append("\nCached Users: ").append(Karren.bot.getSql().getDbUserCache().size());
+            msg.append("\nCached Guild Users: ").append(Karren.bot.getSql().getDbGuildUserCache().size());
+            msg.append("\nCached Guilds: ").append(Karren.bot.getSql().getDbGuildCache().size());
+            msg.append("\nCached Word Counts: ").append(Karren.bot.getSql().getDbWordcountCache().size());
+            msg.append("```");
+            MessageCreateSpec message = new MessageCreateSpec().setContent(msg.toString());
+            Objects.requireNonNull(event.getMessage().getChannel().block()).createMessage(message).block();
         }
     }
 }
