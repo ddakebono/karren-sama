@@ -8,7 +8,7 @@
  *
  */
 
-package org.frostbite.karren.interactions;
+package org.frostbite.karren.Interactions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,13 +16,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.data.stored.embed.EmbedBean;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Member;
+import discord4j.core.spec.EmbedCreateSpec;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.EmbedBuilder;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -58,7 +56,7 @@ public class Interaction {
     private File interactionFile;
     private ArrayList<Tag> tagCache = new ArrayList<>();
     private boolean noClearInteraction = false;
-    private EmbedBean embed;
+    private EmbedCreateSpec embed;
     @Expose private ArrayList<InteractionParameter> parameters;
     @Expose private ArrayList<InteractionEmbedFields> embedFields;
     @Expose private String friendlyName;
@@ -334,11 +332,11 @@ public class Interaction {
         return embed!=null;
     }
 
-    public EmbedBuilder getEmbed(){
+    public EmbedCreateSpec getEmbed(){
         return embed;
     }
 
-    public void setEmbed(EmbedBuilder embed){
+    public void setEmbed(EmbedCreateSpec embed){
         this.embed = embed;
     }
 
@@ -354,7 +352,7 @@ public class Interaction {
         return confidenceChecked;
     }
 
-    public List<IUser> getMentionedUsers() {
+    public List<Member> getMentionedUsers() {
         return mentionedUsers;
     }
 

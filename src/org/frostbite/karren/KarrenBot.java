@@ -10,8 +10,6 @@
 
 package org.frostbite.karren;
 
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import discord4j.core.DiscordClient;
 import discord4j.core.event.EventDispatcher;
@@ -19,7 +17,6 @@ import discord4j.core.event.domain.lifecycle.ConnectEvent;
 import discord4j.core.event.domain.lifecycle.DisconnectEvent;
 import discord4j.core.event.domain.lifecycle.ReconnectEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
-import io.github.vrchatapi.VRCUser;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.listeners.*;
 import org.knowm.yank.Yank;
@@ -71,10 +68,10 @@ public class KarrenBot {
             //ic.loadDefaultInteractions();
 
             //Setup youtube
-            yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
+            //yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
 
             //Log into VRCAPI and get auth token
-            VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
+            //VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
 
             extrasReady = true;
         }

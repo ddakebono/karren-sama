@@ -11,6 +11,7 @@
 package org.frostbite.karren.listeners;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.entity.Guild;
 import discord4j.core.spec.MessageCreateSpec;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
@@ -23,7 +24,8 @@ public class StatCommand implements Consumer<MessageCreateEvent> {
     @Override
     public void accept(MessageCreateEvent event) {
         if(event.getMessage().getContent().isPresent()) {
-            if (event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block()) + "stats")) {
+            Guild guild = event.getGuild().block();
+            if (event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild) + "stats")) {
                 StringBuilder msg = new StringBuilder("**Karren-sama Stats**");
                 msg.append("```Bot Uptime: ").append(KarrenUtil.calcAway(Karren.startTime));
                 msg.append("\n-------------Build Info-------------");

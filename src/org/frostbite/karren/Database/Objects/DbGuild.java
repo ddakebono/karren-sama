@@ -22,10 +22,11 @@ public class DbGuild {
     private int randomRange = 0;
     private int maxVolume = 40;
     private long overrideChannel = 0;
+    private String pointName = "";
 
     public DbGuild(){}
 
-    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, int maxVolume, int randomRange, long overrideChannel) {
+    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, int maxVolume, int randomRange, long overrideChannel, String pointName) {
         this.guildID = guildID;
         this.guildName = guildName;
         this.guildOwner = guildOwner;
@@ -33,6 +34,7 @@ public class DbGuild {
         this.maxVolume = maxVolume;
         this.randomRange = randomRange;
         this.overrideChannel = overrideChannel;
+        this.pointName = pointName;
     }
 
     public String getGuildID() {
@@ -99,11 +101,19 @@ public class DbGuild {
         this.overrideChannel = overrideChannel;
     }
 
+    public String getPointName() {
+        return pointName;
+    }
+
+    public void setPointName(String pointName) {
+        this.pointName = pointName;
+    }
+
     //Update db entry
     public void update(){
         if(Karren.conf.getAllowSQLRW()) {
-            String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?  WHERE GuildID=?";
-            Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, guildID});
+            String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?, PointName=?  WHERE GuildID=?";
+            Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, pointName, guildID});
         }
     }
 }

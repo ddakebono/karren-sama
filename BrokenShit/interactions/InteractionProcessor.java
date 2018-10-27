@@ -64,7 +64,7 @@ public class InteractionProcessor {
             if(returned!=null){
                 check.setLock(true);
                 if(!check.getTagsToString().contains("nodisplay"))
-                    Karren.log.debug("Interaction match for " + check.getIdentifier() + ", handling templates! (Confidence: " + check.getConfidenceChecked() + ")");
+                    Karren.log.info("Interaction match for " + check.getIdentifier() + ", handling templates! (Confidence: " + check.getConfidenceChecked() + ")");
                 if(event.getGuild()!=null && Karren.bot.getSql().getGuild(event.getGuild()).getOverrideChannel()!=0)
                     result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getGuild().getChannelByID(Karren.bot.getSql().getGuild(event.getGuild()).getOverrideChannel()));
                 else
@@ -112,7 +112,7 @@ public class InteractionProcessor {
             }
         }
         return result;
-    }
+    }//https://discordapp.com/oauth2/authorize?&client_id=397506837861105696&scope=bot&permissions=506690640
 
     public ArrayList<Interaction> getInteractions() {
         return interactions;

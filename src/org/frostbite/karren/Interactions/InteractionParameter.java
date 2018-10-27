@@ -8,7 +8,7 @@
  *
  */
 
-package org.frostbite.karren.interactions;
+package org.frostbite.karren.Interactions;
 
 import com.google.gson.annotations.Expose;
 
