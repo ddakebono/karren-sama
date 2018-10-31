@@ -18,9 +18,9 @@ import com.google.gson.annotations.Expose;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Member;
+import discord4j.core.object.entity.Role;
 import discord4j.core.spec.EmbedCreateSpec;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.KarrenUtil;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -50,7 +50,6 @@ public class Interaction {
     private int usageCount = -1;
     private ArrayList<String> allowedUsers = new ArrayList<>();
     private boolean stopProcessing = false;
-    private int confidenceChecked = 0;
     private List<Member> mentionedUsers = new LinkedList<>();
     private boolean lock = false;
     private File interactionFile;
@@ -116,42 +115,39 @@ public class Interaction {
         this.voiceFiles = voiceFiles;
         this.voiceVolume = voiceVolume;
     }
-    /*
-    handleMessage checks which interaction type the message is and runs the respective functions.
-     */
-    String handleMessage(MessageCreateEvent event){
-        String result = null;
-        if(!lock) {
-            cleanupInteraction();
-            confidenceChecked = 0;
-            try {
-                if (enabled) {
-                    if (isAllowedUser(event.getMember().get())) {
-                        if (event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block())) && Arrays.asList(tags).contains("prefixed")) {
-                            //Get only word follow prefix
-                            Pattern prefixedPattern = Pattern.compile("\\s+");
-                            String[] regex = prefixedPattern.split(event.getMessage().getContent().get().replace(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block()), ""));
-                            if (regex.length > 0) {
-                                confidenceChecked = getConfidence(regex[0], true, event.getGuild().block());
-                            }
-                        }
-                        if (!event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block())) && !Arrays.asList(tags).contains("prefixed")) {
-                            confidenceChecked = getConfidence(event.getMessage().getContent().get(), false, event.getGuild().block());
-                        }
-                        if (confidenceChecked >= this.confidence)
-                            result = getRandomTemplate("normal").getTemplate();
-                        if (result != null && permissionLevel != null && permissionLevel.length() > 0 && !KarrenUtil.hasRole(event.getMember().get(), event.getGuild().block(), permissionLevel)) {
-                            result = getRandomTemplate("permission").getTemplate();
-                            isPermBad = true;
+
+    public boolean checkTriggers(MessageCreateEvent event){
+        int confidenceChecked = 0;
+        if(event.getMember().isPresent() && isAllowedUser(event.getMember().get()) && enabled && event.getMessage().getContent().isPresent()){
+            Guild guild = event.getGuild().block();
+                if(Arrays.asList(tags).contains("prefixed")){
+                    if(event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild))){
+                        Pattern prefixedPattern = Pattern.compile("\\s+");
+                        String[] regex = prefixedPattern.split(event.getMessage().getContent().get().replace(Karren.bot.getGuildManager().getCommandPrefix(guild), ""));
+                        if (regex.length > 0) {
+                            confidenceChecked = getConfidence(regex[0], true, guild);
                         }
                     }
+                } else {
+                    //Non prefixed interaction
+                    confidenceChecked = getConfidence(event.getMessage().getContent().get(), false, guild);
                 }
-            } catch (NullPointerException e) {
-                Karren.log.error("An error has occured with interaction " + this.identifier);
-                e.printStackTrace();
-            }
         }
-        return result;
+        return confidenceChecked > confidence;
+    }
+
+    public String getInitialTemplate(MessageCreateEvent event){
+        if(permissionLevel!=null && !permissionLevel.isEmpty()){
+            if(!event.getMember().isPresent())
+                return null;
+            //get roles
+            List<Role> rolesMatch = event.getMember().get().getRoles().filter(x -> x.getName().equalsIgnoreCase(permissionLevel)).collectList().block();
+            if(rolesMatch!=null && rolesMatch.size()>0)
+                return getRandomTemplate("normal").getTemplate();
+            else
+                return getRandomTemplate("permission").getTemplate();
+        }
+        return getRandomTemplate("normal").getTemplate();
     }
 
     private void cleanupInteraction(){
@@ -172,7 +168,6 @@ public class Interaction {
             if (tagCache == null)
                 tagCache = new ArrayList<>();
             tagCache.clear();
-            confidenceChecked = 0;
             if (Arrays.asList(tags).contains("parameter"))
                 parameter = null;
         }
@@ -346,10 +341,6 @@ public class Interaction {
 
     public void stopProcessing() {
         this.stopProcessing = true;
-    }
-
-    public int getConfidenceChecked() {
-        return confidenceChecked;
     }
 
     public List<Member> getMentionedUsers() {

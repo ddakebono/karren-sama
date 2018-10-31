@@ -11,16 +11,28 @@
 package org.frostbite.karren;
 
 
+import com.google.gson.Gson;
 import discord4j.core.object.entity.Guild;
+import org.apache.commons.io.FilenameUtils;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionProcessor;
+import org.frostbite.karren.Interactions.Tag;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GuildManager {
 
-    /*private ArrayList<Tag> tagHandlers;
     private Map<String, InteractionProcessor> registeredGuilds = new HashMap<>();
     //Default processor handles private message interactions
     private InteractionProcessor defaultProcessor;
     private ArrayList<Interaction> defaultInteractions;
     private boolean lock = false;
+
 
     //TODO Port Tags
     /*public void loadTags(){
@@ -85,14 +97,13 @@ public class GuildManager {
         tagHandlers.add(new VRCUtils());
     }*/
 
-    /*
+
     public ArrayList<Interaction> loadInteractions(){
         ArrayList<Interaction> loadedInteractions = new ArrayList<>();
         Gson gson = new Gson();
         File intDir = new File("conf/Interactions");
         if(intDir.isDirectory()){
             //Setup watchdog interaction
-            loadedInteractions.add(new Interaction("WatchdogSpecial", new String[]{"watchdog", "nodisplay", "prefixed"}, "", new String[]{"watchdogtestevent"}, 1, true, ""));
             File[] intFiles = KarrenUtil.getFilesInFolders(intDir);
             for(File file : intFiles){
                 try {
@@ -132,17 +143,10 @@ public class GuildManager {
     }
 
     public Tag getTag(String name){
-        Tag tag = tagHandlers.stream().filter(x -> x.getTagName().equalsIgnoreCase(name)).findFirst().orElse(null);
-        if(tag!=null) {
-            try {
-                //Create a new instance of a tag for each operation
-                return tag.getClass().getDeclaredConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }*/
+        return KarrenUtil.instantiate("org.frostbite.karren.Interactions.Tags." + name, Tag.class);
+    }
+
+
 
     public String getCommandPrefix(Guild guild){
         if(guild!=null && Karren.conf.getAllowSQLRW()){
@@ -153,7 +157,7 @@ public class GuildManager {
         return Karren.conf.getCommandPrefix();
     }
 
-    /*public InteractionProcessor getInteractionProcessor(Guild guild){
+    public InteractionProcessor getInteractionProcessor(Guild guild){
         if(!lock && defaultInteractions.size()>0){
             if(guild!=null){
                 if (!registeredGuilds.containsKey(guild.getId().asString())) {
@@ -168,8 +172,5 @@ public class GuildManager {
         return null;
     }
 
-    public ArrayList<Tag> getTagHandlers() {
-        return tagHandlers;
-    }
-    public Map<String, InteractionProcessor> getRegisteredGuilds() { return registeredGuilds; }*/
+    public Map<String, InteractionProcessor> getRegisteredGuilds() { return registeredGuilds; }
 }

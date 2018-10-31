@@ -38,6 +38,16 @@ public class KarrenUtil {
             }
     };
 
+    public static <T> T instantiate(final String className, final Class<T> type){
+        try{
+            return type.cast(Class.forName(className).newInstance());
+        } catch(InstantiationException
+                | IllegalAccessException
+                | ClassNotFoundException e){
+            throw new IllegalStateException(e);
+        }
+    }
+
     @SuppressWarnings("ConstantConditions")
     public static File[] getFilesInFolders(File directory){
         ArrayList<File> files = new ArrayList<>();

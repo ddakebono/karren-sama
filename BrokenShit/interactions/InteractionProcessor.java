@@ -63,8 +63,7 @@ public class InteractionProcessor {
             returned = check.handleMessage(event);
             if(returned!=null){
                 check.setLock(true);
-                if(!check.getTagsToString().contains("nodisplay"))
-                    Karren.log.info("Interaction match for " + check.getIdentifier() + ", handling templates! (Confidence: " + check.getConfidenceChecked() + ")");
+                Karren.log.info("Interaction match for " + check.getIdentifier() + ", handling templates! (Confidence: " + check.getConfidenceChecked() + ")");
                 if(event.getGuild()!=null && Karren.bot.getSql().getGuild(event.getGuild()).getOverrideChannel()!=0)
                     result = new MessageBuilder(Karren.bot.getClient()).withChannel(event.getGuild().getChannelByID(Karren.bot.getSql().getGuild(event.getGuild()).getOverrideChannel()));
                 else
