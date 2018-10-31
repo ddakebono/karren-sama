@@ -143,7 +143,8 @@ public class GuildManager {
     }
 
     public Tag getTag(String name){
-        return KarrenUtil.instantiate("org.frostbite.karren.Interactions.Tags." + name, Tag.class);
+        Object obj = KarrenUtil.instantiate("org.frostbite.karren.Interactions.Tags." + name, Object.class);
+        return (Tag)obj;
     }
 
 

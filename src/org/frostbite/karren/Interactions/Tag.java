@@ -12,10 +12,9 @@ package org.frostbite.karren.Interactions;
 
 import discord4j.core.object.util.Permission;
 import discord4j.core.object.util.PermissionSet;
-import discord4j.core.spec.MessageCreateSpec;
 
 public class Tag {
-    public String handleTemplate(String msg, Interaction interaction, MessageCreateSpec response){
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result){
         return msg;
     }
     public String getTagName(){

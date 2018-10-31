@@ -35,6 +35,7 @@ public class InteractionProcessor {
         interactions = new ArrayList<>();
         interactions.addAll(defaultInteractions);
         if(guild!=null) {
+            //TODO add audio stuff
             /*if(Karren.bot.getGuildMusicManager(guild) == null || !(guild.getAudioManager().getAudioProvider() instanceof AudioProvider)){
                 Karren.log.info("Looks like the GuildMusicManager failed to start, let's try again.");
                 try {
@@ -52,27 +53,47 @@ public class InteractionProcessor {
         }
     }
 
-    public MessageCreateSpec run(MessageCreateEvent event){
-        List<Interaction> match = getAllInteractionMatches(event);
+    public InteractionResult run(MessageCreateEvent event){
+        List<Interaction> matches = getAllInteractionMatches(event);
+        InteractionResult result = null;
+        if(matches.size()>0){
+            for(Interaction match : matches){
+                MessageCreateSpec message = new MessageCreateSpec();
+                result = new InteractionResult(message, event, false, null);
+                preloadTags(match);
+                processTags(match, result);
+            }
+        }
+        return result;
+    }
 
-        return null;
+    private void preloadTags(Interaction interaction){
+        for(String tag : interaction.getTags()){
+            if(!(tag.equalsIgnoreCase("nodisplay") || tag.equalsIgnoreCase("feelinglucky") || tag.equalsIgnoreCase("prefixed") || tag.equalsIgnoreCase("bot")))
+                interaction.getTagCache().add(Karren.bot.getGuildManager().getTag(tag));
+        }
     }
 
     private List<Interaction> getAllInteractionMatches(MessageCreateEvent event){
         List<Interaction> matches = new LinkedList<>();
         for(Interaction check : interactions){
-            if(check.checkTriggers(event))
+            if(check.checkTriggers(event)) {
                 matches.add(check);
+                if(!check.isSpecialInteraction())
+                    break;
+                if(check.interactionUsed())
+                    interactions.remove(check);
+            }
 
         }
         return matches;
     }
 
-    public void preloadAllTags(String[] tags, Interaction interaction){
-
-    }
-
-    public MessageCreateSpec processTags(Interaction interaction){
-        return null;
+    public void processTags(Interaction interaction, InteractionResult result){
+        String messageStr = interaction.getInitialTemplate(result.getEvent());
+        for(Tag tag : interaction.getTagCache()){
+            messageStr = tag.handleTemplate(messageStr, interaction, result);
+        }
+        result.getMessage().setContent(messageStr);
     }
 }

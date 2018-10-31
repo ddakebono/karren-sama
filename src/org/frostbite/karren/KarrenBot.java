@@ -43,6 +43,7 @@ public class KarrenBot {
             ed.on(ReconnectEvent.class).subscribe(new ReconnectListener());
             ed.on(DisconnectEvent.class).subscribe(new ShutdownListener());
             ed.on(MessageCreateEvent.class).subscribe(new StatCommand());
+            ed.on(MessageCreateEvent.class).subscribe(new InteractionCommand());
             /*ed.registerListener(new ConnectCommand());
             ed.registerListener(new HelpCommand());
             ed.registerListener(interactionListener);
@@ -64,8 +65,7 @@ public class KarrenBot {
     public void initExtras(){
         if(!extrasReady) {
             ic = new GuildManager();
-            //ic.loadTags();
-            //ic.loadDefaultInteractions();
+            ic.loadDefaultInteractions();
 
             //Setup youtube
             //yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();

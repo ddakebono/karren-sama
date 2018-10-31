@@ -50,7 +50,7 @@ public class Interaction {
     private int usageCount = -1;
     private ArrayList<String> allowedUsers = new ArrayList<>();
     private boolean stopProcessing = false;
-    private List<Member> mentionedUsers = new LinkedList<>();
+    private transient List<Member> mentionedUsers = new LinkedList<>();
     private boolean lock = false;
     private File interactionFile;
     private ArrayList<Tag> tagCache = new ArrayList<>();
@@ -133,7 +133,7 @@ public class Interaction {
                     confidenceChecked = getConfidence(event.getMessage().getContent().get(), false, guild);
                 }
         }
-        return confidenceChecked > confidence;
+        return confidenceChecked >= confidence;
     }
 
     public String getInitialTemplate(MessageCreateEvent event){

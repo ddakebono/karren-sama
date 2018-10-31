@@ -11,6 +11,7 @@
 package org.frostbite.karren.Database;
 
 import discord4j.core.object.entity.Guild;
+import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.User;
 import org.frostbite.karren.Database.Objects.*;
 import org.frostbite.karren.Karren;
@@ -49,7 +50,7 @@ public class MySQLInterface {
         return new DbGuild();
     }
 
-    public DbGuildUser getGuildUser(Guild guild, User user){
+    public DbGuildUser getGuildUser(Guild guild, Member user){
         if(Karren.conf.getAllowSQLRW()){
             if(guild!=null) {
                 if (!dbGuildUserCache.containsKey(guild.getId().asString() + user.getId().asString())) {
