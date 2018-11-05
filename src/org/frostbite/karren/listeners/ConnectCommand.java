@@ -41,9 +41,13 @@ public class ConnectCommand implements IListener<ReadyEvent>{
         //Start ChannelMonitor
         Karren.bot.getCm().start();
 
-        if(!Karren.conf.isTestMode())
-            event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "KarrenSama Ver." + Karren.botVersion);
-        else
-            event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "TEST MODE");
+        if(!Karren.conf.isTestMode()) {
+            if(Karren.conf.getStatusOverride().isEmpty())
+                event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "KarrenSama Ver." + Karren.botVersion);
+            else
+                event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, Karren.conf.getStatusOverride());
+        } else {
+            event.getClient().changePresence(StatusType.ONLINE, ActivityType.PLAYING, "TEST MODE - " + Karren.botVersion);
+        }
     }
 }
