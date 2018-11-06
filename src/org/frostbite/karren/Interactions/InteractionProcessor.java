@@ -114,4 +114,8 @@ public class InteractionProcessor {
             result.getMessage().setContent(messageStr);
         }
     }
+
+    public ArrayList<Interaction> getInteractions() {
+        return interactions;
+    }
 }

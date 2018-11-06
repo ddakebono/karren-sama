@@ -8,7 +8,7 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags.Guild;
+package org.frostbite.karren.Interactions.Tags.Guild;
 
 import org.frostbite.karren.Database.Objects.DbGuild;
 import org.frostbite.karren.Karren;
@@ -20,26 +20,24 @@ import sx.blah.discord.util.MessageBuilder;
 
 import java.util.EnumSet;
 
-public class SetMaxVolume extends Tag {
+public class SetPrefix extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(interaction.hasParameter()) {
-            int volume = Integer.parseInt(interaction.getParameter().trim());
-            if (volume >= 0 && volume <= 100) {
-                DbGuild guild = Karren.bot.getSql().getGuild(event.getGuild());
-                guild.setMaxVolume(volume);
-                guild.update();
-                msg = interaction.replaceMsg(msg, "%volume", Integer.toString(volume));
-            } else {
-                msg = interaction.getRandomTemplate("noparam").getTemplate();
-            }
+        if(interaction.hasParameter()){
+            String param = interaction.getParameter();
+            DbGuild dbGuild = Karren.bot.getSql().getGuild(event.getGuild());
+            dbGuild.setCommandPrefix(param.trim());
+            dbGuild.update();
+            msg = interaction.replaceMsg(msg,"%prefix", param);
+        } else {
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
     }
 
     @Override
     public String getTagName() {
-        return "setmaxvolume";
+        return "setprefix";
     }
 
     @Override

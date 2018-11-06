@@ -8,8 +8,10 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags.Guild;
+package org.frostbite.karren.Interactions.Tags.Guild;
 
+import org.frostbite.karren.Database.Objects.DbGuild;
+import org.frostbite.karren.Karren;
 import org.frostbite.karren.interactions.Interaction;
 import org.frostbite.karren.interactions.Tag;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -18,16 +20,26 @@ import sx.blah.discord.util.MessageBuilder;
 
 import java.util.EnumSet;
 
-public class GetGuildName extends Tag {
+public class SetMaxVolume extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        msg = interaction.replaceMsg(msg, "%guild", event.getGuild().getName());
+        if(interaction.hasParameter()) {
+            int volume = Integer.parseInt(interaction.getParameter().trim());
+            if (volume >= 0 && volume <= 100) {
+                DbGuild guild = Karren.bot.getSql().getGuild(event.getGuild());
+                guild.setMaxVolume(volume);
+                guild.update();
+                msg = interaction.replaceMsg(msg, "%volume", Integer.toString(volume));
+            } else {
+                msg = interaction.getRandomTemplate("noparam").getTemplate();
+            }
+        }
         return msg;
     }
 
     @Override
     public String getTagName() {
-        return "guildname";
+        return "setmaxvolume";
     }
 
     @Override

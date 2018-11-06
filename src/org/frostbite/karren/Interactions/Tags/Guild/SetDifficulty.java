@@ -8,21 +8,19 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags.Guild;
+package org.frostbite.karren.Interactions.Tags.Guild;
 
+import discord4j.core.object.entity.Guild;
 import org.frostbite.karren.Database.Objects.DbGuild;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionResult;
+import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
-
-import java.util.EnumSet;
 
 public class SetDifficulty extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
+        Guild guild = result.getEvent().getGuild().block();
         if(interaction.hasParameter()){
             int difficulty = -1;
             try {
@@ -31,7 +29,7 @@ public class SetDifficulty extends Tag {
                 msg = interaction.getRandomTemplate("fail").getTemplate();
             }
             if(difficulty>=0 && difficulty<=100){
-                DbGuild dbGuild = Karren.bot.getSql().getGuild(event.getGuild());
+                DbGuild dbGuild = Karren.bot.getSql().getGuild(guild);
                 dbGuild.setRollDifficulty(difficulty);
                 dbGuild.update();
                 msg = interaction.replaceMsg(msg,"%newdiff", String.valueOf(difficulty));
@@ -47,8 +45,4 @@ public class SetDifficulty extends Tag {
         return "setdifficulty";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
-    }
 }
