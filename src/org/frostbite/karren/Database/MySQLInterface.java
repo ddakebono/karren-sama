@@ -17,10 +17,7 @@ import org.frostbite.karren.Database.Objects.*;
 import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MySQLInterface {
@@ -40,9 +37,14 @@ public class MySQLInterface {
                 Yank.execute(sql, params);
                 sql = "SELECT * FROM Guild WHERE GuildID=?";
                 Object[] params2 = {guild.getId().asString()};
-                DbGuild dbGuild = Yank.queryBean(sql, DbGuild.class, params2);
-                dbGuildCache.put(guild.getId().asString(), dbGuild);
-                return dbGuild;
+                try {
+                    DbGuild dbGuild = Yank.queryBean(sql, DbGuild.class, params2);
+                    dbGuildCache.put(guild.getId().asString(), dbGuild);
+                    return dbGuild;
+                } catch (NoSuchElementException e){
+                    e.printStackTrace();
+                    Karren.log.error("Guild ID " + guild.getId().asString());
+                }
             } else {
                 return dbGuildCache.get(guild.getId().asString());
             }
@@ -121,9 +123,14 @@ public class MySQLInterface {
                 Yank.execute(sql, params);
                 sql = "SELECT * FROM User WHERE UserID=?";
                 Object[] params2 = {user.getId().asBigInteger()};
-                DbUser dbUser = Yank.queryBean(sql, DbUser.class, params2);
-                dbUserCache.put(user.getId().asString(), dbUser);
-                return dbUser;
+                try {
+                    DbUser dbUser = Yank.queryBean(sql, DbUser.class, params2);
+                    dbUserCache.put(user.getId().asString(), dbUser);
+                    return dbUser;
+                } catch (NoSuchElementException e){
+                e.printStackTrace();
+                Karren.log.error("User ID " + user.getId().asString());
+            }
             } else {
                 return dbUserCache.get(user.getId().asString());
             }

@@ -58,19 +58,30 @@ public class InteractionProcessor {
         InteractionResult result = null;
         if(matches.size()>0){
             for(Interaction match : matches){
+                Karren.log.info("Interaction match! Starting processing for " + match);
                 MessageCreateSpec message = new MessageCreateSpec();
                 result = new InteractionResult(message, event, false, null);
-                preloadTags(match);
+                preloadTags(match, result);
                 processTags(match, result);
             }
         }
         return result;
     }
 
-    private void preloadTags(Interaction interaction){
+    private void preloadTags(Interaction interaction, InteractionResult result){
         for(String tag : interaction.getTags()){
-            if(!(tag.equalsIgnoreCase("nodisplay") || tag.equalsIgnoreCase("feelinglucky") || tag.equalsIgnoreCase("prefixed") || tag.equalsIgnoreCase("bot")))
-                interaction.getTagCache().add(Karren.bot.getGuildManager().getTag(tag));
+            if(!(tag.equalsIgnoreCase("nodisplay") || tag.equalsIgnoreCase("feelinglucky") || tag.equalsIgnoreCase("prefixed") || tag.equalsIgnoreCase("bot"))) {
+                Tag fetchedTag = Karren.bot.getGuildManager().getTag(tag);
+                if(fetchedTag!=null) {
+                    interaction.getTagCache().add(Karren.bot.getGuildManager().getTag(tag));
+                } else {
+                    Karren.log.error("Interaction \"" + interaction.getIdentifier() + "\" either has a misspelt, or unimplemented tag! Interaction has been disabled.");
+                    result.message.setContent("An error occured with the interaction \"" + interaction.getIdentifier() + "\" and it has been disabled. Please file an issue on https://github.com/ripxfrostbite/karren-sama/issues");
+                    result.setErrored(true);
+                    interactions.remove(interaction);
+                    break;
+                }
+            }
         }
     }
 
@@ -90,10 +101,17 @@ public class InteractionProcessor {
     }
 
     public void processTags(Interaction interaction, InteractionResult result){
-        String messageStr = interaction.getInitialTemplate(result.getEvent());
-        for(Tag tag : interaction.getTagCache()){
-            messageStr = tag.handleTemplate(messageStr, interaction, result);
+        if(!result.isErrored()) {
+            String messageStr = interaction.getInitialTemplate(result.getEvent());
+            for (Tag tag : interaction.getTagCache()) {
+                try {
+                    messageStr = tag.handleTemplate(messageStr, interaction, result);
+                } catch (NullPointerException e){
+                    e.printStackTrace();
+                    Karren.log.error("Error occured in a tag \"" + tag.getTagName() + "\" stopped processing interaction");
+                }
+            }
+            result.getMessage().setContent(messageStr);
         }
-        result.getMessage().setContent(messageStr);
     }
 }

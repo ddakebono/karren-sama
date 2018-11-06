@@ -43,8 +43,10 @@ public class KarrenUtil {
             return type.cast(Class.forName(className).newInstance());
         } catch(InstantiationException
                 | IllegalAccessException
-                | ClassNotFoundException e){
-            throw new IllegalStateException(e);
+                | ClassNotFoundException | NoClassDefFoundError e){
+            e.printStackTrace();
+            Karren.log.error("An interaction requested a tag that doesn't exist! " + className + " Please check to ensure that the interactions tags are spelt correctly, and are implemented.");
+            return null;
         }
     }
 

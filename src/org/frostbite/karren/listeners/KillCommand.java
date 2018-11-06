@@ -12,6 +12,7 @@ package org.frostbite.karren.listeners;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Member;
+import discord4j.core.object.entity.User;
 import org.frostbite.karren.Karren;
 
 import java.util.Objects;
@@ -22,6 +23,12 @@ public class KillCommand implements Consumer<MessageCreateEvent> {
 
     @Override
 	public void accept(MessageCreateEvent event){
+        User bot = Karren.bot.client.getSelf().block();
+        if(event.getMember().isPresent()) {
+            assert bot != null;
+            if (bot.getId().equals(event.getMember().get().getId()))
+                return;
+        }
         if(event.getMessage().getContent().isPresent()) {
             if (event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block()) + "kill")) {
                 Optional<Member> optMember = event.getMember();

@@ -117,11 +117,13 @@ public class Interaction {
     }
 
     public boolean checkTriggers(MessageCreateEvent event){
-        int confidenceChecked = 0;
-        if(event.getMember().isPresent() && isAllowedUser(event.getMember().get()) && enabled && event.getMessage().getContent().isPresent()){
-            Guild guild = event.getGuild().block();
-                if(Arrays.asList(tags).contains("prefixed")){
-                    if(event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild))){
+        if(!lock) {
+            cleanupInteraction();
+            int confidenceChecked = 0;
+            if (event.getMember().isPresent() && isAllowedUser(event.getMember().get()) && enabled && event.getMessage().getContent().isPresent()) {
+                Guild guild = event.getGuild().block();
+                if (Arrays.asList(tags).contains("prefixed")) {
+                    if (event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild))) {
                         Pattern prefixedPattern = Pattern.compile("\\s+");
                         String[] regex = prefixedPattern.split(event.getMessage().getContent().get().replace(Karren.bot.getGuildManager().getCommandPrefix(guild), ""));
                         if (regex.length > 0) {
@@ -132,8 +134,10 @@ public class Interaction {
                     //Non prefixed interaction
                     confidenceChecked = getConfidence(event.getMessage().getContent().get(), false, guild);
                 }
+            }
+            return confidenceChecked >= confidence;
         }
-        return confidenceChecked >= confidence;
+        return false;
     }
 
     public String getInitialTemplate(MessageCreateEvent event){

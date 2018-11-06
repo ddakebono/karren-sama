@@ -18,6 +18,7 @@ public class InteractionResult {
     MessageCreateEvent event;
     boolean privateMessage = false;
     String overrideChannel = null;
+    boolean errored = false;
 
     public InteractionResult(MessageCreateSpec message, MessageCreateEvent event){
         new InteractionResult(message, event, false, null);
@@ -25,6 +26,7 @@ public class InteractionResult {
 
     public InteractionResult(MessageCreateSpec message, MessageCreateEvent event, boolean privateMessage, String overrideChannel) {
         this.message = message;
+        this.event = event;
         this.privateMessage = privateMessage;
         this.overrideChannel = overrideChannel;
     }
@@ -51,5 +53,13 @@ public class InteractionResult {
 
     public void setOverrideChannel(String overrideChannel) {
         this.overrideChannel = overrideChannel;
+    }
+
+    public boolean isErrored() {
+        return errored;
+    }
+
+    public void setErrored(boolean errored) {
+        this.errored = errored;
     }
 }

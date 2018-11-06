@@ -12,6 +12,7 @@ package org.frostbite.karren.listeners;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Guild;
+import discord4j.core.object.entity.User;
 import discord4j.core.spec.MessageCreateSpec;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
@@ -23,6 +24,12 @@ public class StatCommand implements Consumer<MessageCreateEvent> {
 
     @Override
     public void accept(MessageCreateEvent event) {
+        User bot = Karren.bot.client.getSelf().block();
+        if(event.getMember().isPresent()) {
+            assert bot != null;
+            if (bot.getId().equals(event.getMember().get().getId()))
+                return;
+        }
         if(event.getMessage().getContent().isPresent()) {
             Guild guild = event.getGuild().block();
             if (event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild) + "stats")) {
