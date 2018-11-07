@@ -58,7 +58,7 @@ public class InteractionProcessor {
         InteractionResult result = null;
         if(matches.size()>0){
             for(Interaction match : matches){
-                Karren.log.info("Interaction match! Starting processing for " + match);
+                Karren.log.info("Interaction match! Starting processing for " + (match.getFriendlyName()!=null?match.getFriendlyName():match.getIdentifier()));
                 MessageCreateSpec message = new MessageCreateSpec();
                 result = new InteractionResult(message, event, false, null);
                 preloadTags(match, result);

@@ -1,0 +1,23 @@
+{
+  "triggers": [
+    "version"
+  ],
+  "tags": [
+    "Version",
+    "prefixed",
+    "EmbedMessage"
+  ],
+  "templatesNew": [
+    {
+      "template": "I\u0027m currently on version %version",
+      "templateType": "normal"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Ask me my version and I\u0027ll respond.",
+  "identifier": "VersionPrefixed",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

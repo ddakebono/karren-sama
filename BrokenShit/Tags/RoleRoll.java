@@ -8,7 +8,7 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags;
+package org.frostbite.karren.Interactions.Tags;
 
 import org.frostbite.karren.Database.Objects.DbGuildUser;
 import org.frostbite.karren.Karren;

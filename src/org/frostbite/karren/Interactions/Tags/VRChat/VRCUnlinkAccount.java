@@ -8,25 +8,21 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags.VRChat;
+package org.frostbite.karren.Interactions.Tags.VRChat;
 
 import io.github.vrchatapi.VRCFriends;
 import io.github.vrchatapi.VRCUser;
 import org.frostbite.karren.Database.Objects.DbUser;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionResult;
+import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
-
-import java.util.EnumSet;
 
 public class VRCUnlinkAccount extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(event.getMessage().getMentions().size()>0){
-            DbUser user = Karren.bot.sql.getUserData(event.getMessage().getMentions().get(0));
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
+        if(interaction.getMentionedUsers().size()>0){
+            DbUser user = Karren.bot.sql.getUserData(interaction.getMentionedUsers().get(0));
             if(user.getVrcUserID()!=null){
                 VRCUser vrcUser = VRCUser.fetch(user.getVrcUserID());
                 msg = interaction.replaceMsg(msg, "%vrcuser", vrcUser.getDisplayName());
@@ -47,8 +43,4 @@ public class VRCUnlinkAccount extends Tag {
         return "VRCUnlinkAccount";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return super.getRequiredPermissions();
-    }
 }

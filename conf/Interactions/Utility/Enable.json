@@ -1,0 +1,33 @@
+{
+  "triggers": [
+    "enable"
+  ],
+  "tags": [
+    "Parameter",
+    "prefixed",
+    "Guild.EnableInteraction",
+    "EmbedMessage"
+  ],
+  "templatesNew": [
+    {
+      "template": "Interaction %interaction has been enabled.",
+      "templateType": "normal"
+    },
+    {
+      "template": "Could not find interaction!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to enable this... (Not admin)",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Enables specified interaction",
+  "identifier": "Enable",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

@@ -1,0 +1,32 @@
+{
+  "triggers": [
+    "disable"
+  ],
+  "tags": [
+    "Parameter",
+    "prefixed",
+    "Guild.DisableInteraction"
+  ],
+  "templatesNew": [
+    {
+      "template": "Interaction %interaction has been disabled.",
+      "templateType": "normal"
+    },
+    {
+      "template": "Could not find interaction!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to disable this... (Not admin)",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Disables specified interaction",
+  "identifier": "Disable",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

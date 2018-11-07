@@ -38,7 +38,7 @@ public class InteractionCommand implements Consumer<MessageCreateEvent> {
             if(ip!=null && event.getMember().isPresent()){
                 if(!Karren.conf.getAllowSQLRW() || !Karren.bot.getSql().getGuildUser(guild, event.getMember().get()).isIgnoreCommands()) {
                     InteractionResult result = ip.run(event);
-                    if (result != null){
+                    if (result != null && !result.isDoNotSend()){
                         if (result.getOverrideChannel() == null) {
                             if (result.isPrivateMessage()) {
                                 Objects.requireNonNull(event.getMember().get().getPrivateChannel().block()).createMessage(result.getMessage()).block();

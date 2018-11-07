@@ -1,0 +1,26 @@
+{
+  "triggers": [
+    "\u003c:respects:233374181700403200\u003e",
+    "f"
+  ],
+  "tags": [
+    "Count"
+  ],
+  "templatesNew": [
+    {
+      "template": "Total respects paid is %count",
+      "templateType": "normal"
+    },
+    {
+      "template": "%count respects have been paid",
+      "templateType": "normal"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Press f",
+  "identifier": "PayRespects",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

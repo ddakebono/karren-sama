@@ -19,6 +19,7 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Role;
+import discord4j.core.object.entity.User;
 import discord4j.core.spec.EmbedCreateSpec;
 import org.frostbite.karren.Karren;
 
@@ -50,7 +51,7 @@ public class Interaction {
     private int usageCount = -1;
     private ArrayList<String> allowedUsers = new ArrayList<>();
     private boolean stopProcessing = false;
-    private transient List<Member> mentionedUsers = new LinkedList<>();
+    private transient List<User> mentionedUsers = new LinkedList<>();
     private boolean lock = false;
     private File interactionFile;
     private ArrayList<Tag> tagCache = new ArrayList<>();
@@ -158,7 +159,7 @@ public class Interaction {
         stopProcessing = false;
         if(!noClearInteraction) {
             if (mentionedUsers == null)
-                mentionedUsers = new LinkedList<Member>();
+                mentionedUsers = new LinkedList<User>();
             mentionedUsers.clear();
             if(replacedTextMap==null)
                 replacedTextMap = new HashMap<>();
@@ -347,7 +348,7 @@ public class Interaction {
         this.stopProcessing = true;
     }
 
-    public List<Member> getMentionedUsers() {
+    public List<User> getMentionedUsers() {
         return mentionedUsers;
     }
 

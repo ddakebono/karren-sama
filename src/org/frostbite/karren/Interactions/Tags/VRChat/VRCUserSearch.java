@@ -8,24 +8,21 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags.VRChat;
+package org.frostbite.karren.Interactions.Tags.VRChat;
 
 import io.github.vrchatapi.VRCUser;
 import io.github.vrchatapi.VRCWorld;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionResult;
+import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.KarrenUtil;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
 public class VRCUserSearch extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         if(interaction.hasParameter()){
             String search = interaction.getParameter();
             List<VRCUser> users = VRCUser.list(0, 15, false, search);
@@ -82,8 +79,4 @@ public class VRCUserSearch extends Tag {
         return "VRCUserSearch";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES, Permissions.EMBED_LINKS);
-    }
 }

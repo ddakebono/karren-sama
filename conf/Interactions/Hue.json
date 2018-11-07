@@ -1,0 +1,44 @@
+{
+  "triggers": [
+    "hue",
+    "br"
+  ],
+  "tags": [],
+  "templatesNew": [
+    {
+      "template": "Hue",
+      "templateType": "normal"
+    },
+    {
+      "template": "Hue hue hue hue hue hue hue hue hue hue hue hue hue hue hue hue hue",
+      "templateType": "normal"
+    },
+    {
+      "template": "BR pls go",
+      "templateType": "normal"
+    },
+    {
+      "template": "brbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrbbrbrbrbrbrbrbrbrbrbrbrbrbrbrbrb",
+      "templateType": "normal"
+    },
+    {
+      "template": "Hue hue hue",
+      "templateType": "normal"
+    },
+    {
+      "template": "Gibe moni plos",
+      "templateType": "normal"
+    },
+    {
+      "template": "BR¿",
+      "templateType": "normal"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Hue.",
+  "identifier": "Hue",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

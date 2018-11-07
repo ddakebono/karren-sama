@@ -19,6 +19,7 @@ public class InteractionResult {
     boolean privateMessage = false;
     String overrideChannel = null;
     boolean errored = false;
+    boolean doNotSend = false;
 
     public InteractionResult(MessageCreateSpec message, MessageCreateEvent event){
         new InteractionResult(message, event, false, null);
@@ -61,5 +62,13 @@ public class InteractionResult {
 
     public void setErrored(boolean errored) {
         this.errored = errored;
+    }
+
+    public boolean isDoNotSend() {
+        return doNotSend;
+    }
+
+    public void setDoNotSend(boolean doNotSend) {
+        this.doNotSend = doNotSend;
     }
 }

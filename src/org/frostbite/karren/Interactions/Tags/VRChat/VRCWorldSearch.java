@@ -8,28 +8,25 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags.VRChat;
+package org.frostbite.karren.Interactions.Tags.VRChat;
 
 import io.github.vrchatapi.VRCWorld;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionResult;
+import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
 
-import java.util.EnumSet;
 import java.util.List;
 
 public class VRCWorldSearch extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         if(interaction.hasParameter()){
             List<VRCWorld> worlds = VRCWorld.list(0, 1, false, interaction.getParameter());
             if(worlds.size()>0){
                 VRCWorld world = worlds.get(0);
                 interaction.setEmbedImage(world.getThumbnailImageUrl());
-                Karren.log.debug(world.toString());
+                Karren.log.info(world.toString());
                 msg = interaction.replaceMsg(msg, "%name", world.getName());
                 msg = interaction.replaceMsg(msg, "%author", world.getAuthorName());
                 msg = interaction.replaceMsg(msg, "%relstatus", world.getReleaseStatus().name());
@@ -50,8 +47,4 @@ public class VRCWorldSearch extends Tag {
         return "VRCWorldSearch";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES, Permissions.EMBED_LINKS);
-    }
 }

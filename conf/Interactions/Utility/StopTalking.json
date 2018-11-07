@@ -1,0 +1,28 @@
+{
+  "triggers": [
+    "shutup",
+    "quiet",
+    "talking"
+  ],
+  "tags": [
+    "bot",
+    "d4jstop"
+  ],
+  "templatesNew": [
+    {
+      "template": "Alright...",
+      "templateType": "normal"
+    },
+    {
+      "template": "You can\u0027t tell me what to do!",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Stops me from talking",
+  "identifier": "StopTalking",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

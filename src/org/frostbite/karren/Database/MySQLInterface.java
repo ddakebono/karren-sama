@@ -11,7 +11,6 @@
 package org.frostbite.karren.Database;
 
 import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.User;
 import org.frostbite.karren.Database.Objects.*;
 import org.frostbite.karren.Karren;
@@ -33,7 +32,7 @@ public class MySQLInterface {
         if(Karren.conf.getAllowSQLRW()){
             if(!dbGuildCache.containsKey(guild.getId().asString())) {
                 String sql = "INSERT IGNORE Guild (GuildID, GuildOwner, GuildName, CommandPrefix, RollDifficulty, MaxVolume, RandomRange, OverrideChannel, PointName) VALUES (?, ?, ?, null, -1, 40, 0, 0, null)";
-                Object[] params = {guild.getId().asString(), guild.getOwner().block().getDisplayName(), guild.getName()};
+                Object[] params = {guild.getId().asString(), Objects.requireNonNull(guild.getOwner().block()).getDisplayName(), guild.getName()};
                 Yank.execute(sql, params);
                 sql = "SELECT * FROM Guild WHERE GuildID=?";
                 Object[] params2 = {guild.getId().asString()};
@@ -52,7 +51,7 @@ public class MySQLInterface {
         return new DbGuild();
     }
 
-    public DbGuildUser getGuildUser(Guild guild, Member user){
+    public DbGuildUser getGuildUser(Guild guild, User user){
         if(Karren.conf.getAllowSQLRW()){
             if(guild!=null) {
                 if (!dbGuildUserCache.containsKey(guild.getId().asString() + user.getId().asString())) {

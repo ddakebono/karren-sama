@@ -10,30 +10,32 @@
 
 package org.frostbite.karren.Interactions.Tags.Guild;
 
+import discord4j.core.object.entity.Guild;
+import discord4j.core.object.entity.GuildChannel;
 import org.frostbite.karren.Database.Objects.DbGuild;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionResult;
+import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
 
-import java.util.EnumSet;
 import java.util.List;
 
 public class SetOverrideChannel extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         if(interaction.hasParameter()){
-            List<IChannel> channels = event.getGuild().getChannelsByName(interaction.getParameter());
-            if(channels.size()==1){
-                DbGuild guild = Karren.bot.getSql().getGuild(event.getGuild());
-                guild.setOverrideChannel(channels.get(0).getLongID());
-                guild.update();
-                msg = interaction.replaceMsg(msg, "%channel", channels.get(0).getName());
-            } else {
-                msg = interaction.getRandomTemplate("fail").getTemplate();
+            Guild guild = result.getEvent().getGuild().block();
+            if(guild!=null) {
+                List<GuildChannel> channels = guild.getChannels().filter(x -> x.getName().equalsIgnoreCase(interaction.getParameter())).collectList().block();
+                //List<IChannel> channels = event.getGuild().getChannelsByName(interaction.getParameter());
+                if (channels != null && channels.size() == 1) {
+                    DbGuild dbGuild = Karren.bot.getSql().getGuild(guild);
+                    dbGuild.setOverrideChannel(channels.get(0).getId().asLong());
+                    dbGuild.update();
+                    msg = interaction.replaceMsg(msg, "%channel", channels.get(0).getName());
+                } else {
+                    msg = interaction.getRandomTemplate("fail").getTemplate();
+                }
             }
         } else {
             msg = interaction.getRandomTemplate("noparam").getTemplate();
@@ -46,8 +48,4 @@ public class SetOverrideChannel extends Tag {
         return "setoverridechannel";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
-    }
 }

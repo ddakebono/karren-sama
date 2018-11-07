@@ -1,0 +1,55 @@
+{
+  "triggers": [
+    "vrcw"
+  ],
+  "tags": [
+    "VRChat.VRCUtils",
+    "prefixed",
+    "Parameter",
+    "VRChat.VRCWorldSearch",
+    "EmbedMessage"
+  ],
+  "templatesNew": [
+    {
+      "template": "Info for VRChat world **%name**",
+      "templateType": "normal"
+    },
+    {
+      "template": "I can\u0027t seem to find a world called that, please make sure you typed it correctly!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You need to give me a world name to search up!",
+      "templateType": "noparam"
+    }
+  ],
+  "embedFields": [
+    {
+      "fieldTitle": "Author",
+      "fieldValue": "%author",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Release Status",
+      "fieldValue": "%relstatus",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Occupants",
+      "fieldValue": "%occupants",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Launch Link",
+      "fieldValue": "[Click here to launch world](%worldid)",
+      "inline": true
+    }
+  ],
+  "friendlyName": "VRChat World Search",
+  "enabled": true,
+  "helptext": "Gets world info from the VRChat API",
+  "identifier": "VRCWorldSearch",
+  "confidence": 1,
+  "specialInteraction": false,
+  "isPermBad": false
+}

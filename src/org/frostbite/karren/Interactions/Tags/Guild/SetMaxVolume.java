@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,25 +10,24 @@
 
 package org.frostbite.karren.Interactions.Tags.Guild;
 
+import discord4j.core.object.entity.Guild;
 import org.frostbite.karren.Database.Objects.DbGuild;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionResult;
+import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
 
-import java.util.EnumSet;
 
 public class SetMaxVolume extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
+        Guild guild = result.getEvent().getGuild().block();
         if(interaction.hasParameter()) {
             int volume = Integer.parseInt(interaction.getParameter().trim());
             if (volume >= 0 && volume <= 100) {
-                DbGuild guild = Karren.bot.getSql().getGuild(event.getGuild());
-                guild.setMaxVolume(volume);
-                guild.update();
+                DbGuild dbGuild = Karren.bot.getSql().getGuild(guild);
+                dbGuild.setMaxVolume(volume);
+                dbGuild.update();
                 msg = interaction.replaceMsg(msg, "%volume", Integer.toString(volume));
             } else {
                 msg = interaction.getRandomTemplate("noparam").getTemplate();
@@ -42,8 +41,4 @@ public class SetMaxVolume extends Tag {
         return "setmaxvolume";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
-    }
 }

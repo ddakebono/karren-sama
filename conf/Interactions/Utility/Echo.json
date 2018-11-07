@@ -1,0 +1,24 @@
+{
+  "triggers": [
+    "echo"
+  ],
+  "tags": [
+    "Parameter",
+    "Echo",
+    "prefixed",
+    "EmbedMessage"
+  ],
+  "templatesNew": [
+    {
+      "template": "%echo",
+      "templateType": "normal"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Echoes the input message.",
+  "identifier": "Echo",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

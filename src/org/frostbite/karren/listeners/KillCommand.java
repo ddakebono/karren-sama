@@ -30,6 +30,7 @@ public class KillCommand implements Consumer<MessageCreateEvent> {
                 return;
         }
         if(event.getMessage().getContent().isPresent()) {
+            Karren.log.info("New Message: \"" + event.getMessage().getContent().get() + "\" From user: " + Objects.requireNonNull(event.getMessage().getAuthor().block()).getUsername() + " in Channel: " + Objects.requireNonNull(event.getMessage().getChannel().block()).getId().asString());
             if (event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block()) + "kill")) {
                 Optional<Member> optMember = event.getMember();
                 if (optMember.isPresent()) {

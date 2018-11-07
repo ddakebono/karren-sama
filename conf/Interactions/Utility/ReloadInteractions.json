@@ -1,0 +1,36 @@
+{
+  "triggers": [
+    "reloadint"
+  ],
+  "tags": [
+    "prefixed",
+    "Parameter",
+    "InteractionReload"
+  ],
+  "templatesNew": [
+    {
+      "template": "Interactions reloaded.",
+      "templateType": "normal"
+    },
+    {
+      "template": "Reloaded guild interaction processor",
+      "templateType": "single"
+    },
+    {
+      "template": "You don\u0027t have permission to use this... (Not admin)",
+      "templateType": "permission"
+    },
+    {
+      "template": "You\u0027re gonna need the admin role to use this...",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Reloads interactions system",
+  "identifier": "ReloadInteractions",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}
