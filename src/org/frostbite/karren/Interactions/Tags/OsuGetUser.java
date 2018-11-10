@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -8,16 +8,14 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags;
+package org.frostbite.karren.Interactions.Tags;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionResult;
+import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -31,7 +29,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.EnumSet;
 
 public class OsuGetUser extends Tag {
 
@@ -64,7 +61,7 @@ public class OsuGetUser extends Tag {
     };
 
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         SSLContext sc;
         String parameter = interaction.getParameter();
         JsonParser gson = new JsonParser();
@@ -108,8 +105,4 @@ public class OsuGetUser extends Tag {
         return "osugetuser";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
-    }
 }

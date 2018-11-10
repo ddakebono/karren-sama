@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -8,38 +8,40 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags;
+package org.frostbite.karren.Interactions.Tags;
 
+import discord4j.core.object.entity.Guild;
 import org.frostbite.karren.Database.Objects.DbReminder;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionResult;
+import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
 
 import java.sql.Timestamp;
-import java.util.EnumSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ReminderAdd extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        String[] tempArray = event.getMessage().getContent().split("that");
-        Pattern timeMatch = Pattern.compile("(?:\\d*\\S)?\\d+ \\S+");
-        if(event.getMessage().getMentions().size()>0 && tempArray.length==2){
-            DbReminder reminder = new DbReminder();
-            reminder.setReminderSent(false);
-            reminder.setAuthorID(event.getAuthor().getLongID());
-            reminder.setTargetID(Karren.bot.getSql().getGuildUser(event.getGuild(), event.getMessage().getMentions().get(0)).getGuildUserID());
-            reminder.setMessage(tempArray[1].trim());
-            reminder.setReminderTime(getRemindTime(timeMatch.matcher(tempArray[0].trim())));
-            reminder.setChannelID(event.getChannel().getLongID());
-            Karren.bot.getSql().addReminder(reminder);
-            msg = interaction.replaceMsg(msg,"%target", event.getMessage().getMentions().get(0).getName());
-        } else {
-            msg = interaction.getRandomTemplate("fail").getTemplate();
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
+        Guild guild = result.getEvent().getGuild().block();
+
+        if(result.getEvent().getMessage().getContent().isPresent() && guild != null && result.getEvent().getMessage().getAuthorId().isPresent()) {
+            String[] tempArray = result.getEvent().getMessage().getContent().get().split("that");
+            Pattern timeMatch = Pattern.compile("(?:\\d*\\S)?\\d+ \\S+");
+            if (interaction.getMentionedUsers().size()> 0 && tempArray.length == 2) {
+                DbReminder reminder = new DbReminder();
+                reminder.setReminderSent(false);
+                reminder.setAuthorID(result.getEvent().getMessage().getAuthorId().get().asLong());
+                reminder.setTargetID(Karren.bot.getSql().getGuildUser(guild, interaction.getMentionedUsers().get(0)).getGuildUserID());
+                reminder.setMessage(tempArray[1].trim());
+                reminder.setReminderTime(getRemindTime(timeMatch.matcher(tempArray[0].trim())));
+                reminder.setChannelID(result.getEvent().getMessage().getChannelId().asLong());
+                Karren.bot.getSql().addReminder(reminder);
+                msg = interaction.replaceMsg(msg, "%target", interaction.getMentionedUsers().get(0).getUsername());
+            } else {
+                msg = interaction.getRandomTemplate("fail").getTemplate();
+            }
         }
         return msg;
     }
@@ -77,8 +79,4 @@ public class ReminderAdd extends Tag {
         return "reminderadd";
     }
 
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
-    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -14,12 +14,16 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import org.frostbite.karren.interactions.Interaction;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.util.MissingPermissionsException;
+import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.VoiceState;
+import discord4j.core.object.entity.Channel;
+import discord4j.core.object.entity.Member;
+import discord4j.core.object.entity.User;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Karren;
 
 public class AudioResultHandler implements AudioLoadResultHandler {
-    MessageReceivedEvent event;
+    MessageCreateEvent event;
     Interaction interaction;
     GuildMusicManager gm;
     String msg;
@@ -30,7 +34,7 @@ public class AudioResultHandler implements AudioLoadResultHandler {
 
     boolean failed = false;
 
-    public AudioResultHandler(MessageReceivedEvent event, Interaction interaction, GuildMusicManager gm, String msg) {
+    public AudioResultHandler(MessageCreateEvent event, Interaction interaction, GuildMusicManager gm, String msg) {
         this.event = event;
         this.interaction = interaction;
         this.gm = gm;
@@ -67,20 +71,23 @@ public class AudioResultHandler implements AudioLoadResultHandler {
         msg = interaction.getRandomTemplate("permission").getTemplate();
     }
 
-    public void connectToVoiceChannel(MessageReceivedEvent event){
-        if(event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel() != null){
-            if (!event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel().isConnected()) {
-                if(event.getClient().getOurUser().getVoiceStateForGuild(event.getGuild()).getChannel()==null) {
-                    try {
-                        event.getAuthor().getVoiceStateForGuild(event.getGuild()).getChannel().join();
-                    } catch (MissingPermissionsException e) {
-                        e.printStackTrace();
-                    }
+    public void connectToVoiceChannel(MessageCreateEvent event){
+        User self = event.getClient().getSelf().block();
+        Member author = event.getMessage().getAuthorAsMember().block();
+        if(self !=null && author!=null && event.getGuildId().isPresent()) {
+            Member selfMember = self.asMember(event.getGuildId().get()).block();
+            VoiceState vs = author.getVoiceState().block();
+            if (vs != null && selfMember !=null) {
+                VoiceState vsSelf = selfMember.getVoiceState().block();
+                if (vsSelf == null) {
+                    Channel voiceChannel = vs.getChannel().block();
+                    if(voiceChannel!=null)
+                        Karren.bot.client.
                 }
+            } else {
+                failed = true;
+                msg = "Hold on a sec, you're not in a voice channel!";
             }
-        } else {
-            failed = true;
-            msg = "Hold on a sec, you're not in a voice channel!";
         }
     }
 

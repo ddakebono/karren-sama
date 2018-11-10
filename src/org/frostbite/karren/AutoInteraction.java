@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,10 +10,12 @@
 
 package org.frostbite.karren;
 
+import discord4j.core.object.entity.Channel;
+import discord4j.core.object.entity.TextChannel;
+import discord4j.core.object.entity.User;
+import discord4j.core.object.util.Snowflake;
+import discord4j.core.spec.MessageCreateSpec;
 import org.frostbite.karren.Database.Objects.DbReminder;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MessageBuilder;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -33,7 +35,17 @@ public class AutoInteraction extends Thread {
                     for (DbReminder reminder : remindersPastTime) {
                         reminder.setReminderSent(true);
                         reminder.update();
-                        IUser author = Karren.bot.getClient().getUserByID(reminder.getAuthorID());
+                        User author = Karren.bot.client.getUserById(Snowflake.of(reminder.authorID)).block();
+                        User target = Karren.bot.client.getUserById(Snowflake.of(reminder.targetID)).block();
+                        if(author!=null&&target!=null) {
+                            MessageCreateSpec message = new MessageCreateSpec();
+                            message.setContent("Hey " + target.getMention() + ", " + author.getUsername() + " wanted me to remind you **\"" + reminder.getMessage() + "\"**");
+                            Channel channel = Karren.bot.client.getChannelById(Snowflake.of(reminder.channelID)).block();
+                            if(channel!=null)
+                                if(channel.getType().equals(Channel.Type.GUILD_TEXT))
+                                    ((TextChannel)channel).createMessage(message).block();
+                        }
+                        /*IUser author = Karren.bot.getClient().getUserByID(reminder.getAuthorID());
                         IUser target = Karren.bot.getClient().getUserByID(Karren.bot.getSql().getGuildUser(reminder.getTargetID()).getUserID());
                         MessageBuilder msg = new MessageBuilder(Karren.bot.getClient());
                         msg.withChannel(reminder.getChannelID());
@@ -42,7 +54,7 @@ public class AutoInteraction extends Thread {
                             msg.send();
                         } catch (DiscordException e) {
                             Karren.log.error(e.getErrorMessage());
-                        }
+                        }*/
                     }
                 }
 
