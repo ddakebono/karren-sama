@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2018 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -25,8 +25,8 @@ public class D4JVolume extends Tag {
         if(interaction.hasParameter()) {
             int volume = Integer.parseInt(interaction.getParameter().trim());
             if (volume >= 0 && volume <= 100) {
-                if(volume>40)
-                    volume=40;
+                if(volume>Karren.bot.getSql().getGuild(event.getGuild()).getMaxVolume())
+                    volume=Karren.bot.getSql().getGuild(event.getGuild()).getMaxVolume();
                 Karren.bot.getGuildMusicManager(event.getGuild()).player.setVolume(volume);
                 msg = interaction.replaceMsg(msg, "%volume", Integer.toString(volume));
             } else {

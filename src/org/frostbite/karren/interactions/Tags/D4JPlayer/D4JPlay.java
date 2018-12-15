@@ -53,8 +53,8 @@ public class D4JPlay extends Tag{
                     if(params.length==3){
                         try{
                             int volume = Integer.parseInt(params[2].trim());
-                            if(volume>40)
-                                volume=40;
+                            if(volume>Karren.bot.getSql().getGuild(event.getGuild()).getMaxVolume())
+                                volume=Karren.bot.getSql().getGuild(event.getGuild()).getMaxVolume();
                             gm.player.setVolume(volume);
                         } catch (NumberFormatException ignored){}
                     }
