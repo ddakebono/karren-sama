@@ -11,16 +11,11 @@
 package org.frostbite.karren.Interactions.Tags;
 
 import org.frostbite.karren.Database.Objects.DbGuildUser;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionResult;
+import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
-import sx.blah.discord.util.PermissionUtils;
 
 import java.sql.Timestamp;
 import java.util.EnumSet;
@@ -32,7 +27,7 @@ import java.util.stream.Collectors;
 public class RoleRoll extends Tag {
 
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         if(!event.getMessage().getChannel().isPrivate()) {
             DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(event.getGuild(), event.getAuthor());
             List<IRole> rollRoles = new LinkedList<>();
