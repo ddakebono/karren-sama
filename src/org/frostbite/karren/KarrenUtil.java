@@ -59,11 +59,11 @@ public class KarrenUtil {
 
     public static String getVRCSafetySystemRank(List<String> tags){
         LinkedHashMap<String, String> permMap = new LinkedHashMap<>();
-        permMap.put("system_avatar_access", "User");
+        permMap.put("system_avatar_access", "New User");
         permMap.put("system_trust_known", "User");
         permMap.put("system_trust_trusted", "Known User");
         permMap.put("system_trust_veteran", "Trusted User");
-        String permission = "Visitor/New User (No Tags)";
+        String permission = "Visitor (No Tags)";
         int permLevel = -1;
         for(String tag : tags){
             String level = permMap.getOrDefault(tag, null);
