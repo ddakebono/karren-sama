@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2018 Owen Bennett.
+  ~ Copyright (c) 2019 Owen Bennett.
   ~  You may use, distribute and modify this code under the terms of the MIT licence.
   ~  You should have obtained a copy of the MIT licence with this software,
   ~  if not please obtain one from https://opensource.org/licences/MIT
@@ -92,12 +92,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.5</version>
+            <version>2.9.8</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.9.5</version>
+            <version>2.9.8</version>
         </dependency>
         <dependency>
             <groupId>com.github.ripxfrostbite</groupId>
