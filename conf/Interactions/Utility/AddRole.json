@@ -1,0 +1,35 @@
+{
+  "triggers": [
+    "role"
+  ],
+  "tags": [
+    "parameter",
+    "prefixed",
+    "addrole"
+  ],
+  "templatesNew": [
+    {
+      "template": "Role %role has been %setting.",
+      "templateType": "normal"
+    },
+    {
+      "template": "The role you requested is not part of the assignable roles!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You have to enter a role you want!",
+      "templateType": "noparam"
+    },
+    {
+      "template": "This server has no assignable roles!",
+      "templateType": "notsetup"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Adds or removes selected role",
+  "identifier": "AddRole",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}
