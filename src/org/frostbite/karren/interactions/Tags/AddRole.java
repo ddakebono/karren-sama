@@ -31,7 +31,7 @@ public class AddRole extends Tag {
                     assignableRoles.add(role);
             if(assignableRoles.size()==0)
                 return interaction.getRandomTemplate("notsetup").getTemplate();
-            Optional<IRole> selectedRole = assignableRoles.stream().filter(x -> x.getName().toLowerCase().startsWith(interaction.getParameter().toLowerCase())).findFirst();
+            Optional<IRole> selectedRole = assignableRoles.stream().filter(x -> x.getName().startsWith(interaction.getParameter())).findFirst();
             if(selectedRole.isPresent()){
                 IRole roleGet = selectedRole.get();
                 msg = interaction.replaceMsg(msg, "%role", "\"" + roleGet.getName().replace("(A)", "").trim() + "\"");
