@@ -90,7 +90,10 @@ public class MySQLInterface {
                     String sql = "SELECT * FROM Streamer WHERE UserID=?";
                     Object[] params = {user.getLongID()};
                     List<DbStreamer> streamers = Yank.queryBeanList(sql, DbStreamer.class, params);
-                    dbStreamerCache.addAll(streamers);
+                    for(DbStreamer streamer : streamers) {
+                        if(streamer!=null)
+                            dbStreamerCache.add(streamer);
+                    }
                     return streamers;
                 } else {
                     return dbStreamerCache.stream().filter(x -> x.getUserID()==user.getLongID()).collect(Collectors.toList());
@@ -107,7 +110,8 @@ public class MySQLInterface {
                     String sql = "SELECT * FROM Streamer WHERE GuildID=? AND UserID=?";
                     Object[] params = {guild.getLongID(), user.getLongID()};
                     DbStreamer streamer = Yank.queryBean(sql, DbStreamer.class, params);
-                    dbStreamerCache.add(streamer);
+                    if(streamer!=null)
+                        dbStreamerCache.add(streamer);
                     return streamer;
                 } else {
                     return dbStreamerCache.stream().filter(x -> x.getUserID()==user.getLongID() && x.getGuildID()==guild.getLongID()).findFirst().get();
