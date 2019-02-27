@@ -1,0 +1,31 @@
+{
+  "triggers": [
+    "removestreamer"
+  ],
+  "tags": [
+    "prefixed",
+    "mentioned",
+    "removestreamer"
+  ],
+  "templatesNew": [
+    {
+      "template": "Removed %user from monitored streamers",
+      "templateType": "normal"
+    },
+    {
+      "template": "That user is not marked as a streamer",
+      "templateType": "fail"
+    },
+    {
+      "template": "You need to give me a user as a mention.",
+      "templateType": "nouser"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Removes a streamer from the list of monitored streamers",
+  "identifier": "RemoveStreamer",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

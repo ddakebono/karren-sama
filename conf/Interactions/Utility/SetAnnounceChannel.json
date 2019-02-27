@@ -1,0 +1,35 @@
+{
+  "triggers": [
+    "streamannounce"
+  ],
+  "tags": [
+    "prefixed",
+    "setstreamchannel"
+  ],
+  "templatesNew": [
+    {
+      "template": "Set stream announce channel to **\"%channel\"**",
+      "templateType": "normal"
+    },
+    {
+      "template": "Looks like that channel doesn't exist!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to use this... (Not admin)",
+      "templateType": "permission"
+    },
+    {
+      "template": "You\u0027re gonna need the admin role to use this...",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Sets stream announce channel",
+  "identifier": "SetAnnounceChannel",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

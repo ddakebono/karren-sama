@@ -1,0 +1,31 @@
+{
+  "triggers": [
+    "streamrole"
+  ],
+  "tags": [
+    "prefixed",
+    "setstreamrole"
+  ],
+  "templatesNew": [
+    {
+      "template": "Stream announce mention role set to **\"%role\"**",
+      "templateType": "normal"
+    },
+    {
+      "template": "Looks like that role doesn't exist",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to use this... (Not admin)",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Sets stream announce mention role",
+  "identifier": "SetMentionRole",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

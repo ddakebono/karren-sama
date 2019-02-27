@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -14,7 +14,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import org.frostbite.karren.interactions.Interaction;
+import org.frostbite.karren.Interactions.Interaction;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.util.MissingPermissionsException;
 
