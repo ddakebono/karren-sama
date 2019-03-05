@@ -18,6 +18,9 @@ public class DbStreamer {
     private long guildID;
     private long userID;
 
+    //Locals
+    public boolean live;
+
     public DbStreamer() {
 
     }

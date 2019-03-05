@@ -48,8 +48,6 @@ public class StatusListener implements IListener<PresenceUpdateEvent> {
 
                     StreamList result = Karren.bot.ttv.getHelix().getStreams("", "", 1, null, null, null, null, userLogin).execute();
 
-
-
                     if(result.getStreams().size()>0) {
                         Stream stream = result.getStreams().get(0);
 

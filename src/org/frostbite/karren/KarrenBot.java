@@ -91,7 +91,7 @@ public class KarrenBot {
             irm = new InstantReplayManager();
 
             //Setup twitch
-            ttv = TwitchClientBuilder.builder().withEnableHelix(true).build();
+            ttv = TwitchClientBuilder.builder().withEnableHelix(true).withClientId(Karren.conf.getTwitchIDKey()).withClientSecret(Karren.conf.getTwitchAPIKey()).build();
 
             //Setup youtube
             yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
