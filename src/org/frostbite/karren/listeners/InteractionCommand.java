@@ -13,6 +13,7 @@ package org.frostbite.karren.listeners;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.User;
+import discord4j.core.spec.MessageCreateSpec;
 import org.frostbite.karren.Interactions.InteractionProcessor;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Karren;
@@ -36,14 +37,19 @@ public class InteractionCommand implements Consumer<MessageCreateEvent> {
             Guild guild = event.getGuild().block();
             InteractionProcessor ip = Karren.bot.getGuildManager().getInteractionProcessor(guild);
             if(ip!=null && event.getMember().isPresent()){
-                if(!Karren.conf.getAllowSQLRW() || !Karren.bot.getSql().getGuildUser(guild, event.getMember().get()).isIgnoreCommands()) {
+                if(!Karren.bot.getSql().getGuildUser(guild, event.getMember().get()).isIgnoreCommands()) {
                     InteractionResult result = ip.run(event);
+                    Consumer<MessageCreateSpec> message = messageSpec -> {
+                        messageSpec.setContent(result.getMessage());
+                        if(result.getEmbedConsumer()!=null)
+                            messageSpec.setEmbed(result.getEmbedConsumer());
+                    };
                     if (result != null && !result.isDoNotSend()){
                         if (result.getOverrideChannel() == null) {
                             if (result.isPrivateMessage()) {
-                                Objects.requireNonNull(event.getMember().get().getPrivateChannel().block()).createMessage(result.getMessage()).block();
+                                Objects.requireNonNull(event.getMember().get().getPrivateChannel().block()).createMessage(message).block();
                             } else {
-                                Objects.requireNonNull(event.getMessage().getChannel().block()).createMessage(result.getMessage()).block();
+                                Objects.requireNonNull(event.getMessage().getChannel().block()).createMessage(message).block();
                             }
                         }
                     }

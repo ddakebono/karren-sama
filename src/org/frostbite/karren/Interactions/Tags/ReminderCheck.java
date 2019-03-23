@@ -22,14 +22,16 @@ import org.frostbite.karren.Karren;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ReminderCheck extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         Guild guild = result.getEvent().getGuild().block();
-        User author = result.getEvent().getMessage().getAuthor().block();
-        if(Karren.conf.getAllowSQLRW()) {
+        Optional<User> authorOpt = result.getEvent().getMessage().getAuthor();
+        if(authorOpt.isPresent() && Karren.conf.getAllowSQLRW()) {
+            User author = authorOpt.get();
             List<DbReminder> reminders = Arrays.stream(Karren.bot.getSql().getReminder(Karren.bot.getSql().getGuildUser(guild, author))).filter(x -> x.getReminderTime().before(new Timestamp(System.currentTimeMillis()))).collect(Collectors.toList());
             if (reminders.size() > 0) {
                 DbReminder alert = reminders.get(0);

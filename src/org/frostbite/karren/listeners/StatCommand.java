@@ -13,7 +13,6 @@ package org.frostbite.karren.listeners;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.User;
-import discord4j.core.spec.MessageCreateSpec;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 
@@ -54,8 +53,7 @@ public class StatCommand implements Consumer<MessageCreateEvent> {
                 msg.append("\nCached Guilds: ").append(Karren.bot.getSql().getDbGuildCache().size());
                 msg.append("\nCached Word Counts: ").append(Karren.bot.getSql().getDbWordcountCache().size());
                 msg.append("```");
-                MessageCreateSpec message = new MessageCreateSpec().setContent(msg.toString());
-                Objects.requireNonNull(event.getMessage().getChannel().block()).createMessage(message).block();
+                Objects.requireNonNull(event.getMessage().getChannel().block()).createMessage(msg.toString()).block();
             }
         }
     }
