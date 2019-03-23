@@ -11,6 +11,7 @@
 package org.frostbite.karren.Interactions.Tags;
 
 import discord4j.core.object.entity.Guild;
+import discord4j.core.object.entity.User;
 import org.frostbite.karren.Database.Objects.DbReminder;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
@@ -18,6 +19,7 @@ import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,14 +27,16 @@ public class ReminderAdd extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         Guild guild = result.getEvent().getGuild().block();
+        Optional<User> authorOpt = result.getEvent().getMessage().getAuthor();
 
-        if(result.getEvent().getMessage().getContent().isPresent() && guild != null && result.getEvent().getMessage().getAuthorId().isPresent()) {
+        if(result.getEvent().getMessage().getContent().isPresent() && guild != null && authorOpt.isPresent()) {
+            User author = authorOpt.get();
             String[] tempArray = result.getEvent().getMessage().getContent().get().split("that");
             Pattern timeMatch = Pattern.compile("(?:\\d*\\S)?\\d+ \\S+");
             if (interaction.getMentionedUsers().size()> 0 && tempArray.length == 2) {
                 DbReminder reminder = new DbReminder();
                 reminder.setReminderSent(false);
-                reminder.setAuthorID(result.getEvent().getMessage().getAuthorId().get().asLong());
+                reminder.setAuthorID(author.getId().asLong());
                 reminder.setTargetID(Karren.bot.getSql().getGuildUser(guild, interaction.getMentionedUsers().get(0)).getGuildUserID());
                 reminder.setMessage(tempArray[1].trim());
                 reminder.setReminderTime(getRemindTime(timeMatch.matcher(tempArray[0].trim())));

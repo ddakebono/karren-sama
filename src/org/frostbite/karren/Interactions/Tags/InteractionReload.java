@@ -17,12 +17,15 @@ import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
 
+import java.util.Optional;
+
 public class InteractionReload extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         Guild guild = result.getEvent().getGuild().block();
-        User author = result.getEvent().getMessage().getAuthor().block();
-        if(author!=null && guild!=null) {
+        Optional<User> authorOpt = result.getEvent().getMessage().getAuthor();
+        if(authorOpt.isPresent() && guild!=null) {
+            User author = authorOpt.get();
             if (interaction.hasParameter()) {
                 if (interaction.getParameter().trim().equalsIgnoreCase("full")) {
                     Karren.log.info("Interaction system reload triggered by " + author.getUsername());

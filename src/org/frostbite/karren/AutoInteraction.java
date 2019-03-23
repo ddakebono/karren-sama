@@ -14,7 +14,6 @@ import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.TextChannel;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.util.Snowflake;
-import discord4j.core.spec.MessageCreateSpec;
 import org.frostbite.karren.Database.Objects.DbReminder;
 
 import java.sql.Timestamp;
@@ -38,8 +37,7 @@ public class AutoInteraction extends Thread {
                         User author = Karren.bot.client.getUserById(Snowflake.of(reminder.authorID)).block();
                         User target = Karren.bot.client.getUserById(Snowflake.of(reminder.targetID)).block();
                         if(author!=null&&target!=null) {
-                            MessageCreateSpec message = new MessageCreateSpec();
-                            message.setContent("Hey " + target.getMention() + ", " + author.getUsername() + " wanted me to remind you **\"" + reminder.getMessage() + "\"**");
+                            String message = "Hey " + target.getMention() + ", " + author.getUsername() + " wanted me to remind you **\"" + reminder.getMessage() + "\"**";
                             Channel channel = Karren.bot.client.getChannelById(Snowflake.of(reminder.channelID)).block();
                             if(channel!=null)
                                 if(channel.getType().equals(Channel.Type.GUILD_TEXT))

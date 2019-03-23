@@ -24,13 +24,14 @@ public class KillCommand implements Consumer<MessageCreateEvent> {
     @Override
 	public void accept(MessageCreateEvent event){
         User bot = Karren.bot.client.getSelf().block();
+        Optional<User> authorOpt = event.getMessage().getAuthor();
         if(event.getMember().isPresent()) {
             assert bot != null;
             if (bot.getId().equals(event.getMember().get().getId()))
                 return;
         }
-        if(event.getMessage().getContent().isPresent()) {
-            Karren.log.info("New Message: \"" + event.getMessage().getContent().get() + "\" From user: " + Objects.requireNonNull(event.getMessage().getAuthor().block()).getUsername() + " in Channel: " + Objects.requireNonNull(event.getMessage().getChannel().block()).getId().asString());
+        if(event.getMessage().getContent().isPresent() && authorOpt.isPresent()) {
+            Karren.log.info("New Message: \"" + event.getMessage().getContent().get() + "\" From user: " + authorOpt.get().getUsername() + " in Channel: " + Objects.requireNonNull(event.getMessage().getChannel().block()).getId().asString());
             if (event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block()) + "kill")) {
                 Optional<Member> optMember = event.getMember();
                 if (optMember.isPresent()) {

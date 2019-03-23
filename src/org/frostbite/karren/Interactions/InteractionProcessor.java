@@ -60,7 +60,7 @@ public class InteractionProcessor {
             for(Interaction match : matches){
                 Karren.log.info("Interaction match! Starting processing for " + (match.getFriendlyName()!=null?match.getFriendlyName():match.getIdentifier()));
                 MessageCreateSpec message = new MessageCreateSpec();
-                result = new InteractionResult(message, event, false, null);
+                result = new InteractionResult(event, false, null);
                 preloadTags(match, result);
                 processTags(match, result);
             }
@@ -76,7 +76,7 @@ public class InteractionProcessor {
                     interaction.getTagCache().add(Karren.bot.getGuildManager().getTag(tag));
                 } else {
                     Karren.log.error("Interaction \"" + interaction.getIdentifier() + "\" either has a misspelt, or unimplemented tag! Interaction has been disabled.");
-                    result.message.setContent("An error occured with the interaction \"" + interaction.getIdentifier() + "\" and it has been disabled. Please file an issue on https://github.com/ripxfrostbite/karren-sama/issues");
+                    result.setMessage("An error occured with the interaction \"" + interaction.getIdentifier() + "\" and it has been disabled. Please file an issue on https://github.com/ripxfrostbite/karren-sama/issues");
                     result.setErrored(true);
                     interactions.remove(interaction);
                     break;
@@ -111,7 +111,7 @@ public class InteractionProcessor {
                     Karren.log.error("Error occured in a tag \"" + tag.getTagName() + "\" stopped processing interaction");
                 }
             }
-            result.getMessage().setContent(messageStr);
+            result.setMessage(messageStr);
         }
     }
 

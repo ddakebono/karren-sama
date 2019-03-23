@@ -20,12 +20,14 @@ import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
 
 import java.util.List;
+import java.util.Optional;
 
 public class VRCLinkAccount extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        User user = result.getEvent().getMessage().getAuthor().block();
-        if(user!=null) {
+        Optional<User> userOpt = result.getEvent().getMessage().getAuthor();
+        if(userOpt.isPresent()) {
+            User user = userOpt.get();
             if (interaction.hasParameter()) {
                 if (Karren.bot.sql.getUserData(user).getVrcUserID() == null) {
                     List<VRCUser> users = VRCUser.list(0, 1, false, interaction.getParameter());

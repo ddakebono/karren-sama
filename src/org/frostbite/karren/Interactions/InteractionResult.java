@@ -11,29 +11,43 @@
 package org.frostbite.karren.Interactions;
 
 import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.spec.MessageCreateSpec;
+import discord4j.core.spec.EmbedCreateSpec;
+
+import java.util.function.Consumer;
 
 public class InteractionResult {
-    MessageCreateSpec message;
+    String message;
+    Consumer<EmbedCreateSpec> embedConsumer;
     MessageCreateEvent event;
     boolean privateMessage = false;
     String overrideChannel = null;
     boolean errored = false;
     boolean doNotSend = false;
 
-    public InteractionResult(MessageCreateSpec message, MessageCreateEvent event){
-        new InteractionResult(message, event, false, null);
+    public InteractionResult(MessageCreateEvent event){
+        new InteractionResult(event, false, null);
     }
 
-    public InteractionResult(MessageCreateSpec message, MessageCreateEvent event, boolean privateMessage, String overrideChannel) {
-        this.message = message;
+    public InteractionResult(MessageCreateEvent event, boolean privateMessage, String overrideChannel) {
         this.event = event;
         this.privateMessage = privateMessage;
         this.overrideChannel = overrideChannel;
     }
 
-    public MessageCreateSpec getMessage() {
+    public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Consumer<EmbedCreateSpec> getEmbedConsumer() {
+        return embedConsumer;
+    }
+
+    public void setEmbedConsumer(Consumer<EmbedCreateSpec> embedConsumer) {
+        this.embedConsumer = embedConsumer;
     }
 
     public boolean isPrivateMessage() {
