@@ -1,0 +1,31 @@
+{
+  "triggers": [
+    "accessrole"
+  ],
+  "tags": [
+    "prefixed",
+    "setaccessrole"
+  ],
+  "templatesNew": [
+    {
+      "template": "Access role set to %role",
+      "templateType": "normal"
+    },
+    {
+      "template": "The role you want to use needs to exist.",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to change this... (Not admin)",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Sets the access role to be used with get access",
+  "identifier": "SetAccessRole",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

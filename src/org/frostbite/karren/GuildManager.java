@@ -105,6 +105,8 @@ public class GuildManager {
         tagHandlers.add(new VRCUtils());
         tagHandlers.add(new AddRole());
         tagHandlers.add(new ListRole());
+        tagHandlers.add(new GetAccess());
+        tagHandlers.add(new SetAccessRole());
     }
 
     public ArrayList<Interaction> loadInteractions(){

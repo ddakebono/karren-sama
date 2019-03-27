@@ -18,6 +18,7 @@ public class DbGuild {
     private String guildName = "";
     private String guildOwner = "";
     private String commandPrefix;
+    private String accessRole = "";
     private int rollDifficulty = -1;
     private int randomRange = 0;
     private int maxVolume = 40;
@@ -25,11 +26,12 @@ public class DbGuild {
 
     public DbGuild(){}
 
-    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, int maxVolume, int randomRange, long overrideChannel) {
+    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, String accessRole, int maxVolume, int randomRange, long overrideChannel) {
         this.guildID = guildID;
         this.guildName = guildName;
         this.guildOwner = guildOwner;
         this.commandPrefix = commandPrefix;
+        this.accessRole = accessRole;
         this.maxVolume = maxVolume;
         this.randomRange = randomRange;
         this.overrideChannel = overrideChannel;
@@ -99,11 +101,19 @@ public class DbGuild {
         this.overrideChannel = overrideChannel;
     }
 
+    public String getAccessRole() {
+        return accessRole;
+    }
+
+    public void setAccessRole(String accessRole) {
+        this.accessRole = accessRole;
+    }
+
     //Update db entry
     public void update(){
         if(Karren.conf.getAllowSQLRW()) {
-            String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?  WHERE GuildID=?";
-            Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, guildID});
+            String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?, AccessRole=?  WHERE GuildID=?";
+            Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, accessRole, guildID});
         }
     }
 }

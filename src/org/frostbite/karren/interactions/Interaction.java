@@ -49,6 +49,7 @@ public class Interaction {
     @Expose private boolean isPermBad = false;
     private int usageCount = -1;
     private ArrayList<String> allowedUsers = new ArrayList<>();
+    private ArrayList<Long> allowedServers = new ArrayList<Long>();
     private boolean stopProcessing = false;
     private int confidenceChecked = 0;
     private List<IUser> mentionedUsers = new LinkedList<>();
@@ -81,7 +82,7 @@ public class Interaction {
     }
 
     @JsonCreator
-    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail,@JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction, @JsonProperty("embedFields") ArrayList<InteractionEmbedFields> embedFields, @JsonProperty("friendlyName") String friendlyName) {
+    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail,@JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("allowedServers") Long[] allowedServers, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction, @JsonProperty("embedFields") ArrayList<InteractionEmbedFields> embedFields, @JsonProperty("friendlyName") String friendlyName) {
         this.triggers = triggers;
         this.tags = tags;
         this.templatesNew = templatesNew;
@@ -100,6 +101,7 @@ public class Interaction {
         this.specialInteraction = specialInteraction;
         this.embedFields = embedFields;
         this.friendlyName = friendlyName;
+        this.allowedServers.addAll(Arrays.asList(allowedServers));
     }
 
     public Interaction(String identifier, String[] tags, InteractionTemplate[] templatesNew, String[] triggers, int confidence, boolean enabled, String helptext, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction){
@@ -123,6 +125,8 @@ public class Interaction {
         String result = null;
         if(!lock) {
             cleanupInteraction();
+            if(!isAllowedServer(event.getGuild()))
+                return null;
             confidenceChecked = 0;
             try {
                 if (enabled) {
@@ -180,6 +184,10 @@ public class Interaction {
 
     private boolean isAllowedUser(IUser user) {
         return allowedUsers == null || allowedUsers.isEmpty() || allowedUsers.contains(user.getStringID());
+    }
+
+    private boolean isAllowedServer(IGuild guild) {
+        return allowedServers == null || allowedServers.isEmpty() || allowedServers.contains(guild.getLongID());
     }
 
     private int getConfidence(String message, boolean prefixed, IGuild guild){
