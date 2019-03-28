@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -16,11 +16,15 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.VoiceState;
-import discord4j.core.object.entity.Channel;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.VoiceChannel;
+import discord4j.voice.VoiceConnection;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Karren;
+import reactor.core.publisher.Flux;
+
+import java.util.Objects;
 
 public class AudioResultHandler implements AudioLoadResultHandler {
     MessageCreateEvent event;
@@ -75,14 +79,20 @@ public class AudioResultHandler implements AudioLoadResultHandler {
         User self = event.getClient().getSelf().block();
         Member author = event.getMessage().getAuthorAsMember().block();
         if(self !=null && author!=null && event.getGuildId().isPresent()) {
+            Karren.log.info("Getting user voice channel");
             Member selfMember = self.asMember(event.getGuildId().get()).block();
             VoiceState vs = author.getVoiceState().block();
             if (vs != null && selfMember !=null) {
+                Karren.log.info("Loaded user voice state and self user");
                 VoiceState vsSelf = selfMember.getVoiceState().block();
                 if (vsSelf == null) {
-                    Channel voiceChannel = vs.getChannel().block();
-                    if(voiceChannel!=null)
-                        Karren.bot.client.
+                    Karren.log.info("Bot not already in channel");
+                    VoiceChannel voiceChannel = vs.getChannel().block();
+                    if(voiceChannel!=null){
+                        Karren.log.info("Connecting to VC");
+                        Flux.first(Objects.requireNonNull(event.getGuild().block()).getChannels().ofType(VoiceChannel.class).filter(vc -> vc.getVoiceStates().hasElement(vs).block())).toIterable().forEach(it -> it.join(spec -> spec.setProvider(gm.getAudioProvider())).subscribe(VoiceConnection::disconnect));
+                    }
+
                 }
             } else {
                 failed = true;

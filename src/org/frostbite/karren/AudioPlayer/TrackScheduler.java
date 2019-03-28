@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -15,12 +15,10 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import discord4j.core.object.entity.Channel;
+import discord4j.core.object.entity.Guild;
+import discord4j.core.object.entity.MessageChannel;
 import org.frostbite.karren.Karren;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MissingPermissionsException;
-import sx.blah.discord.util.RateLimitException;
 
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
@@ -35,13 +33,13 @@ public class TrackScheduler extends AudioEventAdapter {
     private boolean isRepeat = false;
     private boolean isShuffle = false;
     private AudioTrack lastTrack = null;
-    private IGuild guild;
-    private IChannel announceChannel;
+    private Guild guild;
+    private MessageChannel announceChannel;
 
     /**
      * @param player The audio player this scheduler uses
      */
-    public TrackScheduler(AudioPlayer player, IGuild guild) {
+    public TrackScheduler(AudioPlayer player, Guild guild) {
         this.player = player;
         this.queue = new LinkedBlockingQueue<>();
         this.guild = guild;
@@ -89,16 +87,11 @@ public class TrackScheduler extends AudioEventAdapter {
         }
         if(queue.size()==0 && player.getPlayingTrack()==null){
             player.destroy();
-            if(!Karren.bot.getIrm().isGuildIRActive(guild)) {
-                guild.getConnectedVoiceChannel().leave();
-            }
+            Karren.bot.getGuildMusicManager(guild).getVoiceConn().disconnect();
+
         } else {
-            try {
-                assert newSong != null;
-                announceChannel.sendMessage("Starting playback of \"" + newSong.getInfo().title + "\"");
-            } catch (DiscordException | RateLimitException | MissingPermissionsException e){
-                e.printStackTrace();
-            }
+            assert newSong != null;
+            announceChannel.createMessage("Starting playback of \"" + newSong.getInfo().title + "\"");
         }
     }
 
@@ -110,9 +103,8 @@ public class TrackScheduler extends AudioEventAdapter {
         player.stopTrack();
         player.destroy();
         queue.clear();
-        if(!Karren.bot.getIrm().isGuildIRActive(guild)) {
-            guild.getConnectedVoiceChannel().leave();
-        }
+
+        Karren.bot.getGuildMusicManager(guild).getVoiceConn().disconnect();
     }
 
     @Override
@@ -124,26 +116,23 @@ public class TrackScheduler extends AudioEventAdapter {
         }
 
         if(endReason == AudioTrackEndReason.STOPPED){
-            if(Karren.bot.getIrm().isGuildIRActive(guild))
-                announceChannel.sendMessage("Playback stopped, I'll be here until you stop Instant Replay.");
-            else
-                announceChannel.sendMessage("Stopped playback");
+            announceChannel.createMessage("Playback Stopped");
         }
     }
 
     @Override
     public void onPlayerPause(AudioPlayer player) {
-        announceChannel.sendMessage("Playback has been paused");
+        announceChannel.createMessage("Playback has been paused");
     }
 
     @Override
     public void onPlayerResume(AudioPlayer player) {
-        announceChannel.sendMessage("Playback has been resumed!");
+        announceChannel.createMessage("Playback has been resumed!");
     }
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception){
-        announceChannel.sendMessage("Playback error: " + exception.getLocalizedMessage());
+        announceChannel.createMessage("Playback error: " + exception.getLocalizedMessage());
     }
 
     public boolean isPlaying(){
@@ -168,13 +157,13 @@ public class TrackScheduler extends AudioEventAdapter {
         isShuffle = shuffle;
     }
 
-    public IGuild getGuild(){return guild;}
+    public Guild getGuild(){return guild;}
 
-    public IChannel getAnnounceChannel() {
+    public Channel getAnnounceChannel() {
         return announceChannel;
     }
 
-    public void setAnnounceChannel(IChannel announceChannel) {
+    public void setAnnounceChannel(MessageChannel announceChannel) {
         this.announceChannel = announceChannel;
     }
 }

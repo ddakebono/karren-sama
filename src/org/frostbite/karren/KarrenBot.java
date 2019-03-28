@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -11,31 +11,48 @@
 package org.frostbite.karren;
 
 import com.google.api.services.youtube.YouTube;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.track.playback.NonAllocatingAudioFrameBuffer;
 import discord4j.core.DiscordClient;
 import discord4j.core.event.EventDispatcher;
+import discord4j.core.event.domain.guild.GuildCreateEvent;
 import discord4j.core.event.domain.lifecycle.ConnectEvent;
 import discord4j.core.event.domain.lifecycle.DisconnectEvent;
 import discord4j.core.event.domain.lifecycle.ReconnectEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.entity.Guild;
 import io.github.vrchatapi.VRCUser;
+import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.listeners.*;
 import org.knowm.yank.Yank;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class KarrenBot {
     public DiscordClient client;
     public MySQLInterface sql = new MySQLInterface();
     public boolean extrasReady = false;
+    public Map<Long, GuildMusicManager> gms;
     public GuildManager ic;
     public boolean isKill = false;
     public YouTube yt;
+    public AudioPlayerManager pm;
 
     public KarrenBot(DiscordClient client){
         this.client = client;
     }
 
     public void initDiscord(){
-        //TODO lavaplayer
+        Karren.log.info("Starting up Lavaplayer...");
+        gms = new HashMap<>();
+        pm = new DefaultAudioPlayerManager();
+        pm.getConfiguration().setFrameBufferFactory(NonAllocatingAudioFrameBuffer::new);
+        AudioSourceManagers.registerRemoteSources(pm);
+        AudioSourceManagers.registerLocalSource(pm);
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
             EventDispatcher ed = client.getEventDispatcher();
@@ -45,6 +62,7 @@ public class KarrenBot {
             ed.on(DisconnectEvent.class).subscribe(new ShutdownListener());
             ed.on(MessageCreateEvent.class).subscribe(new StatCommand());
             ed.on(MessageCreateEvent.class).subscribe(new InteractionCommand());
+            ed.on(GuildCreateEvent.class).subscribe(new GuildCreateListener());
             /*ed.registerListener(new ConnectCommand());
             ed.registerListener(new HelpCommand());
             ed.registerListener(interactionListener);
@@ -116,15 +134,15 @@ public class KarrenBot {
         return extrasReady;
     }
 
-    /*public GuildMusicManager getGuildMusicManager(Guild guild){
-        return gms.get(guild.getStringID());
+    public GuildMusicManager getGuildMusicManager(Guild guild){
+        return gms.get(guild.getId().asLong());
     }
 
     public GuildMusicManager createGuildMusicManager(Guild guild){
-        if(!gms.containsKey(guild.getStringID()))
-            gms.put(guild.getStringID(), new GuildMusicManager(pm, guild));
-        return gms.get(guild.getStringID());
-    }*/
+        if(!gms.containsKey(guild.getId().asLong()))
+            gms.put(guild.getId().asLong(), new GuildMusicManager(pm, guild));
+        return gms.get(guild.getId().asLong());
+    }
 
     //TODO Audio player
     /*public AudioPlayerManager getPm() {
