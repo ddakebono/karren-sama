@@ -13,16 +13,16 @@ package org.frostbite.karren;
 
 import com.google.gson.Gson;
 import org.apache.commons.io.FilenameUtils;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.InteractionProcessor;
-import org.frostbite.karren.interactions.Tag;
-import org.frostbite.karren.interactions.Tags.*;
-import org.frostbite.karren.interactions.Tags.D4JPlayer.*;
-import org.frostbite.karren.interactions.Tags.Guild.*;
-import org.frostbite.karren.interactions.Tags.InstantReplay.Playback;
-import org.frostbite.karren.interactions.Tags.InstantReplay.StartListening;
-import org.frostbite.karren.interactions.Tags.InstantReplay.StopListening;
-import org.frostbite.karren.interactions.Tags.VRChat.*;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionProcessor;
+import org.frostbite.karren.Interactions.Tag;
+import org.frostbite.karren.Interactions.Tags.*;
+import org.frostbite.karren.Interactions.Tags.D4JPlayer.*;
+import org.frostbite.karren.Interactions.Tags.Guild.*;
+import org.frostbite.karren.Interactions.Tags.InstantReplay.Playback;
+import org.frostbite.karren.Interactions.Tags.InstantReplay.StartListening;
+import org.frostbite.karren.Interactions.Tags.InstantReplay.StopListening;
+import org.frostbite.karren.Interactions.Tags.VRChat.*;
 import org.frostbite.karren.listeners.InteractionCommands;
 import sx.blah.discord.handle.obj.IGuild;
 
@@ -38,7 +38,7 @@ public class GuildManager {
 
     private ArrayList<Tag> tagHandlers;
     private Map<String, InteractionProcessor> registeredGuilds = new HashMap<>();
-    //Default processor handles private message interactions
+    //Default processor handles private message Interactions
     private InteractionProcessor defaultProcessor;
     private ArrayList<Interaction> defaultInteractions;
     private boolean lock = false;
@@ -59,9 +59,6 @@ public class GuildManager {
         tagHandlers.add(new DisableInteraction());
         tagHandlers.add(new EnableInteraction());
         tagHandlers.add(new Count());
-        tagHandlers.add(new OverwatchUAPIProfile());
-        tagHandlers.add(new OverwatchUAPIHero());
-        tagHandlers.add(new OverwatchUAPIAllHeroes());
         tagHandlers.add(new DeleteMessage());
         tagHandlers.add(new D4JPlay());
         tagHandlers.add(new D4JList());
@@ -107,6 +104,10 @@ public class GuildManager {
         tagHandlers.add(new ListRole());
         tagHandlers.add(new GetAccess());
         tagHandlers.add(new SetAccessRole());
+        tagHandlers.add(new SetStreamAnnounceChannel());
+        tagHandlers.add(new SetStreamMentionRole());
+        tagHandlers.add(new AddStreamer());
+        tagHandlers.add(new RemoveStreamer());
     }
 
     public ArrayList<Interaction> loadInteractions(){

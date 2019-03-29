@@ -1,29 +1,28 @@
 {
   "triggers": [
-    "accessrole"
+    "streamrole"
   ],
   "tags": [
     "prefixed",
-    "parameter",
-    "setaccessrole"
+    "setstreamrole"
   ],
   "templatesNew": [
     {
-      "template": "Access role set to %role",
+      "template": "Stream announce mention role set to **\"%role\"**",
       "templateType": "normal"
     },
     {
-      "template": "The role you want to use needs to exist.",
+      "template": "Looks like that role doesn't exist",
       "templateType": "fail"
     },
     {
-      "template": "You don\u0027t have permission to change this... (Not admin)",
+      "template": "You don\u0027t have permission to use this... (Not admin)",
       "templateType": "permission"
     }
   ],
   "enabled": true,
-  "helptext": "Sets the access role to be used with get access",
-  "identifier": "SetAccessRole",
+  "helptext": "Sets stream announce mention role",
+  "identifier": "SetMentionRole",
   "confidence": 1,
   "permissionLevel": "bot-manager",
   "voiceVolume": 0.0,

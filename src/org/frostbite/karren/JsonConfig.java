@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -38,6 +38,8 @@ public class JsonConfig {
     private String discordApiKey = "changeme";
     private String osuAPIKey = "changeme";
     private String googleAPIKey = "changeme";
+    private String twitchAPIKey = "changeme";
+    private String twitchIDKey = "changeme";
     private String operatorDiscordID = "changeme";
     private String vrcUsername = "changeme";
     private String vrcPassword = "changeme";
@@ -49,7 +51,7 @@ public class JsonConfig {
     }
 
     @JsonCreator
-    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("icecastAdminUsername") String icecastAdminUsername,@JsonProperty("icecastAdminPass") String icecastAdminPass,@JsonProperty("listencastAnnounce") boolean listencastAnnounce,@JsonProperty("enableListencast") boolean enableListencast,@JsonProperty("icecastMount") String icecastMount,@JsonProperty("icecastHost") String icecastHost,@JsonProperty("icecastPort") int icecastPort,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("osuAPIKey") String osuAPIKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("trackerNetworkAPIKey")String trackerNetworkAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode, @JsonProperty("VRCUsername") String vrcUsername, @JsonProperty("VRCPassword") String vrcPassword, @JsonProperty("StatusOverride") String statusOverride) {
+    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("osuAPIKey") String osuAPIKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode, @JsonProperty("VRCUsername") String vrcUsername, @JsonProperty("VRCPassword") String vrcPassword, @JsonProperty("StatusOverride") String statusOverride, @JsonProperty("TwitchAPIKey") String twitchAPIKey, @JsonProperty("TwitchIDKey") String twitchIDKey) {
         this.confVersionMarker = confVersionMarker;
         this.connectToDiscord = connectToDiscord;
         this.allowSQLRW = allowSQLRW;
@@ -68,6 +70,8 @@ public class JsonConfig {
         this.vrcUsername = vrcUsername;
         this.vrcPassword = vrcPassword;
         this.statusOverride = statusOverride;
+        this.twitchAPIKey = twitchAPIKey;
+        this.twitchIDKey = twitchIDKey;
     }
 
     public boolean isSet(){
@@ -173,5 +177,13 @@ public class JsonConfig {
 
     public String getStatusOverride() {
         return statusOverride;
+    }
+
+    public String getTwitchAPIKey() {
+        return twitchAPIKey;
+    }
+
+    public String getTwitchIDKey() {
+        return twitchIDKey;
     }
 }

@@ -1,0 +1,31 @@
+{
+  "triggers": [
+    "addstreamer"
+  ],
+  "tags": [
+    "prefixed",
+    "mentioned",
+    "addstreamer"
+  ],
+  "templatesNew": [
+    {
+      "template": "Added %user to monitored streamers",
+      "templateType": "normal"
+    },
+    {
+      "template": "That user is already marked as a streamer",
+      "templateType": "fail"
+    },
+    {
+      "template": "You need to give me a user as a mention.",
+      "templateType": "nouser"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Adds a streamer to the list of monitored streamers",
+  "identifier": "AddStreamer",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

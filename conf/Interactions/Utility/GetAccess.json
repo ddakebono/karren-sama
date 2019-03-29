@@ -1,0 +1,37 @@
+{
+  "triggers": [
+    "read",
+    "agree",
+    "rules"
+  ],
+  "tags": [
+    "getaccess",
+    "ignoreoverride",
+    "name"
+  ],
+  "templatesNew": [
+    {
+      "template": "%name has accepted the rules, granted the role %role.",
+      "templateType": "normal"
+    },
+    {
+      "template": "The role you requested is not part of the assignable roles!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You have to enter a role you want!",
+      "templateType": "noparam"
+    },
+    {
+      "template": "This server has no assignable roles!",
+      "templateType": "notsetup"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Allows you to accept the rules and gain access to the rest of the guild",
+  "identifier": "GetAccess",
+  "confidence": 2,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}
