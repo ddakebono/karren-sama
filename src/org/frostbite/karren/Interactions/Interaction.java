@@ -131,7 +131,7 @@ public class Interaction {
             try {
                 if (enabled) {
                     if (isAllowedUser(event.getAuthor())) {
-                        if (event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild())) && Arrays.asList(tags).contains("prefixed")) {
+                        if (event.getMessage().getContent().toLowerCase().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()).toLowerCase()) && Arrays.asList(tags).contains("prefixed")) {
                             //Get only word follow prefix
                             Pattern prefixedPattern = Pattern.compile("\\s+");
                             String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()), ""));
