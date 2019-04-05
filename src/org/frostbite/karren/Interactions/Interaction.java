@@ -127,19 +127,20 @@ public class Interaction {
             cleanupInteraction();
             if(!isAllowedServer(event.getGuild()))
                 return null;
+            String prefix = Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()).toUpperCase();
             confidenceChecked = 0;
             try {
                 if (enabled) {
                     if (isAllowedUser(event.getAuthor())) {
-                        if (event.getMessage().getContent().toLowerCase().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()).toLowerCase()) && Arrays.asList(tags).contains("prefixed")) {
+                        if (event.getMessage().getContent().toUpperCase().startsWith(prefix) && Arrays.asList(tags).contains("prefixed")) {
                             //Get only word follow prefix
                             Pattern prefixedPattern = Pattern.compile("\\s+");
-                            String[] regex = prefixedPattern.split(event.getMessage().getContent().replace(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()), ""));
+                            String[] regex = prefixedPattern.split(event.getMessage().getContent().replaceFirst("(?i)\\Q"+prefix+"\\E", ""));
                             if (regex.length > 0) {
                                 confidenceChecked = getConfidence(regex[0], true, event.getGuild());
                             }
                         }
-                        if (!event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild())) && !Arrays.asList(tags).contains("prefixed")) {
+                        if (!event.getMessage().getContent().toUpperCase().startsWith(prefix) && !Arrays.asList(tags).contains("prefixed")) {
                             confidenceChecked = getConfidence(event.getMessage().getContent(), false, event.getGuild());
                         }
                         if (confidenceChecked >= this.confidence)

@@ -27,10 +27,11 @@ public class Parameter extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
         String message = event.getMessage().getContent();
+        String prefix = Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()).toUpperCase();
         if(interaction.getTriggers()!=null) {
             for (String trigger : interaction.getTriggers()) {
-                if (event.getMessage().getContent().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + trigger)) {
-                    message = message.replace(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + trigger, "").trim();
+                if (event.getMessage().getContent().toUpperCase().startsWith(prefix + trigger.toUpperCase())) {
+                    message = message.replaceAll("(?i)\\Q"+prefix + trigger+"\\E", "").trim();
                     break;
                 }
                 //Patch for prefixed Interactions
