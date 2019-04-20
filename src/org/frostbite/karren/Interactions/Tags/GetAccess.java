@@ -24,7 +24,7 @@ import java.util.Optional;
 public class GetAccess extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
-        if(event.getChannel().getName().equalsIgnoreCase("welcome")) {
+        if(event.getChannel().getName().equalsIgnoreCase("welcome") || event.getChannel().getName().equalsIgnoreCase("the-door")) {
             String param = Karren.bot.sql.getGuild(event.getGuild()).getAccessRole();
             Optional<IRole> selectedRole = event.getGuild().getRoles().stream().filter(x -> x.getName().toLowerCase().startsWith(param.toLowerCase())).findFirst();
             if (selectedRole.isPresent()) {
