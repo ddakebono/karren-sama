@@ -25,6 +25,11 @@
   ],
   "embedFields": [
     {
+      "fieldTitle": "UserID",
+      "fieldValue": "%userid",
+      "inline": true
+    },
+    {
       "fieldTitle": "World",
       "fieldValue": "%world",
       "inline": true
