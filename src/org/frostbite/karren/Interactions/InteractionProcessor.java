@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,9 +10,8 @@
 
 package org.frostbite.karren.Interactions;
 
-import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.entity.Guild;
-import discord4j.core.spec.MessageCreateSpec;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.frostbite.karren.Karren;
 
 import java.util.ArrayList;
@@ -53,13 +52,12 @@ public class InteractionProcessor {
         }
     }
 
-    public InteractionResult run(MessageCreateEvent event){
+    public InteractionResult run(MessageReceivedEvent event){
         List<Interaction> matches = getAllInteractionMatches(event);
         InteractionResult result = null;
         if(matches.size()>0){
             for(Interaction match : matches){
                 Karren.log.info("Interaction match! Starting processing for " + (match.getFriendlyName()!=null?match.getFriendlyName():match.getIdentifier()));
-                MessageCreateSpec message = new MessageCreateSpec();
                 result = new InteractionResult(event, false, null);
                 preloadTags(match, result);
                 processTags(match, result);
@@ -85,7 +83,7 @@ public class InteractionProcessor {
         }
     }
 
-    private List<Interaction> getAllInteractionMatches(MessageCreateEvent event){
+    private List<Interaction> getAllInteractionMatches(MessageReceivedEvent event){
         List<Interaction> matches = new LinkedList<>();
         for(Interaction check : interactions){
             if(check.checkTriggers(event)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -12,7 +12,7 @@ package org.frostbite.karren;
 
 
 import com.google.gson.Gson;
-import discord4j.core.object.entity.Guild;
+import net.dv8tion.jda.api.entities.Guild;
 import org.apache.commons.io.FilenameUtils;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionProcessor;
@@ -138,7 +138,7 @@ public class GuildManager {
 
     public void clearGuildInteractionProcessor(Guild guild){
         if(guild!=null){
-            registeredGuilds.remove(guild.getId().asString());
+            registeredGuilds.remove(guild.getId());
         }
     }
 
@@ -161,11 +161,11 @@ public class GuildManager {
     public InteractionProcessor getInteractionProcessor(Guild guild){
         if(!lock && defaultInteractions.size()>0){
             if(guild!=null){
-                if (!registeredGuilds.containsKey(guild.getId().asString())) {
+                if (!registeredGuilds.containsKey(guild.getId())) {
                     ArrayList<Interaction> loadedInteractions = loadInteractions();
-                    registeredGuilds.put(guild.getId().asString(), new InteractionProcessor(guild, loadedInteractions));
+                    registeredGuilds.put(guild.getId(), new InteractionProcessor(guild, loadedInteractions));
                 }
-                return registeredGuilds.getOrDefault(guild.getId().asString(), defaultProcessor);
+                return registeredGuilds.getOrDefault(guild.getId(), defaultProcessor);
             } else {
                 return defaultProcessor;
             }

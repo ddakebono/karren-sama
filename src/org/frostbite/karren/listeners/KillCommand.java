@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,38 +10,24 @@
 
 package org.frostbite.karren.listeners;
 
-import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.frostbite.karren.Karren;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 
-public class KillCommand implements Consumer<MessageCreateEvent> {
+public class KillCommand extends ListenerAdapter {
 
     @Override
-	public void accept(MessageCreateEvent event){
-        User bot = Karren.bot.client.getSelf().block();
-        Optional<User> authorOpt = event.getMessage().getAuthor();
-        if(event.getMember().isPresent()) {
-            assert bot != null;
-            if (bot.getId().equals(event.getMember().get().getId()))
-                return;
-        }
-        if(event.getMessage().getContent().isPresent() && authorOpt.isPresent()) {
-            Karren.log.info("New Message: \"" + event.getMessage().getContent().get() + "\" From user: " + authorOpt.get().getUsername() + " in Channel: " + Objects.requireNonNull(event.getMessage().getChannel().block()).getId().asString());
-            if (event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild().block()) + "kill")) {
-                Optional<Member> optMember = event.getMember();
-                if (optMember.isPresent()) {
-                    if (optMember.get().getId().asString().equals(Karren.conf.getOperatorDiscordID())) {
-                        Karren.bot.killBot(optMember.get().getNickname().isPresent() ? optMember.get().getNickname().get() : optMember.get().getDisplayName());
-                    } else {
-                        Objects.requireNonNull(event.getMessage().getChannel().block()).createMessage("Hold on a sec, this command can only be used by my operator.");
-                    }
-                }
+    public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+        //Catch all messages and log
+        Karren.log.debug("Message from: " + event.getAuthor().getName() + " | Channel: " + event.getChannel().getId() + " | Content: " + event.getMessage().getContentRaw());
+        if (event.getMessage().getContentRaw().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "kill")) {
+            if (event.getAuthor().getId().equals(Karren.conf.getOperatorDiscordID())) {
+                Karren.bot.killBot(event.getAuthor().getName());
+            } else {
+                event.getChannel().sendMessage("Hold on a sec, this command can only be used by my operator.");
             }
         }
-	}
+    }
 }

@@ -15,64 +15,58 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.track.playback.NonAllocatingAudioFrameBuffer;
-import discord4j.core.DiscordClient;
-import discord4j.core.event.EventDispatcher;
-import discord4j.core.event.domain.guild.GuildCreateEvent;
-import discord4j.core.event.domain.lifecycle.ConnectEvent;
-import discord4j.core.event.domain.lifecycle.DisconnectEvent;
-import discord4j.core.event.domain.lifecycle.ReconnectEvent;
-import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.entity.Guild;
 import io.github.vrchatapi.VRCUser;
-import org.frostbite.karren.AudioPlayer.GuildMusicManager;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.listeners.*;
 import org.knowm.yank.Yank;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.security.auth.login.LoginException;
 
 public class KarrenBot {
-    public DiscordClient client;
+    public JDABuilder clientBuilder;
+    public JDA client;
     public MySQLInterface sql = new MySQLInterface();
     public boolean extrasReady = false;
-    public Map<Long, GuildMusicManager> gms;
+    //public Map<Long, GuildMusicManager> gms;
     public GuildManager ic;
     public boolean isKill = false;
     public YouTube yt;
     public AudioPlayerManager pm;
 
-    public KarrenBot(DiscordClient client){
-        this.client = client;
+    public KarrenBot(JDABuilder clientBuilder){
+        this.clientBuilder = clientBuilder;
     }
 
     public void initDiscord(){
         Karren.log.info("Starting up Lavaplayer...");
-        gms = new HashMap<>();
+        //gms = new HashMap<>();
         pm = new DefaultAudioPlayerManager();
         pm.getConfiguration().setFrameBufferFactory(NonAllocatingAudioFrameBuffer::new);
         AudioSourceManagers.registerRemoteSources(pm);
         AudioSourceManagers.registerLocalSource(pm);
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
-            EventDispatcher ed = client.getEventDispatcher();
-            ed.on(ConnectEvent.class).subscribe(new ConnectCommand());
-            ed.on(MessageCreateEvent.class).subscribe(new KillCommand());
-            ed.on(ReconnectEvent.class).subscribe(new ReconnectListener());
-            ed.on(DisconnectEvent.class).subscribe(new ShutdownListener());
-            ed.on(MessageCreateEvent.class).subscribe(new StatCommand());
-            ed.on(MessageCreateEvent.class).subscribe(new InteractionCommand());
-            ed.on(GuildCreateEvent.class).subscribe(new GuildCreateListener());
-            /*ed.registerListener(new ConnectCommand());
-            ed.registerListener(new HelpCommand());
-            ed.registerListener(interactionListener);
-            ed.registerListener(new KillCommand());
-            ed.registerListener(new GuildCreateListener());
-            ed.registerListener(new ShutdownListener());
-            ed.registerListener(new ReconnectListener());
-            ed.registerListener(new StatCommand());*/
+            if(!Karren.conf.isTestMode())
+                clientBuilder.setActivity(Activity.playing("KarrenSama Ver." + Karren.botVersion));
+            else
+                clientBuilder.setActivity(Activity.playing("TEST MODE - " + Karren.botVersion));
+            clientBuilder.addEventListeners(new ConnectCommand());
+            clientBuilder.addEventListeners(new KillCommand());
+            clientBuilder.addEventListeners(new ReconnectListener());
+            clientBuilder.addEventListeners(new ShutdownListener());
+            clientBuilder.addEventListeners(new StatCommand());
+            clientBuilder.addEventListeners(new InteractionCommand());
+            clientBuilder.addEventListeners(new GuildCreateListener());
             initExtras();
-            client.login().block(); //Let's GOOOOO
+            try {
+                client = clientBuilder.build();
+            } catch (LoginException e) {
+                e.printStackTrace();
+            }
+            //client.login().block(); //Let's GOOOOO
         } else {
             Karren.log.info("Running in test mode, not connected to Discord.");
             initExtras();
@@ -101,7 +95,7 @@ public class KarrenBot {
         //Unhook and shutdown interaction system
         Yank.releaseAllConnectionPools();
         //Interactions reset to default state and unregistered
-        client.logout();
+        client.shutdown();
         Karren.bot = null;
         System.gc();
         Karren.log.info("Bot has been killed by " + killer);
@@ -122,27 +116,23 @@ public class KarrenBot {
 
     public GuildManager getGuildManager() {return ic;}
 
-    public DiscordClient getClient(){
+    public JDA getClient(){
         return client;
-    }
-
-    public void setClient(DiscordClient client) {
-        this.client = client;
     }
 
     public boolean isExtrasReady() {
         return extrasReady;
     }
 
-    public GuildMusicManager getGuildMusicManager(Guild guild){
-        return gms.get(guild.getId().asLong());
+    /*public GuildMusicManager getGuildMusicManager(Guild guild){
+        return gms.get(guild.getIdLong());
     }
 
     public GuildMusicManager createGuildMusicManager(Guild guild){
-        if(!gms.containsKey(guild.getId().asLong()))
-            gms.put(guild.getId().asLong(), new GuildMusicManager(pm, guild));
-        return gms.get(guild.getId().asLong());
-    }
+        if(!gms.containsKey(guild.getIdLong()))
+            gms.put(guild.getIdLong(), new GuildMusicManager(pm, guild));
+        return gms.get(guild.getIdLong());
+    }*/
 
     //TODO Audio player
     /*public AudioPlayerManager getPm() {

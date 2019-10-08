@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,10 +10,8 @@
 
 package org.frostbite.karren;
 
-import discord4j.core.object.entity.Channel;
-import discord4j.core.object.entity.TextChannel;
-import discord4j.core.object.entity.User;
-import discord4j.core.object.util.Snowflake;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import org.frostbite.karren.Database.Objects.DbReminder;
 
 import java.sql.Timestamp;
@@ -34,14 +32,13 @@ public class AutoInteraction extends Thread {
                     for (DbReminder reminder : remindersPastTime) {
                         reminder.setReminderSent(true);
                         reminder.update();
-                        User author = Karren.bot.client.getUserById(Snowflake.of(reminder.authorID)).block();
-                        User target = Karren.bot.client.getUserById(Snowflake.of(reminder.targetID)).block();
+                        User author = Karren.bot.client.getUserById(reminder.authorID);
+                        User target = Karren.bot.client.getUserById(reminder.targetID);
                         if(author!=null&&target!=null) {
-                            String message = "Hey " + target.getMention() + ", " + author.getUsername() + " wanted me to remind you **\"" + reminder.getMessage() + "\"**";
-                            Channel channel = Karren.bot.client.getChannelById(Snowflake.of(reminder.channelID)).block();
+                            String message = "Hey " + target.getAsMention() + ", " + author.getName() + " wanted me to remind you **\"" + reminder.getMessage() + "\"**";
+                            TextChannel channel = Karren.bot.client.getTextChannelById(reminder.channelID);
                             if(channel!=null)
-                                if(channel.getType().equals(Channel.Type.GUILD_TEXT))
-                                    ((TextChannel)channel).createMessage(message).block();
+                                channel.sendMessage(message);
                         }
                         /*IUser author = Karren.bot.getClient().getUserByID(reminder.getAuthorID());
                         IUser target = Karren.bot.getClient().getUserByID(Karren.bot.getSql().getGuildUser(reminder.getTargetID()).getUserID());

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -15,12 +15,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
-import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.Role;
-import discord4j.core.object.entity.User;
-import discord4j.core.spec.EmbedCreateSpec;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.frostbite.karren.Karren;
 
 import java.io.File;
@@ -29,6 +25,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Interaction {
     @Expose private String[] triggers;
@@ -56,7 +53,7 @@ public class Interaction {
     private File interactionFile;
     private ArrayList<Tag> tagCache = new ArrayList<>();
     private boolean noClearInteraction = false;
-    private EmbedCreateSpec embed;
+    private MessageEmbed embed;
     @Expose private ArrayList<InteractionParameter> parameters;
     @Expose private ArrayList<InteractionEmbedFields> embedFields;
     @Expose private String friendlyName;
@@ -117,23 +114,23 @@ public class Interaction {
         this.voiceVolume = voiceVolume;
     }
 
-    public boolean checkTriggers(MessageCreateEvent event){
+    public boolean checkTriggers(MessageReceivedEvent event){
         if(!lock) {
             cleanupInteraction();
             int confidenceChecked = 0;
-            if (event.getMember().isPresent() && isAllowedUser(event.getMember().get()) && enabled && event.getMessage().getContent().isPresent()) {
-                Guild guild = event.getGuild().block();
+            if (isAllowedUser(event.getAuthor()) && enabled && !event.getMessage().getContentRaw().isEmpty()) {
+                Guild guild = event.getGuild();
                 if (Arrays.asList(tags).contains("prefixed")) {
-                    if (event.getMessage().getContent().get().startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild))) {
+                    if (event.getMessage().getContentRaw().startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild))) {
                         Pattern prefixedPattern = Pattern.compile("\\s+");
-                        String[] regex = prefixedPattern.split(event.getMessage().getContent().get().replace(Karren.bot.getGuildManager().getCommandPrefix(guild), ""));
+                        String[] regex = prefixedPattern.split(event.getMessage().getContentRaw().replace(Karren.bot.getGuildManager().getCommandPrefix(guild), ""));
                         if (regex.length > 0) {
                             confidenceChecked = getConfidence(regex[0], true, guild);
                         }
                     }
                 } else {
                     //Non prefixed interaction
-                    confidenceChecked = getConfidence(event.getMessage().getContent().get(), false, guild);
+                    confidenceChecked = getConfidence(event.getMessage().getContentRaw(), false, guild);
                 }
             }
             return confidenceChecked >= confidence;
@@ -141,12 +138,12 @@ public class Interaction {
         return false;
     }
 
-    public String getInitialTemplate(MessageCreateEvent event){
+    public String getInitialTemplate(MessageReceivedEvent event){
         if(permissionLevel!=null && !permissionLevel.isEmpty()){
-            if(!event.getMember().isPresent())
-                return null;
+            List<Role> rolesMatch = null;
             //get roles
-            List<Role> rolesMatch = event.getMember().get().getRoles().filter(x -> x.getName().equalsIgnoreCase(permissionLevel)).collectList().block();
+            if(event.getMember()!=null)
+                rolesMatch = event.getMember().getRoles().stream().filter(x -> x.getName().equalsIgnoreCase(permissionLevel)).collect(Collectors.toList());
             if(rolesMatch!=null && rolesMatch.size()>0)
                 return getRandomTemplate("normal").getTemplate();
             else
@@ -178,15 +175,22 @@ public class Interaction {
         }
     }
 
-    private boolean isAllowedUser(Member user) {
-        return allowedUsers == null || allowedUsers.isEmpty() || allowedUsers.contains(user.getId().asString());
+    private boolean isAllowedUser(User user) {
+        return allowedUsers == null || allowedUsers.isEmpty() || allowedUsers.contains(user.getId());
     }
 
     private int getConfidence(String message, boolean prefixed, Guild guild){
         int confidence = 0;
+        Member selfMember = null;
         if(!prefixed){
-            //Add getNicknameForGuild once it's fixed and doesn't return a null
-            if(Arrays.asList(tags).contains("bot") && !message.toLowerCase().contains(Karren.bot.getClient().getSelf().block().getUsername().toLowerCase()))
+            //Check for bot username, and server specific nicknames
+            if(guild!=null)
+                selfMember = guild.getMember(Karren.bot.client.getSelfUser());
+            if(selfMember!=null){
+                if(Arrays.asList(tags).contains("bot") && !message.toLowerCase().contains(Karren.bot.client.getSelfUser().getName()) && !message.toLowerCase().contains(selfMember.getEffectiveName()))
+                    return 0;
+            }
+            if(Arrays.asList(tags).contains("bot") && !message.toLowerCase().contains(Karren.bot.client.getSelfUser().getName()))
                 return 0;
         }
         String[] tokenizedMessage = message.split("\\s+");
@@ -332,11 +336,11 @@ public class Interaction {
         return embed!=null;
     }
 
-    public EmbedCreateSpec getEmbed(){
+    public MessageEmbed getEmbed(){
         return embed;
     }
 
-    public void setEmbed(EmbedCreateSpec embed){
+    public void setEmbed(MessageEmbed embed){
         this.embed = embed;
     }
 

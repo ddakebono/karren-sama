@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,25 +10,23 @@
 
 package org.frostbite.karren.Interactions;
 
-import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.spec.EmbedCreateSpec;
-
-import java.util.function.Consumer;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class InteractionResult {
     String message;
-    Consumer<EmbedCreateSpec> embedConsumer;
-    MessageCreateEvent event;
+    MessageEmbed embed;
+    MessageReceivedEvent event;
     boolean privateMessage = false;
     String overrideChannel = null;
     boolean errored = false;
     boolean doNotSend = false;
 
-    public InteractionResult(MessageCreateEvent event){
+    public InteractionResult(MessageReceivedEvent event){
         new InteractionResult(event, false, null);
     }
 
-    public InteractionResult(MessageCreateEvent event, boolean privateMessage, String overrideChannel) {
+    public InteractionResult(MessageReceivedEvent event, boolean privateMessage, String overrideChannel) {
         this.event = event;
         this.privateMessage = privateMessage;
         this.overrideChannel = overrideChannel;
@@ -42,12 +40,12 @@ public class InteractionResult {
         this.message = message;
     }
 
-    public Consumer<EmbedCreateSpec> getEmbedConsumer() {
-        return embedConsumer;
+    public MessageEmbed getEmbed() {
+        return embed;
     }
 
-    public void setEmbedConsumer(Consumer<EmbedCreateSpec> embedConsumer) {
-        this.embedConsumer = embedConsumer;
+    public void setEmbed(MessageEmbed embedConsumer) {
+        this.embed = embedConsumer;
     }
 
     public boolean isPrivateMessage() {
@@ -58,7 +56,7 @@ public class InteractionResult {
         return overrideChannel;
     }
 
-    public MessageCreateEvent getEvent() {
+    public MessageReceivedEvent getEvent() {
         return event;
     }
 

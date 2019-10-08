@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -18,23 +18,28 @@ public class DbGuild {
     private String guildName = "";
     private String guildOwner = "";
     private String commandPrefix;
+    private String accessRole = "";
     private int rollDifficulty = -1;
     private int randomRange = 0;
     private int maxVolume = 40;
     private long overrideChannel = 0;
-    private String pointName = "";
+    private long streamAnnounceChannel;
+    private long streamAnnounceMentionRole;
 
     public DbGuild(){}
 
-    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, int maxVolume, int randomRange, long overrideChannel, String pointName) {
+    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, String accessRole, int rollDifficulty, int maxVolume, int randomRange, long overrideChannel, long streamAnnounceChannel, long streamAnnounceMentionRole) {
         this.guildID = guildID;
         this.guildName = guildName;
         this.guildOwner = guildOwner;
         this.commandPrefix = commandPrefix;
-        this.maxVolume = maxVolume;
+        this.accessRole = accessRole;
+        this.rollDifficulty = rollDifficulty;
         this.randomRange = randomRange;
+        this.maxVolume = maxVolume;
         this.overrideChannel = overrideChannel;
-        this.pointName = pointName;
+        this.streamAnnounceChannel = streamAnnounceChannel;
+        this.streamAnnounceMentionRole = streamAnnounceMentionRole;
     }
 
     public String getGuildID() {
@@ -101,19 +106,35 @@ public class DbGuild {
         this.overrideChannel = overrideChannel;
     }
 
-    public String getPointName() {
-        return pointName;
+    public String getAccessRole() {
+        return accessRole;
     }
 
-    public void setPointName(String pointName) {
-        this.pointName = pointName;
+    public void setAccessRole(String accessRole) {
+        this.accessRole = accessRole;
+    }
+
+    public long getStreamAnnounceChannel() {
+        return streamAnnounceChannel;
+    }
+
+    public void setStreamAnnounceChannel(long streamAnnounceChannel) {
+        this.streamAnnounceChannel = streamAnnounceChannel;
+    }
+
+    public long getStreamAnnounceMentionRole() {
+        return streamAnnounceMentionRole;
+    }
+
+    public void setStreamAnnounceMentionRole(long streamAnnounceMentionRole) {
+        this.streamAnnounceMentionRole = streamAnnounceMentionRole;
     }
 
     //Update db entry
     public void update(){
         if(Karren.conf.getAllowSQLRW()) {
-            String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?, PointName=?  WHERE GuildID=?";
-            Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, pointName, guildID});
+            String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?, StreamAnnounceChannel=?, StreamAnnounceMentionRole=?, AccessRole=?  WHERE GuildID=?";
+            Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, streamAnnounceChannel, streamAnnounceMentionRole, accessRole, guildID});
         }
     }
 }

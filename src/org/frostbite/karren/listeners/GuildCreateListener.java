@@ -10,16 +10,17 @@
 
 package org.frostbite.karren.listeners;
 
-import discord4j.core.event.domain.guild.GuildCreateEvent;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.frostbite.karren.Karren;
 
-import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 
-public class GuildCreateListener implements Consumer<GuildCreateEvent> {
+public class GuildCreateListener extends ListenerAdapter {
+
     @Override
-    public void accept(GuildCreateEvent guildCreateEvent) {
-        //Generate gms
-        Karren.bot.createGuildMusicManager(guildCreateEvent.getGuild());
-        Karren.log.info("Guild " + guildCreateEvent.getGuild().getName() + " has been registered with the database, and a GuildMusicManager has been spawned.");
+    public void onGuildReady(@Nonnull GuildReadyEvent event) {
+        //Karren.bot.createGuildMusicManager(event.getGuild());
+        Karren.log.info("Guild " + event.getGuild().getName() + " has been registered with the database, and a GuildMusicManager has been spawned.");
     }
 }

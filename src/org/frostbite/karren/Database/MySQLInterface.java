@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,8 +10,8 @@
 
 package org.frostbite.karren.Database;
 
-import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.User;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 import org.frostbite.karren.Database.Objects.*;
 import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
@@ -30,22 +30,22 @@ public class MySQLInterface {
 
     public DbGuild getGuild(Guild guild){
         if(Karren.conf.getAllowSQLRW()){
-            if(!dbGuildCache.containsKey(guild.getId().asString())) {
-                String sql = "INSERT IGNORE Guild (GuildID, GuildOwner, GuildName, CommandPrefix, RollDifficulty, MaxVolume, RandomRange, OverrideChannel, PointName) VALUES (?, ?, ?, null, -1, 40, 0, 0, null)";
-                Object[] params = {guild.getId().asString(), Objects.requireNonNull(guild.getOwner().block()).getDisplayName(), guild.getName()};
+            if(!dbGuildCache.containsKey(guild.getId())) {
+                String sql = "INSERT IGNORE Guild (GuildID, GuildOwner, GuildName, CommandPrefix, RollDifficulty, MaxVolume, RandomRange, OverrideChannel, StreamAnnounceChannel, StreamAnnounceMentionRole, AccessRole) VALUES (?, ?, ?, null, -1, 40, 0, 0, null, null, null)";
+                Object[] params = {guild.getId(), Objects.requireNonNull(guild.getOwner()).getEffectiveName(), guild.getName()};
                 Yank.execute(sql, params);
                 sql = "SELECT * FROM Guild WHERE GuildID=?";
-                Object[] params2 = {guild.getId().asString()};
+                Object[] params2 = {guild.getId()};
                 try {
                     DbGuild dbGuild = Yank.queryBean(sql, DbGuild.class, params2);
-                    dbGuildCache.put(guild.getId().asString(), dbGuild);
+                    dbGuildCache.put(guild.getId(), dbGuild);
                     return dbGuild;
                 } catch (NoSuchElementException e){
                     e.printStackTrace();
-                    Karren.log.error("Guild ID " + guild.getId().asString());
+                    Karren.log.error("Guild ID " + guild.getId());
                 }
             } else {
-                return dbGuildCache.get(guild.getId().asString());
+                return dbGuildCache.get(guild.getId());
             }
         }
         return new DbGuild();
@@ -54,18 +54,18 @@ public class MySQLInterface {
     public DbGuildUser getGuildUser(Guild guild, User user){
         if(Karren.conf.getAllowSQLRW()){
             if(guild!=null) {
-                if (!dbGuildUserCache.containsKey(guild.getId().asString() + user.getId().asString())) {
+                if (!dbGuildUserCache.containsKey(guild.getId() + user.getId())) {
                     DbUser dbuser = getUserData(user);
                     String sql = "INSERT IGNORE GuildUser (GuildUserID, UserID, GuildID, RollTimeout, IgnoreCommands, RollsSinceLastClear, TotalRolls, WinningRolls) VALUES (null, ?, ?, null, 0, 0, 0, 0)";
-                    Object[] params = {dbuser.getUserID(), guild.getId().asString()};
+                    Object[] params = {dbuser.getUserID(), guild.getId()};
                     Yank.execute(sql, params);
                     sql = "SELECT * FROM GuildUser WHERE UserID=? AND GuildID=?";
-                    Object[] params2 = {dbuser.getUserID(), guild.getId().asString()};
+                    Object[] params2 = {dbuser.getUserID(), guild.getId()};
                     DbGuildUser dbGuildUser = Yank.queryBean(sql, DbGuildUser.class, params2);
-                    dbGuildUserCache.put(guild.getId().asString() + user.getId().asString(), dbGuildUser);
+                    dbGuildUserCache.put(guild.getId() + user.getId(), dbGuildUser);
                     return dbGuildUser;
                 } else {
-                    return dbGuildUserCache.get(guild.getId().asString() + user.getId().asString());
+                    return dbGuildUserCache.get(guild.getId() + user.getId());
                 }
             } else {
                 DbGuildUser dbGuildUser = new DbGuildUser();
@@ -116,22 +116,22 @@ public class MySQLInterface {
 
     public DbUser getUserData(User user){
         if(Karren.conf.getAllowSQLRW()) {
-            if(!dbUserCache.containsKey(user.getId().asString())) {
+            if(!dbUserCache.containsKey(user.getId())) {
                 String sql = "INSERT IGNORE User (UserID, TimeLeft, VRCUserID) VALUES (?, null, null)";
-                Object[] params = {user.getId().asBigInteger()};
+                Object[] params = {user.getIdLong()};
                 Yank.execute(sql, params);
                 sql = "SELECT * FROM User WHERE UserID=?";
-                Object[] params2 = {user.getId().asBigInteger()};
+                Object[] params2 = {user.getIdLong()};
                 try {
                     DbUser dbUser = Yank.queryBean(sql, DbUser.class, params2);
-                    dbUserCache.put(user.getId().asString(), dbUser);
+                    dbUserCache.put(user.getId(), dbUser);
                     return dbUser;
                 } catch (NoSuchElementException e){
                 e.printStackTrace();
-                Karren.log.error("User ID " + user.getId().asString());
+                Karren.log.error("User ID " + user.getId());
             }
             } else {
-                return dbUserCache.get(user.getId().asString());
+                return dbUserCache.get(user.getId());
             }
         }
         return new DbUser();
