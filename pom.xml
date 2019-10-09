@@ -15,7 +15,7 @@
     <groupId>org.frostbite</groupId>
     <artifactId>Karren-sama</artifactId>
     <packaging>jar</packaging>
-    <version>5.0.0-D4Jv3.TEST</version>
+    <version>5.0.0-JDA.Test</version>
 
     <repositories>
         <repository> <!-- This repo fixes issues with transitive dependencies -->
