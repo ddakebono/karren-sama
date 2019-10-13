@@ -1,0 +1,63 @@
+{
+  "triggers": [
+    "play",
+    "yt"
+  ],
+  "tags": [
+    "NoVoiceHijack",
+    "Parameter",
+    "Audio.Play",
+    "prefixed",
+    "Name",
+    "EmbedMessage"
+  ],
+  "templatesNew": [
+    {
+      "template": "Hey, is this thing on?",
+      "templateType": "normal"
+    },
+    {
+      "template": "Something\u0027s wrong with that URL, can you give me another one?",
+      "templateType": "fail"
+    },
+    {
+      "template": "You must be in the same voice channel as me to control music.",
+      "templateType": "nohijack"
+    },
+    {
+      "template": "I can\u0027t seem to use the file from the link you gave.",
+      "templateType": "permission"
+    }
+  ],
+  "parameters": [
+    {
+      "name": "url",
+      "prefix": "",
+      "description": "URL for content",
+      "optional": false,
+      "enabled": true
+    },
+    {
+      "name": "startoffset",
+      "prefix": "",
+      "description": "Enter a time in seconds to start the video at",
+      "optional": false,
+      "enabled": true
+    },
+    {
+      "name": "volume",
+      "prefix": "",
+      "description": "Sets the volume the video will start at",
+      "optional": false,
+      "enabled": true
+    }
+
+  ],
+  "enabled": true,
+  "helptext": "Downloads and plays audio from the internet. Usage: %prefixyt [url], [start at time], [volume]",
+  "identifier": "D4JPlay",
+  "confidence": 1,
+  "voiceVolume": 20.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

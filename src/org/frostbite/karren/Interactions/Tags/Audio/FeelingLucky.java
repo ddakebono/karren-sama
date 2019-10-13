@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -8,26 +8,24 @@
  *
  */
 
-package org.frostbite.karren.interactions.Tags.D4JPlayer;
+package org.frostbite.karren.Interactions.Tags.Audio;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import net.dv8tion.jda.api.Permission;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionResult;
+import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
 
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.List;
 
-public class D4JFeelingLucky extends Tag {
+public class FeelingLucky extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         if(interaction.hasParameter()) {
             String searchText = interaction.getParameter().replaceAll(" ", "+");
             try {
@@ -67,8 +65,8 @@ public class D4JFeelingLucky extends Tag {
     }
 
     @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES, Permissions.VOICE_CONNECT, Permissions.VOICE_SPEAK);
+    public Permission[] getRequiredPermissions() {
+        return new Permission[]{Permission.MESSAGE_WRITE, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK};
     }
 
     @Override

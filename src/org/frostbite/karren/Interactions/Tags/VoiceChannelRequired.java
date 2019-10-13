@@ -8,33 +8,29 @@
  *
  */
 
-package org.frostbite.karren.Interactions.Tags.Voice;
+package org.frostbite.karren.Interactions.Tags;
 
-import discord4j.core.object.util.Permission;
-import discord4j.core.object.util.PermissionSet;
-import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
-import org.frostbite.karren.Karren;
 
-public class D4JStop extends Tag {
+public class VoiceChannelRequired extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        GuildMusicManager gms = Karren.bot.getGuildMusicManager(result.getEvent().getGuild().block());
-        if(gms.scheduler.isPlaying())
-            gms.scheduler.stopQueue();
+        if(result.getEvent().getMember()!=null) {
+            if(result.getEvent().getMember().getVoiceState()!=null) {
+                if (!result.getEvent().getMember().getVoiceState().inVoiceChannel()) {
+                    msg = interaction.getRandomTemplate("novoice").getTemplate();
+                    interaction.stopProcessing();
+                }
+            }
+        }
         return msg;
     }
 
     @Override
     public String getTagName() {
-        return "d4jstop";
-    }
-
-    @Override
-    public PermissionSet getRequiredPermissions() {
-        return PermissionSet.of(Permission.SEND_MESSAGES);
+        return "requiresvoice";
     }
 
 }

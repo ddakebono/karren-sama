@@ -1,0 +1,25 @@
+{
+  "triggers": [
+    "queue",
+    "list",
+    "q"
+  ],
+  "tags": [
+    "Audio.QueueList",
+    "prefixed",
+    "EmbedMessage"
+  ],
+  "templatesNew": [
+    {
+      "template": "Here's what's up on the queue!",
+      "templateType": "normal"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Lists current playlist",
+  "identifier": "D4JQueue",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

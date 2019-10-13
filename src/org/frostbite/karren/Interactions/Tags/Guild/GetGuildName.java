@@ -10,7 +10,6 @@
 
 package org.frostbite.karren.Interactions.Tags.Guild;
 
-import discord4j.core.object.entity.Guild;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
@@ -18,8 +17,7 @@ import org.frostbite.karren.Interactions.Tag;
 public class GetGuildName extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        Guild guild = result.getEvent().getGuild().block();
-        msg = interaction.replaceMsg(msg, "%guild", guild.getName());
+        msg = interaction.replaceMsg(msg, "%guild", result.getEvent().getGuild().getName());
         return msg;
     }
 

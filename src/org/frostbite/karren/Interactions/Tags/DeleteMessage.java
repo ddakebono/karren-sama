@@ -10,8 +10,8 @@
 
 package org.frostbite.karren.Interactions.Tags;
 
-import discord4j.core.object.util.Permission;
-import discord4j.core.object.util.PermissionSet;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
@@ -19,7 +19,8 @@ import org.frostbite.karren.Interactions.Tag;
 public class DeleteMessage extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        result.getEvent().getMessage().delete().block();
+        AuditableRestAction deleteAction = result.getEvent().getMessage().delete();
+        deleteAction.queue();
         return msg;
     }
 
@@ -29,7 +30,7 @@ public class DeleteMessage extends Tag {
     }
 
     @Override
-    public PermissionSet getRequiredPermissions() {
-        return PermissionSet.of(Permission.SEND_MESSAGES, Permission.MANAGE_MESSAGES);
+    public Permission[] getRequiredPermissions() {
+        return new Permission[]{Permission.MESSAGE_MANAGE, Permission.MESSAGE_WRITE};
     }
 }

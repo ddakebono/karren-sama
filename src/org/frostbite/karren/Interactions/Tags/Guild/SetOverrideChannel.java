@@ -10,8 +10,7 @@
 
 package org.frostbite.karren.Interactions.Tags.Guild;
 
-import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.GuildChannel;
+import net.dv8tion.jda.api.entities.GuildChannel;
 import org.frostbite.karren.Database.Objects.DbGuild;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
@@ -19,23 +18,21 @@ import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SetOverrideChannel extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        if(interaction.hasParameter()){
-            Guild guild = result.getEvent().getGuild().block();
-            if(guild!=null) {
-                List<GuildChannel> channels = guild.getChannels().filter(x -> x.getName().equalsIgnoreCase(interaction.getParameter())).collectList().block();
-                //List<IChannel> channels = event.getGuild().getChannelsByName(interaction.getParameter());
-                if (channels != null && channels.size() == 1) {
-                    DbGuild dbGuild = Karren.bot.getSql().getGuild(guild);
-                    dbGuild.setOverrideChannel(channels.get(0).getId().asLong());
-                    dbGuild.update();
-                    msg = interaction.replaceMsg(msg, "%channel", channels.get(0).getName());
-                } else {
-                    msg = interaction.getRandomTemplate("fail").getTemplate();
-                }
+        if (interaction.hasParameter()) {
+            List<GuildChannel> channels = result.getEvent().getGuild().getChannels().stream().filter(x -> x.getName().equalsIgnoreCase(interaction.getParameter())).collect(Collectors.toList());
+            //List<IChannel> channels = event.getGuild().getChannelsByName(interaction.getParameter());
+            if (channels.size() == 1) {
+                DbGuild dbGuild = Karren.bot.getSql().getGuild(result.getEvent().getGuild());
+                dbGuild.setOverrideChannel(channels.get(0).getIdLong());
+                dbGuild.update();
+                msg = interaction.replaceMsg(msg, "%channel", channels.get(0).getName());
+            } else {
+                msg = interaction.getRandomTemplate("fail").getTemplate();
             }
         } else {
             msg = interaction.getRandomTemplate("noparam").getTemplate();

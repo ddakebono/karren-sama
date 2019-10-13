@@ -10,7 +10,6 @@
 
 package org.frostbite.karren.Interactions.Tags.Guild;
 
-import discord4j.core.object.entity.Guild;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
@@ -22,11 +21,10 @@ public class DisableInteraction extends Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        Guild guild = result.getEvent().getGuild().block();
         String parameter = interaction.getParameter();
         if(parameter!=null){
             msg = interaction.replaceMsg(msg,"%interaction", parameter);
-            for(Interaction disable : Karren.bot.getGuildManager().getInteractionProcessor(guild).getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(parameter)).collect(Collectors.toList())){
+            for(Interaction disable : Karren.bot.getGuildManager().getInteractionProcessor(result.getEvent().getGuild()).getInteractions().stream().filter((p)-> p.getIdentifier().equalsIgnoreCase(parameter)).collect(Collectors.toList())){
                 disable.setEnabled(false);
             }
         } else {

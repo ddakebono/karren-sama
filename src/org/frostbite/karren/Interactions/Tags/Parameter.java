@@ -10,7 +10,6 @@
 
 package org.frostbite.karren.Interactions.Tags;
 
-import discord4j.core.object.entity.Guild;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
@@ -24,14 +23,11 @@ public class Parameter extends Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        String message = null;
-        if(result.getEvent().getMessage().getContent().isPresent())
-            message = result.getEvent().getMessage().getContent().get();
-        if(interaction.getTriggers()!=null && message!=null) {
-            Guild guild = result.getEvent().getGuild().block();
+        String message = result.getEvent().getMessage().getContentRaw();
+        if(interaction.getTriggers()!=null) {
             for (String trigger : interaction.getTriggers()) {
-                if (message.startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild) + trigger)) {
-                    message = message.replace(Karren.bot.getGuildManager().getCommandPrefix(guild) + trigger, "").trim();
+                if (message.startsWith(Karren.bot.getGuildManager().getCommandPrefix(result.getEvent().getGuild()) + trigger)) {
+                    message = message.replace(Karren.bot.getGuildManager().getCommandPrefix(result.getEvent().getGuild()) + trigger, "").trim();
                     break;
                 }
                 //Patch for prefixed interactions
@@ -42,8 +38,7 @@ public class Parameter extends Tag {
             }
         }
 
-        if(message!=null)
-            interaction.setParameter(message);
+        interaction.setParameter(message);
         return msg;
     }
 

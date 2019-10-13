@@ -18,10 +18,7 @@ import org.frostbite.karren.Interactions.Tag;
 public class Name extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        if(result.getEvent().getMember().isPresent()) {
-            return interaction.replaceMsg(msg, "%name", result.getEvent().getMember().get().getDisplayName());
-        }
-        return msg;
+        return interaction.replaceMsg(msg, "%name", result.getEvent().getAuthor().getName());
     }
 
     @Override

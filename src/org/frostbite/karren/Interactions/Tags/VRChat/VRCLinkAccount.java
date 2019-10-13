@@ -10,7 +10,6 @@
 
 package org.frostbite.karren.Interactions.Tags.VRChat;
 
-import discord4j.core.object.entity.User;
 import io.github.vrchatapi.VRCFriends;
 import io.github.vrchatapi.VRCUser;
 import org.frostbite.karren.Database.Objects.DbUser;
@@ -20,33 +19,28 @@ import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
 
 import java.util.List;
-import java.util.Optional;
 
 public class VRCLinkAccount extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        Optional<User> userOpt = result.getEvent().getMessage().getAuthor();
-        if(userOpt.isPresent()) {
-            User user = userOpt.get();
-            if (interaction.hasParameter()) {
-                if (Karren.bot.sql.getUserData(user).getVrcUserID() == null) {
-                    List<VRCUser> users = VRCUser.list(0, 1, false, interaction.getParameter());
-                    if (users.size() > 0) {
-                        VRCUser vrcUser = VRCUser.fetch(users.get(0).getId());
-                        VRCFriends.sendFriendRequest(vrcUser);
-                        DbUser dbUser = Karren.bot.sql.getUserData(user);
-                        dbUser.setVrcUserID(vrcUser.getId());
-                        dbUser.update();
-                        msg = interaction.replaceMsg(msg, "%username", vrcUser.getDisplayName());
-                    } else {
-                        msg = interaction.getRandomTemplate("fail").getTemplate();
-                    }
+        if (interaction.hasParameter()) {
+            if (Karren.bot.sql.getUserData(result.getEvent().getAuthor()).getVrcUserID() == null) {
+                List<VRCUser> users = VRCUser.list(0, 1, false, interaction.getParameter());
+                if (users.size() > 0) {
+                    VRCUser vrcUser = VRCUser.fetch(users.get(0).getId());
+                    VRCFriends.sendFriendRequest(vrcUser);
+                    DbUser dbUser = Karren.bot.sql.getUserData(result.getEvent().getAuthor());
+                    dbUser.setVrcUserID(vrcUser.getId());
+                    dbUser.update();
+                    msg = interaction.replaceMsg(msg, "%username", vrcUser.getDisplayName());
                 } else {
-                    msg = interaction.getRandomTemplate("linked").getTemplate();
+                    msg = interaction.getRandomTemplate("fail").getTemplate();
                 }
             } else {
-                msg = interaction.getRandomTemplate("noparam").getTemplate();
+                msg = interaction.getRandomTemplate("linked").getTemplate();
             }
+        } else {
+            msg = interaction.getRandomTemplate("noparam").getTemplate();
         }
         return msg;
     }

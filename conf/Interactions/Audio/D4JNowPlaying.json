@@ -1,0 +1,31 @@
+{
+  "triggers": [
+    "np"
+  ],
+  "tags": [
+    "Audio.NowPlaying",
+    "Audio.NowPlayingTime",
+    "prefixed"
+  ],
+  "templatesNew": [
+    {
+      "template": "The current song playing is: \"%d4jtitle\" (%position/%duration)",
+      "templateType": "normal"
+    },
+    {
+      "template": "Nothing is playing!",
+      "templateType": "fail"
+    },
+    {
+      "template": "There\u0027s nothing being played right now",
+      "templateType": "fail"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Lists current song title",
+  "identifier": "D4JNowPlaying",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

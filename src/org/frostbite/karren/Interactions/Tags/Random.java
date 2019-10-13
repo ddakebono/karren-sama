@@ -17,15 +17,12 @@ import org.frostbite.karren.Interactions.Tag;
 public class Random extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        if(result.getEvent().getMessage().getContent().isPresent()) {
-            String[] tempArray = result.getEvent().getMessage().getContent().get().split(":");
-            if (tempArray.length == 2) {
-                return interaction.replaceMsg(msg, "%result", randomList(tempArray[1]));
-            } else {
-                return interaction.getRandomTemplate("fail").getTemplate();
-            }
+        String[] tempArray = result.getEvent().getMessage().getContentRaw().split(":");
+        if (tempArray.length == 2) {
+            return interaction.replaceMsg(msg, "%result", randomList(tempArray[1]));
+        } else {
+            return interaction.getRandomTemplate("fail").getTemplate();
         }
-        return msg;
     }
 
     @Override
@@ -33,7 +30,7 @@ public class Random extends Tag {
         return "random";
     }
 
-    private static String randomList(String message){
+    private static String randomList(String message) {
         String[] choiceSet = message.split(",");
         String choice;
         int random = new java.util.Random().nextInt(choiceSet.length);

@@ -18,7 +18,6 @@ import discord4j.core.object.util.PermissionSet;
 import discord4j.core.object.util.Snowflake;
 import org.apache.commons.io.FilenameUtils;
 import org.frostbite.karren.AudioPlayer.AudioResultHandler;
-import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;

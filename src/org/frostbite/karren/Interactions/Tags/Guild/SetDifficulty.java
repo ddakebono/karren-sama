@@ -10,7 +10,6 @@
 
 package org.frostbite.karren.Interactions.Tags.Guild;
 
-import discord4j.core.object.entity.Guild;
 import org.frostbite.karren.Database.Objects.DbGuild;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
@@ -20,7 +19,6 @@ import org.frostbite.karren.Karren;
 public class SetDifficulty extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        Guild guild = result.getEvent().getGuild().block();
         if(interaction.hasParameter()){
             int difficulty = -1;
             try {
@@ -29,7 +27,7 @@ public class SetDifficulty extends Tag {
                 msg = interaction.getRandomTemplate("fail").getTemplate();
             }
             if(difficulty>=0 && difficulty<=100){
-                DbGuild dbGuild = Karren.bot.getSql().getGuild(guild);
+                DbGuild dbGuild = Karren.bot.getSql().getGuild(result.getEvent().getGuild());
                 dbGuild.setRollDifficulty(difficulty);
                 dbGuild.update();
                 msg = interaction.replaceMsg(msg,"%newdiff", String.valueOf(difficulty));

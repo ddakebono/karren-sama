@@ -12,6 +12,7 @@ package org.frostbite.karren;
 
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.frostbite.karren.Database.Objects.DbReminder;
 
 import java.sql.Timestamp;
@@ -37,26 +38,13 @@ public class AutoInteraction extends Thread {
                         if(author!=null&&target!=null) {
                             String message = "Hey " + target.getAsMention() + ", " + author.getName() + " wanted me to remind you **\"" + reminder.getMessage() + "\"**";
                             TextChannel channel = Karren.bot.client.getTextChannelById(reminder.channelID);
-                            if(channel!=null)
-                                channel.sendMessage(message);
+                            if(channel!=null) {
+                                MessageAction messageSend = channel.sendMessage(message);
+                                messageSend.queue();
+                            }
                         }
-                        /*IUser author = Karren.bot.getClient().getUserByID(reminder.getAuthorID());
-                        IUser target = Karren.bot.getClient().getUserByID(Karren.bot.getSql().getGuildUser(reminder.getTargetID()).getUserID());
-                        MessageBuilder msg = new MessageBuilder(Karren.bot.getClient());
-                        msg.withChannel(reminder.getChannelID());
-                        msg.withContent("Hey <@" + target.getStringID() + ">, " + author.getName() + " wanted me to remind you **\"" + reminder.getMessage() + "\"**");
-                        try {
-                            msg.send();
-                        } catch (DiscordException e) {
-                            Karren.log.error(e.getErrorMessage());
-                        }*/
                     }
                 }
-
-                /*for(IGuild guild : Karren.bot.getClient().getGuilds()){
-                    if(Karren.bot.getGuildManager().getInteractionProcessor(guild))
-                }*/
-
             }
             try {
                 Thread.sleep(5000);

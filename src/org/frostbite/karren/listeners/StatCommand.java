@@ -23,30 +23,31 @@ public class StatCommand extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
-        if (event.getMessage().getContentRaw().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "stats")) {
-            StringBuilder msg = new StringBuilder("**Karren-sama Stats**");
-            msg.append("```Bot Uptime: ").append(KarrenUtil.calcAway(Karren.startTime));
-            msg.append("\n-------------Build Info-------------");
-            msg.append("\nBot Version: ").append(Karren.botVersion);
-            msg.append("\nCommit ID: ").append(Karren.jarProps.getProperty("git.commit.id"));
-            msg.append("\nCommit Time: ").append(Karren.jarProps.getProperty("git.commit.time"));
-            msg.append("\nCommit Message: ").append(Karren.jarProps.getProperty("git.commit.message.full"));
-            msg.append("\nBuild Branch: ").append(Karren.jarProps.getProperty("git.branch"));
-            msg.append("\n-------------Bot Status-------------");
-            msg.append("\nConnected Guilds: ").append(Karren.bot.getClient().getGuilds().size());
-            msg.append("\nShardID: ").append(Karren.bot.getClient().getShardInfo().getShardId());
-            msg.append("\nConnected Voice Channels: ").append(Karren.bot.getClient().getAudioManagers().stream().filter(AudioManager::isConnected).count());
-            msg.append("\nInteraction System Tags: Borked");
-            msg.append("\nTotal Users Visable: ").append(Karren.bot.getClient().getUsers().size());
-            msg.append("\n-------------Cache Status-------------");
-            msg.append("\nCached Reminders: ").append(Karren.bot.getSql().getDbReminderCache().size());
-            msg.append("\nCached Users: ").append(Karren.bot.getSql().getDbUserCache().size());
-            msg.append("\nCached Guild Users: ").append(Karren.bot.getSql().getDbGuildUserCache().size());
-            msg.append("\nCached Guilds: ").append(Karren.bot.getSql().getDbGuildCache().size());
-            msg.append("\nCached Word Counts: ").append(Karren.bot.getSql().getDbWordcountCache().size());
-            msg.append("```");
-            MessageAction msgSend = event.getChannel().sendMessage(msg.toString());
-            msgSend.queue();
+        if(!event.getAuthor().isBot()) {
+            if (event.getMessage().getContentRaw().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "stats")) {
+                String msg = "**Karren-sama Stats**" + "```Bot Uptime: " + KarrenUtil.calcAway(Karren.startTime) +
+                        "\n-------------Build Info-------------" +
+                        "\nBot Version: " + Karren.botVersion +
+                        "\nCommit ID: " + Karren.jarProps.getProperty("git.commit.id") +
+                        "\nCommit Time: " + Karren.jarProps.getProperty("git.commit.time") +
+                        "\nCommit Message: " + Karren.jarProps.getProperty("git.commit.message.full") +
+                        "\nBuild Branch: " + Karren.jarProps.getProperty("git.branch") +
+                        "\n-------------Bot Status-------------" +
+                        "\nConnected Guilds: " + Karren.bot.getClient().getGuilds().size() +
+                        "\nShardID: " + Karren.bot.getClient().getShardInfo().getShardId() +
+                        "\nConnected Voice Channels: " + Karren.bot.getClient().getAudioManagers().stream().filter(AudioManager::isConnected).count() +
+                        "\nInteraction System Tags: Borked" +
+                        "\nTotal Users Visable: " + Karren.bot.getClient().getUsers().size() +
+                        "\n-------------Cache Status-------------" +
+                        "\nCached Reminders: " + Karren.bot.getSql().getDbReminderCache().size() +
+                        "\nCached Users: " + Karren.bot.getSql().getDbUserCache().size() +
+                        "\nCached Guild Users: " + Karren.bot.getSql().getDbGuildUserCache().size() +
+                        "\nCached Guilds: " + Karren.bot.getSql().getDbGuildCache().size() +
+                        "\nCached Word Counts: " + Karren.bot.getSql().getDbWordcountCache().size() +
+                        "```";
+                MessageAction msgSend = event.getChannel().sendMessage(msg);
+                msgSend.queue();
+            }
         }
     }
 }

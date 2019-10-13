@@ -10,6 +10,7 @@
 
 package org.frostbite.karren.Interactions;
 
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
@@ -78,7 +79,7 @@ public class Interaction {
     }
 
     @JsonCreator
-    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail,@JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction, @JsonProperty("embedFields") ArrayList<InteractionEmbedFields> embedFields, @JsonProperty("friendlyName") String friendlyName) {
+    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail, @JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction, @JsonProperty("embedFields") ArrayList<InteractionEmbedFields> embedFields, @JsonProperty("friendlyName") String friendlyName) {
         this.triggers = triggers;
         this.tags = tags;
         this.templatesNew = templatesNew;
@@ -156,7 +157,7 @@ public class Interaction {
         stopProcessing = false;
         if(!noClearInteraction) {
             if (mentionedUsers == null)
-                mentionedUsers = new LinkedList<User>();
+                mentionedUsers = new LinkedList<>();
             mentionedUsers.clear();
             if(replacedTextMap==null)
                 replacedTextMap = new HashMap<>();

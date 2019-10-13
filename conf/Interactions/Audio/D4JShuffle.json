@@ -1,0 +1,32 @@
+{
+  "triggers": [
+    "shuffle"
+  ],
+  "tags": [
+    "NoVoiceHijack",
+    "VoiceChannelRequired",
+    "Audio.Shuffle",
+    "prefixed"
+  ],
+  "templatesNew": [
+    {
+      "template": "Shuffle is now %bool",
+      "templateType": "normal"
+    },
+    {
+      "template": "You must be in the same voice channel as me to control music.",
+      "templateType": "nohijack"
+    },
+    {
+      "template": "You're not connected to a voice channel!",
+      "templateType": "novoice"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Enable/disable shuffle on the Audio Player",
+  "identifier": "D4JRepeat",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

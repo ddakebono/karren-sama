@@ -10,9 +10,8 @@
 
 package org.frostbite.karren.Interactions.Tags;
 
-import discord4j.core.object.entity.User;
-import discord4j.core.object.util.Permission;
-import discord4j.core.object.util.PermissionSet;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionEmbedFields;
 import org.frostbite.karren.Interactions.InteractionResult;
@@ -20,41 +19,31 @@ import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
 
 import java.awt.*;
-import java.util.Optional;
-
 
 public class EmbedMessage extends Tag {
 
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        Optional<User> authorOpt = result.getEvent().getMessage().getAuthor();
-        User bot = Karren.bot.getClient().getSelf().block();
-        if(authorOpt.isPresent() && bot !=null) {
-            User author = authorOpt.get();
-            result.setEmbedConsumer(embed -> {
-                embed.setColor(Color.red);
-                embed.setTitle((interaction.getFriendlyName() != null && interaction.getFriendlyName().length() > 0) ? interaction.getFriendlyName() : interaction.getIdentifier());
-                embed.setDescription(msg);
-                if (interaction.getEmbedImage() != null)
-                    embed.setImage(interaction.getEmbedImage());
-                if (interaction.getEmbedURL() != null)
-                    embed.setUrl(interaction.getEmbedURL());
-                if (interaction.getEmbedFooter() != null)
-                    embed.setFooter("Requested By: " + author.getUsername() + " | " + interaction.getEmbedFooter(), bot.getAvatarUrl());
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setColor(Color.red);
+        embed.setTitle((interaction.getFriendlyName() != null && interaction.getFriendlyName().length() > 0) ? interaction.getFriendlyName() : interaction.getIdentifier());
+        embed.setDescription(msg);
+        if (interaction.getEmbedImage() != null)
+            embed.setImage(interaction.getEmbedImage());
+        if (interaction.getEmbedFooter() != null)
+            embed.setFooter("Requested By: " + result.getEvent().getAuthor().getName() + " | " + interaction.getEmbedFooter(), Karren.bot.client.getSelfUser().getAvatarUrl());
+        else
+            embed.setFooter("Requested By: " + result.getEvent().getAuthor().getName(), Karren.bot.client.getSelfUser().getAvatarUrl());
+        if ((interaction.getEmbedFields() != null && interaction.getEmbedFields().size() > 0 && interaction.getReplacementTextCount() > 0) || interaction.isTagAddedEmbeds()) {
+            for (InteractionEmbedFields field : interaction.getEmbedFields()) {
+                if (interaction.isTagAddedEmbeds())
+                    embed.addField(field.getFieldTitle(), field.getFieldValue(), field.isInline());
                 else
-                    embed.setFooter("Requested By: " + author.getUsername(), bot.getAvatarUrl());
-                if ((interaction.getEmbedFields() != null && interaction.getEmbedFields().size() > 0 && interaction.getReplacementTextCount() > 0) || interaction.isTagAddedEmbeds()) {
-                    for (InteractionEmbedFields field : interaction.getEmbedFields()) {
-                        if (interaction.isTagAddedEmbeds())
-                            embed.addField(field.getFieldTitle(), field.getFieldValue(), field.isInline());
-                        else
-                            embed.addField(field.getFieldTitle(), interaction.getReplacementText(field.getFieldValue()), field.isInline());
-                    }
-                }
-            });
-            return null;
+                    embed.addField(field.getFieldTitle(), interaction.getReplacementText(field.getFieldValue()), field.isInline());
+            }
         }
-        return msg;
+        result.setEmbed(embed.build());
+        return null;
     }
 
     @Override
@@ -63,7 +52,7 @@ public class EmbedMessage extends Tag {
     }
 
     @Override
-    public PermissionSet getRequiredPermissions() {
-        return PermissionSet.of(Permission.SEND_MESSAGES, Permission.EMBED_LINKS);
+    public Permission[] getRequiredPermissions() {
+        return new Permission[]{Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_WRITE};
     }
 }

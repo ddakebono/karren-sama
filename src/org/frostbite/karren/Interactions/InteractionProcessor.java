@@ -103,9 +103,13 @@ public class InteractionProcessor {
             String messageStr = interaction.getInitialTemplate(result.getEvent());
             for (Tag tag : interaction.getTagCache()) {
                 try {
-                    messageStr = tag.handleTemplate(messageStr, interaction, result);
+                    if(!interaction.isStopProcessing())
+                        messageStr = tag.handleTemplate(messageStr, interaction, result);
+                    else
+                        break;
                 } catch (NullPointerException e){
                     e.printStackTrace();
+                    interaction.stopProcessing();
                     Karren.log.error("Error occured in a tag \"" + tag.getTagName() + "\" stopped processing interaction");
                 }
             }

@@ -10,23 +10,24 @@
 
 package org.frostbite.karren.Interactions.Tags;
 
+import net.dv8tion.jda.api.entities.Guild;
+import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionResult;
+import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
-import org.frostbite.karren.interactions.Interaction;
-import org.frostbite.karren.interactions.Tag;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.MessageBuilder;
 
-import java.util.EnumSet;
 import java.util.List;
 
 public class RollTopGuilds extends Tag {
     @Override
-    public String handleTemplate(String msg, Interaction interaction, MessageBuilder response, MessageReceivedEvent event) {
+    public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         List<Object[]> guildRanks = Karren.bot.getSql().getGuildRollsTop();
         StringBuilder output = new StringBuilder();
         for(int i=0; i<guildRanks.size(); i++){
-            output.append(i+1).append(": ").append(Karren.bot.getClient().getGuildByID(Long.valueOf((String) guildRanks.get(i)[0])).getName()).append(" with ").append(guildRanks.get(i)[1]).append(" total rolls\n");
+            Guild guild = Karren.bot.getClient().getGuildById((String) guildRanks.get(i)[0]);
+            if(guild!=null)
+                output.append(i+1).append(": ").append(guild.getName()).append(" with ").append(guildRanks.get(i)[1]).append(" total rolls\n");
+            //output.append(i+1).append(": ").append(Karren.bot.getClient().getGuildByID(Long.valueOf((String) guildRanks.get(i)[0])).getName()).append(" with ").append(guildRanks.get(i)[1]).append(" total rolls\n");
         }
         msg = interaction.replaceMsg(msg,"%ranks", output.toString());
         return msg;
@@ -35,10 +36,5 @@ public class RollTopGuilds extends Tag {
     @Override
     public String getTagName() {
         return "rolltopguilds";
-    }
-
-    @Override
-    public EnumSet<Permissions> getRequiredPermissions() {
-        return EnumSet.of(Permissions.SEND_MESSAGES);
     }
 }

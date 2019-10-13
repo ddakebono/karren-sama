@@ -10,8 +10,7 @@
 
 package org.frostbite.karren.Interactions.Tags.Guild;
 
-import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.User;
+import net.dv8tion.jda.api.entities.User;
 import org.frostbite.karren.Database.Objects.DbGuildUser;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
@@ -21,27 +20,23 @@ import org.frostbite.karren.Karren;
 public class SetFilter extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        if(result.getEvent().getMember().isPresent()) {
-            User author = result.getEvent().getMember().get();
-            Guild guild = result.getEvent().getGuild().block();
-            if (interaction.getMentionedUsers().size() > 0) {
-                User user = interaction.getMentionedUsers().get(0);
+        if (interaction.getMentionedUsers().size() > 0) {
+            User user = interaction.getMentionedUsers().get(0);
 
-                if (!user.getId().equals(author.getId())) {
-                    DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(guild, user);
-                    if (dbGuildUser.isIgnoreCommands()) {
-                        dbGuildUser.setIgnoreCommands(false);
-                        msg = interaction.replaceMsg(msg, "%setting", "disabled");
-                    } else {
-                        dbGuildUser.setIgnoreCommands(true);
-                        msg = interaction.replaceMsg(msg, "%setting", "enabled");
-                    }
-
-                    msg = interaction.replaceMsg(msg, "%user", user.getUsername());
-                    dbGuildUser.update();
+            if (!user.getId().equals(result.getEvent().getAuthor().getName())) {
+                DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(result.getEvent().getGuild(), user);
+                if (dbGuildUser.isIgnoreCommands()) {
+                    dbGuildUser.setIgnoreCommands(false);
+                    msg = interaction.replaceMsg(msg, "%setting", "disabled");
                 } else {
-                    msg = interaction.getRandomTemplate("fail").getTemplate();
+                    dbGuildUser.setIgnoreCommands(true);
+                    msg = interaction.replaceMsg(msg, "%setting", "enabled");
                 }
+
+                msg = interaction.replaceMsg(msg, "%user", user.getName());
+                dbGuildUser.update();
+            } else {
+                msg = interaction.getRandomTemplate("fail").getTemplate();
             }
         }
         return msg;

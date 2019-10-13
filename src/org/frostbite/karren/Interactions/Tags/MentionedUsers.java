@@ -10,7 +10,7 @@
 
 package org.frostbite.karren.Interactions.Tags;
 
-import discord4j.core.object.entity.User;
+import net.dv8tion.jda.api.entities.User;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
@@ -20,8 +20,8 @@ import java.util.List;
 public class MentionedUsers extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        List<User> users = result.getEvent().getMessage().getUserMentions().collectList().block();
-        if(users!=null && users.size()>0)
+        List<User> users = result.getEvent().getMessage().getMentionedUsers();
+        if(users.size()>0)
             interaction.getMentionedUsers().addAll(users);
         return msg;
     }

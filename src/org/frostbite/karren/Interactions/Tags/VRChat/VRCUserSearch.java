@@ -62,6 +62,7 @@ public class VRCUserSearch extends Tag {
                 else
                     msg = interaction.replaceMsg(msg, "%statdesc", "None");
                 msg = interaction.replaceMsg(msg, "%username", user.getDisplayName());
+                msg = interaction.replaceMsg(msg, "%userid", user.getId());
                 interaction.setEmbedImage(user.getCurrentAvatarImageUrl());
                 msg = interaction.replaceMsg(msg, "%tags", user.getTags().toString());
                 msg = interaction.replaceMsg(msg, "%newlevel", KarrenUtil.getVRCSafetySystemRank(user.getTags()));

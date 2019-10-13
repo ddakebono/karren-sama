@@ -10,7 +10,6 @@
 
 package org.frostbite.karren.Interactions.Tags.Guild;
 
-import discord4j.core.object.entity.Guild;
 import org.frostbite.karren.Database.Objects.DbGuild;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
@@ -21,9 +20,8 @@ public class SetPrefix extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         if(interaction.hasParameter()){
-            Guild guild = result.getEvent().getGuild().block();
             String param = interaction.getParameter();
-            DbGuild dbGuild = Karren.bot.getSql().getGuild(guild);
+            DbGuild dbGuild = Karren.bot.getSql().getGuild(result.getEvent().getGuild());
             dbGuild.setCommandPrefix(param.trim());
             dbGuild.update();
             msg = interaction.replaceMsg(msg,"%prefix", param);

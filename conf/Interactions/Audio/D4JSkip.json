@@ -1,0 +1,36 @@
+{
+  "triggers": [
+    "skip"
+  ],
+  "tags": [
+    "NoVoiceHijack",
+    "VoiceChannelRequired",
+    "Audio.Skip",
+    "prefixed"
+  ],
+  "templatesNew": [
+    {
+      "template": "Skipping to next in queue",
+      "templateType": "normal"
+    },
+    {
+      "template": "It seems that the URL given isn\u0027t valid!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You must be in the same voice channel as me to control music.",
+      "templateType": "nohijack"
+    },
+    {
+      "template": "You're not connected to a voice channel!",
+      "templateType": "novoice"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Skips current song in queue",
+  "identifier": "D4JSkip",
+  "confidence": 1,
+  "voiceVolume": 0.2,
+  "specialInteraction": false,
+  "isPermBad": false
+}

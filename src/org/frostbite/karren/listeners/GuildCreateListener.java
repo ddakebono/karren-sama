@@ -20,7 +20,7 @@ public class GuildCreateListener extends ListenerAdapter {
 
     @Override
     public void onGuildReady(@Nonnull GuildReadyEvent event) {
-        //Karren.bot.createGuildMusicManager(event.getGuild());
+        Karren.bot.createGuildMusicManager(event.getGuild());
         Karren.log.info("Guild " + event.getGuild().getName() + " has been registered with the database, and a GuildMusicManager has been spawned.");
     }
 }

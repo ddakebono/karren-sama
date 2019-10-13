@@ -10,9 +10,7 @@
 
 package org.frostbite.karren.Interactions.Tags;
 
-import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.User;
-import discord4j.core.object.util.Snowflake;
+import net.dv8tion.jda.api.entities.User;
 import org.frostbite.karren.Database.Objects.DbReminder;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
@@ -22,24 +20,20 @@ import org.frostbite.karren.Karren;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ReminderCheck extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        Guild guild = result.getEvent().getGuild().block();
-        Optional<User> authorOpt = result.getEvent().getMessage().getAuthor();
-        if(authorOpt.isPresent() && Karren.conf.getAllowSQLRW()) {
-            User author = authorOpt.get();
-            List<DbReminder> reminders = Arrays.stream(Karren.bot.getSql().getReminder(Karren.bot.getSql().getGuildUser(guild, author))).filter(x -> x.getReminderTime().before(new Timestamp(System.currentTimeMillis()))).collect(Collectors.toList());
+        if(Karren.conf.getAllowSQLRW()) {
+            List<DbReminder> reminders = Arrays.stream(Karren.bot.getSql().getReminder(Karren.bot.getSql().getGuildUser(result.getEvent().getGuild(), result.getEvent().getAuthor()))).filter(x -> x.getReminderTime().before(new Timestamp(System.currentTimeMillis()))).collect(Collectors.toList());
             if (reminders.size() > 0) {
                 DbReminder alert = reminders.get(0);
                 alert.setReminderSent(true);
                 alert.update();
-                User remAuthor = result.getEvent().getClient().getUserById(Snowflake.of(alert.authorID)).block();
+                User remAuthor = Karren.bot.client.getUserById(alert.authorID);
                 if(remAuthor!=null)
-                    msg = interaction.replaceMsg(msg, "%author", remAuthor.getUsername());
+                    msg = interaction.replaceMsg(msg, "%author", remAuthor.getName());
                 else
                     msg = interaction.replaceMsg(msg, "%author", "No Author");
                 msg = interaction.replaceMsg(msg, "%message", alert.getMessage());
