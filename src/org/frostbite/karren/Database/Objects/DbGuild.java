@@ -23,12 +23,11 @@ public class DbGuild {
     private int randomRange = 0;
     private int maxVolume = 40;
     private long overrideChannel = 0;
-    private long streamAnnounceChannel;
-    private long streamAnnounceMentionRole;
+    private long welcomeChannel = 0;
 
     public DbGuild(){}
 
-    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, String accessRole, int rollDifficulty, int maxVolume, int randomRange, long overrideChannel, long streamAnnounceChannel, long streamAnnounceMentionRole) {
+    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, String accessRole, int rollDifficulty, int maxVolume, int randomRange, long overrideChannel, long welcomeChannel) {
         this.guildID = guildID;
         this.guildName = guildName;
         this.guildOwner = guildOwner;
@@ -38,8 +37,7 @@ public class DbGuild {
         this.randomRange = randomRange;
         this.maxVolume = maxVolume;
         this.overrideChannel = overrideChannel;
-        this.streamAnnounceChannel = streamAnnounceChannel;
-        this.streamAnnounceMentionRole = streamAnnounceMentionRole;
+        this.welcomeChannel = welcomeChannel;
     }
 
     public String getGuildID() {
@@ -114,27 +112,19 @@ public class DbGuild {
         this.accessRole = accessRole;
     }
 
-    public long getStreamAnnounceChannel() {
-        return streamAnnounceChannel;
+    public long getWelcomeChannel() {
+        return welcomeChannel;
     }
 
-    public void setStreamAnnounceChannel(long streamAnnounceChannel) {
-        this.streamAnnounceChannel = streamAnnounceChannel;
-    }
-
-    public long getStreamAnnounceMentionRole() {
-        return streamAnnounceMentionRole;
-    }
-
-    public void setStreamAnnounceMentionRole(long streamAnnounceMentionRole) {
-        this.streamAnnounceMentionRole = streamAnnounceMentionRole;
+    public void setWelcomeChannel(long welcomeChannel) {
+        this.welcomeChannel = welcomeChannel;
     }
 
     //Update db entry
     public void update(){
         if(Karren.conf.getAllowSQLRW()) {
-            String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?, StreamAnnounceChannel=?, StreamAnnounceMentionRole=?, AccessRole=?  WHERE GuildID=?";
-            Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, streamAnnounceChannel, streamAnnounceMentionRole, accessRole, guildID});
+            String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?, AccessRole=?, WelcomeChannel=?  WHERE GuildID=?";
+            Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, accessRole, welcomeChannel, guildID});
         }
     }
 }

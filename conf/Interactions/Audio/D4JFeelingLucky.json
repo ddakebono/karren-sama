@@ -4,11 +4,12 @@
     "feelinglucky"
   ],
   "tags": [
-    "novoicehijack",
-    "requiresvoice",
-    "parameter",
+    "Guild.GuildOnly",
+    "NoVoiceHijack",
+    "VoiceChannelRequired",
+    "Parameter",
     "feelinglucky",
-    "d4jplay",
+    "Audio.Play",
     "prefixed"
   ],
   "templatesNew": [

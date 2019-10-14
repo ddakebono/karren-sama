@@ -1,0 +1,27 @@
+{
+  "triggers": [
+    "remind"
+  ],
+  "tags": [
+    "prefixed",
+    "ReminderAdd",
+    "EmbedMessage"
+  ],
+  "templatesNew": [
+    {
+      "template": "Reminder added for %target, I'll let them know.",
+      "templateType": "normal"
+    },
+    {
+      "template": "Hold on a sec, looks like you're missing a parameter. (%prefixremind @user 12 seconds 2 minutes that some words and stuff)",
+      "templateType": "fail"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Set reminders for people!",
+  "identifier": "ReminderAdd",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

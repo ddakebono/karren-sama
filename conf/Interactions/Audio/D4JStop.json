@@ -3,6 +3,7 @@
     "stop"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "NoVoiceHijack",
     "VoiceChannelRequired",
     "Audio.Stop",

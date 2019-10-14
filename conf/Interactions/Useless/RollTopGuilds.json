@@ -1,24 +1,20 @@
 {
   "triggers": [
-    "queue",
-    "list",
-    "q"
+    "rollranks"
   ],
   "tags": [
-    "Guild.GuildOnly",
-    "Audio.QueueList",
     "prefixed",
-    "EmbedMessage"
+    "RollTopGuilds"
   ],
   "templatesNew": [
     {
-      "template": "Here's what's up on the queue!",
+      "template": "Guild rankings for Rolls:\n```%ranks```",
       "templateType": "normal"
     }
   ],
   "enabled": true,
-  "helptext": "Lists current playlist",
-  "identifier": "D4JQueue",
+  "helptext": "Top roll rankings",
+  "identifier": "RollTopGuild",
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,

@@ -5,10 +5,11 @@
     "temp"
   ],
   "tags": [
-    "parameter",
+    "Guild.GuildOnly",
+    "Parameter",
     "prefixed",
-    "createtempchannel",
-    "embedded"
+    "CreateTempChannel",
+    "EmbedMessage"
   ],
   "templatesNew": [
     {

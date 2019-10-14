@@ -1,0 +1,28 @@
+{
+  "triggers": [
+    "listroles"
+  ],
+  "tags": [
+    "Guild.GuildOnly",
+    "Parameter",
+    "prefixed",
+    "ListRole"
+  ],
+  "templatesNew": [
+    {
+      "template": "The available roles are %roles.",
+      "templateType": "normal"
+    },
+    {
+      "template": "This server has no assignable roles!",
+      "templateType": "notsetup"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Lists all assignable roles",
+  "identifier": "ListRoles",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

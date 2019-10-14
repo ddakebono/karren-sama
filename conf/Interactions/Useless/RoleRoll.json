@@ -1,0 +1,57 @@
+{
+  "triggers": [
+    "roll",
+    "lotto",
+    "gibcolor"
+  ],
+  "tags": [
+    "prefixed",
+    "Parameter",
+    "RoleRoll"
+  ],
+  "templatesNew": [
+    {
+      "template": "Congrats! You\u0027ve cleared the DC and have acquired the role **%rngrole** enjoy!",
+      "templateType": "normal"
+    },
+    {
+      "template": "Winner Winner Chicken Dinner, you\u0027ve acquired the role **%rngrole**!",
+      "templateType": "normal"
+    },
+    {
+      "template": "It\u0027s time for some randomization! You\u0027ve hit a nat 100! You and %guildrange users around you get new colours!",
+      "templateType": "winrar"
+    },
+    {
+      "template": "Looks like you didn\u0027t clear the DC, better luck next time. (%roll+%bonus=%total against %dc | %timeremaining)",
+      "templateType": "fail"
+    },
+    {
+      "template": "Better luck next time. (%roll+%bonus=%total against %dc | %timeremaining)",
+      "templateType": "fail"
+    },
+    {
+      "template": "You still need to wait before you can roll again! (%timeremaining)",
+      "templateType": "permission"
+    },
+    {
+      "template": "Looks like this server doesn't have any lotto- roles configured, tell your admin to add some!",
+      "templateType": "noroles"
+    },
+    {
+      "template": "Hold on a sec, looks like I don't have access to Manage Roles, your admin should fix that!",
+      "templateType": "noroleperm"
+    },
+    {
+      "template": "Oh, looks like you've won, but it seems that the lotto- roles are above my permission level.",
+      "templateType": "higherroles"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Try and roll for a coloured role",
+  "identifier": "RoleRoll",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

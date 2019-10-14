@@ -1,0 +1,41 @@
+{
+  "triggers": [
+    "bye",
+    "goodbye",
+    "cya",
+    "later",
+    "goodnight",
+    "good-bye",
+    "sayonara"
+  ],
+  "tags": [
+    "bot",
+    "Depart",
+    "Name"
+  ],
+  "templatesNew": [
+    {
+      "template": "See you later %name!",
+      "templateType": "normal"
+    },
+    {
+      "template": "Goodbye %name!",
+      "templateType": "normal"
+    },
+    {
+      "template": "Come back soon %name!",
+      "templateType": "normal"
+    },
+    {
+      "template": "Wait %name, you left earlier... Well fine, good bye again.",
+      "templateType": "fail"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Tell me when you leave and I\u0027ll keep track of your away time, maybe tell people about it too",
+  "identifier": "Depart",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

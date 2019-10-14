@@ -3,6 +3,7 @@
     "np"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "Audio.NowPlaying",
     "Audio.NowPlayingTime",
     "prefixed"

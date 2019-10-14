@@ -5,8 +5,9 @@
     "talking"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "bot",
-    "d4jstop"
+    "Audio.Stop"
   ],
   "templatesNew": [
     {

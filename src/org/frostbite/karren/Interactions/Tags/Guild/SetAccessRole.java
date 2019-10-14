@@ -10,7 +10,7 @@
 
 package org.frostbite.karren.Interactions.Tags.Guild;
 
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.Role;
 import org.frostbite.karren.Database.Objects.DbGuild;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
@@ -19,17 +19,16 @@ import org.frostbite.karren.Karren;
 
 import java.util.List;
 
-public class SetOverrideChannel extends Tag {
+public class SetAccessRole extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         if (interaction.hasParameter()) {
-            List<TextChannel> channels = result.getEvent().getGuild().getTextChannelsByName(interaction.getParameter(), true);
-            //List<IChannel> channels = event.getGuild().getChannelsByName(interaction.getParameter());
-            if (channels.size() == 1) {
-                DbGuild dbGuild = Karren.bot.getSql().getGuild(result.getEvent().getGuild());
-                dbGuild.setOverrideChannel(channels.get(0).getIdLong());
-                dbGuild.update();
-                msg = interaction.replaceMsg(msg, "%channel", channels.get(0).getName());
+            List<Role> roles = result.getEvent().getGuild().getRolesByName(interaction.getParameter(), true);
+            if (roles.size() == 1) {
+                DbGuild guild = Karren.bot.getSql().getGuild(result.getEvent().getGuild());
+                guild.setAccessRole(roles.get(0).getName());
+                guild.update();
+                msg = interaction.replaceMsg(msg, "%role", roles.get(0).getName());
             } else {
                 msg = interaction.getRandomTemplate("fail").getTemplate();
             }
@@ -41,7 +40,7 @@ public class SetOverrideChannel extends Tag {
 
     @Override
     public String getTagName() {
-        return "setoverridechannel";
+        return "setaccessrole";
     }
-
 }
+

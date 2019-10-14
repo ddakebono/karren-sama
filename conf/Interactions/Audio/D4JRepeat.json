@@ -3,6 +3,7 @@
     "repeat"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "NoVoiceHijack",
     "VoiceChannelRequired",
     "Audio.Repeat",

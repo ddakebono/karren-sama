@@ -3,6 +3,7 @@
     "prefix"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "prefixed",
     "Parameter",
     "Guild.SetPrefix"

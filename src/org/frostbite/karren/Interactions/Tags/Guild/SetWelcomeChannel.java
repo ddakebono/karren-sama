@@ -19,15 +19,14 @@ import org.frostbite.karren.Karren;
 
 import java.util.List;
 
-public class SetOverrideChannel extends Tag {
+public class SetWelcomeChannel extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         if (interaction.hasParameter()) {
             List<TextChannel> channels = result.getEvent().getGuild().getTextChannelsByName(interaction.getParameter(), true);
-            //List<IChannel> channels = event.getGuild().getChannelsByName(interaction.getParameter());
             if (channels.size() == 1) {
                 DbGuild dbGuild = Karren.bot.getSql().getGuild(result.getEvent().getGuild());
-                dbGuild.setOverrideChannel(channels.get(0).getIdLong());
+                dbGuild.setWelcomeChannel(channels.get(0).getIdLong());
                 dbGuild.update();
                 msg = interaction.replaceMsg(msg, "%channel", channels.get(0).getName());
             } else {
@@ -41,7 +40,7 @@ public class SetOverrideChannel extends Tag {
 
     @Override
     public String getTagName() {
-        return "setoverridechannel";
+        return "setwelcomechannel";
     }
 
 }

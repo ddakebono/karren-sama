@@ -1,20 +1,20 @@
 {
   "triggers": [
-    "set-diff"
+    "set-welcome"
   ],
   "tags": [
     "Guild.GuildOnly",
     "prefixed",
     "Parameter",
-    "Guild.SetDifficulty"
+    "Guild.SetWelcomeChannel"
   ],
   "templatesNew": [
     {
-      "template": "Roll difficulty set to %newdiff.",
+      "template": "Welcome channel set to **\"%channel\"**",
       "templateType": "normal"
     },
     {
-      "template": "You need to enter a valid number!",
+      "template": "Seems like either there are 2 channels with similar names or no channel with that name exists!",
       "templateType": "fail"
     },
     {
@@ -22,12 +22,16 @@
       "templateType": "permission"
     },
     {
+      "template": "You need to enter a target channel!",
+      "templateType": "noparam"
+    },
+    {
       "template": "You\u0027re gonna need the admin role to use this...",
       "templateType": "permission"
     }
   ],
   "enabled": true,
-  "helptext": "Changes difficulty of rolls",
+  "helptext": "Sets override channel",
   "identifier": "SetDifficulty",
   "confidence": 1,
   "permissionLevel": "bot-manager",

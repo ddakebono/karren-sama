@@ -34,8 +34,8 @@ public class ConnectCommand extends ListenerAdapter {
         if(Karren.conf.getAllowSQLRW())
             Yank.setupDefaultConnectionPool(dbSettings);
 
-        //TODO Start auto reminder
-
-        //TODO Start ChannelMonitor
+        //Launch threads
+        Karren.bot.ar.start();
+        Karren.bot.cm.start();
     }
 }

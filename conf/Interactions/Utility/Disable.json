@@ -3,6 +3,7 @@
     "disable"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "Parameter",
     "prefixed",
     "Guild.DisableInteraction"

@@ -4,6 +4,7 @@
     "yt"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "NoVoiceHijack",
     "Parameter",
     "Audio.Play",

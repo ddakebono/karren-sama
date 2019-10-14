@@ -17,6 +17,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.track.playback.NonAllocatingAudioFrameBuffer;
+import io.github.vrchatapi.VRCUser;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -45,6 +46,7 @@ public class KarrenBot {
     public YouTube yt;
     public AudioPlayerManager pm;
     public AutoInteraction ar = new AutoInteraction();
+    public ChannelMonitor cm = new ChannelMonitor();
 
     public KarrenBot(JDABuilder clientBuilder){
         this.clientBuilder = clientBuilder;
@@ -59,10 +61,14 @@ public class KarrenBot {
         AudioSourceManagers.registerLocalSource(pm);
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
-            if(!Karren.conf.isTestMode())
-                clientBuilder.setActivity(Activity.playing("KarrenSama Ver." + Karren.botVersion));
-            else
+            if(!Karren.conf.isTestMode()) {
+                if(Karren.conf.getStatusOverride().isEmpty())
+                    clientBuilder.setActivity(Activity.playing("KarrenSama Ver." + Karren.botVersion));
+                else
+                    clientBuilder.setActivity(Activity.playing(Karren.conf.getStatusOverride()));
+            } else {
                 clientBuilder.setActivity(Activity.playing("TEST MODE - " + Karren.botVersion));
+            }
             clientBuilder.addEventListeners(new ConnectCommand());
             clientBuilder.addEventListeners(new KillCommand());
             clientBuilder.addEventListeners(new ReconnectListener());
@@ -76,7 +82,6 @@ public class KarrenBot {
             } catch (LoginException e) {
                 e.printStackTrace();
             }
-            //client.login().block(); //Let's GOOOOO
         } else {
             Karren.log.info("Running in test mode, not connected to Discord.");
             initExtras();
@@ -94,7 +99,7 @@ public class KarrenBot {
             yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
 
             //Log into VRCAPI and get auth token
-            //VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
+            VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
 
             extrasReady = true;
         }
@@ -149,18 +154,11 @@ public class KarrenBot {
         return pm;
     }
 
-    //TODO Instant Replay
-    /*public InstantReplayManager getIrm() {
-        return irm;
-    }*/
-
-    //TODO Auto interaction
-    /*public AutoInteraction getAr() {
+    public AutoInteraction getAr() {
         return ar;
-    }*/
+    }
 
-    //TODO Channel Monitor
-    /*public ChannelMonitor getCm() {
+    public ChannelMonitor getCm() {
         return cm;
-    }*/
+    }
 }

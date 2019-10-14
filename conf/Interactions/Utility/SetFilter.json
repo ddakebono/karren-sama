@@ -3,6 +3,7 @@
     "filter"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "prefixed",
     "mentioned",
     "Guild.SetFilter"

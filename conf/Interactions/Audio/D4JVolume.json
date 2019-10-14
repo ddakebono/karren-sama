@@ -3,6 +3,7 @@
     "volume"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "NoVoiceHijack",
     "Parameter",
     "VoiceChannelRequired",

@@ -25,7 +25,17 @@ public class GuildSettings extends Tag {
         interaction.replaceMsg(msg, "%maxvolume", Integer.toString(dbGuild.getMaxVolume()));
         interaction.replaceMsg(msg, "%prefix", ("\"" + Karren.bot.getGuildManager().getCommandPrefix(result.getEvent().getGuild()) + "\""));
         interaction.replaceMsg(msg, "%range", Integer.toString(dbGuild.getRandomRange()));
-        if (Karren.bot.getSql().getGuild(result.getEvent().getGuild()).getOverrideChannel() != 0) {
+        interaction.replaceMsg(msg, "%accessrole", dbGuild.getAccessRole());
+        if(dbGuild.getWelcomeChannel()!=0){
+            GuildChannel welcome = result.getEvent().getGuild().getGuildChannelById(dbGuild.getWelcomeChannel());
+            if(welcome!=null)
+                interaction.replaceMsg(msg, "%welcomechan", welcome.getName());
+            else
+                interaction.replaceMsg(msg, "%welcomechan", "UNKNOWN CHANNEL");
+        } else {
+            interaction.replaceMsg(msg, "%welcomechan", "None Set");
+        }
+        if (dbGuild.getOverrideChannel() != 0) {
             GuildChannel overrideChannel = result.getEvent().getGuild().getGuildChannelById(dbGuild.getOverrideChannel());
             if (overrideChannel != null)
                 interaction.replaceMsg(msg, "%override", overrideChannel.getName());

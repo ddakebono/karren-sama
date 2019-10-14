@@ -3,6 +3,7 @@
     "pause"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "NoVoiceHijack",
     "VoiceChannelRequired",
     "Audio.Play",

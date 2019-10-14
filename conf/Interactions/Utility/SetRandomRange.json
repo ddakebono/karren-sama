@@ -3,6 +3,7 @@
     "randomrange"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "prefixed",
     "Parameter",
     "Guild.SetRandomRange"

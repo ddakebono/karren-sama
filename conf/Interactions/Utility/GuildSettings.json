@@ -5,6 +5,7 @@
     "config"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "prefixed",
     "Guild.GuildSettings",
     "Guild.GetGuildName",
@@ -40,6 +41,16 @@
     {
       "fieldTitle": "Global Override Channel",
       "fieldValue": "%override",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Access Role",
+      "fieldValue": "%accessrole",
+      "inline": true
+    },
+    {
+      "fieldTitle": "Welcome Channel",
+      "fieldValue": "%welcomechan",
       "inline": true
     }
   ],

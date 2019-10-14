@@ -1,21 +1,21 @@
 {
   "triggers": [
-    "maxvolume"
+    "accessrole"
   ],
   "tags": [
     "Guild.GuildOnly",
     "prefixed",
     "Parameter",
-    "Guild.SetMaxVolume"
+    "Guild.SetAccessRole"
   ],
   "templatesNew": [
     {
-      "template": "Max volume is now set to %volume.",
+      "template": "Access role set to %role",
       "templateType": "normal"
     },
     {
-      "template": "I need a new max volume to set!",
-      "templateType": "noparam"
+      "template": "The role you want to use needs to exist.",
+      "templateType": "fail"
     },
     {
       "template": "You don\u0027t have permission to change this... (Not admin)",
@@ -23,8 +23,8 @@
     }
   ],
   "enabled": true,
-  "helptext": "Sets max volume for a guild",
-  "identifier": "SetMaxVolume",
+  "helptext": "Sets the access role to be used with get access",
+  "identifier": "SetAccessRole",
   "confidence": 1,
   "permissionLevel": "bot-manager",
   "voiceVolume": 0.0,

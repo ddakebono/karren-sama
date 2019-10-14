@@ -3,6 +3,7 @@
     "yts"
   ],
   "tags": [
+    "Guild.GuildOnly",
     "NoVoiceHijack",
     "Parameter",
     "VoiceChannelRequired",
