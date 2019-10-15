@@ -3,7 +3,6 @@
     "set-chan"
   ],
   "tags": [
-    "Guild.GuildOnly",
     "prefixed",
     "Parameter",
     "Guild.SetOverrideChannel"
@@ -37,5 +36,6 @@
   "permissionLevel": "bot-manager",
   "voiceVolume": 0.0,
   "specialInteraction": false,
-  "isPermBad": false
+  "isPermBad": false,
+  "guildOnly": true
 }

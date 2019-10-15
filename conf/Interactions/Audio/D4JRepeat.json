@@ -3,7 +3,6 @@
     "repeat"
   ],
   "tags": [
-    "Guild.GuildOnly",
     "NoVoiceHijack",
     "VoiceChannelRequired",
     "Audio.Repeat",
@@ -29,5 +28,6 @@
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,
-  "isPermBad": false
+  "isPermBad": false,
+  "guildOnly": true
 }

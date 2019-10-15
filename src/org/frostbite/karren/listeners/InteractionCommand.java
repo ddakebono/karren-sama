@@ -28,41 +28,46 @@ public class InteractionCommand extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
-        if(!event.getAuthor().isBot()) {
-            if (Karren.conf.getEnableInteractions()) {
-                Guild guild = null;
-                if (event.isFromGuild())
-                    guild = event.getGuild();
-                InteractionProcessor ip = Karren.bot.getGuildManager().getInteractionProcessor(guild);
-                if (ip != null) {
-                    if (!Karren.bot.getSql().getGuildUser(guild, event.getAuthor()).isIgnoreCommands()) {
-                        InteractionResult result = ip.run(event);
-                        if (result != null) {
-                            MessageBuilder msgBuilder = new MessageBuilder();
-                            msgBuilder.setContent(result.getMessage());
-                            if (result.getEmbed() != null)
-                                msgBuilder.setEmbed(result.getEmbed());
-                            if (!result.isDoNotSend() && !msgBuilder.isEmpty()) {
-                                MessageAction sendAction = null;
-                                if (result.isPrivateMessage()) {
-                                    sendAction = event.getAuthor().openPrivateChannel().complete().sendMessage(msgBuilder.build());
-                                } else {
-                                    if (result.getOverrideChannel() == null) {
-                                        sendAction = event.getChannel().sendMessage(msgBuilder.build());
-                                    } else {
-                                        TextChannel channel = (TextChannel) Objects.requireNonNull(guild).getGuildChannelById(ChannelType.TEXT, result.getOverrideChannel());
-                                        if (channel != null) {
-                                            sendAction = channel.sendMessage(msgBuilder.build());
-                                        }
-                                    }
-                                }
-                                if (sendAction != null)
-                                    sendAction.queue();
-                            }
+        if (!event.getAuthor().isBot()) {
+            Guild guild = null;
+            if (event.isFromGuild())
+                guild = event.getGuild();
+            InteractionProcessor ip = Karren.bot.getGuildManager().getInteractionProcessor(guild);
+            if (ip != null) {
+                if (!Karren.bot.getSql().getGuildUser(guild, event.getAuthor()).isIgnoreCommands()) {
+                    InteractionResult[] results = ip.run(event);
+                    if (results.length>0) {
+                        for (InteractionResult result : results){
+                            if(!result.isDoNotSend())
+                                sendMessage(result, event);
                         }
                     }
                 }
             }
+        }
+    }
+
+    private void sendMessage(InteractionResult result, MessageReceivedEvent event) {
+        MessageBuilder msgBuilder = new MessageBuilder();
+        msgBuilder.setContent(result.getMessage());
+        if (result.getEmbed() != null)
+            msgBuilder.setEmbed(result.getEmbed());
+        if (!msgBuilder.isEmpty()) {
+            MessageAction sendAction = null;
+            if (result.isPrivateMessage()) {
+                sendAction = event.getAuthor().openPrivateChannel().complete().sendMessage(msgBuilder.build());
+            } else {
+                if (result.getOverrideChannel() == null) {
+                    sendAction = event.getChannel().sendMessage(msgBuilder.build());
+                } else {
+                    TextChannel channel = (TextChannel) Objects.requireNonNull(event.getGuild()).getGuildChannelById(ChannelType.TEXT, result.getOverrideChannel());
+                    if (channel != null) {
+                        sendAction = channel.sendMessage(msgBuilder.build());
+                    }
+                }
+            }
+            if (sendAction != null)
+                sendAction.queue();
         }
     }
 }

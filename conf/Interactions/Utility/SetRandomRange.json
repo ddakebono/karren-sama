@@ -3,7 +3,6 @@
     "randomrange"
   ],
   "tags": [
-    "Guild.GuildOnly",
     "prefixed",
     "Parameter",
     "Guild.SetRandomRange"
@@ -33,5 +32,6 @@
   "permissionLevel": "bot-manager",
   "voiceVolume": 0.0,
   "specialInteraction": false,
-  "isPermBad": false
+  "isPermBad": false,
+  "guildOnly": true
 }

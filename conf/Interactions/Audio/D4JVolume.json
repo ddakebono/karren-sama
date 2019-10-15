@@ -3,7 +3,6 @@
     "volume"
   ],
   "tags": [
-    "Guild.GuildOnly",
     "NoVoiceHijack",
     "Parameter",
     "VoiceChannelRequired",
@@ -34,5 +33,6 @@
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,
-  "isPermBad": false
+  "isPermBad": false,
+  "guildOnly": true
 }

@@ -22,12 +22,12 @@ public class KillCommand extends ListenerAdapter {
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         //Catch all messages and log
         if(!event.getAuthor().isBot()) {
-            Karren.log.debug("Message from: " + event.getAuthor().getName() + " | Channel: " + event.getChannel().getId() + " | Content: " + event.getMessage().getContentRaw());
+            Karren.log.debug("Message from: " + event.getAuthor().getName() + " | Channel: " + event.getChannel().getId() + " | Content: " + event.getMessage().getContentDisplay());
             if (event.getMessage().getContentRaw().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "kill")) {
                 if (event.getAuthor().getId().equals(Karren.conf.getOperatorDiscordID())) {
                     Karren.bot.killBot(event.getAuthor().getName());
                 } else {
-                    event.getChannel().sendMessage("Hold on a sec, this command can only be used by my operator.");
+                    event.getChannel().sendMessage("Hold on a sec, this command can only be used by my operator.").queue();
                 }
             }
         }

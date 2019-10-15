@@ -46,6 +46,7 @@ public class Interaction {
     @Expose private String parameter;
     @Expose private boolean specialInteraction = false;
     @Expose private boolean isPermBad = false;
+    @Expose private boolean guildOnly = false;
     private int usageCount = -1;
     private ArrayList<String> allowedUsers = new ArrayList<>();
     private ArrayList<Long> allowedServers = new ArrayList<Long>();
@@ -80,7 +81,7 @@ public class Interaction {
     }
 
     @JsonCreator
-    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail, @JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction, @JsonProperty("embedFields") ArrayList<InteractionEmbedFields> embedFields, @JsonProperty("friendlyName") String friendlyName, @JsonProperty("allowedServers") Long[] allowedServers) {
+    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail, @JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction, @JsonProperty("embedFields") ArrayList<InteractionEmbedFields> embedFields, @JsonProperty("friendlyName") String friendlyName, @JsonProperty("allowedServers") Long[] allowedServers, @JsonProperty("guildOnly") boolean guildOnly) {
         this.triggers = triggers;
         this.tags = tags;
         this.templatesNew = templatesNew;
@@ -100,6 +101,7 @@ public class Interaction {
         this.embedFields = embedFields;
         this.friendlyName = friendlyName;
         this.allowedServers.addAll(Arrays.asList(allowedServers));
+        this.guildOnly = guildOnly;
     }
 
     public Interaction(String identifier, String[] tags, InteractionTemplate[] templatesNew, String[] triggers, int confidence, boolean enabled, String helptext, String permissionLevel, String channel, String[] voiceFiles, float voiceVolume, boolean specialInteraction){
@@ -196,11 +198,12 @@ public class Interaction {
             if(guild!=null)
                 selfMember = guild.getMember(Karren.bot.client.getSelfUser());
             if(selfMember!=null){
-                if(Arrays.asList(tags).contains("bot") && !message.toLowerCase().contains(Karren.bot.client.getSelfUser().getName()) && !message.toLowerCase().contains(selfMember.getEffectiveName()))
+                if(Arrays.asList(tags).contains("bot") && !message.toLowerCase().contains(Karren.bot.client.getSelfUser().getName().toLowerCase()) && !message.toLowerCase().contains(selfMember.getEffectiveName().toLowerCase()))
+                    return 0;
+            }else {
+                if (Arrays.asList(tags).contains("bot") && !message.toLowerCase().contains(Karren.bot.client.getSelfUser().getName()))
                     return 0;
             }
-            if(Arrays.asList(tags).contains("bot") && !message.toLowerCase().contains(Karren.bot.client.getSelfUser().getName()))
-                return 0;
         }
         String[] tokenizedMessage = message.split("\\s+");
         if(triggers!=null) {
@@ -430,6 +433,10 @@ public class Interaction {
 
     public int getReplacementTextCount(){
         return replacedTextMap.size();
+    }
+
+    public boolean isGuildOnly() {
+        return guildOnly;
     }
 
     public boolean interactionOldFormatUpdate(){

@@ -3,7 +3,6 @@
     "role"
   ],
   "tags": [
-    "Guild.GuildOnly",
     "Parameter",
     "prefixed",
     "AddRole"
@@ -32,5 +31,6 @@
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,
-  "isPermBad": false
+  "isPermBad": false,
+  "guildOnly": true
 }

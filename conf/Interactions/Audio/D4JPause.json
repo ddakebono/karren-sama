@@ -3,7 +3,6 @@
     "pause"
   ],
   "tags": [
-    "Guild.GuildOnly",
     "NoVoiceHijack",
     "VoiceChannelRequired",
     "Audio.Play",
@@ -33,5 +32,6 @@
   "confidence": 1,
   "voiceVolume": 0.2,
   "specialInteraction": false,
-  "isPermBad": false
+  "isPermBad": false,
+  "guildOnly": true
 }

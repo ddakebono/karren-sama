@@ -4,7 +4,6 @@
     "feelinglucky"
   ],
   "tags": [
-    "Guild.GuildOnly",
     "NoVoiceHijack",
     "VoiceChannelRequired",
     "Parameter",
@@ -44,5 +43,6 @@
   "confidence": 1,
   "voiceVolume": 20.0,
   "specialInteraction": false,
-  "isPermBad": false
+  "isPermBad": false,
+  "guildOnly": true
 }

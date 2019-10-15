@@ -14,7 +14,6 @@ import org.frostbite.karren.Database.Objects.DbUser;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
-import org.frostbite.karren.Interactions.TagHelperClasses.DepartedUser;
 import org.frostbite.karren.Karren;
 
 import java.sql.Timestamp;
@@ -28,7 +27,7 @@ public class Depart extends Tag {
         if(user.getTimeLeft()!=null){
             msg = interaction.getRandomTemplate("fail").getTemplate();
         } else {
-            Karren.bot.departedUsers.add(new DepartedUser(result.getEvent().getAuthor().getIdLong(), true));
+            Karren.bot.departedUsers.put(result.getEvent().getAuthor().getIdLong(), true);
         }
         user.setTimeLeft(new Timestamp(new Date().getTime()));
         user.update();

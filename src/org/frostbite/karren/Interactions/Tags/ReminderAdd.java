@@ -25,7 +25,7 @@ public class ReminderAdd extends Tag {
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
 
         if(result.getEvent().isFromGuild()) {
-            String[] tempArray = result.getEvent().getMessage().getContentRaw().split("that");
+            String[] tempArray = result.getEvent().getMessage().getContentDisplay().toLowerCase().split("that");
             Pattern timeMatch = Pattern.compile("(?:\\d*\\S)?\\d+ \\S+");
             if (interaction.getMentionedUsers().size()> 0 && tempArray.length == 2) {
                 DbReminder reminder = new DbReminder();

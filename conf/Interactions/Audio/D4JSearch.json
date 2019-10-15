@@ -3,7 +3,6 @@
     "yts"
   ],
   "tags": [
-    "Guild.GuildOnly",
     "NoVoiceHijack",
     "Parameter",
     "VoiceChannelRequired",
@@ -44,5 +43,6 @@
   "confidence": 1,
   "voiceVolume": 20.0,
   "specialInteraction": false,
-  "isPermBad": false
+  "isPermBad": false,
+  "guildOnly": true
 }

@@ -10,7 +10,6 @@
   ],
   "tags": [
     "bot",
-    "Guild.GuildOnly",
     "Audio.NowPlaying",
     "Audio.NowPlayingTime"
   ],
@@ -34,5 +33,6 @@
   "confidence": 3,
   "voiceVolume": 0.0,
   "specialInteraction": false,
-  "isPermBad": false
+  "isPermBad": false,
+  "guildOnly": true
 }

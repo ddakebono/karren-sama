@@ -40,9 +40,11 @@ public class ReminderCheck extends Tag {
                 Karren.bot.getSql().getDbReminderCache().remove(alert);
                 return msg;
             } else {
+                interaction.stopProcessing();
                 return null;
             }
         }
+        interaction.stopProcessing();
         return null;
     }
 

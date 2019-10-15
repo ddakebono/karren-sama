@@ -17,21 +17,17 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.track.playback.NonAllocatingAudioFrameBuffer;
-import io.github.vrchatapi.VRCUser;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
-import org.frostbite.karren.Interactions.TagHelperClasses.DepartedUser;
 import org.frostbite.karren.listeners.*;
 import org.knowm.yank.Yank;
 
 import javax.security.auth.login.LoginException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public class KarrenBot {
@@ -40,7 +36,7 @@ public class KarrenBot {
     public MySQLInterface sql = new MySQLInterface();
     public boolean extrasReady = false;
     public Map<Long, GuildMusicManager> gms;
-    public List<DepartedUser> departedUsers = new LinkedList<>();
+    public HashMap<Long, Boolean> departedUsers = new HashMap<>();
     public GuildManager ic;
     public boolean isKill = false;
     public YouTube yt;
@@ -74,7 +70,8 @@ public class KarrenBot {
             clientBuilder.addEventListeners(new ReconnectListener());
             clientBuilder.addEventListeners(new ShutdownListener());
             clientBuilder.addEventListeners(new StatCommand());
-            clientBuilder.addEventListeners(new InteractionCommand());
+            if(Karren.conf.getEnableInteractions())
+                clientBuilder.addEventListeners(new InteractionCommand());
             clientBuilder.addEventListeners(new GuildCreateListener());
             initExtras();
             try {
@@ -99,7 +96,7 @@ public class KarrenBot {
             yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
 
             //Log into VRCAPI and get auth token
-            VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
+            //VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
 
             extrasReady = true;
         }

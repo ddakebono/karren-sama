@@ -13,36 +13,34 @@ import org.frostbite.karren.Database.Objects.DbUser;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
-import org.frostbite.karren.Interactions.TagHelperClasses.DepartedUser;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
-
-import java.util.Optional;
 
 public class Return extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         if(result.getEvent().isFromGuild()) {
-            Optional<DepartedUser> departedUser = Karren.bot.departedUsers.stream().filter(x -> x.userID == result.getEvent().getAuthor().getIdLong()).findFirst();
-            if (!interaction.isSpecialInteraction()) {
+            if (Karren.bot.departedUsers.getOrDefault(result.getEvent().getAuthor().getIdLong(), true) || !interaction.isSpecialInteraction()) {
                 DbUser user = Karren.bot.getSql().getUserData(result.getEvent().getAuthor());
-                if (!departedUser.isPresent())
-                    Karren.bot.departedUsers.add(new DepartedUser(result.getEvent().getAuthor().getIdLong(), false));
+                if (Karren.bot.departedUsers.putIfAbsent(result.getEvent().getAuthor().getIdLong(), false) != null)
+                    Karren.bot.departedUsers.put(result.getEvent().getAuthor().getIdLong(), false);
                 if (user.getTimeLeft() != null) {
                     msg = interaction.replaceMsg(msg, "%away", KarrenUtil.calcAway(user.getTimeLeft().getTime()));
                     user.setTimeLeft(null);
                     user.update();
                     return msg;
                 } else {
-                    if (interaction.isSpecialInteraction())
+                    if (interaction.isSpecialInteraction()) {
+                        interaction.stopProcessing();
                         return null;
+                    }
                     else
                         return interaction.getRandomTemplate("fail").getTemplate();
                 }
             } else {
                 if (interaction.getMentionedUsers().size()>0) {
-                    long isDeparted = Karren.bot.departedUsers.stream().filter(x->x.userID==interaction.getMentionedUsers().get(0).getIdLong() && x.isDeparted).count();
-                    if (interaction.isSpecialInteraction() && isDeparted>0) {
+                    boolean isDeparted = Karren.bot.departedUsers.getOrDefault(result.getEvent().getMessage().getMentionedUsers().get(0), false);
+                    if (interaction.isSpecialInteraction() && isDeparted) {
                         DbUser mention = Karren.bot.getSql().getUserData(interaction.getMentionedUsers().get(0));
                         msg = interaction.getRandomTemplate("fail").getTemplate();
                         msg = interaction.replaceMsg(msg, "%name", result.getEvent().getAuthor().getAsMention());
@@ -53,6 +51,7 @@ public class Return extends Tag {
                 }
             }
         }
+        interaction.stopProcessing();
         return null;
     }
 

@@ -21,6 +21,7 @@ public class InteractionResult {
     String overrideChannel = null;
     boolean errored = false;
     boolean doNotSend = false;
+    boolean completed = false;
 
     public InteractionResult(MessageReceivedEvent event){
         new InteractionResult(event, false, null);
@@ -38,6 +39,7 @@ public class InteractionResult {
 
     public void setMessage(String message) {
         this.message = message;
+        completed = true;
     }
 
     public MessageEmbed getEmbed() {

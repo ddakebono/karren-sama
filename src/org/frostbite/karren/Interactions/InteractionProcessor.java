@@ -52,11 +52,12 @@ public class InteractionProcessor {
         }
     }
 
-    public InteractionResult run(MessageReceivedEvent event){
+    public InteractionResult[] run(MessageReceivedEvent event){
         List<Interaction> matches = getAllInteractionMatches(event);
-        InteractionResult result = null;
+        List<InteractionResult> results = new ArrayList<>();
         if(matches.size()>0){
             for(Interaction match : matches){
+                InteractionResult result;
                 Karren.log.info("Interaction match! Starting processing for " + (match.getFriendlyName()!=null?match.getFriendlyName():match.getIdentifier()));
                 if(Karren.bot.sql.getGuild(event.getGuild()).getOverrideChannel()!=0)
                     result = new InteractionResult(event, false, Long.toString(Karren.bot.sql.getGuild(event.getGuild()).getOverrideChannel()));
@@ -64,9 +65,12 @@ public class InteractionProcessor {
                     result = new InteractionResult(event, false, null);
                 preloadTags(match, result);
                 processTags(match, result);
+                if(result.completed)
+                    results.add(result);
             }
         }
-        return result;
+        InteractionResult[] resultArray = new InteractionResult[results.size()];
+        return results.toArray(resultArray);
     }
 
     private void preloadTags(Interaction interaction, InteractionResult result){

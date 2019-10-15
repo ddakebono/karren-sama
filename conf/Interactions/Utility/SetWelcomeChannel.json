@@ -3,7 +3,6 @@
     "set-welcome"
   ],
   "tags": [
-    "Guild.GuildOnly",
     "prefixed",
     "Parameter",
     "Guild.SetWelcomeChannel"
@@ -37,5 +36,6 @@
   "permissionLevel": "bot-manager",
   "voiceVolume": 0.0,
   "specialInteraction": false,
-  "isPermBad": false
+  "isPermBad": false,
+  "guildOnly": true
 }
