@@ -21,6 +21,7 @@ public class ReconnectListener extends ListenerAdapter {
 
     @Override
     public void onReconnect(@Nonnull ReconnectedEvent event) {
+        Karren.bot.onConnectStartup();
         if(!Karren.conf.isTestMode()) {
             if(Karren.conf.getStatusOverride().isEmpty())
                 event.getJDA().getPresence().setActivity(Activity.playing("KarrenSama Ver." + Karren.botVersion));

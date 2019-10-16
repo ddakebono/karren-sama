@@ -22,26 +22,24 @@ import java.util.stream.Collectors;
 public class AutoInteraction extends Thread {
 
     private boolean kill = false;
-    private boolean suspend = false;
 
-    public void run(){
+    public void run() {
+        kill = false;
         Karren.bot.getSql().preloadReminderCache();
-        while(!kill){
-            if(!suspend) {
-                List<DbReminder> remindersPastTime = Karren.bot.getSql().getDbReminderCache().stream().filter(x -> (x.getReminderTime().before(new Timestamp(System.currentTimeMillis())) && x.getReminderTime().getTime() != 0) && !x.reminderSent).collect(Collectors.toList());
-                if (remindersPastTime.size() > 0) {
-                    for (DbReminder reminder : remindersPastTime) {
-                        reminder.setReminderSent(true);
-                        reminder.update();
-                        User author = Karren.bot.client.getUserById(reminder.authorID);
-                        User target = Karren.bot.client.getUserById(reminder.targetID);
-                        if(author!=null&&target!=null) {
-                            String message = "Hey " + target.getAsMention() + ", " + author.getName() + " wanted me to remind you **\"" + reminder.getMessage() + "\"**";
-                            TextChannel channel = Karren.bot.client.getTextChannelById(reminder.channelID);
-                            if(channel!=null) {
-                                MessageAction messageSend = channel.sendMessage(message);
-                                messageSend.queue();
-                            }
+        while (!kill) {
+            List<DbReminder> remindersPastTime = Karren.bot.getSql().getDbReminderCache().stream().filter(x -> (x.getReminderTime().before(new Timestamp(System.currentTimeMillis())) && x.getReminderTime().getTime() != 0) && !x.reminderSent).collect(Collectors.toList());
+            if (remindersPastTime.size() > 0) {
+                for (DbReminder reminder : remindersPastTime) {
+                    reminder.setReminderSent(true);
+                    reminder.update();
+                    User author = Karren.bot.client.getUserById(reminder.authorID);
+                    User target = Karren.bot.client.getUserById(reminder.targetID);
+                    if (author != null && target != null) {
+                        String message = "Hey " + target.getAsMention() + ", " + author.getName() + " wanted me to remind you **\"" + reminder.getMessage() + "\"**";
+                        TextChannel channel = Karren.bot.client.getTextChannelById(reminder.channelID);
+                        if (channel != null) {
+                            MessageAction messageSend = channel.sendMessage(message);
+                            messageSend.queue();
                         }
                     }
                 }
@@ -54,15 +52,7 @@ public class AutoInteraction extends Thread {
         }
     }
 
-    public boolean isSuspend() {
-        return suspend;
-    }
-
-    public void setSuspend(boolean suspend) {
-        this.suspend = suspend;
-    }
-
-    public void setKill(boolean kill){
+    public void setKill(boolean kill) {
         this.kill = kill;
     }
 }

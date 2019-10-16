@@ -23,6 +23,8 @@ public class ShutdownListener extends ListenerAdapter {
     public void onDisconnect(@Nonnull DisconnectEvent event) {
         //Lets release the Yank SQL connection pool
         Karren.log.info("Releasing SQL connection pool");
+        Karren.bot.ar.setKill(true);
+        Karren.bot.cm.kill();
         Yank.releaseAllConnectionPools();
     }
 }

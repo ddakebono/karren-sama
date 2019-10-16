@@ -24,6 +24,7 @@ public class ChannelMonitor extends Thread {
 
     @Override
     public void run() {
+        kill = false;
         while(!kill){
             for(Guild guild : Karren.bot.getClient().getGuilds()){
                 List<Category> categoryList = guild.getCategoriesByName("temp voice channels", true);
