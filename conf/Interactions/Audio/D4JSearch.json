@@ -39,7 +39,7 @@
   "enabled": true,
   "friendlyName": "YouTube Search",
   "helptext": "This command searches youtube for the specified title, then displays 3 options to choose for playback.",
-  "identifier": "D4JSearch",
+  "identifier": "YoutubeSearch",
   "confidence": 1,
   "voiceVolume": 20.0,
   "specialInteraction": false,

@@ -39,7 +39,7 @@
   ],
   "enabled": true,
   "helptext": "This command searches youtube for the specified video and plays the first result.",
-  "identifier": "D4JFeelingLucky",
+  "identifier": "ImFeelingLucky",
   "confidence": 1,
   "voiceVolume": 20.0,
   "specialInteraction": false,

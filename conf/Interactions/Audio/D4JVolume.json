@@ -29,7 +29,7 @@
   ],
   "enabled": true,
   "helptext": "Change the volume for playback",
-  "identifier": "D4JVolume",
+  "identifier": "Volume",
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,

@@ -28,7 +28,7 @@
   ],
   "enabled": true,
   "helptext": "Skips current song in queue",
-  "identifier": "D4JSkip",
+  "identifier": "Skip",
   "confidence": 1,
   "voiceVolume": 0.2,
   "specialInteraction": false,

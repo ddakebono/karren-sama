@@ -29,7 +29,7 @@
   ],
   "enabled": true,
   "helptext": "Lists current song title",
-  "identifier": "D4JNowPlayingNat",
+  "identifier": "NowPlayingNat",
   "confidence": 3,
   "voiceVolume": 0.0,
   "specialInteraction": false,

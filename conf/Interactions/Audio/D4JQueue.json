@@ -17,7 +17,7 @@
   ],
   "enabled": true,
   "helptext": "Lists current playlist",
-  "identifier": "D4JQueue",
+  "identifier": "CurrentQueue",
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,

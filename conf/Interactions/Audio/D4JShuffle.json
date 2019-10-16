@@ -24,7 +24,7 @@
   ],
   "enabled": true,
   "helptext": "Enable/disable shuffle on the Audio Player",
-  "identifier": "D4JRepeat",
+  "identifier": "ToggleShuffle",
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,
