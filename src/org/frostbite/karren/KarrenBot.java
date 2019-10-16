@@ -61,18 +61,11 @@ public class KarrenBot {
         AudioSourceManagers.registerLocalSource(pm);
         //Continue connecting to discord
         if(Karren.conf.getConnectToDiscord()) {
-            if(!Karren.conf.isTestMode()) {
-                if(Karren.conf.getStatusOverride().isEmpty())
-                    clientBuilder.setActivity(Activity.playing("KarrenSama Ver." + Karren.botVersion));
-                else
-                    clientBuilder.setActivity(Activity.playing(Karren.conf.getStatusOverride()));
-            } else {
-                clientBuilder.setActivity(Activity.playing("TEST MODE - " + Karren.botVersion));
-            }
             clientBuilder.addEventListeners(new ConnectCommand());
             clientBuilder.addEventListeners(new KillCommand());
             clientBuilder.addEventListeners(new ReconnectListener());
             clientBuilder.addEventListeners(new ShutdownListener());
+            clientBuilder.addEventListeners(new ResumeListener());
             clientBuilder.addEventListeners(new StatCommand());
             if(Karren.conf.getEnableInteractions())
                 clientBuilder.addEventListeners(new InteractionCommand());
@@ -132,6 +125,15 @@ public class KarrenBot {
         //Launch threads
         Karren.bot.ar.start();
         Karren.bot.cm.start();
+
+        if(!Karren.conf.isTestMode()) {
+            if(Karren.conf.getStatusOverride().isEmpty())
+                client.getPresence().setActivity(Activity.playing("KarrenSama Ver." + Karren.botVersion));
+            else
+                client.getPresence().setActivity(Activity.playing(Karren.conf.getStatusOverride()));
+        } else {
+            client.getPresence().setActivity(Activity.playing("TEST MODE - " + Karren.botVersion));
+        }
     }
 
     /*

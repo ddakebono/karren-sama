@@ -10,16 +10,15 @@
 
 package org.frostbite.karren.listeners;
 
-import net.dv8tion.jda.api.events.ReconnectedEvent;
+import net.dv8tion.jda.api.events.ResumedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.frostbite.karren.Karren;
 
 import javax.annotation.Nonnull;
 
-public class ReconnectListener extends ListenerAdapter {
-
+public class ResumeListener extends ListenerAdapter {
     @Override
-    public void onReconnect(@Nonnull ReconnectedEvent event) {
+    public void onResume(@Nonnull ResumedEvent event) {
         Karren.bot.onConnectStartup();
     }
 }
