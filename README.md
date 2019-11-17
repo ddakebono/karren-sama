@@ -4,10 +4,8 @@ Karren-sama Discord Bot
 Description
 -----------
 
-This is my Discord bot I build using the Discord4J library.
-
-If you're interested there is also a branch on here that contains a version using Javacord as the library, the Javacord branch has been stale for a while now and probably won't work at all.
-
+A random discord bot that I've put together over quite some time, currently V5 uses the JDA library and lavaplayer for audio stuff.
+The feature of this bot kinda sorta appear when I feel like it, things may change at any time without warning.
 
 Features
 --------
@@ -17,6 +15,8 @@ There isn't too many and functionality may change suddenly but here we go.<br/>
 * Advanced meme playback in voice channels<br/>
 * Reminders
 * Rolling
+* VRChat API interaction
+* Other things I've forgotten lol
 
 Compiling
 ---------
@@ -29,7 +29,7 @@ Dependencies
 
 To use this bot you will need the Java 8 runtime, the rest of the dependencies will be handled by Maven.
 You will also need to have an SQL server to use the bot, it's only been tested against a MariaDB server, but you should just need to change the connector used as long as the DB server is compatable with JOOQ.
-You can find the SQL file in the conf folder
+You can find the SQL file in the conf folder, the SQL is prolly outdated, sorry about that.
 
 
 Usage
