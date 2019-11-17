@@ -30,11 +30,14 @@ import java.util.stream.Collectors;
 
 public class RoleRoll extends Tag {
 
+    boolean rolePermissionError = false;
+
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
+        rolePermissionError = false;
         if (result.getEvent().isFromGuild()) {
             Member ourMember = result.getEvent().getGuild().getMemberById(Karren.bot.client.getSelfUser().getId());
-            if(ourMember!=null) {
+            if (ourMember != null) {
                 DbGuildUser dbGuildUser = Karren.bot.getSql().getGuildUser(result.getEvent().getGuild(), result.getEvent().getAuthor());
                 if (ourMember.getRoles().stream().noneMatch(role -> role.getPermissions().contains(Permission.MANAGE_ROLES)))
                     return interaction.getRandomTemplate("noroleperm").getTemplate();
@@ -53,40 +56,46 @@ public class RoleRoll extends Tag {
                             roll = 100;
                         if (roll >= dc) {
                             //PermissionUtils.isUserHigher(event.getGuild(), event.getClient().getOurUser(), event.getAuthor())
-                            if (ourMember.canInteract(result.getEvent().getMember())) {
-                                if (roll == 100 && Karren.bot.getSql().getGuild(result.getEvent().getGuild()).getRandomRange() > 0) {
-                                    msg = interaction.getRandomTemplate("winrar").getTemplate();
-                                    msg = interaction.replaceMsg(msg, "%guildrange", Integer.toString(Karren.bot.getSql().getGuild(result.getEvent().getGuild()).getRandomRange()));
-                                    List<Member> userList = result.getEvent().getGuild().getMembers();
-                                    int userPos = userList.indexOf(result.getEvent().getMember());
-                                    for (int i = userPos - Karren.bot.getSql().getGuild(result.getEvent().getGuild()).getRandomRange(); i < userPos + Karren.bot.getSql().getGuild(result.getEvent().getGuild()).getRandomRange(); i++) {
-                                        try {
-                                            randomizer(userList.get(i), result.getEvent(), rng);
-                                        } catch (IndexOutOfBoundsException ignored) {
-                                        }
+                            if (roll == 100 && Karren.bot.getSql().getGuild(result.getEvent().getGuild()).getRandomRange() > 0) {
+                                msg = interaction.getRandomTemplate("winrar").getTemplate();
+                                msg = interaction.replaceMsg(msg, "%guildrange", Integer.toString(Karren.bot.getSql().getGuild(result.getEvent().getGuild()).getRandomRange()));
+                                List<Member> userList = result.getEvent().getGuild().getMembers();
+                                int userPos = userList.indexOf(result.getEvent().getMember());
+                                for (int i = userPos - Karren.bot.getSql().getGuild(result.getEvent().getGuild()).getRandomRange(); i < userPos + Karren.bot.getSql().getGuild(result.getEvent().getGuild()).getRandomRange(); i++) {
+                                    try {
+                                        randomizer(userList.get(i), result.getEvent(), rng, ourMember);
+                                    } catch (IndexOutOfBoundsException ignored) {
                                     }
-                                } else {
-                                    msg = interaction.replaceMsg(msg, "%rngrole", randomizer(result.getEvent().getMember(), result.getEvent(), rng));
                                 }
+                            } else {
+                                msg = interaction.replaceMsg(msg, "%rngrole", randomizer(result.getEvent().getMember(), result.getEvent(), rng, ourMember));
+                            }
+                            if (!rolePermissionError) {
                                 dbGuildUser.setRollsSinceLastClear(0);
                                 dbGuildUser.incrementWinningRolls();
                                 dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 259200000));
                             } else {
-                                //Cannot change users role
-                                return interaction.getRandomTemplate("higherroles").getTemplate();
+                                msg = interaction.getRandomTemplate("higherroles").getTemplate();
                             }
                         } else {
                             if (roll - bonus == 0) {
                                 for (Role role : result.getEvent().getMember().getRoles()) {
-                                    if (role.getName().contains("lotto-")) {
-                                        AuditableRestAction roleChange = result.getEvent().getGuild().removeRoleFromMember(result.getEvent().getMember(), role);
-                                        roleChange.queue();
+                                    if (ourMember.canInteract(role) && !rolePermissionError) {
+                                        if (role.getName().contains("lotto-")) {
+                                            AuditableRestAction roleChange = result.getEvent().getGuild().removeRoleFromMember(result.getEvent().getMember(), role);
+                                            roleChange.queue();
+                                        }
+                                    } else {
+                                        rolePermissionError = true;
                                     }
                                 }
                             }
                             dbGuildUser.incrementRollsSinceLastClear();
                             dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 21600000));
-                            msg = interaction.getRandomTemplate("fail").getTemplate();
+                            if (!rolePermissionError)
+                                msg = interaction.getRandomTemplate("fail").getTemplate();
+                            else
+                                msg = interaction.getRandomTemplate("higherroles2").getTemplate();
                         }
                         msg = interaction.replaceMsg(msg, "%bonus", String.valueOf(bonus));
                         msg = interaction.replaceMsg(msg, "%roll", String.valueOf(roll - bonus));
@@ -107,18 +116,27 @@ public class RoleRoll extends Tag {
         return "This cannot be used in a private message!";
     }
 
-    private String randomizer(Member user, MessageReceivedEvent event, Random rng) {
+    private String randomizer(Member user, MessageReceivedEvent event, Random rng, Member ourUser) {
         List<Role> rollRoles = event.getGuild().getRoles().stream().filter(x -> x.getName().contains("lotto-")).collect(Collectors.toList());
         for (Role role : user.getRoles()) {
             if (role.getName().contains("lotto-")) {
-                AuditableRestAction roleChange = event.getGuild().removeRoleFromMember(user, role);
-                roleChange.queue();
-                rollRoles.remove(role);
+                if (ourUser.canInteract(role)) {
+                    AuditableRestAction roleChange = event.getGuild().removeRoleFromMember(user, role);
+                    roleChange.queue();
+                    rollRoles.remove(role);
+                } else {
+                    rolePermissionError = true;
+                }
             }
+
         }
         Role rngRole = rollRoles.get(rng.nextInt(rollRoles.size()));
-        AuditableRestAction roleChange = event.getGuild().addRoleToMember(user, rngRole);
-        roleChange.queue();
+        if (!rolePermissionError && ourUser.canInteract(rngRole)) {
+            AuditableRestAction roleChange = event.getGuild().addRoleToMember(user, rngRole);
+            roleChange.queue();
+        } else {
+            rolePermissionError = true;
+        }
         return rngRole.getName();
     }
 

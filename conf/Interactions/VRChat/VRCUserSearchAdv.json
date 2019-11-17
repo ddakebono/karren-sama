@@ -11,7 +11,7 @@
   ],
   "templatesNew": [
     {
-      "template": "Info for VRChat user **%username**",
+      "template": "Info for VRChat user [**%username**](https://vrchat.com/home/user/%userid)",
       "templateType": "normal"
     },
     {
@@ -26,8 +26,18 @@
   "embedFields": [
     {
       "fieldTitle": "UserID",
-      "fieldValue": "%userid",
-      "inline": true
+      "fieldValue": "```%userid```",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Tags",
+      "fieldValue": "```%tags```",
+      "inline": false
+    },
+    {
+      "fieldTitle": "Bio",
+      "fieldValue": "%bio",
+      "inline": false
     },
     {
       "fieldTitle": "World",
@@ -40,21 +50,25 @@
       "inline": true
     },
     {
-      "fieldTitle": "Tags",
-      "fieldValue": "%tags",
-      "inline": true
-    },
-    {
-      "fieldTitle": "VRChat Safety System Converted Level",
-      "fieldValue": "%newlevel",
+      "fieldTitle": "Status",
+      "fieldValue": "%status",
       "inline": true
     },
     {
       "fieldTitle": "Status Message",
       "fieldValue": "%statdesc",
       "inline": true
+    },
+    {
+      "fieldTitle": "Last Platform",
+      "fieldValue": "%last_platform",
+      "inline": true
+    },
+    {
+      "fieldTitle": "VRChat Trust Level",
+      "fieldValue": "%newlevel",
+      "inline": true
     }
-
   ],
   "friendlyName": "VRChat User Search Advanced",
   "enabled": true,

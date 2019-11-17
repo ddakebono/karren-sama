@@ -45,6 +45,10 @@
     {
       "template": "Oh, looks like you've won, but it seems that the lotto- roles are above my permission level.",
       "templateType": "higherroles"
+    },
+    {
+      "template": "Lucky you, you rolled a zero but I can't remove your colours due to at permission issue, hopefully your admin notices this. (%roll+%bonus=%total against %dc | %timeremaining)",
+      "templateType": "higherroles2"
     }
   ],
   "enabled": true,
