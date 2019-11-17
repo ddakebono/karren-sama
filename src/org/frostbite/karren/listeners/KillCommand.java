@@ -10,6 +10,7 @@
 
 package org.frostbite.karren.listeners;
 
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.frostbite.karren.Karren;
@@ -23,7 +24,10 @@ public class KillCommand extends ListenerAdapter {
         //Catch all messages and log
         if(!event.getAuthor().isBot()) {
             Karren.log.debug("Message from: " + event.getAuthor().getName() + " | Channel: " + event.getChannel().getId() + " | Content: " + event.getMessage().getContentDisplay());
-            if (event.getMessage().getContentRaw().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "kill")) {
+            Guild guild = null;
+            if(event.isFromGuild())
+                guild = event.getGuild();
+            if (event.getMessage().getContentRaw().startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild) + "kill")) {
                 if (event.getAuthor().getId().equals(Karren.conf.getOperatorDiscordID())) {
                     Karren.bot.killBot(event.getAuthor().getName());
                 } else {

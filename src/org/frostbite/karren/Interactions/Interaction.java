@@ -122,11 +122,13 @@ public class Interaction {
     public boolean checkTriggers(MessageReceivedEvent event){
         if(!lock) {
             cleanupInteraction();
-            if(!isAllowedServer(event.getGuild()))
+            Guild guild = null;
+            if(event.isFromGuild())
+                guild = event.getGuild();
+            if(!isAllowedServer(guild))
                 return false;
             int confidenceChecked = 0;
             if (isAllowedUser(event.getAuthor()) && enabled && !event.getMessage().getContentRaw().isEmpty()) {
-                Guild guild = event.getGuild();
                 if (Arrays.asList(tags).contains("prefixed")) {
                     if (event.getMessage().getContentRaw().startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild))) {
                         Pattern prefixedPattern = Pattern.compile("\\s+");

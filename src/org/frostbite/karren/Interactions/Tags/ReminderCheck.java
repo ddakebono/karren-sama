@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class ReminderCheck extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        if(Karren.conf.getAllowSQLRW()) {
+        if(Karren.conf.getAllowSQLRW() && result.getEvent().isFromGuild()) {
             List<DbReminder> reminders = Arrays.stream(Karren.bot.getSql().getReminder(Karren.bot.getSql().getGuildUser(result.getEvent().getGuild(), result.getEvent().getAuthor()))).filter(x -> x.getReminderTime().before(new Timestamp(System.currentTimeMillis()))).collect(Collectors.toList());
             if (reminders.size() > 0) {
                 DbReminder alert = reminders.get(0);

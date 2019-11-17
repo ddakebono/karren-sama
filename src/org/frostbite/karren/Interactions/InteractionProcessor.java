@@ -59,10 +59,13 @@ public class InteractionProcessor {
             for(Interaction match : matches){
                 InteractionResult result;
                 Karren.log.info("Interaction match! Starting processing for " + (match.getFriendlyName()!=null?match.getFriendlyName():match.getIdentifier()));
-                if(Karren.bot.sql.getGuild(event.getGuild()).getOverrideChannel()!=0)
-                    result = new InteractionResult(event, false, Long.toString(Karren.bot.sql.getGuild(event.getGuild()).getOverrideChannel()));
-                else
-                    result = new InteractionResult(event, false, null);
+                result = new InteractionResult(event, false, null);
+                if(!event.isFromGuild()){
+                    result.setPrivateMessage(true);
+                } else {
+                    if(Karren.bot.sql.getGuild(event.getGuild()).getOverrideChannel()!=0)
+                        result.setOverrideChannel(Long.toString(Karren.bot.sql.getGuild(event.getGuild()).getOverrideChannel()));
+                }
                 preloadTags(match, result);
                 processTags(match, result);
                 if(result.completed)

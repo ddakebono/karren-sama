@@ -10,6 +10,7 @@
 
 package org.frostbite.karren.listeners;
 
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
@@ -24,7 +25,10 @@ public class StatCommand extends ListenerAdapter {
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         if(!event.getAuthor().isBot()) {
-            if (event.getMessage().getContentRaw().startsWith(Karren.bot.getGuildManager().getCommandPrefix(event.getGuild()) + "stats")) {
+            Guild guild = null;
+            if(event.isFromGuild())
+                guild = event.getGuild();
+            if (event.getMessage().getContentRaw().startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild) + "stats")) {
                 String msg = "**Karren-sama Stats**" + "```Bot Uptime: " + KarrenUtil.calcAway(Karren.startTime) +
                         "\n-------------Build Info-------------" +
                         "\nBot Version: " + Karren.botVersion +

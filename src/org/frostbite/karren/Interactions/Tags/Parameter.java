@@ -10,6 +10,7 @@
 
 package org.frostbite.karren.Interactions.Tags;
 
+import net.dv8tion.jda.api.entities.Guild;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
@@ -26,8 +27,11 @@ public class Parameter extends Tag {
         String message = result.getEvent().getMessage().getContentRaw();
         if(interaction.getTriggers()!=null) {
             for (String trigger : interaction.getTriggers()) {
-                if (message.startsWith(Karren.bot.getGuildManager().getCommandPrefix(result.getEvent().getGuild()) + trigger)) {
-                    message = message.replace(Karren.bot.getGuildManager().getCommandPrefix(result.getEvent().getGuild()) + trigger, "").trim();
+                Guild guild = null;
+                if(result.getEvent().isFromGuild())
+                    guild = result.getEvent().getGuild();
+                if (message.startsWith(Karren.bot.getGuildManager().getCommandPrefix(guild) + trigger)) {
+                    message = message.replace(Karren.bot.getGuildManager().getCommandPrefix(guild) + trigger, "").trim();
                     break;
                 }
                 //Patch for prefixed interactions
