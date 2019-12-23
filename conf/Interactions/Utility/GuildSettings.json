@@ -16,43 +16,49 @@
       "templateType": "normal"
     }
   ],
-  "embedFields": [
+  "embedTemplates": [
     {
-      "fieldTitle": "Prefix",
-      "fieldValue": "%prefix",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Max Volume",
-      "fieldValue": "%maxvolume",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Roll Difficulty",
-      "fieldValue": "%difficulty",
-      "inline": true
-    },
-    {
-      "fieldTitle": "AoE range for Nat 100",
-      "fieldValue": "%range",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Global Override Channel",
-      "fieldValue": "%override",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Access Role",
-      "fieldValue": "%accessrole",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Welcome Channel",
-      "fieldValue": "%welcomechan",
-      "inline": true
+      "embedFields": [
+        {
+          "fieldTitle": "Prefix",
+          "fieldValue": "%prefix",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Max Volume",
+          "fieldValue": "%maxvolume",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Roll Difficulty",
+          "fieldValue": "%difficulty",
+          "inline": true
+        },
+        {
+          "fieldTitle": "AoE range for Nat 100",
+          "fieldValue": "%range",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Global Override Channel",
+          "fieldValue": "%override",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Access Role",
+          "fieldValue": "%accessrole",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Welcome Channel",
+          "fieldValue": "%welcomechan",
+          "inline": true
+        }
+      ],
+      "templateType": "normal"
     }
   ],
+
   "friendlyName": "Server Configuration",
   "enabled": true,
   "helptext": "Displays current settings for the bot in this server",

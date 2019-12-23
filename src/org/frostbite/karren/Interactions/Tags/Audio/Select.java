@@ -26,7 +26,7 @@ public class Select extends Tag {
             selection = Integer.parseInt(param);
         } catch (NumberFormatException ignored){}
         if(selection>0 && selection<=3) {
-            Search search = (Search) interaction.getTagCache().get(0);
+            Search search = (Search) interaction.getNoProcessTagCache().get(0);
             List<Video> resultArray = search.getResultArray(result.getEvent().getAuthor().getId());
             interaction.setParameter(resultArray.get(selection-1).getId());
             msg = interaction.replaceMsg(msg,"%title", resultArray.get(selection - 1).getSnippet().getTitle());

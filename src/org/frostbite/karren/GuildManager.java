@@ -45,7 +45,6 @@ public class GuildManager {
                     Interaction tempInteraction = gson.fromJson(new FileReader(file), Interaction.class);
                     tempInteraction.setIdentifier(FilenameUtils.removeExtension(file.getName()));
                     tempInteraction.setInteractionFile(file);
-                    tempInteraction.interactionOldFormatUpdate();
                     if(!(standardOnly && tempInteraction.isGuildOnly()))
                     loadedInteractions.add(tempInteraction);
                 } catch (IOException e) {

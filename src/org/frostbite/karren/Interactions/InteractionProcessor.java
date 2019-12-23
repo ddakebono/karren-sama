@@ -34,19 +34,7 @@ public class InteractionProcessor {
         interactions = new ArrayList<>();
         interactions.addAll(defaultInteractions);
         if(guild!=null) {
-            //TODO add audio stuff
-            /*if(Karren.bot.getGuildMusicManager(guild) == null || !(guild.getAudioManager().getAudioProvider() instanceof AudioProvider)){
-                Karren.log.info("Looks like the GuildMusicManager failed to start, let's try again.");
-                try {
-                    GuildMusicManager gm = Karren.bot.createGuildMusicManager(guild);
-                    guild.getAudioManager().setAudioProvider(gm.getAudioProvider());
-                    Karren.log.info("GuildMusicManager initialized on second try for guild " + guild.getName());
-                } catch (NullPointerException e){
-                    Karren.log.error("Uh oh, looks like we couldn't start the music manager on the second try! Guild " + guild.getName() + " doesn't have a music manager!");
-                }
-            }*/
             Karren.log.info("Interaction Processor for " + guild.getName() + " ready!");
-
         } else {
             Karren.log.info("Default interaction processor initialized!");
         }
@@ -70,6 +58,9 @@ public class InteractionProcessor {
                 processTags(match, result);
                 if(result.completed)
                     results.add(result);
+                if(match.interactionUsed()) {
+                    interactions.remove(match);
+                }
             }
         }
         InteractionResult[] resultArray = new InteractionResult[results.size()];
@@ -78,7 +69,7 @@ public class InteractionProcessor {
 
     private void preloadTags(Interaction interaction, InteractionResult result){
         for(String tag : interaction.getTags()){
-            if(!(tag.equalsIgnoreCase("nodisplay") || tag.equalsIgnoreCase("feelinglucky") || tag.equalsIgnoreCase("prefixed") || tag.equalsIgnoreCase("bot"))) {
+            if(!(tag.equalsIgnoreCase("nodisplay") || tag.equalsIgnoreCase("prefixed") || tag.equalsIgnoreCase("bot"))) {
                 Tag fetchedTag = Karren.bot.getGuildManager().getTag(tag);
                 if(fetchedTag!=null) {
                     interaction.getTagCache().add(Karren.bot.getGuildManager().getTag(tag));
@@ -100,8 +91,6 @@ public class InteractionProcessor {
                 matches.add(check);
                 if(!check.isSpecialInteraction())
                     break;
-                if(check.interactionUsed())
-                    interactions.remove(check);
             }
 
         }
@@ -113,10 +102,11 @@ public class InteractionProcessor {
             String messageStr = interaction.getInitialTemplate(result.getEvent());
             for (Tag tag : interaction.getTagCache()) {
                 try {
-                    if(!interaction.isStopProcessing())
+                    if(!interaction.isStopProcessing()) {
                         messageStr = tag.handleTemplate(messageStr, interaction, result);
-                    else
+                    } else {
                         break;
+                    }
                 } catch (NullPointerException e){
                     e.printStackTrace();
                     interaction.stopProcessing();

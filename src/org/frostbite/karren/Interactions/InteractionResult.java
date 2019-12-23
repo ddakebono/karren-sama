@@ -22,6 +22,7 @@ public class InteractionResult {
     boolean errored = false;
     boolean doNotSend = false;
     boolean completed = false;
+    String embedTemplateType = "normal";
 
     public InteractionResult(MessageReceivedEvent event){
         new InteractionResult(event, false, null);
@@ -84,5 +85,13 @@ public class InteractionResult {
 
     public void setDoNotSend(boolean doNotSend) {
         this.doNotSend = doNotSend;
+    }
+
+    public String getEmbedTemplateType() {
+        return embedTemplateType;
+    }
+
+    public void setEmbedTemplateType(String embedTemplateType) {
+        this.embedTemplateType = embedTemplateType;
     }
 }

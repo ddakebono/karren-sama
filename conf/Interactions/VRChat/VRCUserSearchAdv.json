@@ -15,6 +15,10 @@
       "templateType": "normal"
     },
     {
+      "template": "Search results for **%search**",
+      "templateType": "search"
+    },
+    {
       "template": "I can\u0027t seem to find someone with that name, please make sure you typed it correctly!",
       "templateType": "fail"
     },
@@ -23,53 +27,69 @@
       "templateType": "noparam"
     }
   ],
-  "embedFields": [
+  "embedTemplates": [
     {
-      "fieldTitle": "UserID",
-      "fieldValue": "```%userid```",
-      "inline": false
+      "embedFields": [
+        {
+          "fieldTitle": "UserID",
+          "fieldValue": "```%userid```",
+          "inline": false
+        },
+        {
+          "fieldTitle": "Tags",
+          "fieldValue": "```%tags```",
+          "inline": false
+        },
+        {
+          "fieldTitle": "Bio",
+          "fieldValue": "%bio",
+          "inline": false
+        },
+        {
+          "fieldTitle": "World",
+          "fieldValue": "%world",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Launch Link",
+          "fieldValue": "%link",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Status",
+          "fieldValue": "%status",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Status Message",
+          "fieldValue": "%statdesc",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Last Platform",
+          "fieldValue": "%last_platform",
+          "inline": true
+        },
+        {
+          "fieldTitle": "VRChat Trust Level",
+          "fieldValue": "%newlevel",
+          "inline": true
+        }
+      ],
+      "templateType": "normal"
     },
     {
-      "fieldTitle": "Tags",
-      "fieldValue": "```%tags```",
-      "inline": false
+      "embedFields": [
+      ],
+      "templateType": "search"
     },
     {
-      "fieldTitle": "Bio",
-      "fieldValue": "%bio",
-      "inline": false
-    },
-    {
-      "fieldTitle": "World",
-      "fieldValue": "%world",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Launch Link",
-      "fieldValue": "%link",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Status",
-      "fieldValue": "%status",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Status Message",
-      "fieldValue": "%statdesc",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Last Platform",
-      "fieldValue": "%last_platform",
-      "inline": true
-    },
-    {
-      "fieldTitle": "VRChat Trust Level",
-      "fieldValue": "%newlevel",
-      "inline": true
+      "embedFields": [
+      ],
+      "templateType": "fail"
     }
   ],
+
   "friendlyName": "VRChat User Search Advanced",
   "enabled": true,
   "helptext": "Gets user info from the VRChat API",

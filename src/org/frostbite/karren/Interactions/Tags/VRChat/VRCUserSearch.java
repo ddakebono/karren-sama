@@ -13,6 +13,7 @@ package org.frostbite.karren.Interactions.Tags.VRChat;
 import io.github.vrchatapi.VRCUser;
 import io.github.vrchatapi.VRCWorld;
 import org.frostbite.karren.Interactions.Interaction;
+import org.frostbite.karren.Interactions.InteractionEmbedFields;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.KarrenUtil;
@@ -34,7 +35,7 @@ public class VRCUserSearch extends Tag {
             else {
                 user = VRCUser.fetch(search);
             }
-            if(users.size()>0 || user!=null) {
+            if(users.size()==1 || user!=null) {
                 //VRCUser user = VRCUser.fetch(users.get(0).getId());
                 if(user==null) {
                     Optional<VRCUser> userOpt = users.stream().filter(userFind -> userFind.getDisplayName().toLowerCase().equals(search.toLowerCase())).findFirst();
@@ -80,7 +81,22 @@ public class VRCUserSearch extends Tag {
                 msg = interaction.replaceMsg(msg, "%tags", user.getTags().toString());
                 msg = interaction.replaceMsg(msg, "%newlevel", KarrenUtil.getVRCSafetySystemRank(user.getTags()));
             } else {
-                msg = interaction.getRandomTemplate("fail").getTemplate();
+                if(users.size()>1){
+                    //Display search results
+                    msg = interaction.getRandomTemplate("search").getTemplate();
+                    msg = interaction.replaceMsg(msg, "%search", search);
+                    result.setEmbedTemplateType("search");
+                    for(VRCUser userSearch : users){
+                        interaction.addEmbedField(new InteractionEmbedFields(
+                                userSearch.getDisplayName(),
+                                userSearch.getId(),
+                                false
+                        ));
+                    }
+                } else {
+                    msg = interaction.getRandomTemplate("fail").getTemplate();
+                    result.setEmbedTemplateType("fail");
+                }
             }
         } else {
             msg = interaction.getRandomTemplate("noparam").getTemplate();

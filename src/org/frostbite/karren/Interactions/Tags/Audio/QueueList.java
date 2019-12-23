@@ -24,12 +24,12 @@ public class QueueList extends Tag {
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
         if(result.getEvent().getGuild().getAudioManager().isConnected()){
             GuildMusicManager gmm = Karren.bot.getGuildMusicManager(result.getEvent().getGuild());
-            interaction.addEmbedField(new InteractionEmbedFields(0,
+            interaction.addEmbedField(new InteractionEmbedFields(
                     "\u25B6 " + gmm.player.getPlayingTrack().getInfo().title,
                     KarrenUtil.getMinSecFormattedString(gmm.player.getPlayingTrack().getPosition()) + " - " + KarrenUtil.getMinSecFormattedString(Karren.bot.getGuildMusicManager(result.getEvent().getGuild()).player.getPlayingTrack().getDuration()), false
             ));
             for(AudioTrack source : Karren.bot.getGuildMusicManager(result.getEvent().getGuild()).scheduler.getQueue()){
-                interaction.addEmbedField(new InteractionEmbedFields(0,
+                interaction.addEmbedField(new InteractionEmbedFields(
                         source.getInfo().title,
                         "Creator: " + source.getInfo().author + ", Length: " + KarrenUtil.getMinSecFormattedString(source.getInfo().length) + ", Streaming link: " + (source.getInfo().isStream?"Yes":"No"),
                         false

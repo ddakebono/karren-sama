@@ -13,40 +13,31 @@ package org.frostbite.karren.Interactions;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.frostbite.karren.Karren;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Interaction {
-    @Expose private String[] triggers;
-    @Expose private String[] tags;
-    @Expose private InteractionTemplate[] templatesNew;
-    private String[] templates;
-    private String[] templatesFail;
-    private String[] templatesPermError;
-    @Expose private String[] voiceFiles;
-    @Expose private boolean enabled = true;
-    @Expose private String helptext;
-    @Expose private String identifier;
-    @Expose private int confidence = 0;
-    @Expose private String permissionLevel;
-    @Expose private String channel;
-    @Expose private float voiceVolume = 0.1f;
-    @Expose private String parameter;
-    @Expose private boolean specialInteraction = false;
-    @Expose private boolean isPermBad = false;
-    @Expose private boolean guildOnly = false;
+    private String[] triggers;
+    private String[] tags;
+    private InteractionTemplate[] templatesNew;
+    private String[] voiceFiles;
+    private boolean enabled = true;
+    private String helptext;
+    private String identifier;
+    private int confidence = 0;
+    private String permissionLevel;
+    private String channel;
+    private float voiceVolume = 0.1f;
+    private String parameter;
+    private boolean specialInteraction = false;
+    private boolean isPermBad = false;
+    private boolean guildOnly = false;
     private int usageCount = -1;
     private ArrayList<String> allowedUsers = new ArrayList<>();
     private ArrayList<Long> allowedServers = new ArrayList<Long>();
@@ -55,11 +46,13 @@ public class Interaction {
     private boolean lock = false;
     private File interactionFile;
     private ArrayList<Tag> tagCache = new ArrayList<>();
+    private ArrayList<Tag> noProcessTagCache = new ArrayList<>();
     private boolean noClearInteraction = false;
     private MessageEmbed embed;
-    @Expose private ArrayList<InteractionParameter> parameters;
-    @Expose private ArrayList<InteractionEmbedFields> embedFields;
-    @Expose private String friendlyName;
+    private ArrayList<InteractionParameter> parameters;
+    private ArrayList<InteractionEmbedTemplate> embedTemplates;
+    private ArrayList<InteractionEmbedFields> tempAddedEmbedFields;
+    private String friendlyName;
     private HashMap<String, String> replacedTextMap = new HashMap<>();
     private boolean tagAddedEmbeds = false;
     private String embedImage;
@@ -67,7 +60,7 @@ public class Interaction {
     private String embedFooter;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
-        this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal", null)}, triggers, confidence, enabled, helptext);
+        this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal")}, triggers, confidence, enabled, helptext);
     }
 
     public Interaction(String identifier, String[] tags, InteractionTemplate[] templates, String[] triggers, int confidence, boolean enabled, String helptext){
@@ -81,13 +74,10 @@ public class Interaction {
     }
 
     @JsonCreator
-    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail, @JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction, @JsonProperty("embedFields") ArrayList<InteractionEmbedFields> embedFields, @JsonProperty("friendlyName") String friendlyName, @JsonProperty("allowedServers") Long[] allowedServers, @JsonProperty("guildOnly") boolean guildOnly) {
+    public Interaction(@JsonProperty("triggers") String[] triggers, @JsonProperty("tags") String[] tags, @JsonProperty("templatesNew") InteractionTemplate[] templatesNew, @JsonProperty("templates") String[] templates, @JsonProperty("templatesFail") String[] templatesFail, @JsonProperty("templatesPermError") String[] templatesPermError, @JsonProperty("voiceFiles") String[] voiceFiles, @JsonProperty("enabled") boolean enabled, @JsonProperty("helptext") String helptext, @JsonProperty("idenifier") String identifier, @JsonProperty("confidence") int confidence, @JsonProperty("permissionLevel") String permissionLevel, @JsonProperty("channel") String channel, @JsonProperty("voiceVolume") float voiceVolume, @JsonProperty("parameter") String parameter, @JsonProperty("specialInteraction") boolean specialInteraction, @JsonProperty("embedTemplates") ArrayList<InteractionEmbedTemplate> embedTemplates, @JsonProperty("friendlyName") String friendlyName, @JsonProperty("allowedServers") Long[] allowedServers, @JsonProperty("guildOnly") boolean guildOnly) {
         this.triggers = triggers;
         this.tags = tags;
         this.templatesNew = templatesNew;
-        this.templates = templates;
-        this.templatesFail = templatesFail;
-        this.templatesPermError = templatesPermError;
         this.voiceFiles = voiceFiles;
         this.enabled = enabled;
         this.helptext = helptext;
@@ -98,7 +88,7 @@ public class Interaction {
         this.voiceVolume = voiceVolume;
         this.parameter = parameter;
         this.specialInteraction = specialInteraction;
-        this.embedFields = embedFields;
+        this.embedTemplates = embedTemplates;
         this.friendlyName = friendlyName;
         this.allowedServers.addAll(Arrays.asList(allowedServers));
         this.guildOnly = guildOnly;
@@ -141,8 +131,8 @@ public class Interaction {
                     //Non prefixed interaction
                     confidenceChecked = getConfidence(event.getMessage().getContentRaw(), false, guild);
                 }
+                return confidenceChecked >= confidence;
             }
-            return confidenceChecked >= confidence;
         }
         return false;
     }
@@ -170,8 +160,9 @@ public class Interaction {
             if(replacedTextMap==null)
                 replacedTextMap = new HashMap<>();
             replacedTextMap.clear();
-            if(tagAddedEmbeds)
-                embedFields.clear();
+            if(tempAddedEmbedFields==null)
+                tempAddedEmbedFields = new ArrayList<>();
+            tempAddedEmbedFields.clear();
             tagAddedEmbeds = false;
             embed = null;
             embedImage = null;
@@ -179,6 +170,9 @@ public class Interaction {
             if (tagCache == null)
                 tagCache = new ArrayList<>();
             tagCache.clear();
+            if(noProcessTagCache == null)
+                noProcessTagCache = new ArrayList<>();
+            noProcessTagCache.clear();
             if (Arrays.asList(tags).contains("parameter"))
                 parameter = null;
         }
@@ -227,7 +221,7 @@ public class Interaction {
             return random[rng.nextInt(random.length)];
         } else {
             Karren.log.error("Warning, interaction " + identifier + " is requesting a template for type " +type + " but none were found!");
-            return new InteractionTemplate("Missing template for type " + type, type, this);
+            return new InteractionTemplate("Missing template for type " + type, type);
         }
     }
 
@@ -286,7 +280,7 @@ public class Interaction {
     public String getReplacementText(String target){
         for(String word : replacedTextMap.keySet()){
             if(target.toLowerCase().contains(word.toLowerCase())){
-                return target.replaceAll(word, replacedTextMap.get(word));
+                target = target.replaceAll(word, replacedTextMap.get(word));
             }
         }
         return target;
@@ -342,8 +336,8 @@ public class Interaction {
     }
 
     public boolean interactionUsed() {
-        this.usageCount--;
-        return this.usageCount == 0;
+        usageCount--;
+        return usageCount==0;
     }
 
     public boolean isEmbedUsed(){
@@ -390,8 +384,27 @@ public class Interaction {
         return tagCache;
     }
 
-    public ArrayList<InteractionEmbedFields> getEmbedFields() {
-        return embedFields;
+    public ArrayList<Tag> getNoProcessTagCache() {
+        return noProcessTagCache;
+    }
+
+    public InteractionEmbedFields[] getEmbedFields(){
+        return getEmbedFields("normal");
+    }
+
+    public InteractionEmbedFields[] getEmbedFields(String type) {
+        if(embedTemplates!=null) {
+            InteractionEmbedTemplate[] random = embedTemplates.stream().filter(x -> x.getTemplateType().equalsIgnoreCase(type)).toArray(InteractionEmbedTemplate[]::new);
+            if (random.length > 0) {
+                Random rng = new Random();
+                return random[rng.nextInt(random.length)].getEmbedFields();
+            } else {
+                Karren.log.error("Warning, interaction " + identifier + " is requesting an embed template for type " + type + " but script doesn't define any!");
+                return null;
+            }
+        }
+        Karren.log.error("ERROR: Interaction " + identifier + " requested a embed template but has no defined templates!");
+        return null;
     }
 
     public void setEmbedImage(String image){
@@ -403,10 +416,12 @@ public class Interaction {
     }
 
     public void addEmbedField(InteractionEmbedFields field){
-        if(embedFields==null)
-            embedFields = new ArrayList<>();
-        embedFields.add(field);
+        tempAddedEmbedFields.add(field);
         tagAddedEmbeds = true;
+    }
+
+    public ArrayList<InteractionEmbedFields> getTempAddedEmbedFields(){
+        return tempAddedEmbedFields;
     }
 
     public String getEmbedURL() {
@@ -439,32 +454,6 @@ public class Interaction {
 
     public boolean isGuildOnly() {
         return guildOnly;
-    }
-
-    public boolean interactionOldFormatUpdate(){
-        if(templates!=null || templatesFail!=null || templatesPermError!=null){
-            Karren.log.info("Upgrading format on interaction " + identifier);
-            ArrayList<InteractionTemplate> newTemplates = new ArrayList<>();
-            if(templates!=null)
-                for(String normal : templates)
-                    newTemplates.add(new InteractionTemplate(normal, "normal", this));
-            if(templatesFail!=null)
-                for(String fail : templatesFail)
-                    newTemplates.add(new InteractionTemplate(fail, "fail", this));
-            if(templatesPermError!=null)
-                for(String permission : templatesPermError)
-                    newTemplates.add(new InteractionTemplate(permission, "permission", this));
-            templatesNew = newTemplates.toArray(new InteractionTemplate[0]);
-            Gson json = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
-            try (Writer writer = new FileWriter(interactionFile)) {
-                json.toJson(this, writer);
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-        return false;
     }
 
     public void setNoClearInteraction(boolean noClearInteraction) {

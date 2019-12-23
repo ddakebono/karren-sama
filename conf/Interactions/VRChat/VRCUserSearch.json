@@ -15,6 +15,10 @@
       "templateType": "normal"
     },
     {
+      "template": "Search results for **%search**",
+      "templateType": "search"
+    },
+    {
       "template": "I can\u0027t seem to find someone with that name, please make sure you typed it correctly!",
       "templateType": "fail"
     },
@@ -23,29 +27,44 @@
       "templateType": "noparam"
     }
   ],
-  "embedFields": [
+  "embedTemplates": [
     {
-      "fieldTitle": "World",
-      "fieldValue": "%world",
-      "inline": true
+      "embedFields": [
+        {
+          "fieldTitle": "World",
+          "fieldValue": "%world",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Launch Link",
+          "fieldValue": "%link",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Trust Level",
+          "fieldValue": "%newlevel",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Status Message",
+          "fieldValue": "%statdesc",
+          "inline": true
+        }
+      ],
+      "templateType": "normal"
     },
     {
-      "fieldTitle": "Launch Link",
-      "fieldValue": "%link",
-      "inline": true
+      "embedFields": [
+      ],
+      "templateType": "search"
     },
     {
-      "fieldTitle": "Trust Level",
-      "fieldValue": "%newlevel",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Status Message",
-      "fieldValue": "%statdesc",
-      "inline": true
+      "embedFields": [
+      ],
+      "templateType": "fail"
     }
-
   ],
+
   "friendlyName": "VRChat User Search",
   "enabled": true,
   "helptext": "Gets user info from the VRChat API",

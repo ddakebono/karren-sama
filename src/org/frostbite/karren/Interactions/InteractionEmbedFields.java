@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -10,17 +10,12 @@
 
 package org.frostbite.karren.Interactions;
 
-import com.google.gson.annotations.Expose;
-
 public class InteractionEmbedFields {
-    private int embedTemplateID;
-    @Expose private String fieldTitle;
-    @Expose private String fieldValue;
-    @Expose private boolean inline;
-    private Interaction interaction;
+    private String fieldTitle;
+    private String fieldValue;
+    private boolean inline;
 
-    public InteractionEmbedFields(int embedTemplateID, String fieldTitle, String fieldValue, boolean inline) {
-        this.embedTemplateID = embedTemplateID;
+    public InteractionEmbedFields(String fieldTitle, String fieldValue, boolean inline) {
         this.fieldTitle = fieldTitle;
         this.fieldValue = fieldValue;
         this.inline = inline;
@@ -48,13 +43,5 @@ public class InteractionEmbedFields {
 
     public void setInline(boolean inline) {
         this.inline = inline;
-    }
-
-    public Interaction getInteraction() {
-        return interaction;
-    }
-
-    public void setInteraction(Interaction interaction) {
-        this.interaction = interaction;
     }
 }

@@ -68,6 +68,7 @@ public class Play extends Tag {
         } else {
             msg = interaction.getRandomTemplate("fail").getTemplate();
         }
+
         if (arh.isFailed())
             msg = arh.getMsg();
 

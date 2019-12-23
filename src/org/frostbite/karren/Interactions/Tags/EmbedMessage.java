@@ -34,12 +34,15 @@ public class EmbedMessage extends Tag {
             embed.setFooter("Requested By: " + result.getEvent().getAuthor().getName() + " | " + interaction.getEmbedFooter(), Karren.bot.client.getSelfUser().getAvatarUrl());
         else
             embed.setFooter("Requested By: " + result.getEvent().getAuthor().getName(), Karren.bot.client.getSelfUser().getAvatarUrl());
-        if ((interaction.getEmbedFields() != null && interaction.getEmbedFields().size() > 0 && interaction.getReplacementTextCount() > 0) || interaction.isTagAddedEmbeds()) {
-            for (InteractionEmbedFields field : interaction.getEmbedFields()) {
-                if (interaction.isTagAddedEmbeds())
-                    embed.addField(field.getFieldTitle(), field.getFieldValue(), field.isInline());
-                else
+        InteractionEmbedFields[] embedFields = interaction.getEmbedFields(result.getEmbedTemplateType());
+        if ((embedFields!=null && embedFields.length > 0 && interaction.getReplacementTextCount() > 0) || interaction.getTempAddedEmbedFields().size()>0) {
+            if(embedFields!=null) {
+                for (InteractionEmbedFields field : embedFields) {
                     embed.addField(field.getFieldTitle(), interaction.getReplacementText(field.getFieldValue()), field.isInline());
+                }
+            }
+            for(InteractionEmbedFields field : interaction.getTempAddedEmbedFields()){
+                embed.addField(field.getFieldTitle(), field.getFieldValue(), field.isInline());
             }
         }
         result.setEmbed(embed.build());

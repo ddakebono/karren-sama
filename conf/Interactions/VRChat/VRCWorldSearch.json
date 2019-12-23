@@ -11,8 +11,12 @@
   ],
   "templatesNew": [
     {
-      "template": "Info for VRChat world **%name**",
+      "template": "Info for VRChat world [**%name**](https://www.vrchat.com/home/launch?worldId=%worldid)",
       "templateType": "normal"
+    },
+    {
+      "template": "Search results for **%search**",
+      "templateType": "search"
     },
     {
       "template": "I can\u0027t seem to find a world called that, please make sure you typed it correctly!",
@@ -23,28 +27,77 @@
       "templateType": "noparam"
     }
   ],
-  "embedFields": [
+  "embedTemplates": [
     {
-      "fieldTitle": "Author",
-      "fieldValue": "%author",
-      "inline": true
+      "embedFields": [
+        {
+          "fieldTitle": "ID",
+          "fieldValue": "```%worldid```",
+          "inline": false
+        },
+        {
+          "fieldTitle": "Tags",
+          "fieldValue": "```%tags```",
+          "inline": false
+        },
+        {
+          "fieldTitle": "Description",
+          "fieldValue": "%description",
+          "inline": false
+        },
+        {
+          "fieldTitle": "Author",
+          "fieldValue": "%author",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Release Status",
+          "fieldValue": "%relstatus",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Occupants",
+          "fieldValue": "%occupants (%occuPrivate Priv/%occuPublic Pub)",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Updated",
+          "fieldValue": "%updated",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Created",
+          "fieldValue": "%created",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Capacity",
+          "fieldValue": "%capacity",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Visits",
+          "fieldValue": "%visits",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Favorites",
+          "fieldValue": "%favorites",
+          "inline": true
+        }
+      ],
+      "templateType": "normal"
     },
     {
-      "fieldTitle": "Release Status",
-      "fieldValue": "%relstatus",
-      "inline": true
+      "embedFields": [],
+      "templateType": "search"
     },
     {
-      "fieldTitle": "Occupants",
-      "fieldValue": "%occupants",
-      "inline": true
-    },
-    {
-      "fieldTitle": "Launch Link",
-      "fieldValue": "[Click here to launch world](%worldid)",
-      "inline": true
+      "embedFields": [],
+      "templateType": "fail"
     }
   ],
+
   "friendlyName": "VRChat World Search",
   "enabled": true,
   "helptext": "Gets world info from the VRChat API",

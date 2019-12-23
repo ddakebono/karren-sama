@@ -10,22 +10,21 @@
 
 package org.frostbite.karren.Interactions;
 
-
-public class InteractionTemplate {
-    private String template;
+public class InteractionEmbedTemplate {
+    private InteractionEmbedFields[] embedFields;
     private String templateType;
 
-    public InteractionTemplate(String template, String templateType){
-        this.template = template;
+    public InteractionEmbedTemplate(InteractionEmbedFields[] embedFields, String templateType) {
+        this.embedFields = embedFields;
         this.templateType = templateType;
     }
 
-    public String getTemplate() {
-        return template;
+    public InteractionEmbedFields[] getEmbedFields() {
+        return embedFields;
     }
 
-    public void setTemplate(String template) {
-        this.template = template;
+    public void setEmbedFields(InteractionEmbedFields[] embedFields) {
+        this.embedFields = embedFields;
     }
 
     public String getTemplateType() {
@@ -35,5 +34,4 @@ public class InteractionTemplate {
     public void setTemplateType(String templateType) {
         this.templateType = templateType;
     }
-
 }

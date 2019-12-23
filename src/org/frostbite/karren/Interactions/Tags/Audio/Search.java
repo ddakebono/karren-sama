@@ -52,7 +52,6 @@ public class Search extends Tag {
                     VideoListResponse vlr = list.execute();
                     videos.add(vlr.getItems().get(0));
                     interaction.addEmbedField(new InteractionEmbedFields(
-                            0,
                             (results.indexOf(resultVid)+1) + " : " + vlr.getItems().get(0).getSnippet().getTitle(),
                             "Duration: " + KarrenUtil.getMinSecFormattedString(Duration.parse(vlr.getItems().get(0).getContentDetails().getDuration()).toMillis()),
                             false
@@ -60,8 +59,8 @@ public class Search extends Tag {
                 }
                 if(results.size()>0){
                     resultArrays.put(result.getEvent().getAuthor().getId(), videos);
-                    Interaction selectInteraction = new Interaction("selectOption", new String[]{"NoVoiceHijack", "Parameter", "Audio.Select", "Audio.Play"}, new InteractionTemplate[]{new InteractionTemplate("You selected \"%title\", added to queue!", "normal", null), new InteractionTemplate("That's not one of the options!", "fail", null),  new InteractionTemplate("You must be in the same voice channel as me to control music.", "nohijack", null)}, 1, result.getEvent().getAuthor().getId(), interaction.getVoiceVolume());
-                    selectInteraction.getTagCache().add(this);
+                    Interaction selectInteraction = new Interaction("selectOption", new String[]{"NoVoiceHijack", "Parameter", "Audio.Select", "Audio.Play"}, new InteractionTemplate[]{new InteractionTemplate("You selected \"%title\", added to queue!", "normal"), new InteractionTemplate("That's not one of the options!", "fail"),  new InteractionTemplate("You must be in the same voice channel as me to control music.", "nohijack")}, 1, result.getEvent().getAuthor().getId(), interaction.getVoiceVolume());
+                    selectInteraction.getNoProcessTagCache().add(this);
                     selectInteraction.setNoClearInteraction(true);
                     Karren.bot.getGuildManager().getInteractionProcessor(result.getEvent().getGuild()).getInteractions().add(selectInteraction);
                 } else {

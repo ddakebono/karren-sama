@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2019 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -36,7 +36,6 @@ public class JsonConfig {
     private String sqluser = "changeme";
     private String sqlpass = "changeme";
     private String discordApiKey = "changeme";
-    private String osuAPIKey = "changeme";
     private String googleAPIKey = "changeme";
     private String operatorDiscordID = "changeme";
     private String vrcUsername = "changeme";
@@ -61,7 +60,6 @@ public class JsonConfig {
         this.sqluser = sqluser;
         this.sqlpass = sqlpass;
         this.discordApiKey = discordApiKey;
-        this.osuAPIKey = osuAPIKey;
         this.googleAPIKey = googleAPIKey;
         this.statusOverride = statusOverride;
         this.operatorDiscordID = operatorDiscordID;
@@ -145,10 +143,6 @@ public class JsonConfig {
 
     public String getDiscordToken() {
         return discordApiKey;
-    }
-
-    public String getOsuAPIKey() {
-        return osuAPIKey;
     }
 
     public String getGoogleAPIKey() {
