@@ -28,6 +28,8 @@ public class Shuffle extends Tag {
                 gm.scheduler.setShuffle(true);
                 msg = interaction.replaceMsg(msg,"%bool", "true");
             }
+        } else {
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
     }

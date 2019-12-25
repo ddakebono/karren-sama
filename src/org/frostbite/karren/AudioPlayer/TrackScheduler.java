@@ -64,7 +64,7 @@ public class TrackScheduler extends AudioEventAdapter {
         // Start the next track, regardless of if something is already playing or not. In case queue was empty, we are
         // giving null to startTrack, which is a valid argument and will simply stop the player
         AudioTrack newSong = null;
-        if(isShuffle) {
+        if(isShuffle && queue.size()>0) {
             Random rng = new Random();
             Object[] songs = queue.toArray();
             newSong = (AudioTrack) songs[rng.nextInt(songs.length)];
@@ -79,6 +79,8 @@ public class TrackScheduler extends AudioEventAdapter {
         player.startTrack(newSong, false);
         if (queue.size() == 0 && player.getPlayingTrack() == null) {
             player.destroy();
+            setShuffle(false);
+            setRepeat(false);
             guild.getAudioManager().closeAudioConnection();
         } else {
             assert newSong != null;

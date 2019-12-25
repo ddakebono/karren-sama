@@ -14,6 +14,10 @@
       "templateType": "normal"
     },
     {
+      "template": "I'm not playing anything, repeat is kinda useless here.",
+      "templateType": "fail"
+    },
+    {
       "template": "You must be in the same voice channel as me to control music.",
       "templateType": "nohijack"
     },

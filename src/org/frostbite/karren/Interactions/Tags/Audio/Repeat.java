@@ -29,6 +29,8 @@ public class Repeat extends Tag {
                 gm.scheduler.setRepeat(true);
                 msg = interaction.replaceMsg(msg,"%bool", "on");
             }
+        } else {
+            msg = interaction.getRandomTemplate("fail").getTemplate();
         }
         return msg;
     }
