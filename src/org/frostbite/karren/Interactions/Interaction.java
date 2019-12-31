@@ -143,10 +143,12 @@ public class Interaction {
             //get roles
             if(event.getMember()!=null)
                 rolesMatch = event.getMember().getRoles().stream().filter(x -> x.getName().equalsIgnoreCase(permissionLevel)).collect(Collectors.toList());
-            if(rolesMatch!=null && rolesMatch.size()>0)
+            if(rolesMatch!=null && rolesMatch.size()>0) {
                 return getRandomTemplate("normal").getTemplate();
-            else
+            } else {
+                stopProcessing();
                 return getRandomTemplate("permission").getTemplate();
+            }
         }
         return getRandomTemplate("normal").getTemplate();
     }
