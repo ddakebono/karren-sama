@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -25,7 +25,11 @@ public class GuildSettings extends Tag {
         interaction.replaceMsg(msg, "%maxvolume", Integer.toString(dbGuild.getMaxVolume()));
         interaction.replaceMsg(msg, "%prefix", ("\"" + Karren.bot.getGuildManager().getCommandPrefix(result.getEvent().getGuild()) + "\""));
         interaction.replaceMsg(msg, "%range", Integer.toString(dbGuild.getRandomRange()));
-        interaction.replaceMsg(msg, "%accessrole", dbGuild.getAccessRole());
+        if(dbGuild.getAccessRole()!=null){
+            interaction.replaceMsg(msg, "%accessrole", dbGuild.getAccessRole());
+        } else {
+            interaction.replaceMsg(msg, "%accessrole", "Not Set");
+        }
         if(dbGuild.getWelcomeChannel()!=0){
             GuildChannel welcome = result.getEvent().getGuild().getGuildChannelById(dbGuild.getWelcomeChannel());
             if(welcome!=null)
