@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.frostbite.karren.Database.Objects.DbReminder;
+import org.knowm.yank.exceptions.YankSQLException;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -22,11 +23,17 @@ import java.util.stream.Collectors;
 public class AutoInteraction extends Thread {
 
     private boolean kill = false;
+    private boolean preload = false;
 
     public void run() {
         kill = false;
-        Karren.bot.getSql().preloadReminderCache();
         while (!kill) {
+            if(!preload) {
+                try {
+                    Karren.bot.getSql().preloadReminderCache();
+                    preload = true;
+                } catch (YankSQLException ignored){ }
+            }
             List<DbReminder> remindersPastTime = Karren.bot.getSql().getDbReminderCache().stream().filter(x -> (x.getReminderTime().before(new Timestamp(System.currentTimeMillis())) && x.getReminderTime().getTime() != 0) && !x.reminderSent).collect(Collectors.toList());
             if (remindersPastTime.size() > 0) {
                 for (DbReminder reminder : remindersPastTime) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 public class DbReminder {
     public int reminderID = 0;
     public Long authorID = 0L;
-    public int targetID = 0;
+    public Long targetID = 0L;
     public Timestamp reminderTime;
     public String message = "";
     public Long channelID = 0L;
@@ -27,7 +27,7 @@ public class DbReminder {
     public DbReminder() {
     }
 
-    public DbReminder(int reminderID, Long authorID, int targetID, Timestamp reminderTime, String message, Long channelID, boolean reminderSent) {
+    public DbReminder(int reminderID, Long authorID, Long targetID, Timestamp reminderTime, String message, Long channelID, boolean reminderSent) {
         this.reminderID = reminderID;
         this.authorID = authorID;
         this.targetID = targetID;
@@ -53,11 +53,11 @@ public class DbReminder {
         this.authorID = authorID;
     }
 
-    public int getTargetID() {
+    public Long getTargetID() {
         return targetID;
     }
 
-    public void setTargetID(int targetID) {
+    public void setTargetID(Long targetID) {
         this.targetID = targetID;
     }
 

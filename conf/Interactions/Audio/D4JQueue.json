@@ -11,7 +11,7 @@
   ],
   "templatesNew": [
     {
-      "template": "Here's what's up on the queue!",
+      "template": "There's currently %queueCount in the playlist!",
       "templateType": "normal"
     }
   ],

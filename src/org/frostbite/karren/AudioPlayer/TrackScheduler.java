@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -82,9 +82,6 @@ public class TrackScheduler extends AudioEventAdapter {
             setShuffle(false);
             setRepeat(false);
             guild.getAudioManager().closeAudioConnection();
-        } else {
-            assert newSong != null;
-            announceChannel.sendMessage("Starting playback of \"" + newSong.getInfo().title + "\"").queue();
         }
     }
 
@@ -123,8 +120,13 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     @Override
+    public void onTrackStart(AudioPlayer player, AudioTrack track) {
+        announceChannel.sendMessage("Starting playback of \"" + track.getInfo().title + "\" (Queue: " + queue.size() + " left)").queue();
+    }
+
+    @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
-        announceChannel.sendMessage("Playback error: " + exception.getLocalizedMessage()).queue();
+        announceChannel.sendMessage("Request: \"" + track.getInfo().title + "\" Has encountered an error (" + exception.getLocalizedMessage() + ")").queue();
     }
 
     public boolean isPlaying() {

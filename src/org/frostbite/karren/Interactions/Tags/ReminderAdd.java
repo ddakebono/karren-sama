@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -31,7 +31,7 @@ public class ReminderAdd extends Tag {
                 DbReminder reminder = new DbReminder();
                 reminder.setReminderSent(false);
                 reminder.setAuthorID(result.getEvent().getAuthor().getIdLong());
-                reminder.setTargetID(Karren.bot.getSql().getGuildUser(result.getEvent().getGuild(), interaction.getMentionedUsers().get(0)).getGuildUserID());
+                reminder.setTargetID(interaction.getMentionedUsers().get(0).getIdLong());
                 reminder.setMessage(tempArray[1].trim());
                 reminder.setReminderTime(getRemindTime(timeMatch.matcher(tempArray[0].trim())));
                 reminder.setChannelID(result.getEvent().getChannel().getIdLong());

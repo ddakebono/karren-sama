@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.User;
 import org.frostbite.karren.Database.Objects.*;
 import org.frostbite.karren.Karren;
 import org.knowm.yank.Yank;
+import org.knowm.yank.exceptions.YankSQLException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -153,7 +154,7 @@ public class MySQLInterface {
         return null;
     }
 
-    public void preloadReminderCache(){
+    public void preloadReminderCache() throws YankSQLException,NullPointerException {
         if(Karren.conf.getAllowSQLRW()){
             String sql = "SELECT * FROM Reminder WHERE ReminderSent=0 AND ReminderTime>CURDATE()";
             dbReminderCache.addAll(Yank.queryBeanList(sql, DbReminder.class, null));
@@ -162,10 +163,7 @@ public class MySQLInterface {
 
     public void cleanReminderCache(){
         if(dbReminderCache.size()>0){
-            for(DbReminder item : dbReminderCache){
-                if(item.reminderSent)
-                    dbReminderCache.remove(item);
-            }
+            dbReminderCache.removeIf(item -> item.reminderSent);
         }
     }
 

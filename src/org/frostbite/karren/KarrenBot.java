@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -44,7 +44,6 @@ public class KarrenBot {
     public GuildManager ic;
     public boolean isKill = false;
     public YouTube yt;
-    public AutoInteraction autoInteraction;
     public AudioPlayerManager pm;
     public AutoInteraction ar = new AutoInteraction();
     public ChannelMonitor cm = new ChannelMonitor();
@@ -89,9 +88,6 @@ public class KarrenBot {
         if(!extrasReady) {
             ic = new GuildManager();
             ic.loadDefaultInteractions();
-
-            autoInteraction = new AutoInteraction();
-            autoInteraction.start();
 
             //Setup youtube
             yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
