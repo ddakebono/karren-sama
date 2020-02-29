@@ -4,6 +4,7 @@
   ],
   "tags": [
     "NoVoiceHijack",
+    "Parameter",
     "VoiceChannelRequired",
     "Audio.Skip",
     "prefixed"
@@ -14,8 +15,8 @@
       "templateType": "normal"
     },
     {
-      "template": "It seems that the URL given isn\u0027t valid!",
-      "templateType": "fail"
+      "template": "You must give a number if you wish to skip an amount of songs!",
+      "templateType": "error"
     },
     {
       "template": "You must be in the same voice channel as me to control music.",

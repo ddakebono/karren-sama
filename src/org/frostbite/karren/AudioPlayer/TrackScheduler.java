@@ -17,29 +17,25 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
-
-import java.util.Random;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 /**
  * This class schedules tracks for the audio player. It contains the queue of tracks.
  */
 public class TrackScheduler extends AudioEventAdapter {
     private final AudioPlayer player;
-    private final BlockingQueue<AudioTrack> queue;
+    private Playlist playlist = new Playlist();
     private boolean isRepeat = false;
     private boolean isShuffle = false;
-    private AudioTrack lastTrack = null;
     private Guild guild;
     private TextChannel announceChannel;
+    private MessageAction lastNextTrackMessage;
 
     /**
      * @param player The audio player this scheduler uses
      */
     public TrackScheduler(AudioPlayer player, Guild guild) {
         this.player = player;
-        this.queue = new LinkedBlockingQueue<>();
         this.guild = guild;
     }
 
@@ -53,46 +49,39 @@ public class TrackScheduler extends AudioEventAdapter {
         // something is playing, it returns false and does nothing. In that case the player was already playing so this
         // track goes to the queue instead.
         if (!player.startTrack(track, true)) {
-            queue.offer(track);
+            playlist.offer(track);
         }
     }
 
     /**
      * Start the next track, stopping the current one if it is playing.
      */
-    public void nextTrack(boolean ended) {
+    public void nextTrack(boolean ended){
+        nextTrack(ended, 0);
+    }
+
+    public void nextTrack(boolean ended, int skip) {
         // Start the next track, regardless of if something is already playing or not. In case queue was empty, we are
         // giving null to startTrack, which is a valid argument and will simply stop the player
-        AudioTrack newSong = null;
-        if(isShuffle && queue.size()>0) {
-            Random rng = new Random();
-            Object[] songs = queue.toArray();
-            newSong = (AudioTrack) songs[rng.nextInt(songs.length)];
-            queue.remove(newSong);
-        }
-        if(isRepeat && ended && newSong==null){
-            newSong = lastTrack;
-        }
-        if(newSong==null){
-            newSong = queue.poll();
-        }
-        player.startTrack(newSong, false);
-        if (queue.size() == 0 && player.getPlayingTrack() == null) {
-            player.destroy();
-            setShuffle(false);
-            setRepeat(false);
-            guild.getAudioManager().closeAudioConnection();
+        AudioTrack track = playlist.poll(skip);
+        if(track!=null) {
+            player.startTrack(track, false);
+        } else {
+            stopQueue();
         }
     }
 
-    public BlockingQueue<AudioTrack> getQueue() {
-        return queue;
+    public Playlist getQueue() {
+        return playlist;
     }
 
     public void stopQueue() {
         player.stopTrack();
         player.destroy();
-        queue.clear();
+        playlist.suspend();
+        playlist.clear();
+        setShuffle(false);
+        setRepeat(false);
         guild.getAudioManager().closeAudioConnection();
     }
 
@@ -100,7 +89,6 @@ public class TrackScheduler extends AudioEventAdapter {
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)
         if (endReason.mayStartNext) {
-            lastTrack = track;
             nextTrack(true);
         }
 
@@ -121,12 +109,14 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
-        announceChannel.sendMessage("Starting playback of \"" + track.getInfo().title + "\" (Queue: " + queue.size() + " left)").queue();
+        MessageAction message = announceChannel.sendMessage("Starting playback of \"" + track.getInfo().title + "\" (Queue: " + (playlist.getSize() - playlist.getPlayedSongs()) + " left)");
+        lastNextTrackMessage = message;
+        message.queue();
     }
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
-        announceChannel.sendMessage("Request: \"" + track.getInfo().title + "\" Has encountered an error (" + exception.getLocalizedMessage() + ")").queue();
+        lastNextTrackMessage.content("Request: \"" + track.getInfo().title + "\" Has encountered an error (" + exception.getMessage() + ")").queue();
     }
 
     public boolean isPlaying() {
@@ -134,7 +124,7 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public boolean isSchedulerActive() {
-        return player.getPlayingTrack() != null || queue.size() > 0;
+        return player.getPlayingTrack() != null;
     }
 
     public boolean isRepeat() {

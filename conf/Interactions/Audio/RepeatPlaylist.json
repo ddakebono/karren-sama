@@ -1,16 +1,16 @@
 {
   "triggers": [
-    "repeatsong"
+    "repeatplaylist"
   ],
   "tags": [
     "NoVoiceHijack",
     "VoiceChannelRequired",
-    "Audio.Repeat",
+    "Audio.RepeatPlaylist",
     "prefixed"
   ],
   "templatesNew": [
     {
-      "template": "Song Repeat is now %toggle",
+      "template": "Playlist repeat is now %toggle",
       "templateType": "normal"
     },
     {

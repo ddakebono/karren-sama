@@ -11,8 +11,12 @@
   ],
   "templatesNew": [
     {
-      "template": "There's currently %queueCount in the playlist!",
+      "template": "Currently at position **%currentPosition** out of **%queueCount!**",
       "templateType": "normal"
+    },
+    {
+      "template": "The queue is currently **empty**!",
+      "templateType": "noqueue"
     }
   ],
   "enabled": true,

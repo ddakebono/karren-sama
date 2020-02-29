@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -66,7 +66,14 @@ public class Play extends Tag {
                 }
             }
         } else {
-            msg = interaction.getRandomTemplate("fail").getTemplate();
+            if(gm.scheduler.getQueue().isSuspended()){
+                if(gm.scheduler.getQueue().resume()){
+                    gm.connectToVoiceChannel(result.getEvent());
+                    gm.scheduler.nextTrack(true);
+                }
+            } else {
+                msg = interaction.getRandomTemplate("fail").getTemplate();
+            }
         }
 
         if (arh.isFailed())

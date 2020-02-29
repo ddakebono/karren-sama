@@ -10,7 +10,7 @@
   ],
   "templatesNew": [
     {
-      "template": "Shuffle is now %bool",
+      "template": "Shuffle is now %toggle",
       "templateType": "normal"
     },
     {

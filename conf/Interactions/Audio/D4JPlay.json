@@ -1,7 +1,8 @@
 {
   "triggers": [
     "play",
-    "yt"
+    "yt",
+    "resume"
   ],
   "tags": [
     "NoVoiceHijack",

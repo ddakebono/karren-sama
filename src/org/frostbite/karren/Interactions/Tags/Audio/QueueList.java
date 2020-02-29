@@ -10,8 +10,8 @@
 
 package org.frostbite.karren.Interactions.Tags.Audio;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
+import org.frostbite.karren.AudioPlayer.PlaylistSong;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionEmbedFields;
 import org.frostbite.karren.Interactions.InteractionResult;
@@ -31,19 +31,24 @@ public class QueueList extends Tag {
                     KarrenUtil.getMinSecFormattedString(gmm.player.getPlayingTrack().getPosition()) + " - " + KarrenUtil.getMinSecFormattedString(Karren.bot.getGuildMusicManager(result.getEvent().getGuild()).player.getPlayingTrack().getDuration()), false
             ));
 
-            msg = interaction.replaceMsg(msg, "%queueCount", Integer.toString(gmm.scheduler.getQueue().size()));
+            msg = interaction.replaceMsg(msg, "%queueCount", Integer.toString(gmm.scheduler.getQueue().getSize()));
+            msg = interaction.replaceMsg(msg, "%currentPosition", Integer.toString((gmm.scheduler.getQueue().getPlayedSongs())));
 
-            for(AudioTrack source : Karren.bot.getGuildMusicManager(result.getEvent().getGuild()).scheduler.getQueue()){
+            for(int i=gmm.scheduler.getQueue().getCurrentSongIndex()+1; i<gmm.scheduler.getQueue().getSize(); i++){
                 songCount++;
                 if(songCount>14)
                     break;
 
+                PlaylistSong song = gmm.scheduler.getQueue().getSongs().get(i);
+
                 interaction.addEmbedField(new InteractionEmbedFields(
-                        source.getInfo().title,
-                        "Creator: " + source.getInfo().author + ", Length: " + KarrenUtil.getMinSecFormattedString(source.getInfo().length) + ", Streaming link: " + (source.getInfo().isStream?"Yes":"No"),
+                        song.track.getInfo().title,
+                        "Creator: " + song.track.getInfo().author + ", Length: " + KarrenUtil.getMinSecFormattedString(song.track.getInfo().length) + ", Streaming link: " + (song.track.getInfo().isStream?"Yes":"No"),
                         false
                 ));
             }
+        } else {
+            msg = interaction.getRandomTemplate("noqueue").getTemplate();
         }
         return msg;
     }

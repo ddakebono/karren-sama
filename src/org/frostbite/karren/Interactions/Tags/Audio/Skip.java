@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -19,8 +19,17 @@ import org.frostbite.karren.Karren;
 public class Skip extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        if(result.getEvent().getGuild().getAudioManager().isConnected()){
-            Karren.bot.getGuildMusicManager(result.getEvent().getGuild()).scheduler.nextTrack(false);
+        if(result.getEvent().getGuild().getAudioManager().isConnected()) {
+            if (interaction.hasParameter()) {
+                try{
+                    int skip = Integer.parseInt(interaction.getParameter());
+                    Karren.bot.getGuildMusicManager(result.getEvent().getGuild()).scheduler.nextTrack(false, skip);
+                } catch (NumberFormatException e) {
+                    msg = interaction.getRandomTemplate("error").getTemplate();
+                }
+            } else {
+                Karren.bot.getGuildMusicManager(result.getEvent().getGuild()).scheduler.nextTrack(false);
+            }
         }
         return null;
     }

@@ -15,11 +15,11 @@ import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
 
-public class Shuffle extends Tag {
+public class RepeatPlaylist extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        if(result.getEvent().getGuild().getAudioManager().isConnected()){
-            boolean toggle = Karren.bot.getGuildMusicManager(result.getEvent().getGuild()).scheduler.getQueue().toggleShuffle();
+        if(result.getEvent().getGuild().getAudioManager().isConnected()) {
+            boolean toggle = Karren.bot.getGuildMusicManager(result.getEvent().getGuild()).scheduler.getQueue().toggleRepeatPlaylist();
             if(toggle)
                 msg = interaction.replaceMsg(msg, "%toggle", "true");
             else
@@ -32,6 +32,6 @@ public class Shuffle extends Tag {
 
     @Override
     public String getTagName() {
-        return "d4jshuffle";
+        return "RepeatPlaylist";
     }
 }
