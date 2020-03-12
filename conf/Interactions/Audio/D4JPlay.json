@@ -28,6 +28,10 @@
     {
       "template": "I can\u0027t seem to use the file from the link you gave.",
       "templateType": "permission"
+    },
+    {
+      "template": "Resumed suspended playlist.",
+      "templateType": "resumed"
     }
   ],
   "parameters": [

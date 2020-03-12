@@ -109,7 +109,7 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
-        MessageAction message = announceChannel.sendMessage("Starting playback of \"" + track.getInfo().title + "\" (Queue: " + (playlist.getSize() - playlist.getPlayedSongs()) + " left)");
+        MessageAction message = announceChannel.sendMessage("Starting playback of \"" + track.getInfo().title + "\" (Queue: " + (playlist.getSize()-1 - playlist.getPlayedSongs()) + " left)");
         lastNextTrackMessage = message;
         message.queue();
     }

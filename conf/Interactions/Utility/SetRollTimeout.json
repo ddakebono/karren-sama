@@ -1,0 +1,33 @@
+{
+  "triggers": [
+    "timeout"
+  ],
+  "tags": [
+    "prefixed",
+    "Parameter",
+    "Guild.SetRollTimeout"
+  ],
+  "templatesNew": [
+    {
+      "template": "Roll timeout has been set to %timeout",
+      "templateType": "normal"
+    },
+    {
+      "template": "You need to give me a number for the hours!",
+      "templateType": "fail"
+    },
+    {
+      "template": "You don\u0027t have permission to change this... (Not admin)",
+      "templateType": "permission"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Sets command prefix for a guild",
+  "identifier": "SetPrefix",
+  "confidence": 1,
+  "permissionLevel": "bot-manager",
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false,
+  "guildOnly": true
+}

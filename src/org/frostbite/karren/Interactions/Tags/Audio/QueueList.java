@@ -32,7 +32,7 @@ public class QueueList extends Tag {
             ));
 
             msg = interaction.replaceMsg(msg, "%queueCount", Integer.toString(gmm.scheduler.getQueue().getSize()));
-            msg = interaction.replaceMsg(msg, "%currentPosition", Integer.toString((gmm.scheduler.getQueue().getPlayedSongs())));
+            msg = interaction.replaceMsg(msg, "%currentPosition", Integer.toString((gmm.scheduler.getQueue().getPlayedSongs()+1)));
 
             for(int i=gmm.scheduler.getQueue().getCurrentSongIndex()+1; i<gmm.scheduler.getQueue().getSize(); i++){
                 songCount++;

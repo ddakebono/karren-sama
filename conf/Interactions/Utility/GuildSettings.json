@@ -35,6 +35,11 @@
           "inline": true
         },
         {
+          "fieldTitle": "Roll Timeout",
+          "fieldValue": "%timeout",
+          "inline": true
+        },
+        {
           "fieldTitle": "AoE range for Nat 100",
           "fieldValue": "%range",
           "inline": true

@@ -25,6 +25,7 @@ public class GuildSettings extends Tag {
         interaction.replaceMsg(msg, "%maxvolume", Integer.toString(dbGuild.getMaxVolume()));
         interaction.replaceMsg(msg, "%prefix", ("\"" + Karren.bot.getGuildManager().getCommandPrefix(result.getEvent().getGuild()) + "\""));
         interaction.replaceMsg(msg, "%range", Integer.toString(dbGuild.getRandomRange()));
+        interaction.replaceMsg(msg, "%timeout", Integer.toString(dbGuild.getRollTimeoutHours()) + " hours");
         if(dbGuild.getAccessRole()!=null){
             interaction.replaceMsg(msg, "%accessrole", dbGuild.getAccessRole());
         } else {

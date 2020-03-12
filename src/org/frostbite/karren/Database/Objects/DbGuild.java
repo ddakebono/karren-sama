@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -24,10 +24,11 @@ public class DbGuild {
     private int maxVolume = 40;
     private long overrideChannel = 0;
     private long welcomeChannel = 0;
+    private int rollTimeoutHours = 6;
 
     public DbGuild(){}
 
-    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, String accessRole, int rollDifficulty, int maxVolume, int randomRange, long overrideChannel, long welcomeChannel) {
+    public DbGuild(String guildID, String guildName, String guildOwner, String commandPrefix, String accessRole, int rollDifficulty, int maxVolume, int randomRange, long overrideChannel, long welcomeChannel, int rollTimeoutHours) {
         this.guildID = guildID;
         this.guildName = guildName;
         this.guildOwner = guildOwner;
@@ -38,6 +39,7 @@ public class DbGuild {
         this.maxVolume = maxVolume;
         this.overrideChannel = overrideChannel;
         this.welcomeChannel = welcomeChannel;
+        this.rollTimeoutHours = rollTimeoutHours;
     }
 
     public String getGuildID() {
@@ -120,11 +122,19 @@ public class DbGuild {
         this.welcomeChannel = welcomeChannel;
     }
 
+    public int getRollTimeoutHours() {
+        return rollTimeoutHours;
+    }
+
+    public void setRollTimeoutHours(int rollTimeoutHours) {
+        this.rollTimeoutHours = rollTimeoutHours;
+    }
+
     //Update db entry
     public void update(){
         if(Karren.conf.getAllowSQLRW()) {
-            String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?, AccessRole=?, WelcomeChannel=?  WHERE GuildID=?";
-            Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, accessRole, welcomeChannel, guildID});
+            String sql = "UPDATE Guild SET GuildOwner=?, GuildName=?, CommandPrefix=?, RollDifficulty=?, MaxVolume=?, RandomRange=?, OverrideChannel=?, AccessRole=?, WelcomeChannel=?, RollTimeoutHours=?  WHERE GuildID=?";
+            Yank.execute(sql, new Object[]{guildOwner, guildName, commandPrefix, rollDifficulty, maxVolume, randomRange, overrideChannel, accessRole, welcomeChannel, rollTimeoutHours, guildID});
         }
     }
 }

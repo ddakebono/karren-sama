@@ -70,6 +70,7 @@ public class Play extends Tag {
                 if(gm.scheduler.getQueue().resume()){
                     gm.connectToVoiceChannel(result.getEvent());
                     gm.scheduler.nextTrack(true);
+                    msg = interaction.getRandomTemplate("resumed").getTemplate();
                 }
             } else {
                 msg = interaction.getRandomTemplate("fail").getTemplate();
