@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.AuditableRestAction;
+import org.frostbite.karren.Database.Objects.DbGuild;
 import org.frostbite.karren.Database.Objects.DbGuildUser;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionResult;
@@ -90,8 +91,9 @@ public class RoleRoll extends Tag {
                                     }
                                 }
                             }
+                            DbGuild guild = Karren.bot.getSql().getGuild(result.getEvent().getGuild());
                             dbGuildUser.incrementRollsSinceLastClear();
-                            dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + 21600000));
+                            dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + (3600000*guild.getRollTimeoutHours())));
                             if (!rolePermissionError)
                                 msg = interaction.getRandomTemplate("fail").getTemplate();
                             else
