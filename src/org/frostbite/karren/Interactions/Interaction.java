@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -143,7 +143,7 @@ public class Interaction {
             //get roles
             if(event.getMember()!=null)
                 rolesMatch = event.getMember().getRoles().stream().filter(x -> x.getName().equalsIgnoreCase(permissionLevel)).collect(Collectors.toList());
-            if(rolesMatch!=null && rolesMatch.size()>0) {
+            if((rolesMatch!=null && rolesMatch.size()>0) || event.getAuthor().getId().equals(Karren.conf.getOperatorDiscordID())) {
                 return getRandomTemplate("normal").getTemplate();
             } else {
                 stopProcessing();

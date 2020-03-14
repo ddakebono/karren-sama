@@ -4,8 +4,9 @@
   ],
   "tags": [
     "prefixed",
-    "mentioned",
-    "Guild.SetFilter"
+    "MentionedUsers",
+    "Guild.SetFilter",
+    "Name"
   ],
   "templatesNew": [
     {
@@ -19,6 +20,10 @@
     {
       "template": "You don\u0027t have permission to change this... (Not admin)",
       "templateType": "permission"
+    },
+    {
+      "template": "I'm sorry I can't let you do that %name.",
+      "templateType": "opError"
     }
   ],
   "enabled": true,
