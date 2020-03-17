@@ -1,0 +1,64 @@
+{
+  "triggers": [
+    "covid"
+  ],
+  "tags": [
+    "Parameter",
+    "ArcGISCOVID19",
+    "prefixed",
+    "EmbedMessage"
+  ],
+  "templatesNew": [
+    {
+      "template": "CoViD-19 Stats for **%country**",
+      "templateType": "normal"
+    },
+    {
+      "template": "CoViD-19 Stats for **%province** (%country)",
+      "templateType": "province"
+    },
+    {
+      "template": "You must enter a location to search!",
+      "templateType": "noparam"
+    },
+    {
+      "template": "No results were returned for that location!",
+      "templateType": "fail"
+    }
+  ],
+  "embedTemplates": [
+    {
+      "embedFields": [
+        {
+          "fieldTitle": "Confirmed Cases",
+          "fieldValue": "%confirmed",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Recovered Cases",
+          "fieldValue": "%recovered",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Deaths",
+          "fieldValue": "%deaths",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Data Last Updated",
+          "fieldValue": "%lastUpdated",
+          "inline": false
+        }
+      ],
+      "templateType": "normal"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Returns data related to a specific locations current status with CoViD-19",
+  "identifier": "ArcGISGetData",
+  "friendlyName": "Novel Coronavirus Stat Search (CoViD-19)",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}
