@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -27,6 +27,8 @@ public class EmbedMessage extends Tag {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(Color.red);
         embed.setTitle((interaction.getFriendlyName() != null && interaction.getFriendlyName().length() > 0) ? interaction.getFriendlyName() : interaction.getIdentifier());
+        if(interaction.getEmbedURL()!=null)
+            embed.setTitle((interaction.getFriendlyName() != null && interaction.getFriendlyName().length() > 0) ? interaction.getFriendlyName() : interaction.getIdentifier(), interaction.getEmbedURL());
         embed.setDescription(msg);
         if (interaction.getEmbedImage() != null)
             embed.setImage(interaction.getEmbedImage());

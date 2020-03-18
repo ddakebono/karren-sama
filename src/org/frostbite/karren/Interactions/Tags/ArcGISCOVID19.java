@@ -23,14 +23,13 @@ import javax.net.ssl.X509TrustManager;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
 public class ArcGISCOVID19 extends Tag {
-
-    //https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/1/query?where=Province_State%3D%27{PROVINCE}%27+OR+Country_Region%3D%27{COUNTRY}%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token=
-
 
     final TrustManager[] trustAllCertificates = new TrustManager[]{
             new X509TrustManager() {
@@ -63,9 +62,8 @@ public class ArcGISCOVID19 extends Tag {
         interaction.setEmbedFooter("Using ArcGIS API");
         interaction.setEmbedURL("https://experience.arcgis.com/experience/685d0ace521648f8a5beeeee1b9125cd");
         if(interaction.hasParameter()) {
-            String search = interaction.getParameter().trim();
             try {
-
+                String search = URLEncoder.encode(interaction.getParameter().trim(), StandardCharsets.UTF_8.toString());
                 String resultString = getText("https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/1/query?where=Province_State%3D%27" + search + "%27+OR+Country_Region%3D%27" + search + "%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token=");
                 JSONObject resultObj = new JSONObject(resultString);
                 JSONArray dataArray = resultObj.getJSONArray("features");
@@ -80,7 +78,7 @@ public class ArcGISCOVID19 extends Tag {
                     long updated = obj.getLong("Last_Update");
                     if(updated > lastUpdate)
                         lastUpdate = updated;
-                    if(dataArray.length()==1){
+                    if(dataArray.length()==1 && obj.optString("Province_State", null)!=null){
                         province = obj.getString("Province_State");
                         msg = interaction.getRandomTemplate("province").getTemplate();
                     }
