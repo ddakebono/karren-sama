@@ -10,7 +10,10 @@
 
 package org.frostbite.karren.listeners;
 
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Karren;
@@ -20,9 +23,18 @@ import javax.annotation.Nonnull;
 public class VoiceLeaveListener extends ListenerAdapter {
     @Override
     public void onGuildVoiceLeave(@Nonnull GuildVoiceLeaveEvent event) {
-        GuildMusicManager gmm = Karren.bot.getGuildMusicManager(event.getGuild());
+        checkChannelState(event.getGuild(), event.getChannelLeft());
+    }
+
+    @Override
+    public void onGuildVoiceMove(@Nonnull GuildVoiceMoveEvent event) {
+        checkChannelState(event.getGuild(), event.getChannelLeft());
+    }
+
+    private void checkChannelState(Guild guild, VoiceChannel channel){
+        GuildMusicManager gmm = Karren.bot.getGuildMusicManager(guild);
         if(gmm.scheduler.isPlaying()){
-            if(event.getChannelLeft().getMembers().size()==1){
+            if(channel.getMembers().size()==1){
                 gmm.scheduler.stopQueue();
             }
         }
