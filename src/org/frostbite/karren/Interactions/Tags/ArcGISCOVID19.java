@@ -59,12 +59,20 @@ public class ArcGISCOVID19 extends Tag {
         String country = null;
         String province = null;
         boolean getData = false;
+        boolean worldSearch = false;
         interaction.setEmbedFooter("Using ArcGIS API");
         interaction.setEmbedURL("https://experience.arcgis.com/experience/685d0ace521648f8a5beeeee1b9125cd");
         if(interaction.hasParameter()) {
             try {
-                String search = URLEncoder.encode(interaction.getParameter().trim(), StandardCharsets.UTF_8.toString());
-                String resultString = getText("https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/1/query?where=Province_State%3D%27" + search + "%27+OR+Country_Region%3D%27" + search + "%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token=");
+                String resultString = "";
+                String param = interaction.getParameter();
+                if(param.trim().equalsIgnoreCase("global") || param.trim().equalsIgnoreCase("all") || param.trim().equalsIgnoreCase("world") || param.trim().equalsIgnoreCase("earth")){
+                    resultString = getText("https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/1/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token=");
+                    worldSearch = true;
+                } else {
+                    String search = URLEncoder.encode(param.trim(), StandardCharsets.UTF_8.toString());
+                    resultString = getText("https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/Coronavirus_2019_nCoV_Cases/FeatureServer/1/query?where=Province_State%3D%27" + search + "%27+OR+Country_Region%3D%27" + search + "%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token=");
+                }
                 JSONObject resultObj = new JSONObject(resultString);
                 JSONArray dataArray = resultObj.getJSONArray("features");
 
@@ -75,7 +83,7 @@ public class ArcGISCOVID19 extends Tag {
                     confirmed += obj.getInt("Confirmed");
                     recovered += obj.getInt("Recovered");
                     deaths += obj.getInt("Deaths");
-                    long updated = obj.getLong("Last_Update");
+                    long updated = obj.optLong("Last_Update", 0L);
                     if(updated > lastUpdate)
                         lastUpdate = updated;
                     if(dataArray.length()==1 && obj.optString("Province_State", null)!=null){
@@ -97,9 +105,16 @@ public class ArcGISCOVID19 extends Tag {
                 msg = interaction.replaceMsg(msg, "%confirmed", Integer.toString(confirmed));
                 msg = interaction.replaceMsg(msg, "%recovered", Integer.toString(recovered));
                 msg = interaction.replaceMsg(msg, "%deaths", Integer.toString(deaths));
-                Date lastUpdated = new Date(lastUpdate);
-                msg = interaction.replaceMsg(msg, "%lastUpdate", lastUpdated.toString());
-                msg = interaction.replaceMsg(msg, "%country", country);
+                if(lastUpdate>0L) {
+                    Date lastUpdated = new Date(lastUpdate);
+                    msg = interaction.replaceMsg(msg, "%lastUpdate", lastUpdated.toString());
+                } else {
+                    msg = interaction.replaceMsg(msg, "%lastUpdate", "Never Reported");
+                }
+                if(!worldSearch)
+                    msg = interaction.replaceMsg(msg, "%country", country);
+                else
+                    msg = interaction.replaceMsg(msg, "%country", "Earth");
             } else {
                 msg = interaction.getRandomTemplate("fail").getTemplate();
             }
