@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -58,7 +58,7 @@ public class Karren{
         JDABuilder client;
 
         //client = new ClientBuilder().withToken(Karren.conf.getDiscordToken()).withRecommendedShardCount().build();
-        client = new JDABuilder(conf.getDiscordToken());
+        client = JDABuilder.createDefault(conf.getDiscordToken());
 
         //Setup the objects we need.
         Karren.bot = new KarrenBot(client);
