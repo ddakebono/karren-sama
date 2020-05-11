@@ -72,7 +72,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.1.1_136</version>
+            <version>4.1.1_147</version>
         </dependency>
         <dependency>
             <groupId>com.sedmelluq</groupId>
