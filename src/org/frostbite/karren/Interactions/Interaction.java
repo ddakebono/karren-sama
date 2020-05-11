@@ -461,4 +461,6 @@ public class Interaction {
     public void setNoClearInteraction(boolean noClearInteraction) {
         this.noClearInteraction = noClearInteraction;
     }
+
+
 }

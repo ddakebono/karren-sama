@@ -69,6 +69,7 @@ public class KarrenBot {
             clientBuilder.addEventListeners(new StatCommand());
             clientBuilder.addEventListeners(new VoiceLeaveListener());
             if(Karren.conf.getEnableInteractions())
+                clientBuilder.addEventListeners(new HelpListener());
                 clientBuilder.addEventListeners(new InteractionCommand());
             clientBuilder.addEventListeners(new GuildCreateListener());
             initExtras();

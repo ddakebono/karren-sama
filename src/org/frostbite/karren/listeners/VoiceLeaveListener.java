@@ -19,6 +19,7 @@ import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Karren;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 public class VoiceLeaveListener extends ListenerAdapter {
     @Override
@@ -33,7 +34,7 @@ public class VoiceLeaveListener extends ListenerAdapter {
 
     private void checkChannelState(Guild guild, VoiceChannel channel){
         GuildMusicManager gmm = Karren.bot.getGuildMusicManager(guild);
-        if(gmm.scheduler.isPlaying()){
+        if(gmm.scheduler.isPlaying() && Objects.equals(Objects.requireNonNull(Objects.requireNonNull(guild.getMember(Karren.bot.client.getSelfUser())).getVoiceState()).getChannel(), channel)){
             if(channel.getMembers().size()==1){
                 gmm.scheduler.stopQueue();
             }

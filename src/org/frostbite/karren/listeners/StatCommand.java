@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2020 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -41,6 +41,7 @@ public class StatCommand extends ListenerAdapter {
                         "\nShardID: " + Karren.bot.getClient().getShardInfo().getShardId() +
                         "\nConnected Voice Channels: " + Karren.bot.getClient().getAudioManagers().stream().filter(AudioManager::isConnected).count() +
                         "\nInteraction System Tags: Borked" +
+                        "\nInteraction System Commands: " + Karren.bot.getGuildManager().getInteractionProcessor(guild).getInteractions().size() +
                         "\nTotal Users Visable: " + Karren.bot.getClient().getUsers().size() +
                         "\n-------------Cache Status-------------" +
                         "\nCached Reminders: " + Karren.bot.getSql().getDbReminderCache().size() +
