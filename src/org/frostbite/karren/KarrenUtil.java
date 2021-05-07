@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2021 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -49,6 +49,12 @@ public class KarrenUtil {
         permMap.put("system_trust_known", "User");
         permMap.put("system_trust_trusted", "Known User");
         permMap.put("system_trust_veteran", "Trusted User");
+        permMap.put("system_trust_legend", "Veteran user");
+        permMap.put("system_legend", "Legendary User");
+        permMap.put("system_probable_troll", "Near Nuisance");
+        permMap.put("system_troll", "Nuisance");
+        permMap.put("admin_moderator", "Game Moderator");
+        permMap.put("system_notamod", "It's Tupper");
         String permission = "Visitor (No Tags)";
         int permLevel = -1;
         for(String tag : tags){

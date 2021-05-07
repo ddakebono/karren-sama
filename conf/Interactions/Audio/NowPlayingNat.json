@@ -30,6 +30,7 @@
   "enabled": true,
   "helptext": "Lists current song title",
   "identifier": "NowPlayingNat",
+  "friendlyName" : "Now Playing",
   "confidence": 3,
   "voiceVolume": 0.0,
   "specialInteraction": false,

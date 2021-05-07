@@ -27,8 +27,9 @@
     }
   ],
   "enabled": true,
-  "helptext": "Enable/disable repeat on D4JPlayer",
-  "identifier": "RepeatToggle",
+  "helptext": "Enable/disable repeat on the music player",
+  "identifier": "RepeatPlaylist",
+  "friendlyName" : "Repeat Playlist Toggle",
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,

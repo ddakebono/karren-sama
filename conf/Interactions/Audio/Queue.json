@@ -22,6 +22,7 @@
   "enabled": true,
   "helptext": "Lists current playlist",
   "identifier": "CurrentQueue",
+  "friendlyName" : "Current Queue",
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,

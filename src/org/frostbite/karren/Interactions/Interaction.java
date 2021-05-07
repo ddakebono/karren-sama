@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Owen Bennett.
+ * Copyright (c) 2021 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -58,6 +58,7 @@ public class Interaction {
     private String embedImage;
     private String embedURL;
     private String embedFooter;
+    private String embedThumbnail;
 
     public Interaction(String identifier, String[] tags, String templates, String[] triggers, int confidence, boolean enabled, String helptext){
         this(identifier ,tags, new InteractionTemplate[]{new InteractionTemplate(templates, "normal")}, triggers, confidence, enabled, helptext);
@@ -169,6 +170,7 @@ public class Interaction {
             embed = null;
             embedImage = null;
             embedURL = null;
+            embedThumbnail = null;
             if (tagCache == null)
                 tagCache = new ArrayList<>();
             tagCache.clear();
@@ -304,6 +306,14 @@ public class Interaction {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getEmbedThumbnail() {
+        return embedThumbnail;
+    }
+
+    public void setEmbedThumbnail(String embedThumbnail) {
+        this.embedThumbnail = embedThumbnail;
     }
 
     public String getParameter() {

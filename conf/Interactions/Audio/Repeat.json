@@ -1,20 +1,20 @@
 {
   "triggers": [
-    "pause"
+    "repeatsong"
   ],
   "tags": [
     "NoVoiceHijack",
     "VoiceChannelRequired",
-    "Audio.Play",
+    "Audio.Repeat",
     "prefixed"
   ],
   "templatesNew": [
     {
-      "template": "Paused playback",
+      "template": "Song Repeat is now %toggle",
       "templateType": "normal"
     },
     {
-      "template": "It seems that the URL given isn\u0027t valid!",
+      "template": "I'm not playing anything, repeat is kinda useless here.",
       "templateType": "fail"
     },
     {
@@ -27,10 +27,11 @@
     }
   ],
   "enabled": true,
-  "helptext": "Pauses music playback",
-  "identifier": "Pause",
+  "helptext": "Enable/disable repeat on D4JPlayer",
+  "identifier": "RepeatToggle",
+  "friendlyName" : "Repeat Toggle",
   "confidence": 1,
-  "voiceVolume": 0.2,
+  "voiceVolume": 0.0,
   "specialInteraction": false,
   "isPermBad": false,
   "guildOnly": true

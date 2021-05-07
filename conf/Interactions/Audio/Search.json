@@ -1,19 +1,18 @@
 {
   "triggers": [
-    "ytfl",
-    "feelinglucky"
+    "yts"
   ],
   "tags": [
     "NoVoiceHijack",
-    "VoiceChannelRequired",
     "Parameter",
-    "Audio.FeelingLucky",
-    "Audio.Play",
-    "prefixed"
+    "VoiceChannelRequired",
+    "Audio.Search",
+    "prefixed",
+    "EmbedMessage"
   ],
   "templatesNew": [
     {
-      "template": "Found \"%title\", added to queue.",
+      "template": "Here\u0027s the results, please respond with the number of the video you want, or respond with c to cancel.",
       "templateType": "normal"
     },
     {
@@ -38,8 +37,10 @@
     }
   ],
   "enabled": true,
-  "helptext": "This command searches youtube for the specified video and plays the first result.",
-  "identifier": "ImFeelingLucky",
+  "friendlyName": "YouTube Search",
+  "helptext": "This command searches youtube for the specified title, then displays 3 options to choose for playback.",
+  "identifier": "YoutubeSearch",
+  "friendlyName" : "Youtube Search",
   "confidence": 1,
   "voiceVolume": 20.0,
   "specialInteraction": false,

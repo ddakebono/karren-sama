@@ -1,20 +1,20 @@
 {
   "triggers": [
-    "repeatsong"
+    "shuffle"
   ],
   "tags": [
     "NoVoiceHijack",
     "VoiceChannelRequired",
-    "Audio.Repeat",
+    "Audio.Shuffle",
     "prefixed"
   ],
   "templatesNew": [
     {
-      "template": "Song Repeat is now %toggle",
+      "template": "Shuffle is now %toggle",
       "templateType": "normal"
     },
     {
-      "template": "I'm not playing anything, repeat is kinda useless here.",
+      "template": "I'm not playing anything, shuffle is kinda useless here.",
       "templateType": "fail"
     },
     {
@@ -27,8 +27,9 @@
     }
   ],
   "enabled": true,
-  "helptext": "Enable/disable repeat on D4JPlayer",
-  "identifier": "RepeatToggle",
+  "helptext": "Enable/disable shuffle on the Audio Player",
+  "identifier": "ToggleShuffle",
+  "friendlyName" : "Toggle Shuffle",
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,

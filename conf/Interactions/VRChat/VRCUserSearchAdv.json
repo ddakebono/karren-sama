@@ -46,21 +46,6 @@
           "inline": false
         },
         {
-          "fieldTitle": "World",
-          "fieldValue": "%world",
-          "inline": true
-        },
-        {
-          "fieldTitle": "Launch Link",
-          "fieldValue": "%link",
-          "inline": true
-        },
-        {
-          "fieldTitle": "Status",
-          "fieldValue": "%status",
-          "inline": true
-        },
-        {
           "fieldTitle": "Status Message",
           "fieldValue": "%statdesc",
           "inline": true
@@ -72,7 +57,22 @@
         },
         {
           "fieldTitle": "VRChat Trust Level",
-          "fieldValue": "%newlevel",
+          "fieldValue": "%newlevel %vrcplus",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Developer Type",
+          "fieldValue": "%devtype",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Join Date",
+          "fieldValue": "%joindate",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Allow Cloning",
+          "fieldValue": "%avatarcopy",
           "inline": true
         }
       ],

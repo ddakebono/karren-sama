@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2021 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -11,7 +11,6 @@
 package org.frostbite.karren.Interactions.Tags.VRChat;
 
 import io.github.vrchatapi.VRCUser;
-import io.github.vrchatapi.VRCWorld;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionEmbedFields;
 import org.frostbite.karren.Interactions.InteractionResult;
@@ -45,28 +44,8 @@ public class VRCUserSearch extends Tag {
                         user = VRCUser.fetch(users.get(0).getId());
                     }
                 }
-                if (user.isFriend()) {
-                    if (!user.getWorldID().equalsIgnoreCase("offline")) {
-                        if (!user.getWorldID().equalsIgnoreCase("private")) {
-                            VRCWorld world = VRCWorld.fetch(user.getWorldID());
-                            msg = interaction.replaceMsg(msg, "%world", world.getName());
-                            if (user.getInstanceID().length() < 10)
-                                msg = interaction.replaceMsg(msg, "%link", "[Join Me](https://www.vrchat.net/launch?worldId=" + world.getId() + "&instanceId=" + user.getInstanceID() + ")");
-                            else
-                                msg = interaction.replaceMsg(msg, "%link", "Not Public");
-                        } else {
-                            msg = interaction.replaceMsg(msg, "%world", "Private World");
-                            msg = interaction.replaceMsg(msg, "%link", "Private World");
-                        }
-                    } else {
-                        msg = interaction.replaceMsg(msg, "%world", "Offline");
-                        msg = interaction.replaceMsg(msg, "%link", "Offline");
-                    }
-                } else {
-                    msg = interaction.replaceMsg(msg, "%world", "Not a friend");
-                    msg = interaction.replaceMsg(msg, "%link", "Not a friend");
-                }
-                msg = interaction.replaceMsg(msg, "%status", user.getState().length()>0?user.getState():"Not Friend");
+
+                assert user != null;
                 if(user.getStatusDesc().length()>0)
                     msg = interaction.replaceMsg(msg, "%statdesc", user.getStatusDesc());
                 else
@@ -77,8 +56,12 @@ public class VRCUserSearch extends Tag {
                 msg = interaction.replaceMsg(msg, "%last_login", user.getLastLogin());
                 msg = interaction.replaceMsg(msg, "%last_platform", user.getLastPlatform());
                 msg = interaction.replaceMsg(msg, "%bio", user.getBio());
+                msg = interaction.replaceMsg(msg, "%devtype", user.getDeveloperType().toString());
+                msg = interaction.replaceMsg(msg, "%joindate", user.getDateJoined());
+                msg = interaction.replaceMsg(msg, "%avatarcopy", Boolean.toString(user.isAllowAvatarCopying()));
+                msg = interaction.replaceMsg(msg, "%vrcplus", user.getTags().contains("system_supporter")?"(VRC+)":"");
                 interaction.setEmbedImage(user.getCurrentAvatarImageUrl());
-                msg = interaction.replaceMsg(msg, "%tags", user.getTags().toString());
+                msg = interaction.replaceMsg(msg, "%tags", formatTags(user.getTags()));
                 msg = interaction.replaceMsg(msg, "%newlevel", KarrenUtil.getVRCSafetySystemRank(user.getTags()));
             } else {
                 if(users.size()>1){
@@ -102,6 +85,16 @@ public class VRCUserSearch extends Tag {
             msg = interaction.getRandomTemplate("noparam").getTemplate();
         }
         return msg;
+    }
+
+    private String formatTags(List<String> tags){
+        StringBuilder builder = new StringBuilder();
+
+        for(String tag : tags) {
+            builder.append(tag).append(System.lineSeparator());
+        }
+
+        return builder.toString().trim();
     }
 
     @Override

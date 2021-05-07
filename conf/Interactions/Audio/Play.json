@@ -14,7 +14,15 @@
   ],
   "templatesNew": [
     {
-      "template": "Hey, is this thing on?",
+      "template": "Standby while I spin up the audio machine!",
+      "templateType": "normal"
+    },
+    {
+      "template": "One sec! Lemme get that going!",
+      "templateType": "normal"
+    },
+    {
+      "template": "What kinda nonsense are we listening to today?",
       "templateType": "normal"
     },
     {
@@ -61,6 +69,7 @@
   "enabled": true,
   "helptext": "Downloads and plays audio from the internet. Usage: %prefixyt [url], [start at time], [volume]",
   "identifier": "Play",
+  "friendlyName" : "Play",
   "confidence": 1,
   "voiceVolume": 20.0,
   "specialInteraction": false,

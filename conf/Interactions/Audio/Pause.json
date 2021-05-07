@@ -1,20 +1,20 @@
 {
   "triggers": [
-    "shuffle"
+    "pause"
   ],
   "tags": [
     "NoVoiceHijack",
     "VoiceChannelRequired",
-    "Audio.Shuffle",
+    "Audio.Play",
     "prefixed"
   ],
   "templatesNew": [
     {
-      "template": "Shuffle is now %toggle",
+      "template": "Paused playback",
       "templateType": "normal"
     },
     {
-      "template": "I'm not playing anything, shuffle is kinda useless here.",
+      "template": "It seems that the URL given isn\u0027t valid!",
       "templateType": "fail"
     },
     {
@@ -27,10 +27,11 @@
     }
   ],
   "enabled": true,
-  "helptext": "Enable/disable shuffle on the Audio Player",
-  "identifier": "ToggleShuffle",
+  "helptext": "Pauses music playback",
+  "identifier": "Pause",
+  "friendlyName" : "Pause",
   "confidence": 1,
-  "voiceVolume": 0.0,
+  "voiceVolume": 0.2,
   "specialInteraction": false,
   "isPermBad": false,
   "guildOnly": true

@@ -24,6 +24,7 @@
   "enabled": true,
   "helptext": "Lists current song title",
   "identifier": "NowPlaying",
+  "friendlyName" : "Now Playing",
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,
