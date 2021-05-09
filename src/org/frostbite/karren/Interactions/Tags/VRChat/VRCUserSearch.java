@@ -37,7 +37,7 @@ public class VRCUserSearch extends Tag {
             if(users.size()==1 || user!=null) {
                 //VRCUser user = VRCUser.fetch(users.get(0).getId());
                 if(user==null) {
-                    Optional<VRCUser> userOpt = users.stream().filter(userFind -> userFind.getDisplayName().toLowerCase().equals(search.toLowerCase())).findFirst();
+                    Optional<VRCUser> userOpt = users.stream().filter(userFind -> userFind.getDisplayName().equalsIgnoreCase(search)).findFirst();
                     if (userOpt.isPresent()) {
                         user = VRCUser.fetch(userOpt.get().getId());
                     } else {
@@ -90,8 +90,12 @@ public class VRCUserSearch extends Tag {
     private String formatTags(List<String> tags){
         StringBuilder builder = new StringBuilder();
 
-        for(String tag : tags) {
-            builder.append(tag).append(System.lineSeparator());
+        if(tags.size()>0) {
+            for (String tag : tags) {
+                builder.append(tag).append(System.lineSeparator());
+            }
+        } else {
+          builder.append("User has no tags!");
         }
 
         return builder.toString().trim();

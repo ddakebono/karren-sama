@@ -11,7 +11,7 @@
   ],
   "templatesNew": [
     {
-      "template": "Info for VRChat user [**%username**](https://vrchat.com/home/user/%userid)",
+      "template": "Info for VRChat user [**%displayname**](https://vrchat.com/home/user/%userid) (%username)",
       "templateType": "normal"
     },
     {
