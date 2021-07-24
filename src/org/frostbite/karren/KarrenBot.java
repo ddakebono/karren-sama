@@ -22,6 +22,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import org.apache.http.client.config.RequestConfig;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.listeners.*;
@@ -57,6 +58,7 @@ public class KarrenBot {
         gms = new HashMap<>();
         pm = new DefaultAudioPlayerManager();
         pm.getConfiguration().setFrameBufferFactory(NonAllocatingAudioFrameBuffer::new);
+        pm.setHttpRequestConfigurator(requestConfig -> RequestConfig.copy(requestConfig).setSocketTimeout(10000).setConnectTimeout(10000).build());
         AudioSourceManagers.registerRemoteSources(pm);
         AudioSourceManagers.registerLocalSource(pm);
         //Continue connecting to discord
