@@ -10,25 +10,24 @@
 
 package org.frostbite.karren.Interactions.Tags;
 
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
+import org.frostbite.karren.Database.Objects.DbGuildUser;
 import org.frostbite.karren.Interactions.Interaction;
 import org.frostbite.karren.Interactions.InteractionEmbedFields;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-public class RollTopGuilds extends Tag {
+public class RollFailStreaks extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
-        List<Object[]> guildRanks = Karren.bot.getSql().getGuildRollsTop();
+        List<DbGuildUser> users = Karren.bot.getSql().getTopRollFailStreaks();
 
-        for (Object[] guildRank : guildRanks) {
-            Guild guild = Karren.bot.getClient().getGuildById((String) guildRank[0]);
-            String winrate = String.format("%1$,.2f",(((BigDecimal)guildRank[2]).doubleValue()/((BigDecimal) guildRank[1]).doubleValue())*100);
-            interaction.addEmbedField(new InteractionEmbedFields(guild!=null?guild.getName():"Missing Guild", "With " + guildRank[1] + " total rolls and " + guildRank[2] + " wins! (" + winrate + "% winrate)", false));
+        for(DbGuildUser user : users){
+            User discordUser = Karren.bot.getClient().getUserById(user.getUserID());
+            interaction.addEmbedField(new InteractionEmbedFields(discordUser != null ? discordUser.getName() : "Missing Name", "With a streak of " + user.getHighestRollFail() + " fails! (" + user.getTotalRolls() + " rolls / " + user.getWinningRolls() + " wins)", false));
         }
 
         return msg;
@@ -36,6 +35,6 @@ public class RollTopGuilds extends Tag {
 
     @Override
     public String getTagName() {
-        return "rolltopguilds";
+        return "RollFailStreaks";
     }
 }

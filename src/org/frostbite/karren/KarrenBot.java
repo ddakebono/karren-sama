@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Owen Bennett.
+ * Copyright (c) 2021 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -95,7 +95,8 @@ public class KarrenBot {
             yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
 
             //Log into VRCAPI and get auth token
-            VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
+            if(conf.getVrcUsername()!=null && conf.getVrcPassword()!=null)
+                VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
 
             extrasReady = true;
         }

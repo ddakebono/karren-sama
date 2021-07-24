@@ -1,0 +1,57 @@
+{
+  "triggers": [
+    "rollstats"
+  ],
+  "tags": [
+    "prefixed",
+    "Name",
+    "RollStats",
+    "EmbedMessage"
+  ],
+  "templatesNew": [
+    {
+      "template": "Here are your roll stats %name!",
+      "templateType": "normal"
+    }
+  ],
+  "embedTemplates": [
+    {
+      "embedFields": [
+        {
+          "fieldTitle": "Total Rolls",
+          "fieldValue": "%totalrolls",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Total Wins",
+          "fieldValue": "%totalwins",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Winrate",
+          "fieldValue": "%winrate",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Highest Fail Streak",
+          "fieldValue": "%failstreak",
+          "inline": true
+        },
+        {
+          "fieldTitle": "Time Remaining till next roll",
+          "fieldValue": "%timeleft",
+          "inline": false
+        }
+      ],
+      "templateType": "normal"
+    }
+  ],
+  "enabled": true,
+  "helptext": "Roll Stats",
+  "identifier": "RollFailRank",
+  "friendlyName" : "Roll Stats",
+  "confidence": 1,
+  "voiceVolume": 0.0,
+  "specialInteraction": false,
+  "isPermBad": false
+}

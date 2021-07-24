@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Owen Bennett.
+ * Copyright (c) 2021 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -57,7 +57,7 @@ public class MySQLInterface {
             if(guild!=null) {
                 if (!dbGuildUserCache.containsKey(guild.getId() + user.getId())) {
                     DbUser dbuser = getUserData(user);
-                    String sql = "INSERT IGNORE GuildUser (GuildUserID, UserID, GuildID, RollTimeout, IgnoreCommands, RollsSinceLastClear, TotalRolls, WinningRolls) VALUES (null, ?, ?, null, 0, 0, 0, 0)";
+                    String sql = "INSERT IGNORE GuildUser (GuildUserID, UserID, GuildID, RollTimeout, IgnoreCommands, RollsSinceLastClear, TotalRolls, WinningRolls, HighestRollFail) VALUES (null, ?, ?, null, 0, 0, 0, 0, 0)";
                     Object[] params = {dbuser.getUserID(), guild.getId()};
                     Yank.execute(sql, params);
                     sql = "SELECT * FROM GuildUser WHERE UserID=? AND GuildID=?";
@@ -79,6 +79,7 @@ public class MySQLInterface {
                 dbGuildUser.setRollsSinceLastClear(0);
                 dbGuildUser.setTotalRolls(0);
                 dbGuildUser.setWinningRolls(0);
+                dbGuildUser.setHighestRollFail(0);
                 return dbGuildUser;
             }
         }
@@ -178,8 +179,16 @@ public class MySQLInterface {
 
     public List<Object[]> getGuildRollsTop(){
         if(Karren.conf.getAllowSQLRW()) {
-            String sql = "SELECT GuildID, SUM(TotalRolls) AS GuildRolls FROM GuildUser GROUP BY GuildID ORDER BY GuildRolls DESC LIMIT 5";
+            String sql = "SELECT GuildID, SUM(TotalRolls) AS GuildRolls, SUM(WinningRolls) as GuildWins FROM GuildUser GROUP BY GuildID ORDER BY GuildRolls DESC LIMIT 5";
             return Yank.queryObjectArrays(sql, null);
+        }
+        return null;
+    }
+
+    public List<DbGuildUser> getTopRollFailStreaks(){
+        if(Karren.conf.getAllowSQLRW()) {
+            String sql = "SELECT * FROM GuildUser ORDER BY HighestRollFail DESC LIMIT 5";
+            return Yank.queryBeanList(sql, DbGuildUser.class, null);
         }
         return null;
     }

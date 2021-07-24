@@ -1,22 +1,22 @@
 {
   "triggers": [
-    "rollranks"
+    "rollfails"
   ],
   "tags": [
     "prefixed",
-    "RollTopGuilds",
+    "RollFailStreaks",
     "EmbedMessage"
   ],
   "templatesNew": [
     {
-      "template": "These are the guild with the most rolls and wins in total!",
+      "template": "These are the users that have the highest amount of failed rolls in a row!",
       "templateType": "normal"
     }
   ],
   "enabled": true,
-  "helptext": "Top roll rankings",
-  "identifier": "RollTopGuild",
-  "friendlyName" : "Top Guild Roll Rankings",
+  "helptext": "Roll Fail Rankings",
+  "identifier": "RollFailRank",
+  "friendlyName" : "Roll Fail Rankings",
   "confidence": 1,
   "voiceVolume": 0.0,
   "specialInteraction": false,
