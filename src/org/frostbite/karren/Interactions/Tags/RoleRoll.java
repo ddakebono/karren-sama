@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Owen Bennett.
+ * Copyright (c) 2021 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -93,7 +93,9 @@ public class RoleRoll extends Tag {
                             }
                             DbGuild guild = Karren.bot.getSql().getGuild(result.getEvent().getGuild());
                             dbGuildUser.incrementRollsSinceLastClear();
-                            dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + (3600000*guild.getRollTimeoutHours())));
+                            if(dbGuildUser.getRollsSinceLastClear()>dbGuildUser.getHighestRollFail())
+                                dbGuildUser.setHighestRollFail(dbGuildUser.getRollsSinceLastClear());
+                            dbGuildUser.setRollTimeout(new Timestamp(System.currentTimeMillis() + (3600000L *guild.getRollTimeoutHours())));
                             if (!rolePermissionError)
                                 msg = interaction.getRandomTemplate("fail").getTemplate();
                             else

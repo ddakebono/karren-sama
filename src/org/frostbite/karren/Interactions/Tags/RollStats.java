@@ -17,6 +17,8 @@ import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
 import org.frostbite.karren.KarrenUtil;
 
+import java.util.Date;
+
 public class RollStats extends Tag {
     @Override
     public String handleTemplate(String msg, Interaction interaction, InteractionResult result) {
@@ -26,10 +28,10 @@ public class RollStats extends Tag {
             msg = interaction.replaceMsg(msg, "%totalwins", Integer.toString(dbGuildUser.getWinningRolls()));
             msg = interaction.replaceMsg(msg, "%failstreak", Integer.toString(dbGuildUser.getHighestRollFail()));
             msg = interaction.replaceMsg(msg, "%winrate", String.format("%1$,.2f",((double)dbGuildUser.getWinningRolls()/dbGuildUser.getTotalRolls())*100));
-            if(dbGuildUser.getRollTimeout()!=null)
+            if(dbGuildUser.getRollTimeout()!=null && !dbGuildUser.getRollTimeout().before(new Date()))
                 msg = interaction.replaceMsg(msg, "%timeleft", KarrenUtil.calcTimeDiff(dbGuildUser.getRollTimeout().getTime(), System.currentTimeMillis()));
             else
-                msg = interaction.replaceMsg(msg, "%timeleft", "You haven't rolled!");
+                msg = interaction.replaceMsg(msg, "%timeleft", "You can roll!");
         }
 
         return msg;
