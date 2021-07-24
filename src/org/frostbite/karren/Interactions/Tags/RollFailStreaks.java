@@ -27,6 +27,8 @@ public class RollFailStreaks extends Tag {
 
         for(DbGuildUser user : users){
             User discordUser = Karren.bot.getClient().getUserById(user.getUserID());
+            if(discordUser==null)
+                discordUser = Karren.bot.getClient().retrieveUserById(user.getUserID()).complete();
             interaction.addEmbedField(new InteractionEmbedFields(discordUser != null ? discordUser.getName() : "Missing Name", "With a streak of " + user.getHighestRollFail() + " fails! (" + user.getTotalRolls() + " rolls / " + user.getWinningRolls() + " wins)", false));
         }
 
