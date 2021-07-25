@@ -119,8 +119,8 @@ public class DbGuildUser {
 
     public void update(){
         if(!notMapped && Karren.conf.getAllowSQLRW()) {
-            String sql = "UPDATE GuildUser SET RollTimeout=?, IgnoreCommands=?, RollsSinceLastClear=?, TotalRolls=?, WinningRolls=? WHERE GuildUserID=?";
-            Yank.execute(sql, new Object[]{rollTimeout, ignoreCommands, rollsSinceLastClear, totalRolls, winningRolls, guildUserID});
+            String sql = "UPDATE GuildUser SET RollTimeout=?, IgnoreCommands=?, RollsSinceLastClear=?, TotalRolls=?, WinningRolls=?, HighestRollFail=? WHERE GuildUserID=?";
+            Yank.execute(sql, new Object[]{rollTimeout, ignoreCommands, rollsSinceLastClear, totalRolls, winningRolls, highestRollFail, guildUserID});
         }
     }
 }
