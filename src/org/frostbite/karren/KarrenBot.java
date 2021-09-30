@@ -97,8 +97,8 @@ public class KarrenBot {
             yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
 
             //Log into VRCAPI and get auth token
-            if(conf.getVrcUsername()!=null && conf.getVrcPassword()!=null)
-                VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
+            //if(conf.getVrcUsername()!=null && conf.getVrcPassword()!=null)
+                //VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
 
             extrasReady = true;
         }
