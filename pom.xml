@@ -203,7 +203,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.basedir}/lib</outputDirectory>
+                            <outputDirectory>${project.basedir}/target/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -222,7 +222,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
                 <configuration>
-					<outputDirectory>${project.basedir}/</outputDirectory>
+					<outputDirectory>${project.basedir}/target</outputDirectory>
                     <archive>
                         <index>true</index>
                         <manifest>
