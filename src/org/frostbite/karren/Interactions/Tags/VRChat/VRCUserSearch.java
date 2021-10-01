@@ -35,9 +35,11 @@ public class VRCUserSearch extends Tag {
             User user = null;
             if(!search.startsWith("usr_")) {
                 try {
-                    users = Karren.bot.getUsersApi().searchUsers(search, "", 15, 0);
+                    users = Karren.bot.getUsersApi().searchUsers(search, null, 15, 0);
                 } catch (ApiException e) {
-                    Karren.log.error("Exception during searchUsers! " + e.getMessage());
+                    Karren.log.error("Exception during searchUsers! " + e.getCode());
+                    Karren.log.error("Reason: " + e.getResponseBody());
+                    Karren.log.error("Response Headers: " + e.getResponseHeaders());
                     e.printStackTrace();
                 }
             }
@@ -45,7 +47,9 @@ public class VRCUserSearch extends Tag {
                 try {
                     user = Karren.bot.getUsersApi().getUser(search);
                 } catch (ApiException e) {
-                    Karren.log.error("Exception during getUser! " + e.getMessage());
+                    Karren.log.error("Exception during getUser! " + e.getCode());
+                    Karren.log.error("Reason: " + e.getResponseBody());
+                    Karren.log.error("Response Headers: " + e.getResponseHeaders());
                     e.printStackTrace();
                 }
             }
@@ -60,7 +64,9 @@ public class VRCUserSearch extends Tag {
                             user = Karren.bot.getUsersApi().getUser(users.get(0).getId());
                         }
                     } catch (ApiException e){
-                        Karren.log.error("Exception during fetchFromSearch! " + e.getMessage());
+                        Karren.log.error("Exception during fetchFromSearch! " + e.getCode());
+                        Karren.log.error("Reason: " + e.getResponseBody());
+                        Karren.log.error("Response Headers: " + e.getResponseHeaders());
                         e.printStackTrace();
                     }
                 }
@@ -80,7 +86,10 @@ public class VRCUserSearch extends Tag {
                 msg = interaction.replaceMsg(msg, "%joindate", user.getDateJoined().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
                 msg = interaction.replaceMsg(msg, "%avatarcopy", Boolean.toString(user.getAllowAvatarCopying()));
                 msg = interaction.replaceMsg(msg, "%vrcplus", user.getTags().contains("system_supporter")?"(VRC+)":"");
-                interaction.setEmbedImage(user.getCurrentAvatarImageUrl());
+                if(user.getProfilePicOverride().trim().isEmpty())
+                    interaction.setEmbedImage(user.getCurrentAvatarImageUrl());
+                else
+                    interaction.setEmbedImage(user.getProfilePicOverride());
                 msg = interaction.replaceMsg(msg, "%tags", formatTags(user.getTags()));
                 msg = interaction.replaceMsg(msg, "%newlevel", KarrenUtil.getVRCSafetySystemRank(user.getTags()));
             } else {

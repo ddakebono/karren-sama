@@ -153,7 +153,9 @@ public class KarrenBot {
                     worldsApi = new WorldsApi(defaultClient);
                     Karren.log.info("Successfully logged into the VRCAPI as " + vrcUser.getDisplayName() + "!");
                 } catch (ApiException e) {
-                    Karren.log.error("Exception during VRCAPI Login! " + e.getResponseBody());
+                    Karren.log.error("Exception during VRCAPI Login! Status Code: " + e.getCode());
+                    Karren.log.error("Reason: " + e.getResponseBody());
+                    Karren.log.error("Response Headers: " + e.getResponseHeaders());
                     e.printStackTrace();
                 }
             }

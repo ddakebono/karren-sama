@@ -18,8 +18,8 @@ import org.frostbite.karren.Interactions.InteractionEmbedFields;
 import org.frostbite.karren.Interactions.InteractionResult;
 import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
+import org.threeten.bp.format.DateTimeFormatter;
 
-import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -30,20 +30,24 @@ public class VRCWorldSearch extends Tag {
         if(interaction.hasParameter() && Karren.bot.getWorldsApi()!=null){
             String search = interaction.getParameter();
             List<LimitedWorld> worlds = new LinkedList<>();
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/M/yyyy hh:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/M/yyyy hh:mm");
             World world = null;
             if(!search.startsWith("wrld_")) {
                 try {
-                    worlds = Karren.bot.getWorldsApi().searchWorlds(null, null, null, null, 15, "decending", 0, search, null, null, null, null, null, null);
+                    worlds = Karren.bot.getWorldsApi().searchWorlds(null, null, null, null, 15, "descending", 0, search, null, null, null, null, null, null);
                 } catch (ApiException e) {
-                    Karren.log.error("Exception during searchWorlds! " + e.getMessage());
+                    Karren.log.error("Exception during searchWorlds! " + e.getCode());
+                    Karren.log.error("Reason: " + e.getResponseBody());
+                    Karren.log.error("Response Headers: " + e.getResponseHeaders());
                     e.printStackTrace();
                 }
             } else {
                 try {
                     world = Karren.bot.getWorldsApi().getWorld(search);
                 } catch (ApiException e) {
-                    Karren.log.error("Exception during getWorld! " + e.getMessage());
+                    Karren.log.error("Exception during getWorld! " + e.getCode());
+                    Karren.log.error("Reason: " + e.getResponseBody());
+                    Karren.log.error("Response Headers: " + e.getResponseHeaders());
                     e.printStackTrace();
                 }
             }
@@ -53,7 +57,9 @@ public class VRCWorldSearch extends Tag {
                     try {
                         world = Karren.bot.getWorldsApi().getWorld(limWorld.getId());
                     } catch (ApiException e) {
-                        Karren.log.error("Exception during getWorldFullFromSearch! " + e.getMessage());
+                        Karren.log.error("Exception during getWorldFullFromSearch! " + e.getCode());
+                        Karren.log.error("Reason: " + e.getResponseBody());
+                        Karren.log.error("Response Headers: " + e.getResponseHeaders());
                         e.printStackTrace();
                     }
                 }
@@ -68,7 +74,7 @@ public class VRCWorldSearch extends Tag {
                     msg = interaction.replaceMsg(msg, "%updated", formatter.format(world.getUpdatedAt()));
                     msg = interaction.replaceMsg(msg, "%created", formatter.format(world.getCreatedAt()));
                     msg = interaction.replaceMsg(msg, "%published", formatter.format(world.getPublicationDate()));
-                    msg = interaction.replaceMsg(msg, "%labsPublished", formatter.format(world.getLabsPublicationDate()));
+                    msg = interaction.replaceMsg(msg, "%labsPublished", world.getLabsPublicationDate());
                     msg = interaction.replaceMsg(msg, "%occuPrivate", Objects.requireNonNull(world.getPrivateOccupants()).toString());
                     msg = interaction.replaceMsg(msg, "%occuPublic", Objects.requireNonNull(world.getPublicOccupants()).toString());
                     msg = interaction.replaceMsg(msg, "%worldid", world.getId());

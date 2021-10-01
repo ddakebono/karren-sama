@@ -24,7 +24,9 @@ public class VRCUtils extends Tag {
             try {
                 count = Karren.bot.getSystemApi().getCurrentOnlineUsers();
             } catch (ApiException e) {
-                Karren.log.error("Exception during getOnlineUsers! " + e.getMessage());
+                Karren.log.error("Exception during getOnlineUsers! " + e.getCode());
+                Karren.log.error("Reason: " + e.getResponseBody());
+                Karren.log.error("Response Headers: " + e.getResponseHeaders());
                 e.printStackTrace();
             }
         }
