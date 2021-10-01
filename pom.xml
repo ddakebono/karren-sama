@@ -86,9 +86,10 @@
             <version>3.3.3</version>
         </dependency>
         <dependency>
-            <groupId>com.github.ripxfrostbite</groupId>
-            <artifactId>VRChatJava</artifactId>
-            <version>f72567a19c</version>
+            <groupId>com.github.vrchatapi</groupId>
+            <artifactId>vrchatapi-java</artifactId>
+            <version>1.0.2</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
@@ -124,6 +125,11 @@
             <groupId>com.google.http-client</groupId>
             <artifactId>google-http-client-jackson2</artifactId>
             <version>1.38.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.threeten</groupId>
+            <artifactId>threetenbp</artifactId>
+            <version>1.5.1</version>
         </dependency>
     </dependencies>
 
@@ -203,7 +209,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.basedir}/target/lib</outputDirectory>
+                            <outputDirectory>${project.basedir}/build/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -222,7 +228,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
                 <configuration>
-					<outputDirectory>${project.basedir}/target</outputDirectory>
+					<outputDirectory>${project.basedir}/build</outputDirectory>
                     <archive>
                         <index>true</index>
                         <manifest>

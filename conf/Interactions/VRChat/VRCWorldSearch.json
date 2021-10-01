@@ -25,6 +25,10 @@
     {
       "template": "You need to give me a world name to search up!",
       "templateType": "noparam"
+    },
+    {
+      "template": "Unable to access the VRCAPI!",
+      "templateType": "apidead"
     }
   ],
   "embedTemplates": [

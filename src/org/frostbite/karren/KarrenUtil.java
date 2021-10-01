@@ -43,6 +43,10 @@ public class KarrenUtil {
         }
     }
 
+    public static boolean stringIsNullEmptyWhitespaceCheck(String input){
+        return input == null || input.isEmpty() || input.trim().isEmpty();
+    }
+
     public static String getVRCSafetySystemRank(List<String> tags){
         LinkedHashMap<String, String> permMap = new LinkedHashMap<>();
         permMap.put("system_trust_basic", "New User");

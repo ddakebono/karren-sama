@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2021 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -38,17 +38,23 @@ public class JsonConfig {
     private String discordApiKey = "changeme";
     private String googleAPIKey = "changeme";
     private String operatorDiscordID = "changeme";
+    private boolean vrcEnable = false;
+    private String vrcBasePath = "https://api.vrchat.cloud/api/1";
     private String vrcUsername = "changeme";
     private String vrcPassword = "changeme";
     private String statusOverride = "";
     private boolean testMode = false;
+    private String proxyPassword = "changeme";
+    private String proxyUsername = "changeme";
+    private String proxyServer = "changeme";
+    private int proxyPort = 1234;
 
     public JsonConfig(String confVersionMarker) {
         this.confVersionMarker = confVersionMarker;
     }
 
     @JsonCreator
-    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("icecastAdminUsername") String icecastAdminUsername,@JsonProperty("icecastAdminPass") String icecastAdminPass,@JsonProperty("listencastAnnounce") boolean listencastAnnounce,@JsonProperty("enableListencast") boolean enableListencast,@JsonProperty("icecastMount") String icecastMount,@JsonProperty("icecastHost") String icecastHost,@JsonProperty("icecastPort") int icecastPort,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("osuAPIKey") String osuAPIKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("trackerNetworkAPIKey")String trackerNetworkAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode, @JsonProperty("VRCUsername") String vrcUsername, @JsonProperty("VRCPassword") String vrcPassword, @JsonProperty("statusOverride") String statusOverride) {
+    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode, @JsonProperty("VRCEnable") boolean vrcEnable, @JsonProperty("VRCBasePath") String vrcBasePath, @JsonProperty("VRCUsername") String vrcUsername, @JsonProperty("VRCPassword") String vrcPassword, @JsonProperty("statusOverride") String statusOverride, @JsonProperty("ProxyServer") String proxyServer, @JsonProperty("ProxyUsername")String proxyUsername, @JsonProperty("ProxyPassword") String proxyPassword, @JsonProperty("ProxyPort")int proxyPort) {
         this.confVersionMarker = confVersionMarker;
         this.connectToDiscord = connectToDiscord;
         this.allowSQLRW = allowSQLRW;
@@ -64,8 +70,14 @@ public class JsonConfig {
         this.statusOverride = statusOverride;
         this.operatorDiscordID = operatorDiscordID;
         this.testMode = testMode;
+        this.vrcEnable = vrcEnable;
+        this.vrcBasePath = vrcBasePath;
         this.vrcUsername = vrcUsername;
         this.vrcPassword = vrcPassword;
+        this.proxyPassword = proxyPassword;
+        this.proxyServer = proxyServer;
+        this.proxyUsername = proxyUsername;
+        this.proxyPort = proxyPort;
     }
 
     public boolean isSet(){
@@ -167,5 +179,29 @@ public class JsonConfig {
 
     public String getStatusOverride() {
         return statusOverride;
+    }
+
+    public String getVrcBasePath() {
+        return vrcBasePath;
+    }
+
+    public boolean isVrcEnable() {
+        return vrcEnable;
+    }
+
+    public String getProxyPassword() {
+        return proxyPassword;
+    }
+
+    public String getProxyUsername() {
+        return proxyUsername;
+    }
+
+    public String getProxyServer() {
+        return proxyServer;
+    }
+
+    public int getProxyPort() {
+        return proxyPort;
     }
 }

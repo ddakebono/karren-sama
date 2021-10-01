@@ -17,21 +17,34 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.track.playback.NonAllocatingAudioFrameBuffer;
-import io.github.vrchatapi.VRCUser;
+import io.github.vrchatapi.ApiClient;
+import io.github.vrchatapi.ApiException;
+import io.github.vrchatapi.api.AuthenticationApi;
+import io.github.vrchatapi.api.SystemApi;
+import io.github.vrchatapi.api.UsersApi;
+import io.github.vrchatapi.api.WorldsApi;
+import io.github.vrchatapi.auth.HttpBasicAuth;
+import io.github.vrchatapi.model.CurrentUser;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import okhttp3.*;
 import org.apache.http.client.config.RequestConfig;
 import org.frostbite.karren.AudioPlayer.GuildMusicManager;
 import org.frostbite.karren.Database.MySQLInterface;
 import org.frostbite.karren.listeners.*;
+import org.jetbrains.annotations.Nullable;
 import org.knowm.yank.Yank;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import static org.frostbite.karren.Karren.conf;
 
@@ -48,6 +61,11 @@ public class KarrenBot {
     public AudioPlayerManager pm;
     public AutoInteraction ar = new AutoInteraction();
     public ChannelMonitor cm = new ChannelMonitor();
+    private ApiClient defaultClient;
+    private UsersApi usersApi;
+    private SystemApi systemApi;
+    private WorldsApi worldsApi;
+    private CurrentUser vrcUser;
 
     public KarrenBot(JDABuilder clientBuilder){
         this.clientBuilder = clientBuilder;
@@ -97,11 +115,47 @@ public class KarrenBot {
             yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
 
             //Log into VRCAPI and get auth token
-            //if(conf.getVrcUsername()!=null && conf.getVrcPassword()!=null)
-                //VRCUser.login(Karren.conf.getVrcUsername(), Karren.conf.getVrcPassword());
+            if(!KarrenUtil.stringIsNullEmptyWhitespaceCheck(conf.getVrcUsername()) && !KarrenUtil.stringIsNullEmptyWhitespaceCheck(conf.getVrcPassword()) && !KarrenUtil.stringIsNullEmptyWhitespaceCheck(conf.getVrcBasePath()) && conf.isVrcEnable()) {
+                Authenticator proxyAuthenticator = new Authenticator() {
+                    @Override
+                    public Request authenticate(@Nullable Route route, okhttp3.Response response) throws IOException {
+                        String credential = Credentials.basic(conf.getProxyUsername(), conf.getProxyPassword());
+                        return response.request().newBuilder()
+                                .header("Proxy-Authorization", credential)
+                                .build();
+                    }
+                };
 
-            extrasReady = true;
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .connectTimeout(60, TimeUnit.SECONDS)
+                        .writeTimeout(60, TimeUnit.SECONDS)
+                        .readTimeout(60, TimeUnit.SECONDS)
+                        .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(conf.getProxyServer(), conf.getProxyPort())))
+                        .proxyAuthenticator(proxyAuthenticator)
+                        .build();
+
+                defaultClient = new ApiClient(client);
+
+                systemApi = new SystemApi(defaultClient);
+                AuthenticationApi authApi = new AuthenticationApi(defaultClient);
+
+                HttpBasicAuth authHeader = (HttpBasicAuth) defaultClient.getAuthentication("authHeader");
+                authHeader.setUsername(conf.getVrcUsername());
+                authHeader.setPassword(conf.getVrcPassword());
+
+                try {
+                    vrcUser = authApi.getCurrentUser();
+                    usersApi = new UsersApi(defaultClient);
+                    worldsApi = new WorldsApi(defaultClient);
+                    Karren.log.info("Successfully logged into the VRCAPI as " + vrcUser.getDisplayName() + "!");
+                } catch (ApiException e) {
+                    Karren.log.error("Exception during VRCAPI Login! " + e.getResponseBody());
+                    e.printStackTrace();
+                }
+            }
         }
+
+        extrasReady = true;
     }
 
     public void killBot(String killer){
@@ -184,5 +238,21 @@ public class KarrenBot {
 
     public ChannelMonitor getCm() {
         return cm;
+    }
+
+    public UsersApi getUsersApi() {
+        return usersApi;
+    }
+
+    public SystemApi getSystemApi() {
+        return systemApi;
+    }
+
+    public WorldsApi getWorldsApi() {
+        return worldsApi;
+    }
+
+    public CurrentUser getVrcUser() {
+        return vrcUser;
     }
 }
