@@ -80,7 +80,7 @@ public class VRCUserSearch extends Tag {
                 msg = interaction.replaceMsg(msg, "%displayname", user.getDisplayName());
                 msg = interaction.replaceMsg(msg, "%userid", user.getId());
                 msg = interaction.replaceMsg(msg, "%last_login", user.getLastLogin());
-                msg = interaction.replaceMsg(msg, "%last_platform", user.getLastPlatform().name());
+                msg = interaction.replaceMsg(msg, "%last_platform", user.getLastPlatform());
                 msg = interaction.replaceMsg(msg, "%bio", user.getBio());
                 msg = interaction.replaceMsg(msg, "%devtype", user.getDeveloperType().toString());
                 msg = interaction.replaceMsg(msg, "%joindate", user.getDateJoined().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
