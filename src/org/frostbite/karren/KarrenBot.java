@@ -25,6 +25,7 @@ import io.github.vrchatapi.api.UsersApi;
 import io.github.vrchatapi.api.WorldsApi;
 import io.github.vrchatapi.auth.HttpBasicAuth;
 import io.github.vrchatapi.model.CurrentUser;
+import io.github.vrchatapi.util.SimpleOkHttpCookieJar;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -126,12 +127,15 @@ public class KarrenBot {
                     }
                 };
 
+                CookieJar cookieJar = new SimpleOkHttpCookieJar();
+
                 OkHttpClient client = new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .writeTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
                         .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(conf.getProxyServer(), conf.getProxyPort())))
                         .proxyAuthenticator(proxyAuthenticator)
+                        .cookieJar(cookieJar)
                         .build();
 
                 defaultClient = new ApiClient(client);
