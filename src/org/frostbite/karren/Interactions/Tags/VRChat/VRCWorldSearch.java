@@ -73,7 +73,7 @@ public class VRCWorldSearch extends Tag {
                     msg = interaction.replaceMsg(msg, "%visits", world.getVisits().toString());
                     msg = interaction.replaceMsg(msg, "%updated", formatter.format(world.getUpdatedAt()));
                     msg = interaction.replaceMsg(msg, "%created", formatter.format(world.getCreatedAt()));
-                    msg = interaction.replaceMsg(msg, "%published", formatter.format(world.getPublicationDate()));
+                    msg = interaction.replaceMsg(msg, "%published", world.getPublicationDate());
                     msg = interaction.replaceMsg(msg, "%labsPublished", world.getLabsPublicationDate());
                     msg = interaction.replaceMsg(msg, "%occuPrivate", Objects.requireNonNull(world.getPrivateOccupants()).toString());
                     msg = interaction.replaceMsg(msg, "%occuPublic", Objects.requireNonNull(world.getPublicOccupants()).toString());
