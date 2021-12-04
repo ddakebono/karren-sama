@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2021 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -21,6 +21,7 @@ import org.frostbite.karren.Interactions.Tag;
 import org.frostbite.karren.Karren;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 public class FeelingLucky extends Tag {
@@ -29,10 +30,10 @@ public class FeelingLucky extends Tag {
         if(interaction.hasParameter()) {
             String searchText = interaction.getParameter().replaceAll(" ", "+");
             try {
-                YouTube.Search.List search = Karren.bot.yt.search().list("id, snippet");
+                YouTube.Search.List search = Karren.bot.yt.search().list(Collections.singletonList("id, snippet"));
                 search.setKey(Karren.conf.getGoogleAPIKey());
                 search.setQ(searchText);
-                search.setType("video");
+                search.setType(Collections.singletonList("video"));
                 search.setFields("items(id/videoId, snippet/title)");
                 search.setMaxResults(1L);
 

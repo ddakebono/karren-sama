@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Owen Bennett.
+ * Copyright (c) 2021 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -24,6 +24,7 @@ import org.frostbite.karren.KarrenUtil;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,10 +37,10 @@ public class Search extends Tag {
         if(interaction.hasParameter()) {
             String searchText = interaction.getParameter().replaceAll(" ", "+");
             try {
-                YouTube.Search.List search = Karren.bot.yt.search().list("id");
+                YouTube.Search.List search = Karren.bot.yt.search().list(Collections.singletonList("id"));
                 search.setKey(Karren.conf.getGoogleAPIKey());
                 search.setQ(searchText);
-                search.setType("video");
+                search.setType(Collections.singletonList("video"));
                 search.setFields("items(id/videoId)");
                 search.setMaxResults(3L);
 
@@ -47,7 +48,7 @@ public class Search extends Tag {
                 List<SearchResult> results = slr.getItems();
                 ArrayList<Video> videos = new ArrayList<>();
                 for(SearchResult resultVid : results){
-                    YouTube.Videos.List list = Karren.bot.yt.videos().list("id, snippet, contentDetails").setId(resultVid.getId().getVideoId());
+                    YouTube.Videos.List list = Karren.bot.yt.videos().list(Collections.singletonList("id, snippet, contentDetails")).setId(Collections.singletonList(resultVid.getId().getVideoId()));
                     list.setKey(Karren.conf.getGoogleAPIKey());
                     VideoListResponse vlr = list.execute();
                     videos.add(vlr.getItems().get(0));
