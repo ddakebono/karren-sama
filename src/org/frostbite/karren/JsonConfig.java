@@ -47,6 +47,8 @@ public class JsonConfig {
     private String proxyPassword = "changeme";
     private String proxyUsername = "changeme";
     private String proxyServer = "changeme";
+    private String youtubePAPISID = "changeme";
+    private String youtube3PSID = "changeme";
     private int proxyPort = 1234;
 
     public JsonConfig(String confVersionMarker) {
@@ -54,7 +56,7 @@ public class JsonConfig {
     }
 
     @JsonCreator
-    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode, @JsonProperty("VRCEnable") boolean vrcEnable, @JsonProperty("VRCBasePath") String vrcBasePath, @JsonProperty("VRCUsername") String vrcUsername, @JsonProperty("VRCPassword") String vrcPassword, @JsonProperty("statusOverride") String statusOverride, @JsonProperty("ProxyServer") String proxyServer, @JsonProperty("ProxyUsername")String proxyUsername, @JsonProperty("ProxyPassword") String proxyPassword, @JsonProperty("ProxyPort")int proxyPort) {
+    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode, @JsonProperty("VRCEnable") boolean vrcEnable, @JsonProperty("VRCBasePath") String vrcBasePath, @JsonProperty("VRCUsername") String vrcUsername, @JsonProperty("VRCPassword") String vrcPassword, @JsonProperty("statusOverride") String statusOverride, @JsonProperty("ProxyServer") String proxyServer, @JsonProperty("ProxyUsername")String proxyUsername, @JsonProperty("ProxyPassword") String proxyPassword, @JsonProperty("ProxyPort")int proxyPort, @JsonProperty("YoutubePAPISID")String youtubePAPISID, @JsonProperty("Youtube3PSID")String youtube3PSID) {
         this.confVersionMarker = confVersionMarker;
         this.connectToDiscord = connectToDiscord;
         this.allowSQLRW = allowSQLRW;
@@ -78,6 +80,8 @@ public class JsonConfig {
         this.proxyServer = proxyServer;
         this.proxyUsername = proxyUsername;
         this.proxyPort = proxyPort;
+        this.youtubePAPISID = youtubePAPISID;
+        this.youtube3PSID = youtube3PSID;
     }
 
     public boolean isSet(){
@@ -203,5 +207,13 @@ public class JsonConfig {
 
     public int getProxyPort() {
         return proxyPort;
+    }
+
+    public String getYoutubePAPISID() {
+        return youtubePAPISID;
+    }
+
+    public String getYoutube3PSID() {
+        return youtube3PSID;
     }
 }

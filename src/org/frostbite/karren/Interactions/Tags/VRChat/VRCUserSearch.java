@@ -33,6 +33,7 @@ public class VRCUserSearch extends Tag {
             String search = interaction.getParameter();
             List<LimitedUser> users = new LinkedList<>();
             User user = null;
+            Karren.bot.refreshCurrentUser();
             if(!search.startsWith("usr_")) {
                 try {
                     users = Karren.bot.getUsersApi().searchUsers(search, null, 15, 0);

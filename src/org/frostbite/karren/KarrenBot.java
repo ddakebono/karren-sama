@@ -16,6 +16,7 @@ import com.google.api.services.youtube.YouTube;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeHttpContextFilter;
 import com.sedmelluq.discord.lavaplayer.track.playback.NonAllocatingAudioFrameBuffer;
 import io.github.vrchatapi.ApiClient;
 import io.github.vrchatapi.ApiException;
@@ -39,7 +40,6 @@ import org.jetbrains.annotations.Nullable;
 import org.knowm.yank.Yank;
 
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.HashMap;
@@ -67,12 +67,13 @@ public class KarrenBot {
     private SystemApi systemApi;
     private WorldsApi worldsApi;
     private CurrentUser vrcUser;
+    private AuthenticationApi authApi;
 
-    public KarrenBot(JDABuilder clientBuilder){
+    public KarrenBot(JDABuilder clientBuilder) {
         this.clientBuilder = clientBuilder;
     }
 
-    public void initDiscord(){
+    public void initDiscord() {
         Karren.log.info("Starting up Lavaplayer...");
         gms = new HashMap<>();
         pm = new DefaultAudioPlayerManager();
@@ -81,7 +82,7 @@ public class KarrenBot {
         AudioSourceManagers.registerRemoteSources(pm);
         AudioSourceManagers.registerLocalSource(pm);
         //Continue connecting to discord
-        if(Karren.conf.getConnectToDiscord()) {
+        if (Karren.conf.getConnectToDiscord()) {
             clientBuilder.addEventListeners(new ConnectCommand());
             clientBuilder.addEventListeners(new KillCommand());
             clientBuilder.addEventListeners(new ReconnectListener());
@@ -89,9 +90,9 @@ public class KarrenBot {
             clientBuilder.addEventListeners(new ResumeListener());
             clientBuilder.addEventListeners(new StatCommand());
             clientBuilder.addEventListeners(new VoiceLeaveListener());
-            if(Karren.conf.getEnableInteractions())
+            if (Karren.conf.getEnableInteractions())
                 clientBuilder.addEventListeners(new HelpListener());
-                clientBuilder.addEventListeners(new InteractionCommand());
+            clientBuilder.addEventListeners(new InteractionCommand());
             clientBuilder.addEventListeners(new GuildCreateListener());
             initExtras();
             try {
@@ -107,41 +108,48 @@ public class KarrenBot {
         }
     }
 
-    public void initExtras(){
-        if(!extrasReady) {
+    public void initExtras() {
+        if (!extrasReady) {
             ic = new GuildManager();
             ic.loadDefaultInteractions();
 
             //Setup youtube
-            yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> { }).setApplicationName("Karren-sama").build();
+            yt = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), request -> {
+            }).setApplicationName("Karren-sama").build();
+
+            YoutubeHttpContextFilter.setPAPISID(conf.getYoutubePAPISID());
+            YoutubeHttpContextFilter.setPSID(conf.getYoutube3PSID());
 
             //Log into VRCAPI and get auth token
-            if(!KarrenUtil.stringIsNullEmptyWhitespaceCheck(conf.getVrcUsername()) && !KarrenUtil.stringIsNullEmptyWhitespaceCheck(conf.getVrcPassword()) && !KarrenUtil.stringIsNullEmptyWhitespaceCheck(conf.getVrcBasePath()) && conf.isVrcEnable()) {
-                Authenticator proxyAuthenticator = new Authenticator() {
-                    @Override
-                    public Request authenticate(@Nullable Route route, okhttp3.Response response) throws IOException {
-                        String credential = Credentials.basic(conf.getProxyUsername(), conf.getProxyPassword());
-                        return response.request().newBuilder()
-                                .header("Proxy-Authorization", credential)
-                                .build();
-                    }
-                };
+            if (!KarrenUtil.stringIsNullEmptyWhitespaceCheck(conf.getVrcUsername()) && !KarrenUtil.stringIsNullEmptyWhitespaceCheck(conf.getVrcPassword()) && !KarrenUtil.stringIsNullEmptyWhitespaceCheck(conf.getVrcBasePath()) && conf.isVrcEnable()) {
 
                 CookieJar cookieJar = new SimpleOkHttpCookieJar();
-
-                OkHttpClient client = new OkHttpClient.Builder()
+                OkHttpClient.Builder client = new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .writeTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
-                        .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(conf.getProxyServer(), conf.getProxyPort())))
-                        .proxyAuthenticator(proxyAuthenticator)
-                        .cookieJar(cookieJar)
-                        .build();
+                        .cookieJar(cookieJar);
 
-                defaultClient = new ApiClient(client);
+                if (!KarrenUtil.stringIsNullEmptyWhitespaceCheck(conf.getProxyServer())) {
+                    Authenticator proxyAuthenticator = new Authenticator() {
+                        @Override
+                        public Request authenticate(@Nullable Route route, okhttp3.Response response) {
+                            String credential = Credentials.basic(conf.getProxyUsername(), conf.getProxyPassword());
+                            return response.request().newBuilder()
+                                    .header("Proxy-Authorization", credential)
+                                    .build();
+                        }
+                    };
+
+                    client.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(conf.getProxyServer(), conf.getProxyPort()))).proxyAuthenticator(proxyAuthenticator);
+                }
+
+                OkHttpClient clientFinal = client.build();
+
+                defaultClient = new ApiClient(clientFinal);
 
                 systemApi = new SystemApi(defaultClient);
-                AuthenticationApi authApi = new AuthenticationApi(defaultClient);
+                authApi = new AuthenticationApi(defaultClient);
 
                 HttpBasicAuth authHeader = (HttpBasicAuth) defaultClient.getAuthentication("authHeader");
                 authHeader.setUsername(conf.getVrcUsername());
@@ -164,7 +172,7 @@ public class KarrenBot {
         extrasReady = true;
     }
 
-    public void killBot(String killer){
+    public void killBot(String killer) {
         Karren.bot.isKill = true;
         //Unhook and shutdown interaction system
         Yank.releaseAllConnectionPools();
@@ -176,7 +184,7 @@ public class KarrenBot {
         System.exit(0);
     }
 
-    public void onConnectStartup(){
+    public void onConnectStartup() {
         //Initialize database connection pool
         Karren.log.info("Initializing Yank database pool");
         Properties dbSettings = new Properties();
@@ -185,20 +193,31 @@ public class KarrenBot {
         dbSettings.setProperty("username", conf.getSqluser());
         dbSettings.setProperty("password", conf.getSqlpass());
 
-        if(Karren.conf.getAllowSQLRW())
+        if (Karren.conf.getAllowSQLRW())
             Yank.setupDefaultConnectionPool(dbSettings);
 
         //Launch threads
         Karren.bot.ar.start();
         Karren.bot.cm.start();
 
-        if(!Karren.conf.isTestMode()) {
-            if(Karren.conf.getStatusOverride().isEmpty())
+        if (!Karren.conf.isTestMode()) {
+            if (Karren.conf.getStatusOverride().isEmpty())
                 client.getPresence().setActivity(Activity.playing("KarrenSama Ver." + Karren.botVersion));
             else
                 client.getPresence().setActivity(Activity.playing(Karren.conf.getStatusOverride()));
         } else {
             client.getPresence().setActivity(Activity.playing("TEST MODE - " + Karren.botVersion));
+        }
+    }
+
+    public void refreshCurrentUser() {
+        try {
+            vrcUser = authApi.getCurrentUser();
+        } catch (ApiException e) {
+            Karren.log.error("Exception during VRCAPI Login! Status Code: " + e.getCode());
+            Karren.log.error("Reason: " + e.getResponseBody());
+            Karren.log.error("Response Headers: " + e.getResponseHeaders());
+            e.printStackTrace();
         }
     }
 
@@ -210,13 +229,15 @@ public class KarrenBot {
         return isKill;
     }
 
-    public MySQLInterface getSql(){
+    public MySQLInterface getSql() {
         return sql;
     }
 
-    public GuildManager getGuildManager() {return ic;}
+    public GuildManager getGuildManager() {
+        return ic;
+    }
 
-    public JDA getClient(){
+    public JDA getClient() {
         return client;
     }
 
@@ -224,12 +245,12 @@ public class KarrenBot {
         return extrasReady;
     }
 
-    public GuildMusicManager getGuildMusicManager(Guild guild){
+    public GuildMusicManager getGuildMusicManager(Guild guild) {
         return gms.get(guild.getIdLong());
     }
 
-    public void createGuildMusicManager(Guild guild){
-        if(!gms.containsKey(guild.getIdLong())) {
+    public void createGuildMusicManager(Guild guild) {
+        if (!gms.containsKey(guild.getIdLong())) {
             gms.put(guild.getIdLong(), new GuildMusicManager(pm, guild));
             guild.getAudioManager().setSendingHandler(getGuildMusicManager(guild).getAudioProvider());
         }
@@ -261,5 +282,9 @@ public class KarrenBot {
 
     public CurrentUser getVrcUser() {
         return vrcUser;
+    }
+
+    public AuthenticationApi getAuthApi() {
+        return authApi;
     }
 }

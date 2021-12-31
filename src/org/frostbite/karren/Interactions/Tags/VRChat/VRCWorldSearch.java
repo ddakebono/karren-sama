@@ -32,6 +32,7 @@ public class VRCWorldSearch extends Tag {
             List<LimitedWorld> worlds = new LinkedList<>();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/M/yyyy hh:mm");
             World world = null;
+            Karren.bot.refreshCurrentUser();
             if(!search.startsWith("wrld_")) {
                 try {
                     worlds = Karren.bot.getWorldsApi().searchWorlds(null, null, null, null, 15, "descending", 0, search, null, null, null, null, null, null);
