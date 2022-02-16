@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Owen Bennett.
+ * Copyright (c) 2022 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -39,9 +39,14 @@ import org.frostbite.karren.listeners.*;
 import org.jetbrains.annotations.Nullable;
 import org.knowm.yank.Yank;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.security.auth.login.LoginException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -144,9 +149,39 @@ public class KarrenBot {
                     client.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(conf.getProxyServer(), conf.getProxyPort()))).proxyAuthenticator(proxyAuthenticator);
                 }
 
+                TrustManager[] trustAllCerts = new TrustManager[]{
+                        new X509TrustManager() {
+                            @Override
+                            public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+                            }
+
+                            @Override
+                            public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+                            }
+
+                            @Override
+                            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                                return new java.security.cert.X509Certificate[]{};
+                            }
+                        }
+                };
+
+                SSLContext sslContext = null;
+
+                try {
+                    sslContext = SSLContext.getInstance("SSL");
+                    sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+                    client.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0]);
+                    client.hostnameVerifier((hostname, session) -> true);
+                } catch (NoSuchAlgorithmException | KeyManagementException e) {
+                    e.printStackTrace();
+                }
+
                 OkHttpClient clientFinal = client.build();
 
                 defaultClient = new ApiClient(clientFinal);
+                defaultClient.setBasePath(conf.getVrcBasePath());
 
                 systemApi = new SystemApi(defaultClient);
                 authApi = new AuthenticationApi(defaultClient);
