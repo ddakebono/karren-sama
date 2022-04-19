@@ -123,6 +123,7 @@ public class VRCUserSearch extends Tag {
         StringBuilder builder = new StringBuilder();
 
         if(tags.size()>0) {
+            builder.append(System.lineSeparator());
             for (String tag : tags) {
                 builder.append(tag).append(System.lineSeparator());
             }
