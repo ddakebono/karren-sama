@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Owen Bennett.
+ * Copyright (c) 2023 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -38,25 +38,15 @@ public class JsonConfig {
     private String discordApiKey = "changeme";
     private String googleAPIKey = "changeme";
     private String operatorDiscordID = "changeme";
-    private boolean vrcEnable = false;
-    private String vrcBasePath = "https://api.vrchat.cloud/api/1";
-    private String vrcUsername = "changeme";
-    private String vrcPassword = "changeme";
     private String statusOverride = "";
     private boolean testMode = false;
-    private String proxyPassword = "changeme";
-    private String proxyUsername = "changeme";
-    private String proxyServer = "changeme";
-    private String youtubePAPISID = "changeme";
-    private String youtube3PSID = "changeme";
-    private int proxyPort = 1234;
 
     public JsonConfig(String confVersionMarker) {
         this.confVersionMarker = confVersionMarker;
     }
 
     @JsonCreator
-    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode, @JsonProperty("VRCEnable") boolean vrcEnable, @JsonProperty("VRCBasePath") String vrcBasePath, @JsonProperty("VRCUsername") String vrcUsername, @JsonProperty("VRCPassword") String vrcPassword, @JsonProperty("statusOverride") String statusOverride, @JsonProperty("ProxyServer") String proxyServer, @JsonProperty("ProxyUsername")String proxyUsername, @JsonProperty("ProxyPassword") String proxyPassword, @JsonProperty("ProxyPort")int proxyPort, @JsonProperty("YoutubePAPISID")String youtubePAPISID, @JsonProperty("Youtube3PSID")String youtube3PSID) {
+    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode, @JsonProperty("statusOverride") String statusOverride) {
         this.confVersionMarker = confVersionMarker;
         this.connectToDiscord = connectToDiscord;
         this.allowSQLRW = allowSQLRW;
@@ -72,16 +62,6 @@ public class JsonConfig {
         this.statusOverride = statusOverride;
         this.operatorDiscordID = operatorDiscordID;
         this.testMode = testMode;
-        this.vrcEnable = vrcEnable;
-        this.vrcBasePath = vrcBasePath;
-        this.vrcUsername = vrcUsername;
-        this.vrcPassword = vrcPassword;
-        this.proxyPassword = proxyPassword;
-        this.proxyServer = proxyServer;
-        this.proxyUsername = proxyUsername;
-        this.proxyPort = proxyPort;
-        this.youtubePAPISID = youtubePAPISID;
-        this.youtube3PSID = youtube3PSID;
     }
 
     public boolean isSet(){
@@ -173,47 +153,7 @@ public class JsonConfig {
         return testMode;
     }
 
-    public String getVrcUsername() {
-        return vrcUsername;
-    }
-
-    public String getVrcPassword() {
-        return vrcPassword;
-    }
-
     public String getStatusOverride() {
         return statusOverride;
-    }
-
-    public String getVrcBasePath() {
-        return vrcBasePath;
-    }
-
-    public boolean isVrcEnable() {
-        return vrcEnable;
-    }
-
-    public String getProxyPassword() {
-        return proxyPassword;
-    }
-
-    public String getProxyUsername() {
-        return proxyUsername;
-    }
-
-    public String getProxyServer() {
-        return proxyServer;
-    }
-
-    public int getProxyPort() {
-        return proxyPort;
-    }
-
-    public String getYoutubePAPISID() {
-        return youtubePAPISID;
-    }
-
-    public String getYoutube3PSID() {
-        return youtube3PSID;
     }
 }
