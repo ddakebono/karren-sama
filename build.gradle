@@ -70,7 +70,7 @@ jar {
 group = 'org.frostbite'
 version = '5.3.0'
 description = 'Karren-sama'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_11
 
 gitProperties {
     gitPropertiesName = "git.properties"
