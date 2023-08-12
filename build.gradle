@@ -42,9 +42,9 @@ dependencies {
     api 'com.google.api-client:google-api-client:1.35.2'
     api 'com.google.http-client:google-http-client:1.41.8'
     api 'org.mariadb.jdbc:mariadb-java-client:2.7.5'
-    api 'org.slf4j:slf4j-api:2.0.0-alpha7'
-    api 'ch.qos.logback:logback-classic:1.3.0-alpha15'
-    api 'ch.qos.logback:logback-core:1.3.0-alpha15'
+    api 'org.slf4j:slf4j-api:2.0.7'
+    api 'ch.qos.logback:logback-classic:1.3.11'
+    api 'ch.qos.logback:logback-core:1.3.11'
     api 'com.github.DV8FromtheWorld:JDA:legacy~v4-SNAPSHOT'
     api 'org.knowm:yank:3.4.0'
     api 'org.json:json:20230618'
@@ -59,7 +59,10 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'org.frostbite.karren.Karren'
+        attributes (
+                'Main-Class': 'org.frostbite.karren.Karren',
+                'Class-Path': configurations.runtimeClasspath.files.collect{ "lib/" + it.getName() }.join(' ')
+        )
     }
     destinationDirectory = file("${buildDir}")
 }
