@@ -29,7 +29,9 @@ jobs:
       - name: Gradle +x
         run: chmod +x gradlew
       - name: Run Gradle Build
-        run: ./gradlew build
+        run: ./gradlew jar
+      - name: Copy dependencies
+        run: ./gradlew copyAllDependencies
       - run: mkdir staging && cp -R build/* staging && cp -R conf/ staging
       - uses: actions/upload-artifact@v2
         with:

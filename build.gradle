@@ -61,6 +61,7 @@ jar {
     manifest {
         attributes 'Main-Class': 'org.frostbite.karren.Karren'
     }
+    destinationDirectory = file("${buildDir}")
 }
 
 group = 'org.frostbite'
@@ -71,6 +72,12 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 gitProperties {
     gitPropertiesName = "git.properties"
 }
+
+task copyAllDependencies(type: Copy) {
+    from configurations.compileClasspath
+    into "${buildDir}/lib"
+}
+build.dependsOn(copyAllDependencies)
 
 publishing {
     publications {
