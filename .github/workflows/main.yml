@@ -26,6 +26,8 @@ jobs:
           distribution: 'temurin'
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
+      - name: Gradle +x
+        run: chmod +x gradlew
       - name: Run Gradle Build
         run: ./gradlew build
       - run: mkdir staging && cp -R build/* staging && cp -R conf/ staging

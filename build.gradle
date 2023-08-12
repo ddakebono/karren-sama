@@ -7,6 +7,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id "com.gorylenko.gradle-git-properties" version "2.4.1"
 }
 
 repositories {
@@ -21,6 +22,17 @@ repositories {
 
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+sourceSets{
+    main {
+        java {
+            srcDirs("src")
+        }
+        resources{
+            srcDirs("logging")
+        }
     }
 }
 
@@ -45,10 +57,20 @@ dependencies {
     api 'org.threeten:threetenbp:1.6.0'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.frostbite.karren.Karren'
+    }
+}
+
 group = 'org.frostbite'
 version = '5.3.0'
 description = 'Karren-sama'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+gitProperties {
+    gitPropertiesName = "git.properties"
+}
 
 publishing {
     publications {
