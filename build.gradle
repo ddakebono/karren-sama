@@ -74,7 +74,7 @@ gitProperties {
 }
 
 task copyAllDependencies(type: Copy) {
-    from configurations.compileClasspath
+    from configurations.runtimeClasspath
     into "${buildDir}/lib"
 }
 build.dependsOn(copyAllDependencies)
