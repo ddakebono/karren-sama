@@ -8,6 +8,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id "com.gorylenko.gradle-git-properties" version "2.4.1"
+    id 'com.github.ben-manes.versions' version '0.51.0'
 }
 
 repositories {
@@ -37,24 +38,24 @@ sourceSets{
 }
 
 dependencies {
-    api 'commons-io:commons-io:2.11.0'
-    api 'com.google.apis:google-api-services-youtube:v3-rev20220418-1.32.1'
-    api 'com.google.api-client:google-api-client:1.35.2'
-    api 'com.google.http-client:google-http-client:1.41.8'
-    api 'org.mariadb.jdbc:mariadb-java-client:2.7.5'
-    api 'org.slf4j:slf4j-api:2.0.7'
-    api 'ch.qos.logback:logback-classic:1.3.11'
-    api 'ch.qos.logback:logback-core:1.3.11'
+    api 'commons-io:commons-io:2.15.1'
+    api 'com.google.apis:google-api-services-youtube:v3-rev20240310-2.0.0'
+    api 'com.google.api-client:google-api-client:2.4.0'
+    api 'com.google.http-client:google-http-client:1.44.1'
+    api 'org.mariadb.jdbc:mariadb-java-client:3.3.3'
+    api 'org.slf4j:slf4j-api:2.1.0-alpha1'
+    api 'ch.qos.logback:logback-classic:1.5.3'
+    api 'ch.qos.logback:logback-core:1.5.3'
     api 'com.github.DV8FromtheWorld:JDA:legacy~v4-SNAPSHOT'
     api 'org.knowm:yank:3.4.0'
-    api 'org.json:json:20230618'
-    api 'com.google.code.gson:gson:2.9.0'
-    api 'com.fasterxml.jackson.core:jackson-core:2.13.3'
-    api 'com.fasterxml.jackson.core:jackson-annotations:2.13.3'
-    api 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
-    api 'dev.arbjerg:lavaplayer:2.0.0'
-    api 'com.google.http-client:google-http-client-jackson2:1.41.8'
-    api 'org.threeten:threetenbp:1.6.0'
+    api 'org.json:json:20240303'
+    api 'com.google.code.gson:gson:2.10.1'
+    api 'com.fasterxml.jackson.core:jackson-core:2.17.0'
+    api 'com.fasterxml.jackson.core:jackson-annotations:2.17.0'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+    api 'dev.arbjerg:lavaplayer:2.1.1'
+    api 'com.google.http-client:google-http-client-jackson2:1.44.1'
+    api 'org.threeten:threetenbp:1.6.8'
 }
 
 jar {
