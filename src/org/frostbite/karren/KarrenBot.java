@@ -17,6 +17,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.track.playback.NonAllocatingAudioFrameBuffer;
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -45,6 +46,7 @@ public class KarrenBot {
     public boolean isKill = false;
     public YouTube yt;
     public AudioPlayerManager pm;
+    public YoutubeAudioSourceManager ytsm;
     public AutoInteraction ar = new AutoInteraction();
     public ChannelMonitor cm = new ChannelMonitor();
 
@@ -55,9 +57,11 @@ public class KarrenBot {
     public void initDiscord() {
         Karren.log.info("Starting up Lavaplayer...");
         gms = new HashMap<>();
+        ytsm = new YoutubeAudioSourceManager(true);
         pm = new DefaultAudioPlayerManager();
         pm.getConfiguration().setFrameBufferFactory(NonAllocatingAudioFrameBuffer::new);
         pm.setHttpRequestConfigurator(requestConfig -> RequestConfig.copy(requestConfig).setSocketTimeout(10000).setConnectTimeout(10000).build());
+        pm.registerSourceManager(ytsm);
         AudioSourceManagers.registerRemoteSources(pm);
         AudioSourceManagers.registerLocalSource(pm);
         //Continue connecting to discord
