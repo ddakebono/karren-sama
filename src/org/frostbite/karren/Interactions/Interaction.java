@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Owen Bennett.
+ * Copyright (c) 2024 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.frostbite.karren.Karren;
 
-import java.io.File;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -44,7 +43,6 @@ public class Interaction {
     private boolean stopProcessing = false;
     private transient List<User> mentionedUsers = new LinkedList<>();
     private boolean lock = false;
-    private File interactionFile;
     private ArrayList<Tag> tagCache = new ArrayList<>();
     private ArrayList<Tag> noProcessTagCache = new ArrayList<>();
     private boolean noClearInteraction = false;
@@ -382,14 +380,6 @@ public class Interaction {
 
     public void setLock(boolean lock) {
         this.lock = lock;
-    }
-
-    public File getInteractionFile() {
-        return interactionFile;
-    }
-
-    public void setInteractionFile(File interactionFile) {
-        this.interactionFile = interactionFile;
     }
 
     public ArrayList<Tag> getTagCache() {
