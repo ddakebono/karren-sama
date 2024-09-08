@@ -33,7 +33,7 @@ jobs:
       - name: Copy dependencies
         run: ./gradlew copyAllDependencies
       - run: mkdir staging && rm -r build/tmp && rm -r build/classes && rm -r build/resources && cp -R build/* staging && cp -R conf/ staging
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: Package
           path: staging
