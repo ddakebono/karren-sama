@@ -18,8 +18,6 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.track.playback.NonAllocatingAudioFrameBuffer;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
-import dev.lavalink.youtube.clients.Music;
-import dev.lavalink.youtube.clients.TvHtml5Embedded;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -59,7 +57,7 @@ public class KarrenBot {
     public void initDiscord() {
         Karren.log.info("Starting up Lavaplayer...");
         gms = new HashMap<>();
-        ytsm = new YoutubeAudioSourceManager(true, new Music(), new TvHtml5Embedded());
+        ytsm = new YoutubeAudioSourceManager(true);
         if(conf.getYtOAuthToken().isEmpty())
             ytsm.useOauth2(null, false);
         else
