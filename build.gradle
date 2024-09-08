@@ -38,6 +38,10 @@ repositories {
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
     }
+
+    maven{
+        url = uri('https://maven.lavalink.dev/snapshots')
+    }
 }
 
 sourceSets{
@@ -70,7 +74,7 @@ dependencies {
     api 'dev.arbjerg:lavaplayer:2.2.1'
     api 'com.google.http-client:google-http-client-jackson2:1.44.2'
     api 'org.threeten:threetenbp:1.6.9'
-    api 'dev.lavalink.youtube:common:1.4.0'
+    implementation 'dev.lavalink.youtube:common:1.7.2'
 }
 
 jar {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Owen Bennett.
+ * Copyright (c) 2024 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -40,13 +40,14 @@ public class JsonConfig {
     private String operatorDiscordID = "changeme";
     private String statusOverride = "";
     private boolean testMode = false;
+    private String ytOAuthToken = "";
 
     public JsonConfig(String confVersionMarker) {
         this.confVersionMarker = confVersionMarker;
     }
 
     @JsonCreator
-    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode, @JsonProperty("statusOverride") String statusOverride) {
+    public JsonConfig(@JsonProperty("confVersionMarker") String confVersionMarker,@JsonProperty("connectToDiscord") boolean connectToDiscord,@JsonProperty("allowSQLRW") boolean allowSQLRW,@JsonProperty("enableInteractions") boolean enableInteractions,@JsonProperty("commandPrefix") String commandPrefix,@JsonProperty("sqlhost") String sqlhost,@JsonProperty("sqlport") int sqlport,@JsonProperty("sqldb") String sqldb,@JsonProperty("sqluser") String sqluser,@JsonProperty("sqlpass") String sqlpass,@JsonProperty("discordApiKey") String discordApiKey,@JsonProperty("googleAPIKey") String googleAPIKey, @JsonProperty("operatorDiscordID")String operatorDiscordID, @JsonProperty("TestMode")boolean testMode, @JsonProperty("statusOverride") String statusOverride, @JsonProperty("YTOAuthToken") String ytOAuthToken) {
         this.confVersionMarker = confVersionMarker;
         this.connectToDiscord = connectToDiscord;
         this.allowSQLRW = allowSQLRW;
@@ -62,6 +63,7 @@ public class JsonConfig {
         this.statusOverride = statusOverride;
         this.operatorDiscordID = operatorDiscordID;
         this.testMode = testMode;
+        this.ytOAuthToken = ytOAuthToken;
     }
 
     public boolean isSet(){
@@ -155,5 +157,12 @@ public class JsonConfig {
 
     public String getStatusOverride() {
         return statusOverride;
+    }
+
+    public String getYtOAuthToken() { return ytOAuthToken; }
+
+    public void setYtOAuthToken(String token) {
+        ytOAuthToken = token;
+        saveConfig();
     }
 }
