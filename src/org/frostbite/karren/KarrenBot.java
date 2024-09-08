@@ -64,7 +64,6 @@ public class KarrenBot {
             ytsm.useOauth2(null, false);
         else
             ytsm.useOauth2(conf.getYtOAuthToken(), true);
-        conf.setYtOAuthToken(ytsm.getOauth2RefreshToken());
         pm = new DefaultAudioPlayerManager();
         pm.getConfiguration().setFrameBufferFactory(NonAllocatingAudioFrameBuffer::new);
         pm.setHttpRequestConfigurator(requestConfig -> RequestConfig.copy(requestConfig).setSocketTimeout(10000).setConnectTimeout(10000).build());
@@ -113,6 +112,7 @@ public class KarrenBot {
     }
 
     public void killBot(String killer) {
+        conf.setYtOAuthToken(ytsm.getOauth2RefreshToken());
         Karren.bot.isKill = true;
         //Unhook and shutdown interaction system
         Yank.releaseAllConnectionPools();
