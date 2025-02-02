@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Owen Bennett.
+ * Copyright (c) 2025 Owen Bennett.
  *  You may use, distribute and modify this code under the terms of the MIT licence.
  *  You should have obtained a copy of the MIT licence with this software,
  *  if not please obtain one from https://opensource.org/licences/MIT
@@ -71,10 +71,10 @@ dependencies {
     api 'com.fasterxml.jackson.core:jackson-core:2.17.2'
     api 'com.fasterxml.jackson.core:jackson-annotations:2.17.2'
     api 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
-    api 'dev.arbjerg:lavaplayer:2.2.2'
+    api 'dev.arbjerg:lavaplayer:2.2.3'
     api 'com.google.http-client:google-http-client-jackson2:1.44.2'
     api 'org.threeten:threetenbp:1.6.9'
-    implementation 'dev.lavalink.youtube:common:1.8.3'
+    implementation 'dev.lavalink.youtube:common:1.11.4'
 }
 
 jar {
