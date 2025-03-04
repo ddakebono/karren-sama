@@ -74,7 +74,7 @@ dependencies {
     api 'dev.arbjerg:lavaplayer:2.2.3'
     api 'com.google.http-client:google-http-client-jackson2:1.45.3'
     api 'org.threeten:threetenbp:1.7.0'
-    implementation 'dev.lavalink.youtube:v2:1.11.4'
+    implementation 'dev.lavalink.youtube:v2:1.11.5'
 }
 
 jar {
